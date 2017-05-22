@@ -25,8 +25,25 @@ SECRET_KEY = 't%#tk0-z%+)4)bz7t4$hd8uc*^3rd8nrsn93&$y$9!al!e$7h#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# DOMAINS = Domain.objects.all().values_list('alias')
+ALLOWED_HOSTS = [
+    'bezantrakta.local',
+    'theatre.bezantrakta.local',
+    'bel.bezantrakta.local',
+    'sar.bezantrakta.local',
+    'sur.bezantrakta.local',
+    'nvar.bezantrakta.local'
+]
 
+INTERNAL_IPS = ['127.0.0.1']
+
+PREPEND_WWW = False
+# APPEND_SLASH = False
+
+# Default email to use for automated correspondence from the site manager(s).
+DEFAULT_FROM_EMAIL = 'webmaster@bezantrakta.ru'
+# The email that error messages come from, sent to ADMINS and MANAGERS.
+SERVER_EMAIL = 'webmaster@bezantrakta.ru'
 
 # Application definition
 
@@ -37,9 +54,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,12 +73,16 @@ ROOT_URLCONF = 'bezantrakta_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            # Общие шаблоны для всего проекта
+            os.path.join(BASE_DIR, 'bezantrakta_project', 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -75,14 +98,24 @@ WSGI_APPLICATION = 'bezantrakta_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE':   'django.db.backends.mysql',
+        'NAME':     'belcanto_bezantrakta_django',
+        'USER':     'belcanto',
+        'PASSWORD': 'wrtwefsf352',
+        'HOST':     'localhost',
+        'TEST': {
+            'NAME': 'belcanto_bezantrakta_django_test'
+        }
     }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+
+# AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend']
+
+# AUTH_USER_MODEL = 'auth.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -99,11 +132,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# LOGIN_URL = '/accounts/login/'
+# LOGIN_REDIRECT_URL = '/accounts/profile/'
+# LOGOUT_REDIRECT_URL = None
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -113,8 +150,19 @@ USE_L10N = True
 
 USE_TZ = True
 
+FIRST_DAY_OF_WEEK = 1  # Понедельник
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, '!.collected_static')
 STATIC_URL = '/static/'
+
+# Общая статика для всего проекта
+STATICFILES_DIRS = [
+    ('global', os.path.join(BASE_DIR, 'bezantrakta_project', 'static')),
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, '!.collected_media')
+MEDIA_URL = '/media/'
