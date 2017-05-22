@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+{% load static %}
+    <title>{# title #}</title>
+    {% comment %}
+    {# Список городов #}
+    include('cities.php')
+
+    base     = JURI::root()
+    url      = JFactory::getURI()->toString()
+    document = JFactory::getDocument()
+    menu     = JSite::getMenu()
+    config   = JFactory::getConfig()
+
+    off         = $config->getValue('config.off')
+    offline_message = $config->getValue('config.offline_message')
+    city      = config->getValue('config.city')
+    site_name = config->getValue('config.sitename')
+    meta_desc = config->getValue('config.MetaDesc')
+    img       = base . 'ico/android-chrome-192x192.png'
+    yandex_webmaster = config->getValue('config.yandex_webmaster')
+    google_webmaster = config->getValue('config.google_webmaster')
+    yandex_counter   = config->getValue('config.yandex_counter')
+    google_counter   = config->getValue('config.google_counter')
+    uptolike_counter = config->getValue('config.google_counter')
+    vkontakte_pixel  = config->getValue('config.vkontakte_pixel')
+    {% endcomment %}
+
+    {# Название сайта - главная ли это страница или нет #}
+    {% comment %}
+    if url = "/"
+        title = $document->setTitle($site_name);
+    else
+        title = $document->setTitle($site_name . ' - ' . $document->getTitle());
+    endif
+    page_title = $document->getTitle($title);
+    {% endcomment %}
+    {# Название сайта - главная ли это страница или нет #}
+
+    {# Общие CSS-файлы - загружаются в любом случае #}
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
+    {# Общие CSS-файлы - загружаются в любом случае #}
+
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
+
+    {# Условная загрузка CSS-файлов - только для всего сайта или только для заказа билетов #}
+    {% comment %}
+    view = JRequest::getVar('view');
+
+    if app == order
+        <link rel="stylesheet" type="text/css" href="{% static "global/css/mq-order.css" %}">
+    else
+        <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
+    endif
+    {% endcomment %}
+    {# Условная загрузка CSS-файлов - только для всего сайта или только для заказа билетов #}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="google-site-verification" content="{# google_webmaster #}">
+    <meta name="yandex-verification" content="{# yandex_webmaster #}">
+    {# Не индексировать тестовую версию сайта #}
+    {% if debug %}<meta name="robots" content="noindex, nofollow">{% endif %}
+    {# Не индексировать тестовую версию сайта #}
+    <meta name="robots" body="NOODP">
+
+    <meta name="city_config" content="{# city #}">
+
+    {# `tel:` links NO auto-detection #}
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="x-rim-auto-match" content="none">
+    {# `tel:` links NO auto-detection #}
+
+    {# Метатеги для кнопок "Поделиться" #}
+    <meta property="og:site_name" content="{# site_name #}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{# url #}">
+    <link rel="image_src" href="{# img #}">
+    <meta property="og:image" content="{# img #}">
+    <meta property="og:image:width"  content="192">
+    <meta property="og:image:height" content="192">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:title" content="{# page_title #}">
+    <meta property="og:description" content="{# meta_desc #}">
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:site" content="@bezantrakta">
+    <meta property="twitter:title" content="{# page_title #}">
+    <meta property="twitter:description" content="{# meta_desc #}">
+    <meta property="twitter:image" content="{# img #}">
+    <meta property="twitter:image:width"  content="192">
+    <meta property="twitter:image:height" content="192">
+    {# Метатеги для кнопок "Поделиться" #}
+
+    {# favicons #}
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon.png" %}">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-57x57.png"   %}" sizes="57x57">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-60x60.png"   %}" sizes="60x60">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-72x72.png"   %}" sizes="72x72">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-76x76.png"   %}" sizes="76x76">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-114x114.png" %}" sizes="114x114">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-120x120.png" %}" sizes="120x120">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-144x144.png" %}" sizes="144x144">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-152x152.png" %}" sizes="152x152">
+    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-180x180.png" %}" sizes="180x180">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-32x32.png"     %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-36x36.png"     %}" sizes="36x36">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-48x48.png"     %}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-72x72.png"     %}" sizes="72x72">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-96x96.png"     %}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-144x144.png"   %}" sizes="144x144">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-192x192.png"   %}" sizes="192x192">
+    <link rel="manifest" href="{# echo $base; #}ico/manifest.json">
+    <meta name="msapplication-TileColor" content="#FFCC00">
+    <meta name="msapplication-TileImage" content="{% static "global/ico/mstile-144x144.png" %}">
+    <meta name="theme-color" content="#FFE57F">
+    <link rel="yandex-tableau-widget" href="{# echo $base; #}yandex.manifest.json">
+    <link rel="icon"          type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
+    {# favicons #}
+</head>
+
+<body>
+
+{% comment %}
+{% if site.offline %}
+<div class="body" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+    <div class="content" style="font-size: 1.5rem; font-weight: bold;">
+        {# offline_message; #}
+    </div>
+</div>
+{% else %}
+{% endcomment %}
+
+<a href="/"><div class="panorama"></div></a>
+
+<div class="poster-left">
+    {# type="modules" name="poster-left" #}
+</div>
+
+<div class="poster-right">
+    {# type="modules" name="poster-right" #}
+</div>
+
+<div class="body">
+
+    <header class="header">
+
+        <a href="/"><div class="pinnacle"></div></a>
+
+        <span id="hamburger"></span>
+
+        <div class="header-left">
+
+            <div class="calendar-body">
+                {# type="modules" name="calendar" #}
+            </div>
+
+            <div class="top-menu">
+                {# type="modules" name="top-menu" #}
+            </div>
+
+            <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
+
+        </div>
+
+        <div class="header-right">
+
+                <div class="search">
+
+                    <span id="choose-city-button">
+                    {# Вывод выбранного города из списка всех городов по куке #}
+                    {% comment %}
+                        for city in cities:
+                            {# Если кука создана - выводится название города по этой куке #}
+                            if (cookie["city"]):
+                                if cookie["city"] == $city["prefix"]:
+                                    print(city["title"])
+                            {# Если кука ещё не создана - выводится название города текущего сайта #}
+                            else:
+                                if (city == city["prefix"]):
+                                    print($city["title"])
+                    {% endcomment %}
+                    {# Вывод выбранного города из списка всех городов по куке #}
+                    </span>
+
+                    {# type="modules" name="search" #}
+
+                </div>
+
+                <div class="posters-level1-body">
+                    {# type="modules" name="poster-level1" #}
+                </div>
+
+        </div>
+
+    </header>
+
+    <div class="events-menu">
+        {# type="modules" name="events-menu" #}
+
+            {# Вывод категорий событий из БД #}
+            {# Кнопка выбранной категории получает класс active #}
+            {% comment %}
+            <ul>
+                {# Если категория выбрана    - получаем её `id` из URL #}
+                {# Если категория не выбрана - она равна `null` #}
+                category_id = JRequest::getVar('category', 'null')
+                category_id = (empty(category_id) and category_id == 0 ? ' class="active"' : '')
+
+                {# Вывод категории "Все события" #}
+                <li id="{{ category_id }}"><a href="?category=0">Все события</a></li>
+
+                {# Запрос к БД для получения данных из таблицы `sb_categories` #}
+                categories = "SELECT * FROM #__sb_categories";
+
+                {# Вывод всех остальных категорий #}
+                if (is_array(categories) and categories) {
+                    for category in categories:
+                        if ($category['published'] == 1) {
+                            <li id="{{ category_id }}"><a href="?category=' . $category['id'] . '">{{ category["name"] }}</a></li>;
+                        }
+                    endfor
+                endif
+            </ul>
+            {% endcomment %}
+            {# Вывод категорий событий из БД #}
+    </div>
+
+    <main class="content">
+        {# type="modules" name="content" #}
+        {# type="message" #}
+        {# type="component" #}
+
+        <h1>{{ hello }}</h1>
+        <p>domain: {{ domain }}</p>
+
+    </main>
+
+    <div class="bottom-menu">
+        {# type="modules" name="bottom-menu" #}
+    </div>
+
+    <div class="banners-body">
+
+        <div class="banners banners-left">
+            {# type="modules" name="banners-left" #}
+        </div>
+
+        <div class="banners banners-center">
+            {# type="modules" name="banners-center" #}
+        </div>
+
+        <div class="banners banners-right">
+            {# type="modules" name="banners-right" #}
+        </div>
+
+    </div>
+
+</div>
+
+<footer class="footer">
+    
+    <div class="counters">
+{# if site.google_counter #}
+        {# Google.Analytics #}
+        <div id="google-analytics-counter">
+            <script type="text/javascript">
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+              ga('create', '{# echo $google_counter; #}', 'auto');
+              ga('send', 'pageview');
+            </script>
+        </div>
+        {# Google.Analytics #}
+{# endif #}
+{# if site.yandex_counter #}
+        {# Яндекс.Метрика #}
+        <div id="yandex-metrika-counter">
+            <script type="text/javascript">
+            (function (d, w, c) {
+                (w[c] = w[c] || []).push(function() {
+                    try {
+                        w.yaCounter{# echo $yandex_counter; #} = new Ya.Metrika({
+                            id:{# echo $yandex_counter; #}, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true
+                        });
+                    } catch(e) {}
+                });
+                var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n);};
+                s.type = "text/javascript";
+                s.async = true;
+                s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+                if (w.opera == "[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else {f();}
+            })(document, window, "yandex_metrika_callbacks");
+            </script>
+            <noscript><div><img src="//mc.yandex.ru/watch/{# echo $yandex_counter; #}" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+        </div>
+        {# Яндекс.Метрика #}
+{# endif #}
+{# if site.uptolike_counter #}
+        {# UpToLike - кнопки "Поделиться" #}
+        <div id="uptolike-counter">
+            <script type="text/javascript">(function(w,doc) {
+            if (!w.__utlWdgt ) {
+                w.__utlWdgt = true;
+                var d = doc, s = d.createElement('script'), g = 'getElementsByTagName';
+                s.type = 'text/javascript'; s.charset='UTF-8'; s.async = true;
+                s.src = ('https:' == w.location.protocol ? 'https' : 'http')  + '://w.uptolike.com/widgets/v1/uptolike.js';
+                var h=d[g]('body')[0];
+                h.appendChild(s);
+            }})(window,document);
+            </script>
+        </div>
+        {# UpToLike - кнопки "Поделиться" #}
+{# endif #}
+{# if site.vkontakte_pixel #}
+        {# Пиксель вКонтакте #}
+        <div id="vkontakte_pixel">
+            <script type="text/javascript">
+                (window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={# echo $vkontakte_pixel; #}';
+            </script>
+        </div>
+        {# Пиксель вКонтакте #}
+{# endif #}
+    </div>
+
+    <div class="bottom-logos"></div>
+
+</footer>
+
+<script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/bxslider/jquery.bxslider.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/bxslider/carousel.js" %}"></script>
+
+{# Лайтбокс для выбора городов #}
+<div id="choose-city-modal" class="modal" style="display: none;">
+    <div>
+        <div class="modal-body">
+        {# <span class="close">&times;</span> #}
+            <div>
+                <img class="bzlogo" src="{% static "global/svg/bzlogo.svg" %}">
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                {% comment %}
+                <ul id="choose-city-list">
+                    for city in cities:
+                        {# Если город найден в cookie `city` - присвоить пункту с ним класс `chosen` #}
+                        city_chosen = ($_cookie['city'] and cookie['city'] == city['prefix']) ? 'chosen' : "";
+                        city_status = city["status"]
+                        data_city   = (city["status"] == "ready" ? 'data-city="{{ city["prefix"] }} : "")
+                        city_status_text = (city["status"] == "coming-soon" ? "скоро открытие" : "")
+
+                        <li class="{{ city_status }} {{ city_chosen }}" data-city="{{ data_city }}">
+                            <img class="city-icon" src="{% static "global/cities/{{ city["prefix"] }}.png" %}">
+                            <span class="city-name">{{ city["title"] }}</span>
+                            <span class="city-status-text">{{ city_status_text }}</span>
+                        </li>
+                    {# endfor #}
+                </ul>
+                {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+{# Лайтбокс для выбора городов #}
+
+<script type="text/javascript" src="cities.js" defer></script>
+
+<script type="text/javascript">
+{# Скрытие меню на небольших экранах #}
+function menuToggle() {
+    if (window.innerWidth <= 480) {
+        $('.top-menu').hide();
+        $('#hamburger').click(function(event) {
+            $('.top-menu').toggle();
+        });
+    } else {
+        $('.top-menu').show();
+    }
+}
+
+$(document).ready(menuToggle());
+$(window).on('orientationchange', menuToggle());
+$(window).on('resize', menuToggle());
+
+{% if debug %}
+{# Вывод размеров viewport в тестовой версии сайта #}
+$(document).ready(function(e) {
+    $('body').prepend('<span class="viewport" style="background: #FFF; border: 2px dotted #000; border-radius: 1rem; font-weight: bold; padding: 0.5rem; position: fixed; bottom: 0; right: 0; z-index: 10000;"></span>');
+    showViewportSize();    
+});
+$(window).resize(function(e) {
+    showViewportSize();
+});
+
+function showViewportSize() {
+    var viewport  = ( $(window).width() + 17 ) + ' x ' + $(window).height();                  
+    $('.viewport').text(viewport);
+
+}
+{# Вывод размеров viewport в тестовой версии сайта #}
+{% endif %}
+
+</script>
+
+{# endif #}
+
+</body>
+</html>
