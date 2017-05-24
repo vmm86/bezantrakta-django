@@ -3,7 +3,7 @@ import string
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from city.models import City
+from bezantrakta.city.models import City
 
 
 def _domain_name_validator(value):
@@ -24,23 +24,31 @@ class Domain(models.Model):
     """
     Сайты Безантракта, работающие в разных городах России.
     """
-    domain_id = models.IntegerField(
+    id = models.IntegerField(
         primary_key=True
     )
-    domain_title = models.CharField(
-        max_length=50,
+    title = models.CharField(
+        max_length=64,
         verbose_name='Название домена',
     )
-    domain_slug = models.SlugField(
-        max_length=100,
+    slug = models.CharField(
+        max_length=32,
         validators=[_domain_name_validator],
         unique=True,
         verbose_name='Псевдоним домена',
     )
-    city_id = models.ForeignKey(
+    is_online = models.BooleanField(
+        default=False,
+        help_text="""
+        True - включен и работает,
+        False - отключен (сайт недоступен, проводятся технические работы).""",
+        verbose_name='Включен/отключен',
+    )
+    city = models.ForeignKey(
         City,
         on_delete=models.CASCADE,
-        db_column='city_id'
+        db_column='city_id',
+        verbose_name='Город',
     )
 
     class Meta:
@@ -48,19 +56,10 @@ class Domain(models.Model):
         db_table = 'bezantrakta_domain'
         verbose_name = 'Домен'
         verbose_name_plural = 'Домены'
-        ordering = ('city_id', 'domain_title',)
-        indexes = [
-            models.Index(fields=['domain_id']),
-        ]
+        ordering = ('city', 'title',)
 
     def __str__(self):
-        return self.domain_slug
-
-    def natural_key(self):
-        return (self.domain_slug,)
+        return self.title
 
     def get_domains(self):
-        return self.objects.all().values_list('domain_slug')
-
-    def get_by_natural_key(self, domain):
-        return self.get(domain_slug=domain)
+        return self.objects.all().values_list('slug')

@@ -1,26 +1,33 @@
 from django.db import models
 
+from timezone_field import TimeZoneField
+
 
 class City(models.Model):
     """
     Города России, в которых могут работать сайты Безантракта.
     """
-    city_id = models.IntegerField(
+    id = models.IntegerField(
         primary_key=True,
-        unique=True,
     )
-    city_title = models.CharField(
+    title = models.CharField(
         max_length=64,
         verbose_name='Название города',
     )
-    city_slug = models.SlugField(
-        max_length=64,
+    slug = models.SlugField(
+        max_length=8,
         verbose_name='Псевдоним города',
     )
-    city_status = models.BooleanField(
+    status = models.BooleanField(
         default=False,
-        help_text='True - готов к работе, False - скоро открытие',
-        verbose_name='Готов ли город к работе',
+        help_text="""
+        True - включен и работает,
+        False - отключен (делает недоступными все сайты в этом городе).""",
+        verbose_name='Включен/отключен',
+    )
+    timezone = TimeZoneField(
+        default='Europe/Moscow',
+        verbose_name='Часовой пояс',
     )
 
     class Meta:
@@ -28,10 +35,7 @@ class City(models.Model):
         db_table = 'bezantrakta_city'
         verbose_name = 'Город'
         verbose_name_plural = 'Города'
-        ordering = ('city_title',)
-        indexes = [
-            models.Index(fields=['city_id']),
-        ]
+        ordering = ('title',)
 
     def __str__(self):
-        return self.city_title
+        return self.title

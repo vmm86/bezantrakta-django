@@ -48,6 +48,11 @@ SERVER_EMAIL = 'webmaster@bezantrakta.ru'
 # Application definition
 
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
+
+    'flat_responsive',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,8 +61,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
 
-    'city',
-    'domain',
+    'timezone_field',
+
+    'ckeditor',
+    'ckeditor_uploader',
+
+    'bezantrakta.city',
+    'bezantrakta.domain',
+    # 'bezantrakta.menu',
+    # 'bezantrakta.article',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +81,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'domain.middleware.CurrentDomainMiddleware'
+
+    'bezantrakta.domain.middleware.CurrentDomainMiddleware',
+    # 'bezantrakta.menu.middleware.MenuItemsMiddleware',
 ]
 
 ROOT_URLCONF = 'bezantrakta_project.urls'
@@ -156,6 +170,9 @@ USE_TZ = True
 
 FIRST_DAY_OF_WEEK = 1  # Понедельник
 
+# DATETIME_INPUT_FORMATS = ['%Y-%m-%d %H:%M:%S', ]
+# DATE_INPUT_FORMATS = ['%Y-%m-%d', ]
+# TIME_INPUT_FORMATS = ['%H:%M:%S', ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -170,3 +187,82 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '!.collected_media')
 MEDIA_URL = '/media/'
+
+
+# CKEditor settings
+# https://github.com/django-ckeditor/django-ckeditor/
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'skin': 'moono-lisa',
+        # 'toolbar': 'full',
+        'toolbar': [
+            {
+                'name': 'basic',
+                'items':
+                [
+                    'Source', '-',
+                    'Cut', 'Copy', 'Paste', '-',
+                    'Undo', 'Redo',
+                ]
+            },
+            {
+                'name': 'editing',
+                'items':
+                [
+                    'Find', 'Replace', '-',
+                    'SpellChecker', 'Scayt', '-',
+                    'RemoveFormat', '-',
+                    'ShowBlocks', '-',
+                    'Maximize',
+                ]
+            },
+            '/',
+            {
+                'name': 'text',
+                'items':
+                [
+                    'Bold', 'Italic', 'Underline', 'Strike', '-',
+                    'TextColor', 'BGColor', '-',
+                    'Format', 'Font', 'FontSize',
+                ]
+            },
+            '/',
+            {
+                'name': 'paragraph',
+                'items':
+                [
+                    'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-',
+                    'BulletedList', 'NumberedList', '-',
+                    'Outdent', 'Indent',
+                ]
+            },
+            {
+                'name': 'insert',
+                'items':
+                [
+                    'Link', 'Unlink', '-',
+                    'Image', 'Iframe', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', '-',
+                    'Blockquote', 'CreateDiv',
+                ]
+            },
+            # '/',
+            # {
+            #     'name': 'forms',
+            #     'items':
+            #     [
+            #         'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea',
+            #         'Select', 'Button', 'ImageButton', 'HiddenField',
+            #     ]
+            # },
+        ],
+        'removePlugins': 'stylesheetparser',
+        # 'extraPlugins': 'codesnippet',
+        'uiColor': '#cccccc',
+        'allowedContent': True,
+    },
+}
+
+CKEDITOR_JQUERY_URL = '/static/js/jquery/jquery-1.9.1.min.js'
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'

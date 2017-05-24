@@ -1,4 +1,4 @@
-INSERT INTO `bezantrakta_city` (`city_id`, `city_title`, `city_slug`, `city_status`) VALUES
+INSERT INTO `bezantrakta_city` (`id`, `title`, `slug`, `status`) VALUES
 (391, 'Красноярск', 'ksn', 0),
 (473, 'Воронеж', 'vrn', 1),
 (831, 'Нижний Новгород', 'nnov', 0),
@@ -17,7 +17,7 @@ INSERT INTO `bezantrakta_city` (`city_id`, `city_title`, `city_slug`, `city_stat
 (4752, 'Тамбов', 'tam', 0),
 (4812, 'Смоленск', 'smo', 0),
 (4822, 'Тверь', 'tve', 0),
-(4832, 'Брянск', 'brn', 0),
+(4832, 'Брянск', 'bry', 0),
 (4842, 'Калуга', 'kal', 0),
 (4852, 'Ярославль', 'yar', 0),
 (4862, 'Орел', 'orel', 0),
