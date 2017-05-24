@@ -1,4 +1,4 @@
-INSERT INTO `bezantrakta_domain` (`domain_id`, `domain_slug`, `domain_title`, `city_id`) VALUES
+INSERT INTO `bezantrakta_domain` (`id`, `slug`, `title`, `city_id`) VALUES
 (310, 'bel.bezantrakta.local', 'Белгород', 4722),
 (360, 'bezantrakta.local', 'Воронеж', 473),
 (361, 'theatre.bezantrakta.local', 'Театр Оперы и Балета (Воронеж)', 473),

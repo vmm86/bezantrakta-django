@@ -159,11 +159,23 @@
             </div>
 
             <div class="top-menu">
-                {# type="modules" name="top-menu" #}
+                <ul id="mainlevel">
+                {% for item in request.top_menu_items %}
+                    {% if item.is_published %}
+                    <li>
+                        <a {% if item.slug == request.domain_path %}id="active_menu"{% endif %} href="/{{ item.slug }}" title="{{ item.title }}">
+                            <strong>{{ item.title }}</strong>
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
             </div>
 
             <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
 
+            <p>domain_slug: {{ request.domain_slug }}</p>
+            <p>domain_path: {{ request.domain_path }}</p>
         </div>
 
         <div class="header-right">
@@ -230,17 +242,23 @@
     </div>
 
     <main class="content">
-        {# type="modules" name="content" #}
         {# type="message" #}
-        {# type="component" #}
-
-        <h1>{{ hello }}</h1>
-        <p>domain: {{ domain }}</p>
-
+        {% block content_title %}{% endblock %}
+        {% block content_text %}{% endblock %}
     </main>
 
     <div class="bottom-menu">
-        {# type="modules" name="bottom-menu" #}
+        <ul id="mainlevel">
+        {% for item in request.bottom_menu_items %}
+            {% if item.is_published %}
+            <li>
+                <a href="/{{ item.slug|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
+                    <strong>{{ item.title }}</strong>
+                </a>
+            </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
     </div>
 
     <div class="banners-body">
@@ -264,7 +282,7 @@
 <footer class="footer">
     
     <div class="counters">
-{# if site.google_counter #}
+{% if request.google_counter %}
         {# Google.Analytics #}
         <div id="google-analytics-counter">
             <script type="text/javascript">
@@ -277,8 +295,8 @@
             </script>
         </div>
         {# Google.Analytics #}
-{# endif #}
-{# if site.yandex_counter #}
+{% endif %}
+{% if request.yandex_counter %}
         {# Яндекс.Метрика #}
         <div id="yandex-metrika-counter">
             <script type="text/javascript">
@@ -300,8 +318,8 @@
             <noscript><div><img src="//mc.yandex.ru/watch/{# echo $yandex_counter; #}" style="position:absolute; left:-9999px;" alt=""></div></noscript>
         </div>
         {# Яндекс.Метрика #}
-{# endif #}
-{# if site.uptolike_counter #}
+{% endif %}
+{% if request.uptolike_counter %}
         {# UpToLike - кнопки "Поделиться" #}
         <div id="uptolike-counter">
             <script type="text/javascript">(function(w,doc) {
@@ -316,8 +334,8 @@
             </script>
         </div>
         {# UpToLike - кнопки "Поделиться" #}
-{# endif #}
-{# if site.vkontakte_pixel #}
+{% endif %}
+{% if request.vkontakte_pixel %}
         {# Пиксель вКонтакте #}
         <div id="vkontakte_pixel">
             <script type="text/javascript">
@@ -325,7 +343,7 @@
             </script>
         </div>
         {# Пиксель вКонтакте #}
-{# endif #}
+{% endif %}
     </div>
 
     <div class="bottom-logos"></div>

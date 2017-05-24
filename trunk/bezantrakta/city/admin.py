@@ -1,9 +1,14 @@
 from django.contrib import admin
+
 from .models import City
+from .forms import CityForm
 
 
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'city_slug': ('city_title',), }
-    list_display = ('city_title', 'city_slug', 'city_status',)
-    search_fields = ('city_title',)
+    form = CityForm
+    prepopulated_fields = {
+        'slug': ('title',),
+    }
+    list_display = ('title', 'slug', 'timezone', 'status',)
+    search_fields = ('title',)
