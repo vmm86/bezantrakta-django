@@ -48,6 +48,13 @@ SERVER_EMAIL = 'webmaster@bezantrakta.ru'
 # Application definition
 
 INSTALLED_APPS = [
+    'timezone_field',
+
+    'ckeditor',
+    'ckeditor_uploader',
+
+    'adminsortable2',
+
     'dal',
     'dal_select2',
 
@@ -59,17 +66,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'debug_toolbar',
-
-    'timezone_field',
-
-    'ckeditor',
-    'ckeditor_uploader',
 
     'bezantrakta.city',
     'bezantrakta.domain',
-    # 'bezantrakta.menu',
-    # 'bezantrakta.article',
+    'bezantrakta.menu',
+    'bezantrakta.article',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +86,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'bezantrakta.domain.middleware.CurrentDomainMiddleware',
-    # 'bezantrakta.menu.middleware.MenuItemsMiddleware',
+    'bezantrakta.menu.middleware.MenuItemsMiddleware',
 ]
 
 ROOT_URLCONF = 'bezantrakta_project.urls'
@@ -103,6 +106,7 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'django.core.context_processors.static',
             ],
         },
     },
