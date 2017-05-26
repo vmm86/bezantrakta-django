@@ -6,7 +6,7 @@ app_name = 'article'
 
 urlpatterns = [
     url(r'^$', views.show_index, name='show_index'),
-    url(r'^(?P<article_slug>.*)/$', views.show_article, name='show_article'),
+    url(r'^(?P<slug>[\w-]+)/$', views.show_article, name='show_article'),
     # url(
     #     r'^(?P<pk>[0-9]+)$',
     #     views.DetailView.as_view(),
