@@ -48,17 +48,24 @@ SERVER_EMAIL = 'webmaster@bezantrakta.ru'
 # Application definition
 
 INSTALLED_APPS = [
-    'timezone_field',
+    'admin_interface',
+    'flat_responsive',
+    'flat',
+    'colorfield',
+
+    'admin_reorder',
+
+    'pyup_django',
 
     'ckeditor',
     'ckeditor_uploader',
 
-    'adminsortable2',
+    'timezone_field',
 
     'dal',
     'dal_select2',
 
-    'flat_responsive',
+    'adminsortable2',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,9 +83,12 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'admin_reorder.middleware.ModelAdminReorder',
+
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -113,6 +123,54 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bezantrakta_project.wsgi.application'
+
+
+# Rename/reorder apps and models in Django admin
+# https://pypi.python.org/pypi/django-modeladmin-reorder/
+
+ADMIN_REORDER = (
+    # Usage example
+    # {
+    #     'app': 'auth',
+    #     'label': 'Пользователи',
+    #     'models':
+    #     (
+    #         {'model': 'auth.Group', 'label': 'Группы пользователей'},
+    #         {'model': 'auth.User', 'label': 'Пользователи'},
+    #     )
+    # },
+    # Usage example
+    {
+        'app': 'city',
+        'label': 'География сайтов',
+        'models':
+        (
+            {'model': 'city.City', 'label': 'Города'},
+            {'model': 'domain.Domain', 'label': 'Домены'},
+        )
+
+    },
+    {'app': 'menu', },
+    {'app': 'article', },
+    {
+        'app': 'auth',
+        'label': 'Пользователи',
+        'models':
+        (
+            {'model': 'auth.Group', 'label': 'Группы пользователей'},
+            {'model': 'auth.User', 'label': 'Пользователи'},
+        )
+    },
+    {
+        'app': 'admin_interface',
+        'label': 'Оформление',
+        'models':
+        (
+            {'model': 'admin_interface.Theme', 'label': 'Темы оформления'},
+        )
+
+    },
+)
 
 
 # Database
@@ -169,6 +227,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = True
+
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'bezantrakta_project', 'locale'),)
 
 USE_TZ = True
 

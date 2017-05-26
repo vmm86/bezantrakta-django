@@ -62,8 +62,8 @@ class Article(models.Model):
     class Meta:
         app_label = 'article'
         db_table = 'bezantrakta_article'
-        verbose_name = 'Страница'
-        verbose_name_plural = 'Страницы'
+        verbose_name = 'HTML-страница'
+        verbose_name_plural = 'HTML-страницы'
         ordering = ('domain', 'title',)
         unique_together = (
             ('domain', 'slug',),

@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class MenuConfig(AppConfig):
-    name = 'menu'
+    name = 'bezantrakta.menu'
     verbose_name = 'Меню'

@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class DomainConfig(AppConfig):
-    name = 'domain'
+    name = 'bezantrakta.domain'
     verbose_name = 'Домены'
