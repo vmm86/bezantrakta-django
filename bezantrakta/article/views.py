@@ -17,6 +17,7 @@ def show_article(request, article_slug):
     try:
         article = Article.objects.get(
             slug=article_slug,
+            is_published=True,
             domain__slug=request.domain_slug,
         )
     except Article.DoesNotExist:
@@ -24,6 +25,7 @@ def show_article(request, article_slug):
         try:
             article = Article.objects.get(
                 slug=article_slug,
+                is_published=True,
                 domain__slug=None,
             )
         except Article.DoesNotExist:
@@ -34,6 +36,8 @@ def show_article(request, article_slug):
 
     data = {
         'article_title': article.title,
+        'article_description': article.description,
+        'article_keywords': article.keywords,
         'article_text': article.text,
     }
     return render(request, 'article.html', data)
