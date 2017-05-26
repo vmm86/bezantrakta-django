@@ -1,24 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
+{% spaceless %}
 <head>
-{% load static %}
-    <title>{# title #}</title>
+{% load i18n static %}
+    <title>{% block head_domain %}{% endblock %}{% block head_title %}{% endblock %}</title>
     {% comment %}
     {# Список городов #}
     include('cities.php')
+    city = config->getValue('config.city')
 
-    base     = JURI::root()
-    url      = JFactory::getURI()->toString()
-    document = JFactory::getDocument()
-    menu     = JSite::getMenu()
-    config   = JFactory::getConfig()
-
-    off         = $config->getValue('config.off')
-    offline_message = $config->getValue('config.offline_message')
-    city      = config->getValue('config.city')
-    site_name = config->getValue('config.sitename')
-    meta_desc = config->getValue('config.MetaDesc')
-    img       = base . 'ico/android-chrome-192x192.png'
     yandex_webmaster = config->getValue('config.yandex_webmaster')
     google_webmaster = config->getValue('config.google_webmaster')
     yandex_counter   = config->getValue('config.yandex_counter')
@@ -59,6 +49,9 @@
     {% endcomment %}
     {# Условная загрузка CSS-файлов - только для всего сайта или только для заказа билетов #}
 
+    <meta name="description" content="{% block head_description %}{% endblock %}">
+    <meta name="keywords" content="{% block head_keywords %}{% endblock %}">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="google-site-verification" content="{# google_webmaster #}">
     <meta name="yandex-verification" content="{# yandex_webmaster #}">
@@ -78,8 +71,8 @@
     <meta property="og:site_name" content="{# site_name #}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{# url #}">
-    <link rel="image_src" href="{# img #}">
-    <meta property="og:image" content="{# img #}">
+    <link rel="image_src" href="{% static "global/ico/android-chrome-192x192.png" %}">
+    <meta property="og:image" content="{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="og:image:width"  content="192">
     <meta property="og:image:height" content="192">
     <meta property="og:image:type" content="image/png">
@@ -89,41 +82,40 @@
     <meta property="twitter:site" content="@bezantrakta">
     <meta property="twitter:title" content="{# page_title #}">
     <meta property="twitter:description" content="{# meta_desc #}">
-    <meta property="twitter:image" content="{# img #}">
+    <meta property="twitter:image" content="{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="twitter:image:width"  content="192">
     <meta property="twitter:image:height" content="192">
     {# Метатеги для кнопок "Поделиться" #}
 
     {# favicons #}
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon.png" %}">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-57x57.png"   %}" sizes="57x57">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-60x60.png"   %}" sizes="60x60">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-72x72.png"   %}" sizes="72x72">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-76x76.png"   %}" sizes="76x76">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-114x114.png" %}" sizes="114x114">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-120x120.png" %}" sizes="120x120">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-144x144.png" %}" sizes="144x144">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-152x152.png" %}" sizes="152x152">
-    <link rel="apple-touch-icon"      href="{% static "global/ico/apple-touch-icon-180x180.png" %}" sizes="180x180">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-32x32.png"     %}" sizes="32x32">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-36x36.png"     %}" sizes="36x36">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-48x48.png"     %}" sizes="48x48">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-72x72.png"     %}" sizes="72x72">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-96x96.png"     %}" sizes="96x96">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-144x144.png"   %}" sizes="144x144">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-192x192.png"   %}" sizes="192x192">
-    <link rel="manifest" href="{# echo $base; #}ico/manifest.json">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon.png" %}">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-57x57.png" %}" sizes="57x57">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-60x60.png" %}" sizes="60x60">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-72x72.png" %}" sizes="72x72">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-76x76.png" %}" sizes="76x76">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-114x114.png" %}" sizes="114x114">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-120x120.png" %}" sizes="120x120">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-144x144.png" %}" sizes="144x144">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-152x152.png" %}" sizes="152x152">
+    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-180x180.png" %}" sizes="180x180">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-32x32.png" %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-36x36.png" %}" sizes="36x36">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-48x48.png" %}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-72x72.png" %}" sizes="72x72">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-96x96.png" %}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-144x144.png" %}" sizes="144x144">
+    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-192x192.png" %}" sizes="192x192">
+    <link rel="manifest" href="{% static "global/ico/manifest.json" %}">
     <meta name="msapplication-TileColor" content="#FFCC00">
     <meta name="msapplication-TileImage" content="{% static "global/ico/mstile-144x144.png" %}">
     <meta name="theme-color" content="#FFE57F">
-    <link rel="yandex-tableau-widget" href="{# echo $base; #}yandex.manifest.json">
-    <link rel="icon"          type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
+    <link rel="yandex-tableau-widget" href="{% static "global/yandex.manifest.json" %}">
+    <link rel="icon" type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
     <link rel="shortcut icon" type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
     {# favicons #}
 </head>
-
+{% endspaceless %}
 <body>
-
 {% comment %}
 {% if site.offline %}
 <div class="body" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
@@ -133,7 +125,6 @@
 </div>
 {% else %}
 {% endcomment %}
-
 <a href="/"><div class="panorama"></div></a>
 
 <div class="poster-left">
@@ -245,6 +236,10 @@
         {# type="message" #}
         {% block content_title %}{% endblock %}
         {% block content_text %}{% endblock %}
+
+    {% if debug %}
+        <br><pre>{% debug %}</pre>
+    {% endif %}
     </main>
 
     <div class="bottom-menu">
