@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'bezantrakta.domain',
     'bezantrakta.menu',
     'bezantrakta.article',
+    'bezantrakta.event_calendar',
 ]
 
 MIDDLEWARE = [
