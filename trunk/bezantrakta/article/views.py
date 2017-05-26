@@ -13,21 +13,14 @@ def show_index(request):
 
 
 def show_article(request, slug):
+    article = Article.objects.filter(slug=slug, is_published=True,)
     # Сначала ищем страницу, привязанную к текущему домену
     try:
-        article = Article.objects.get(
-            slug=slug,
-            is_published=True,
-            domain__slug=request.domain_slug,
-        )
+        article = article.get(domain__slug=request.domain,)
     except Article.DoesNotExist:
         # Затем ищем "общую" страницу, не привязанную ни к одному из доменов
         try:
-            article = Article.objects.get(
-                slug=slug,
-                is_published=True,
-                domain__slug=None,
-            )
+            article = article.get(domain__slug=None,)
         except Article.DoesNotExist:
             # Если не находим ничего - ошибка 404
             raise Http404(

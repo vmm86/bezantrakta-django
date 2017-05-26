@@ -93,7 +93,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'bezantrakta.domain.middleware.CurrentDomainMiddleware',
-    'bezantrakta.menu.middleware.MenuItemsMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -114,10 +113,22 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'bezantrakta.menu.context_processors.menu_items',
             ],
         },
     },
 ]
+"""
+A template’s context processor has a very simple interface.
+It’s a Python function that takes one argument, an HttpRequest object,
+and returns a dictionary that gets added to the template context.
+
+Custom context processors can live anywhere in your code base.
+All Django cares about is that your custom context processors are pointed to
+by the `context_processors` option in your TEMPLATES setting
+or the `context_processors` argument of Engine if you’re using it directly.
+"""
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
