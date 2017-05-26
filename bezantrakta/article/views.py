@@ -12,11 +12,11 @@ def show_index(request):
     return render(request, 'article.html', data)
 
 
-def show_article(request, article_slug):
+def show_article(request, slug):
     # Сначала ищем страницу, привязанную к текущему домену
     try:
         article = Article.objects.get(
-            slug=article_slug,
+            slug=slug,
             is_published=True,
             domain__slug=request.domain_slug,
         )
@@ -24,7 +24,7 @@ def show_article(request, article_slug):
         # Затем ищем "общую" страницу, не привязанную ни к одному из доменов
         try:
             article = Article.objects.get(
-                slug=article_slug,
+                slug=slug,
                 is_published=True,
                 domain__slug=None,
             )
