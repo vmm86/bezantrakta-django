@@ -192,7 +192,18 @@
                     {# Вывод выбранного города из списка всех городов по куке #}
                     </span>
 
-                    {# type="modules" name="search" #}
+                    {# Поиск #}
+                    <div class="modul">
+                        <div class="mod_top">
+                            <form action="/search" method="POST">
+                                <span>Поиск по сайту</span>
+                                <input name="searchword" id="search" alt="Поиск" class="inputbox" type="text" size="20" value="">
+                                <input type="submit" value="Поиск" class="button">
+                            </form>
+                        </div>
+                        <div class="mod_bot"></div>
+                    </div>
+                    {# Поиск #}
 
                 </div>
 
