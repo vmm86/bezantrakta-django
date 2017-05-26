@@ -151,10 +151,10 @@
 
             <div class="top-menu">
                 <ul id="mainlevel">
-                {% for item in request.top_menu_items %}
+                {% for item in top_menu_items %}
                     {% if item.is_published %}
                     <li>
-                        <a {% if item.slug == request.domain_path %}id="active_menu"{% endif %} href="/{{ item.slug }}" title="{{ item.title }}">
+                        <a {% if item.slug == request.url_path %}id="active_menu"{% endif %} href="/{{ item.slug }}" title="{{ item.title }}">
                             <strong>{{ item.title }}</strong>
                         </a>
                     </li>
@@ -165,8 +165,8 @@
 
             <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
 
-            <p>domain_slug: {{ request.domain_slug }}</p>
-            <p>domain_path: {{ request.domain_path }}</p>
+            <p>domain: {{ request.domain }}</p>
+            <p>url_path: {{ request.url_path }}</p>
         </div>
 
         <div class="header-right">
@@ -237,14 +237,16 @@
         {% block content_title %}{% endblock %}
         {% block content_text %}{% endblock %}
 
+{% comment %}
     {% if debug %}
         <br><pre>{% debug %}</pre>
     {% endif %}
+{% endcomment %}
     </main>
 
     <div class="bottom-menu">
         <ul id="mainlevel">
-        {% for item in request.bottom_menu_items %}
+        {% for item in bottom_menu_items %}
             {% if item.is_published %}
             <li>
                 <a href="/{{ item.slug|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
@@ -277,7 +279,7 @@
 <footer class="footer">
     
     <div class="counters">
-{% if request.google_counter %}
+{% if google_counter %}
         {# Google.Analytics #}
         <div id="google-analytics-counter">
             <script type="text/javascript">
@@ -291,7 +293,7 @@
         </div>
         {# Google.Analytics #}
 {% endif %}
-{% if request.yandex_counter %}
+{% if yandex_counter %}
         {# Яндекс.Метрика #}
         <div id="yandex-metrika-counter">
             <script type="text/javascript">
@@ -314,7 +316,7 @@
         </div>
         {# Яндекс.Метрика #}
 {% endif %}
-{% if request.uptolike_counter %}
+{% if uptolike_counter %}
         {# UpToLike - кнопки "Поделиться" #}
         <div id="uptolike-counter">
             <script type="text/javascript">(function(w,doc) {
@@ -330,7 +332,7 @@
         </div>
         {# UpToLike - кнопки "Поделиться" #}
 {% endif %}
-{% if request.vkontakte_pixel %}
+{% if vkontakte_pixel %}
         {# Пиксель вКонтакте #}
         <div id="vkontakte_pixel">
             <script type="text/javascript">
