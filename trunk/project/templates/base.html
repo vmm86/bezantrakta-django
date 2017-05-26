@@ -145,8 +145,11 @@
 
         <div class="header-left">
 
-            <div class="calendar-body">
-                {# type="modules" name="calendar" #}
+            <div class="calendar">
+                {% now "Y" as year %}
+                {% now "n" as month %}
+                {% load event_calendar %}
+                {% event_calendar year month %}
             </div>
 
             <div class="top-menu">
