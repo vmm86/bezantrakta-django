@@ -32,7 +32,7 @@ class Menu(models.Model):
         db_table = 'bezantrakta_menu'
         verbose_name = 'Меню'
         verbose_name_plural = 'Меню'
-        ordering = ('title', 'order',)
+        ordering = ('order', 'title',)
 
     def __str__(self):
         return self.title
@@ -78,8 +78,6 @@ class MenuItem(models.Model):
     )
     domain = models.ForeignKey(
         Domain,
-        # blank=True,
-        # null=True,
         on_delete=models.CASCADE,
         db_column='domain_id',
         verbose_name='Домен',
