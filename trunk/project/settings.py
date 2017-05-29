@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'bezantrakta.domain',
     'bezantrakta.menu',
     'bezantrakta.article',
+    'bezantrakta.banner',
     'bezantrakta.event_calendar',
 ]
 
@@ -111,6 +112,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'bezantrakta.menu.context_processors.menu_items',
+                'bezantrakta.banner.context_processors.banner_group_items',
             ],
         },
     },
@@ -156,6 +158,14 @@ ADMIN_REORDER = (
     },
     {'app': 'menu', },
     {'app': 'article', },
+    {
+        'app': 'banner',
+        'models':
+        (
+            {'model': 'banner.BannerGroup', 'label': 'Группы баннеров'},
+            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры'},
+        )
+    },
     {
         'app': 'auth',
         'label': 'Пользователи',
