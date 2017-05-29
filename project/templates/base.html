@@ -251,12 +251,6 @@
         {# type="message" #}
         {% block content_title %}{% endblock %}
         {% block content_text %}{% endblock %}
-
-{% comment %}
-    {% if debug %}
-        <br><pre>{% debug %}</pre>
-    {% endif %}
-{% endcomment %}
     </main>
 
     <div class="bottom-menu">
@@ -276,15 +270,60 @@
     <div class="banners-body">
 
         <div class="banners banners-left">
-            {# type="modules" name="banners-left" #}
+            <div class="bannergroup">
+                <div class="bannerheader">{{ banner_group.banner_social }}</div>
+            {% for banner in banner_group_items.banner_social %}
+                {% if banner.is_published %}
+                    <div class="banneritem">
+                        {% if banner.href %}
+                            <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                        {% endif %}
+                                <img src="/media/{{ banner.img }}" alt="{{ banner.title }}">
+                        {% if banner.href %}
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
         </div>
 
         <div class="banners banners-center">
-            {# type="modules" name="banners-center" #}
+            <div class="bannergroup">
+                <div class="bannerheader">{{ banner_group.banner_partners }}</div>
+            {% for banner in banner_group_items.banner_partners %}
+                {% if banner.is_published %}
+                    <div class="banneritem">
+                        {% if banner.href %}
+                            <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                        {% endif %}
+                                <img src="/media/{{ banner.img }}" alt="{{ banner.title }}">
+                        {% if banner.href %}
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
         </div>
 
         <div class="banners banners-right">
-            {# type="modules" name="banners-right" #}
+            <div class="bannergroup">
+                <div class="bannerheader">{{ banner_group.banner_payment }}</div>
+            {% for banner in banner_group_items.banner_payment %}
+                {% if banner.is_published %}
+                    <div class="banneritem">
+                        {% if banner.href %}
+                            <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                        {% endif %}
+                                <img src="/media/{{ banner.img }}" alt="{{ banner.title }}">
+                        {% if banner.href %}
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
         </div>
 
     </div>
