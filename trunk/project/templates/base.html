@@ -154,7 +154,7 @@
 
             <div class="top-menu">
                 <ul id="mainlevel">
-                {% for item in top_menu_items %}
+                {% for item in menu_items.top_menu %}
                     {% if item.is_published %}
                     <li>
                         <a {% if item.slug == request.url_path %}id="active_menu"{% endif %} href="/{{ item.slug }}" title="{{ item.title }}">
@@ -251,11 +251,17 @@
         {# type="message" #}
         {% block content_title %}{% endblock %}
         {% block content_text %}{% endblock %}
+
+    <p></p>
+    <p>{{menu}}</p>
+    <p></p>
+    <p>{{menu_items}}</p>
+
     </main>
 
     <div class="bottom-menu">
         <ul id="mainlevel">
-        {% for item in bottom_menu_items %}
+        {% for item in menu_items.bottom_menu %}
             {% if item.is_published %}
             <li>
                 <a href="/{{ item.slug|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
