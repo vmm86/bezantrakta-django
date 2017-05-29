@@ -52,8 +52,6 @@ class Article(models.Model):
     )
     domain = models.ForeignKey(
         Domain,
-        blank=True,
-        null=True,
         on_delete=models.CASCADE,
         db_column='domain_id',
         verbose_name='Домен',
