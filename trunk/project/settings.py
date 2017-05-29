@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'dal',
     'dal_select2',
 
+    'django_admin_listfilter_dropdown',
+
     'adminsortable2',
 
     'django.contrib.admin',
