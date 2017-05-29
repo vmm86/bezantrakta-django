@@ -1,25 +1,24 @@
-from .models import MenuItem
+from .models import Menu, MenuItem
 
 
 def menu_items(request):
     """
     Context processor that adds `menu` information to template context.
     """
-    top_menu_items = MenuItem.objects.only(
-        'title', 'slug', 'is_published'
-    ).filter(
-        menu__slug='top_menu',
-        domain__slug=request.domain,
-    )
+    menu = {
+        menu['slug']: menu['title']
+        for menu
+        in Menu.objects.values('slug', 'title')
+    }
 
-    bottom_menu_items = MenuItem.objects.only(
-        'title', 'slug', 'is_published'
-    ).filter(
-        menu__slug='bottom_menu',
-        domain__slug=request.domain,
-    )
+    menu_items = {}
+    for slug, title in menu.items():
+        menu_items[slug] = MenuItem.objects.filter(
+            menu__slug=slug,
+            domain__slug=request.domain,
+        ).values('title', 'slug', 'is_published')
 
     return {
-        'top_menu_items': top_menu_items,
-        'bottom_menu_items': bottom_menu_items
+        'menu': menu,
+        'menu_items': menu_items,
     }
