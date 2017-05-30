@@ -14,9 +14,10 @@ def menu_items(request):
     menu_items = {}
     for slug, title in menu.items():
         menu_items[slug] = MenuItem.objects.filter(
+            is_published=True,
             menu__slug=slug,
             domain__slug=request.domain,
-        ).values('title', 'slug', 'is_published')
+        ).values('title', 'slug')
 
     return {
         'menu': menu,
