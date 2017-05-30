@@ -270,10 +270,10 @@
     <div class="banners-body">
 
         <div class="banners banners-left">
+        {% if banner_group.banner_social %}
             <div class="bannergroup">
                 <div class="bannerheader">{{ banner_group.banner_social }}</div>
-            {% for banner in banner_group_items.banner_social %}
-                {% if banner.is_published %}
+                {% for banner in banner_group_items.banner_social %}
                     <div class="banneritem">
                         {% if banner.href %}
                             <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
@@ -283,16 +283,16 @@
                             </a>
                         {% endif %}
                     </div>
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
             </div>
+        {% endif %}
         </div>
 
         <div class="banners banners-center">
+        {% if banner_group.banner_partners %}
             <div class="bannergroup">
                 <div class="bannerheader">{{ banner_group.banner_partners }}</div>
-            {% for banner in banner_group_items.banner_partners %}
-                {% if banner.is_published %}
+                {% for banner in banner_group_items.banner_partners %}
                     <div class="banneritem">
                         {% if banner.href %}
                             <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
@@ -302,16 +302,16 @@
                             </a>
                         {% endif %}
                     </div>
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
             </div>
+        {% endif %}
         </div>
 
         <div class="banners banners-right">
+        {% if banner_group.banner_payment %}
             <div class="bannergroup">
                 <div class="bannerheader">{{ banner_group.banner_payment }}</div>
-            {% for banner in banner_group_items.banner_payment %}
-                {% if banner.is_published %}
+                {% for banner in banner_group_items.banner_payment %}
                     <div class="banneritem">
                         {% if banner.href %}
                             <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
@@ -321,9 +321,9 @@
                             </a>
                         {% endif %}
                     </div>
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
             </div>
+        {% endif %}
         </div>
 
     </div>
