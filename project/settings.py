@@ -255,7 +255,7 @@ FIRST_DAY_OF_WEEK = 1  # Понедельник
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, '!.collected_static')
+STATIC_ROOT = os.path.join(BASE_DIR, '!.static')
 STATIC_URL = '/static/'
 
 # Общая статика для всего проекта
@@ -263,7 +263,7 @@ STATICFILES_DIRS = [
     ('global', os.path.join(BASE_DIR, 'project', 'static')),
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '!.collected_media')
+MEDIA_ROOT = os.path.join(BASE_DIR, '!.media')
 MEDIA_URL = '/media/'
 
 
