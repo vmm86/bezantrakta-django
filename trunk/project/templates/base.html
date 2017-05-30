@@ -153,17 +153,17 @@
             </div>
 
             <div class="top-menu">
+            {% if menu_items.top_menu %}
                 <ul id="mainlevel">
                 {% for item in menu_items.top_menu %}
-                    {% if item.is_published %}
                     <li>
                         <a {% if item.slug == request.url_path %}id="active_menu"{% endif %} href="/{{ item.slug }}" title="{{ item.title }}">
                             <strong>{{ item.title }}</strong>
                         </a>
                     </li>
-                    {% endif %}
                 {% endfor %}
                 </ul>
+            {% endif %}
             </div>
 
             <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
@@ -254,17 +254,17 @@
     </main>
 
     <div class="bottom-menu">
+    {% if menu_items.bottom_menu %}
         <ul id="mainlevel">
         {% for item in menu_items.bottom_menu %}
-            {% if item.is_published %}
             <li>
                 <a href="/{{ item.slug|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
                     <strong>{{ item.title }}</strong>
                 </a>
             </li>
-            {% endif %}
         {% endfor %}
         </ul>
+    {% endif %}
     </div>
 
     <div class="banners-body">
