@@ -1,36 +1,25 @@
-from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 
 from .models import Article
 
 
 def show_index(request):
     data = {
-        'article_title': 'Hello, world!',
-        'article_text': '<p>You`re at the pages index!</p>',
+        'title': 'Hello, world!',
+        'text': '<p>You`re at the pages index!</p>'
     }
-    return render(request, 'article.html', data)
+    return render(request, 'article/article.html', data)
 
 
 def show_article(request, slug):
-    article = Article.objects.filter(slug=slug, is_published=True,)
-    # Сначала ищем страницу, привязанную к текущему домену
-    try:
-        article = article.get(domain__slug=request.domain,)
-    except Article.DoesNotExist:
-        # Затем ищем "общую" страницу, не привязанную ни к одному из доменов
-        try:
-            article = article.get(domain__slug=None,)
-        except Article.DoesNotExist:
-            # Если не находим ничего - ошибка 404
-            raise Http404(
-                'К сожалению, запрошенная Вами страница не существует'
-            )
+    article_values = Article.objects.values('title', 'description', 'keywords', 'text')
+    # Выдаём страницу, привязанную к текущему домену или ошибку 404
+    article = get_object_or_404(article_values, slug=slug, is_published=True, domain_id=request.domain_id)
 
     data = {
-        'article_title': article.title,
-        'article_description': article.description,
-        'article_keywords': article.keywords,
-        'article_text': article.text,
+        'title': article['title'],
+        'description': article['description'],
+        'keywords': article['keywords'],
+        'text': article['text'],
     }
-    return render(request, 'article.html', data)
+    return render(request, 'article/article.html', data)

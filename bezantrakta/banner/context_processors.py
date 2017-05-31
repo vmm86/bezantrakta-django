@@ -5,18 +5,20 @@ def banner_group_items(request):
     """
     Context processor that adds `banner` information to template context.
     """
+    banner_group_values = BannerGroup.objects.values('id', 'slug', 'title')
+
     banner_group = {
-        banner_group['slug']: banner_group['title']
-        for banner_group
-        in BannerGroup.objects.values('slug', 'title')
+        bg['slug']: bg['title']
+        for bg
+        in banner_group_values
     }
 
     banner_group_items = {}
-    for slug, title in banner_group.items():
-        banner_group_items[slug] = BannerGroupItem.objects.filter(
+    for bg in banner_group_values:
+        banner_group_items[bg['slug']] = BannerGroupItem.objects.filter(
+            banner_group_id=bg['id'],
             is_published=True,
-            banner_group__slug=slug,
-            domain__slug=request.domain,
+            domain_id=request.domain_id,
         ).values('title', 'img', 'href')
 
     return {
