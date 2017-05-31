@@ -5,18 +5,20 @@ def menu_items(request):
     """
     Context processor that adds `menu` information to template context.
     """
+    menu_values = Menu.objects.values('id', 'slug', 'title')
+
     menu = {
-        menu['slug']: menu['title']
-        for menu
-        in Menu.objects.values('slug', 'title')
+        m['slug']: m['title']
+        for m
+        in menu_values
     }
 
     menu_items = {}
-    for slug, title in menu.items():
-        menu_items[slug] = MenuItem.objects.filter(
+    for m in menu_values:
+        menu_items[m['slug']] = MenuItem.objects.filter(
+            menu_id=m['id'],
             is_published=True,
-            menu__slug=slug,
-            domain__slug=request.domain,
+            domain_id=request.domain_id,
         ).values('title', 'slug')
 
     return {

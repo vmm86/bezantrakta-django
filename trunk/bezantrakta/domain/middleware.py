@@ -10,13 +10,18 @@ class CurrentDomainMiddleware(MiddlewareMixin):
     """
     def process_request(self, request):
         host = request.get_host()
-        domain, port = split_domain_port(host)
-        request.domain = domain
+        url_domain, url_port = split_domain_port(host)
+        domain = Domain.objects.select_related('city').values('id', 'city__title', 'city__slug').get(slug=url_domain)
+
+        request.domain_slug = url_domain
+        request.domain_id = domain['id']
 
         full_path = request.get_full_path()
-        # Path without optional query string and boundary slashes
-        path = full_path.split('?')[0].strip('/')
-        request.url_path = path
+        # Path without optional query string
+        path = full_path.split('?')[0]
+        # Path without boundary slashes
+        request.url_path = path.strip('/')
+        request.url_full = ''.join((url_domain, path,))
 
-        city = Domain.objects.only('city__title').get(slug=domain)
-        request.city_title = city
+        request.city_title = domain['city__title']
+        request.city_slug = domain['city__slug']

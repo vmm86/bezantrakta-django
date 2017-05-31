@@ -1,9 +1,12 @@
+{% spaceless %}
 <!DOCTYPE html>
 <html lang="ru">
-{% spaceless %}
 <head>
 {% load i18n static %}
-    <title>{% block head_domain %}{% endblock %}{% block head_title %}{% endblock %}</title>
+    {# Название сайта - главная ли это страница или нет #}
+    <title>{{ domain_title }}{{ title }}</title>
+    {# Название сайта - главная ли это страница или нет #}
+
     {% comment %}
     {# Список городов #}
     include('cities.php')
@@ -16,17 +19,6 @@
     uptolike_counter = config->getValue('config.google_counter')
     vkontakte_pixel  = config->getValue('config.vkontakte_pixel')
     {% endcomment %}
-
-    {# Название сайта - главная ли это страница или нет #}
-    {% comment %}
-    if url = "/"
-        title = $document->setTitle($site_name);
-    else
-        title = $document->setTitle($site_name . ' - ' . $document->getTitle());
-    endif
-    page_title = $document->getTitle($title);
-    {% endcomment %}
-    {# Название сайта - главная ли это страница или нет #}
 
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
@@ -49,8 +41,8 @@
     {% endcomment %}
     {# Условная загрузка CSS-файлов - только для всего сайта или только для заказа билетов #}
 
-    <meta name="description" content="{% block head_description %}{% endblock %}">
-    <meta name="keywords" content="{% block head_keywords %}{% endblock %}">
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="google-site-verification" content="{# google_webmaster #}">
@@ -68,20 +60,20 @@
     {# `tel:` links NO auto-detection #}
 
     {# Метатеги для кнопок "Поделиться" #}
-    <meta property="og:site_name" content="{# site_name #}">
+    <meta property="og:site_name" content="{{ domain_title }}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{# url #}">
+    <meta property="og:url" content="{{ request.full_url }}">
     <link rel="image_src" href="{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="og:image" content="{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="og:image:width"  content="192">
     <meta property="og:image:height" content="192">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:title" content="{# page_title #}">
-    <meta property="og:description" content="{# meta_desc #}">
+    <meta property="og:title" content="{{ domain_title }}{{ title }}">
+    <meta property="og:description" content="{{ description }}">
     <meta property="twitter:card" content="summary">
     <meta property="twitter:site" content="@bezantrakta">
-    <meta property="twitter:title" content="{# page_title #}">
-    <meta property="twitter:description" content="{# meta_desc #}">
+    <meta property="twitter:title" content="{{ domain_title }}{{ title }}">
+    <meta property="twitter:description" content="{{ description }}">
     <meta property="twitter:image" content="{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="twitter:image:width"  content="192">
     <meta property="twitter:image:height" content="192">
@@ -168,8 +160,14 @@
 
             <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
 
-            <p>domain: {{ request.domain }}</p>
+        {% if debug %}
+            <p>domain_slug: {{ request.domain_slug }}</p>
+            <p>domain_id: {{ request.domain_id }}</p>
+            <p>city_title: {{ request.city_title }}</p>
+            <p>city_slug: {{ request.city_slug }}</p>
             <p>url_path: {{ request.url_path }}</p>
+            <p>url_full: {{ request.url_full }}</p>
+        {% endif %}
         </div>
 
         <div class="header-right">
@@ -248,9 +246,8 @@
     </div>
 
     <main class="content">
-        {# type="message" #}
-        {% block content_title %}{% endblock %}
-        {% block content_text %}{% endblock %}
+        {% block content_header %}{% endblock %}
+        {% block content_body %}{% endblock %}
     </main>
 
     <div class="bottom-menu">
