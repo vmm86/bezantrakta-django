@@ -46,10 +46,6 @@ class Article(models.Model):
         default=False,
         verbose_name='Опубликовано',
     )
-    update_datetime = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Сохранено',
-    )
     domain = models.ForeignKey(
         Domain,
         on_delete=models.CASCADE,

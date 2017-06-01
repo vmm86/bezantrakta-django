@@ -103,10 +103,6 @@ class BannerGroupItem(models.Model):
         null=False,
         verbose_name='Порядок',
     )
-    update_datetime = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Сохранено',
-    )
     banner_group = models.ForeignKey(
         BannerGroup,
         on_delete=models.CASCADE,
