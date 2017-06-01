@@ -7,7 +7,7 @@ from .models import Domain
 
 @admin.register(Domain)
 class DomainAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'is_online',)  # is_published
+    list_display = ('title', 'slug', 'is_published',)
     list_filter = (
         ('city', RelatedDropdownFilter),
     )
