@@ -66,10 +66,6 @@ class MenuItem(models.Model):
         default=0,
         verbose_name='Порядок в меню',
     )
-    update_datetime = models.DateTimeField(
-        auto_now=True,
-        verbose_name='Сохранено',
-    )
     menu = models.ForeignKey(
         Menu,
         on_delete=models.CASCADE,
