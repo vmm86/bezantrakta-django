@@ -4,8 +4,6 @@ from ckeditor.fields import RichTextField
 
 from django.db import models
 
-from bezantrakta.domain.models import Domain
-
 
 class Article(models.Model):
     """
@@ -47,7 +45,7 @@ class Article(models.Model):
         verbose_name='Опубликовано',
     )
     domain = models.ForeignKey(
-        Domain,
+        'domain.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
         verbose_name='Домен',

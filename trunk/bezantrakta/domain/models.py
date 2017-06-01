@@ -3,8 +3,6 @@ import string
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from bezantrakta.city.models import City
-
 
 def _domain_name_validator(value):
     """
@@ -45,7 +43,7 @@ class Domain(models.Model):
         verbose_name='Включен/отключен',
     )
     city = models.ForeignKey(
-        City,
+        'city.City',
         on_delete=models.CASCADE,
         db_column='city_id',
         verbose_name='Город',

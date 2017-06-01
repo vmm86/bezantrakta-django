@@ -2,8 +2,6 @@ import uuid
 
 from django.db import models
 
-from bezantrakta.domain.models import Domain
-
 
 class Menu(models.Model):
     """
@@ -73,7 +71,7 @@ class MenuItem(models.Model):
         verbose_name='Меню',
     )
     domain = models.ForeignKey(
-        Domain,
+        'domain.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
         verbose_name='Домен',
