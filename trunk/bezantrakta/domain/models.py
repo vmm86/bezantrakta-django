@@ -35,7 +35,7 @@ class Domain(models.Model):
         unique=True,
         verbose_name='Псевдоним домена',
     )
-    is_online = models.BooleanField(
+    is_published = models.BooleanField(
         default=False,
         help_text="""
         True - включен и работает,
