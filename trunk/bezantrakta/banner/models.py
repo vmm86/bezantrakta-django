@@ -16,11 +16,11 @@ class BannerGroup(models.Model):
     )
     title = models.CharField(
         max_length=32,
-        verbose_name='Название группы баннеров',
+        verbose_name='Название',
     )
     slug = models.SlugField(
         max_length=32,
-        verbose_name='Псевдоним группы баннеров',
+        verbose_name='Псевдоним',
     )
     order = models.PositiveSmallIntegerField(
         default=1,
@@ -32,8 +32,8 @@ class BannerGroup(models.Model):
     class Meta(object):
         app_label = 'banner'
         db_table = 'bezantrakta_banner_group'
-        verbose_name = 'Группа баннеров'
-        verbose_name_plural = 'Группы баннеров'
+        verbose_name = 'группа баннеров'
+        verbose_name_plural = 'группы баннеров'
         ordering = ('order', 'title',)
 
     def __str__(self):
@@ -77,11 +77,11 @@ class BannerGroupItem(models.Model):
     )
     title = models.CharField(
         max_length=32,
-        verbose_name='Название баннера',
+        verbose_name='Название',
     )
     slug = models.SlugField(
         max_length=32,
-        verbose_name='Псевдоним баннера',
+        verbose_name='Псевдоним',
     )
     img = models.ImageField(
         upload_to=img_path,
@@ -93,7 +93,7 @@ class BannerGroupItem(models.Model):
     )
     is_published = models.BooleanField(
         default=False,
-        verbose_name='Опубликовано',
+        verbose_name='Публикация',
     )
     order = models.PositiveSmallIntegerField(
         default=1,
@@ -108,7 +108,7 @@ class BannerGroupItem(models.Model):
         verbose_name='Группа баннеров',
     )
     domain = models.ForeignKey(
-        'domain.Domain',
+        'location.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
         verbose_name='Домен',
@@ -117,8 +117,8 @@ class BannerGroupItem(models.Model):
     class Meta(object):
         app_label = 'banner'
         db_table = 'bezantrakta_banner_group_item'
-        verbose_name = 'Баннер'
-        verbose_name_plural = 'Баннеры'
+        verbose_name = 'баннер'
+        verbose_name_plural = 'баннеры'
         ordering = ('order', 'banner_group', 'domain', 'title',)
         unique_together = (
             ('domain', 'banner_group', 'slug',),
