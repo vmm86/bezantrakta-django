@@ -15,7 +15,7 @@ def get_month_last_day(year, month):
     return date(year, month, 1) - timedelta(1)
 
 
-def event_calendar(year, month):
+def calendar(year, month):
     year = int(year)
     month = int(month)
 
@@ -57,7 +57,7 @@ def event_calendar(year, month):
 
     return {'body': body, 'head': head}
 
-register.inclusion_tag('event/calendar.html')(event_calendar)
+register.inclusion_tag('event/calendar.html')(calendar)
 
 
 def if_today(day):
