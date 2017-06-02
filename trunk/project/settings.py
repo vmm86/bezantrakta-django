@@ -21,6 +21,8 @@ SECRET_KEY = 't%#tk0-z%+)4)bz7t4$hd8uc*^3rd8nrsn93&$y$9!al!e$7h#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ROOT_DOMAIN = 'bezantrakta.local'
+
 ALLOWED_HOSTS = [
     '.bezantrakta.local',
 ]
@@ -38,14 +40,12 @@ SERVER_EMAIL = 'webmaster@bezantrakta.ru'
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_interface',
-    'flat_responsive',
-    'flat',
-    'colorfield',
+    # 'admin_interface',
+    # 'flat_responsive',
+    # 'flat',
+    # 'colorfield',
 
-    'admin_reorder',
-
-    'pyup_django',
+    # 'admin_reorder',
 
     'ckeditor',
     'ckeditor_uploader',
@@ -68,16 +68,20 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
 
-    'bezantrakta.city',
-    'bezantrakta.domain',
+    'bezantrakta.location',
     'bezantrakta.menu',
     'bezantrakta.article',
     'bezantrakta.banner',
-    'bezantrakta.event_calendar',
+    # 'bezantrakta.event',
+    # 'bezantrakta.event_calendar',
+    # 'bezantrakta.event_category',
+    # 'bezantrakta.event_container',
+    # 'bezantrakta.event_group',
+    # 'bezantrakta.event_venue',
 ]
 
 MIDDLEWARE = [
-    'admin_reorder.middleware.ModelAdminReorder',
+    # 'admin_reorder.middleware.ModelAdminReorder',
 
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -89,7 +93,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'bezantrakta.domain.middleware.CurrentDomainMiddleware',
+    'bezantrakta.location.middleware.CurrentDomainMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -156,6 +160,17 @@ ADMIN_REORDER = (
         )
 
     },
+    # {
+    #     'app': 'event',
+    #     'models':
+    #     (
+    #         {'model': 'event.Event', 'label': 'События'},
+    #         {'model': 'event_category.EventCategory', 'label': 'Категории'},
+    #         {'model': 'event_group.EventGroup', 'label': 'Группы'},
+    #         {'model': 'event_container.EventContainer', 'label': 'Контейнеры'},
+    #         {'model': 'event_venue.EventVenue', 'label': 'Залы'},
+    #     )
+    # },
     {'app': 'menu', },
     {'app': 'article', },
     {
@@ -341,6 +356,6 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-CKEDITOR_JQUERY_URL = '/static/js/jquery/jquery-1.9.1.min.js'
+CKEDITOR_JQUERY_URL = '/static/global/js/jquery/jquery-1.9.1.min.js'
 
 CKEDITOR_UPLOAD_PATH = 'uploads/'
