@@ -133,8 +133,8 @@
             <div class="calendar">
                 {% now "Y" as year %}
                 {% now "n" as month %}
-                {% load event_calendar %}
-                {% event_calendar year month %}
+                {% load calendar %}
+                {% calendar year month %}
             </div>
 
             <div class="top-menu">
