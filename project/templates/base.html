@@ -41,6 +41,8 @@
     {% endcomment %}
     {# Условная загрузка CSS-файлов - только для всего сайта или только для заказа билетов #}
 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
     <meta name="description" content="{{ description }}">
     <meta name="keywords" content="{{ keywords }}">
 
@@ -52,7 +54,7 @@
     {# Не индексировать тестовую версию сайта #}
     <meta name="robots" body="NOODP">
 
-    <meta name="city_config" content="{# city #}">
+    <meta name="city_config" content="{{ request.city_slug }}">
 
     {# `tel:` links NO auto-detection #}
     <meta name="format-detection" content="telephone=no">
@@ -108,15 +110,6 @@
 </head>
 {% endspaceless %}
 <body>
-{% comment %}
-{% if site.offline %}
-<div class="body" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
-    <div class="content" style="font-size: 1.5rem; font-weight: bold;">
-        {# offline_message; #}
-    </div>
-</div>
-{% else %}
-{% endcomment %}
 <a href="/"><div class="panorama"></div></a>
 
 <div class="poster-left">
@@ -138,10 +131,12 @@
         <div class="header-left">
 
             <div class="calendar">
+                {% comment %}
                 {% now "Y" as year %}
                 {% now "n" as month %}
                 {% load event_calendar %}
                 {% event_calendar year month %}
+                {% endcomment %}
             </div>
 
             <div class="top-menu">
@@ -472,8 +467,6 @@ function showViewportSize() {
 {% endif %}
 
 </script>
-
-{# endif #}
 
 </body>
 </html>
