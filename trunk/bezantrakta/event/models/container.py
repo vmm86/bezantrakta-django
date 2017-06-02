@@ -38,8 +38,8 @@ class EventContainer(models.Model):
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_container'
-        verbose_name = 'Контейнер'
-        verbose_name_plural = 'Контейнеры'
+        verbose_name = 'контейнер'
+        verbose_name_plural = 'контейнеры'
         ordering = ('order', 'is_published', 'title',)
 
     def __str__(self):

@@ -110,8 +110,8 @@ class Event(models.Model):
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event'
-        verbose_name = 'Событие'
-        verbose_name_plural = 'События'
+        verbose_name = 'событие'
+        verbose_name_plural = 'события'
         ordering = ('domain', 'datetime', 'title',)
         unique_together = (
             ('domain', 'datetime', 'slug',),
