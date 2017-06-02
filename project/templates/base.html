@@ -131,12 +131,10 @@
         <div class="header-left">
 
             <div class="calendar">
-                {% comment %}
                 {% now "Y" as year %}
                 {% now "n" as month %}
                 {% load event_calendar %}
                 {% event_calendar year month %}
-                {% endcomment %}
             </div>
 
             <div class="top-menu">

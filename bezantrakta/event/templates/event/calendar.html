@@ -29,7 +29,10 @@
 {% for week in body %}
     <tr class="daysrow">
     {% for day in week %}
-        <td class="{% if day.in_month %}day{% else %}emptycell{% endif %}{% if day.day|date:"j" == today %} today{% endif %}">
+        <td class="
+            {% if day.in_month %}day{% if day.day|date:"j" == today %} today{% endif %}
+            {% else %}emptycell{% endif %}
+            ">
         {# if day.event #}
         {% if day.in_month %}
             <a href="/afisha/{{ day.day|date:"Y" }}/{{ day.day|date:"m" }}/{{ day.day|date:"d" }}">

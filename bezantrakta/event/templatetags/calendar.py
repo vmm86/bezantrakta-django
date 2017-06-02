@@ -57,7 +57,7 @@ def event_calendar(year, month):
 
     return {'body': body, 'head': head}
 
-register.inclusion_tag('event_calendar/event_calendar.html')(event_calendar)
+register.inclusion_tag('event/calendar.html')(event_calendar)
 
 
 def if_today(day):
