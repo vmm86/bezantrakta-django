@@ -39,8 +39,8 @@ class EventGroup(models.Model):
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_group'
-        verbose_name = 'Группа событий'
-        verbose_name_plural = 'Группы событий'
+        verbose_name = 'группа событий'
+        verbose_name_plural = 'группы событий'
         ordering = ('id', 'title',)
         unique_together = (
             ('domain', 'slug',),

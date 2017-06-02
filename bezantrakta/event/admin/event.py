@@ -2,8 +2,7 @@ from django.contrib import admin
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from ..models import Event
-from bezantrakta.event_container.models import EventContainerBinder
+from ..models import Event, EventContainerBinder
 
 
 class EventContainerBinderInline(admin.TabularInline):

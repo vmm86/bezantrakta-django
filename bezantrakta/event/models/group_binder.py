@@ -21,8 +21,8 @@ class EventGroupBinder(models.Model):
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_group_binder'
-        verbose_name = 'Связка событий и групп событий'
-        verbose_name_plural = 'Связки событий и групп событий'
+        verbose_name = 'связка событий и групп событий'
+        verbose_name_plural = 'связки событий и групп событий'
 
     def __str__(self):
         return ''

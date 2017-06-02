@@ -44,8 +44,8 @@ class EventCategory(models.Model):
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_category'
-        verbose_name = 'Категория событий'
-        verbose_name_plural = 'Категории событий'
+        verbose_name = 'категория событий'
+        verbose_name_plural = 'категории событий'
         ordering = ('title',)
 
     def __str__(self):

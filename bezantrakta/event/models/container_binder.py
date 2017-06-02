@@ -63,8 +63,9 @@ class EventContainerBinder(models.Model):
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_container_binder'
-        verbose_name = 'Связь событий и контейнеров событий'
-        verbose_name_plural = 'Связь событий и контейнеров событий'
+        verbose_name = 'связь событий и контейнеров'
+        verbose_name_plural = 'связь событий и контейнеров'
+        ordering = ('order', 'event', 'event_container',)
         unique_together = (
             ('event', 'event_container', 'order',),
         )
@@ -73,5 +74,7 @@ class EventContainerBinder(models.Model):
         return ''
 
     def img_preview(self):
-        return mark_safe('<img src="{}" style="width: 200px; height: auto;">'.format(self.img.url))
+        return mark_safe(
+            '<img src="{}" style="width: auto; height: 100px;">'.format(self.img.url)
+        )
     img_preview.short_description = 'Афиша'

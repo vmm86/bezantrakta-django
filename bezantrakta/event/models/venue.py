@@ -31,8 +31,8 @@ class EventVenue(models.Model):
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_venue'
-        verbose_name = 'Зал'
-        verbose_name_plural = 'Залы'
+        verbose_name = 'зал'
+        verbose_name_plural = 'залы'
         ordering = ('domain', 'title',)
         unique_together = (
             ('domain', 'slug',),
