@@ -1,8 +1,9 @@
 from django.contrib import admin
 
+from adminsortable2.admin import SortableInlineAdminMixin
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from ..models import Event, EventContainerBinder
+from ..models import Event, EventContainerBinder, EventLinkBinder
 
 
 class EventContainerBinderInline(admin.TabularInline):
@@ -12,15 +13,22 @@ class EventContainerBinderInline(admin.TabularInline):
     readonly_fields = ('img_preview',)
 
 
+class EventLinkBinderInline(SortableInlineAdminMixin, admin.TabularInline):
+    model = EventLinkBinder
+    extra = 0
+    fields = ('order', 'event_link', 'href', 'img_preview',)
+    readonly_fields = ('img_preview',)
+
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
-    list_display = ('title', 'datetime', 'event_category', 'event_venue', 'is_published', 'is_on_index', 'domain',)
+    list_display = ('title', 'datetime', 'event_category', 'event_venue', 'is_published', 'is_on_index', 'container_count', 'link_count', 'domain',)
     radio_fields = {'min_age': admin.HORIZONTAL, }
     list_filter = (
         ('domain', RelatedDropdownFilter),
     )
     filter_horizontal = ('event_container',)
-    inlines = (EventContainerBinderInline,)
+    inlines = (EventContainerBinderInline, EventLinkBinderInline,)
