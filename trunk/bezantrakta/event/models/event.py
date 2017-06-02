@@ -86,6 +86,12 @@ class Event(models.Model):
         blank=True,
         verbose_name='Контейнеры, в которых отображается событие',
     )
+    event_link = models.ManyToManyField(
+        'event.EventLink',
+        through='event.EventLinkBinder',
+        blank=True,
+        verbose_name='Ссылки, добавленные к событию',
+    )
     event_category = models.ForeignKey(
         'event.EventCategory',
         blank=True,
@@ -119,3 +125,11 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
+
+    def container_count(self):
+        return self.event_container.count()
+    container_count.short_description = 'Контейнеров'
+
+    def link_count(self):
+        return self.event_link.count()
+    link_count.short_description = 'Ссылок'
