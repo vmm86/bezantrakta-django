@@ -14,22 +14,22 @@ class Menu(models.Model):
     )
     title = models.CharField(
         max_length=64,
-        verbose_name='Название меню',
+        verbose_name='Название',
     )
     slug = models.SlugField(
         max_length=32,
-        verbose_name='Псевдоним меню'
+        verbose_name='Псевдоним'
     )
     order = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name='Порядок в меню',
+        verbose_name='Порядок',
     )
 
     class Meta:
         app_label = 'menu'
         db_table = 'bezantrakta_menu'
-        verbose_name = 'Меню'
-        verbose_name_plural = 'Меню'
+        verbose_name = 'меню'
+        verbose_name_plural = 'меню'
         ordering = ('order', 'title',)
 
     def __str__(self):
@@ -47,31 +47,31 @@ class MenuItem(models.Model):
     )
     title = models.CharField(
         max_length=64,
-        verbose_name='Название пункта меню',
+        verbose_name='Название',
     )
     slug = models.SlugField(
         max_length=64,
         blank=True,
         help_text="""Псевдоним пункта меню должен совпадать
         с псевдонимом страницы, которую требуется в нём отобразить.""",
-        verbose_name='Псевдоним пункта меню'
+        verbose_name='Псевдоним'
     )
     is_published = models.BooleanField(
         default=False,
-        verbose_name='Опубликовано',
+        verbose_name='Публикация',
     )
     order = models.PositiveSmallIntegerField(
         default=0,
         verbose_name='Порядок в меню',
     )
     menu = models.ForeignKey(
-        Menu,
+        'menu.Menu',
         on_delete=models.CASCADE,
         db_column='menu_id',
         verbose_name='Меню',
     )
     domain = models.ForeignKey(
-        'domain.Domain',
+        'location.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
         verbose_name='Домен',
@@ -80,9 +80,9 @@ class MenuItem(models.Model):
     class Meta:
         app_label = 'menu'
         db_table = 'bezantrakta_menu_item'
-        verbose_name = 'Пункт меню'
-        verbose_name_plural = 'Пункты меню'
-        ordering = ('order', 'menu', 'domain', 'title',)
+        verbose_name = 'пункт меню'
+        verbose_name_plural = 'пункты меню'
+        ordering = ('order', 'domain', 'menu', 'title',)
         unique_together = (
             ('domain', 'menu', 'slug',),
         )

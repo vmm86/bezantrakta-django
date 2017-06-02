@@ -19,7 +19,7 @@ class MenuItemAdmin(SortableAdminMixin, admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
-    list_display = ('title', 'slug', 'is_published', 'menu', 'domain',)
+    list_display = ('title', 'slug', 'order', 'is_published', 'menu', 'domain',)
     radio_fields = {'menu': admin.VERTICAL, }
     list_filter = (
         ('domain', RelatedDropdownFilter),

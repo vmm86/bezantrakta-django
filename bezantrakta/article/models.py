@@ -17,20 +17,20 @@ class Article(models.Model):
     title = models.CharField(
         max_length=64,
         help_text='Всего не более 60-65 символов',
-        verbose_name='Название страницы',
+        verbose_name='Название',
     )
     slug = models.SlugField(
         max_length=64,
-        verbose_name='Псевдоним страницы',
+        verbose_name='Псевдоним',
     )
-    description = models.CharField(
+    description = models.TextField(
         max_length=200,
         help_text="""Должно сдержать ключевые слова или фразы,
         описывающие событие, но не более 3-5 раз.\n
         Всего не более 150-200 символов""",
         verbose_name='Метатег `description`',
     )
-    keywords = models.CharField(
+    keywords = models.TextField(
         max_length=150,
         help_text="""Несколько ключевых слов или фраз,
         разделённых запятыми, которые описывают содержимое текста.\n
@@ -42,10 +42,10 @@ class Article(models.Model):
     )
     is_published = models.BooleanField(
         default=False,
-        verbose_name='Опубликовано',
+        verbose_name='Публикация',
     )
     domain = models.ForeignKey(
-        'domain.Domain',
+        'location.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
         verbose_name='Домен',
@@ -56,7 +56,7 @@ class Article(models.Model):
         db_table = 'bezantrakta_article'
         verbose_name = 'HTML-страница'
         verbose_name_plural = 'HTML-страницы'
-        ordering = ('domain', 'title',)
+        ordering = ('domain', 'title', 'is_published',)
         unique_together = (
             ('domain', 'slug',),
         )
