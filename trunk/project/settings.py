@@ -72,12 +72,7 @@ INSTALLED_APPS = [
     'bezantrakta.menu',
     'bezantrakta.article',
     'bezantrakta.banner',
-    # 'bezantrakta.event',
-    # 'bezantrakta.event_calendar',
-    # 'bezantrakta.event_category',
-    # 'bezantrakta.event_container',
-    # 'bezantrakta.event_group',
-    # 'bezantrakta.event_venue',
+    'bezantrakta.event',
 ]
 
 MIDDLEWARE = [
@@ -151,26 +146,26 @@ ADMIN_REORDER = (
     # },
     # Usage example
     {
-        'app': 'city',
+        'app': 'location',
         'label': 'География сайтов',
         'models':
         (
-            {'model': 'city.City', 'label': 'Города'},
-            {'model': 'domain.Domain', 'label': 'Домены'},
+            {'model': 'location.City', 'label': 'Города'},
+            {'model': 'location.Domain', 'label': 'Домены'},
         )
 
     },
-    # {
-    #     'app': 'event',
-    #     'models':
-    #     (
-    #         {'model': 'event.Event', 'label': 'События'},
-    #         {'model': 'event_category.EventCategory', 'label': 'Категории'},
-    #         {'model': 'event_group.EventGroup', 'label': 'Группы'},
-    #         {'model': 'event_container.EventContainer', 'label': 'Контейнеры'},
-    #         {'model': 'event_venue.EventVenue', 'label': 'Залы'},
-    #     )
-    # },
+    {
+        'app': 'event',
+        'models':
+        (
+            {'model': 'event.Event', 'label': 'События'},
+            {'model': 'event.EventCategory', 'label': 'Категории'},
+            {'model': 'event.EventGroup', 'label': 'Группы'},
+            {'model': 'event.EventContainer', 'label': 'Контейнеры'},
+            {'model': 'event.EventVenue', 'label': 'Залы'},
+        )
+    },
     {'app': 'menu', },
     {'app': 'article', },
     {
