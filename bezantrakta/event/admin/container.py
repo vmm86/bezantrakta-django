@@ -14,9 +14,9 @@ class EventContainerBinderInline(SortableInlineAdminMixin, admin.TabularInline):
 
 @admin.register(EventContainer)
 class EventContainerAdmin(admin.ModelAdmin):
+    inlines = (EventContainerBinderInline,)
+    list_display = ('title', 'slug', 'order', 'is_published',)
     prepopulated_fields = {
         'slug': ('title',),
     }
-    list_display = ('title', 'slug', 'order', 'is_published',)
     readonly_fields = ('img_width', 'img_height',)
-    inlines = (EventContainerBinderInline,)

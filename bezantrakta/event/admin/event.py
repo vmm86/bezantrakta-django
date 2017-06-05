@@ -22,13 +22,16 @@ class EventLinkBinderInline(SortableInlineAdminMixin, admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    prepopulated_fields = {
-        'slug': ('title',),
-    }
-    list_display = ('title', 'datetime', 'event_category', 'event_venue', 'is_published', 'is_on_index', 'container_count', 'link_count', 'domain',)
-    radio_fields = {'min_age': admin.HORIZONTAL, }
+    filter_horizontal = ('event_container',)
+    inlines = (EventContainerBinderInline, EventLinkBinderInline,)
+    list_display = ('title', 'datetime', 'event_category', 'event_venue',
+                    'is_published', 'is_on_index', 'container_count',
+                    'link_count', 'domain',)
     list_filter = (
         ('domain', RelatedDropdownFilter),
     )
-    filter_horizontal = ('event_container',)
-    inlines = (EventContainerBinderInline, EventLinkBinderInline,)
+    list_select_related = ('event_category', 'event_venue', 'domain',)
+    prepopulated_fields = {
+        'slug': ('title',),
+    }
+    radio_fields = {'min_age': admin.HORIZONTAL, }
