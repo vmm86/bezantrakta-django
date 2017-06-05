@@ -7,10 +7,11 @@ from ..models import EventVenue
 
 @admin.register(EventVenue)
 class EventVenueAdmin(admin.ModelAdmin):
-    prepopulated_fields = {
-        'slug': ('title',),
-    }
     list_display = ('title', 'domain',)
     list_filter = (
         ('domain', RelatedDropdownFilter),
     )
+    list_select_related = ('domain',)
+    prepopulated_fields = {
+        'slug': ('title',),
+    }

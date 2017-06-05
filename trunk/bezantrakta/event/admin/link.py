@@ -11,9 +11,9 @@ class EventLinkBinderInline(admin.TabularInline):
 
 @admin.register(EventLink)
 class EventLinkAdmin(admin.ModelAdmin):
+    inlines = (EventLinkBinderInline,)
+    list_display = ('title', 'slug', 'img_preview',)
     prepopulated_fields = {
         'slug': ('title',),
     }
-    list_display = ('title', 'slug', 'img_preview',)
-    inlines = (EventLinkBinderInline,)
     readonly_fields = ('img_preview',)
