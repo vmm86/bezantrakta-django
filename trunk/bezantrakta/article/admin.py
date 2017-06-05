@@ -11,6 +11,7 @@ class ArticleAdmin(admin.ModelAdmin):
         'slug': ('title',),
     }
     list_display = ('title', 'slug', 'is_published', 'domain',)
+    list_select_related = ('domain',)
     list_filter = (
         ('domain', RelatedDropdownFilter),
     )

@@ -23,4 +23,5 @@ class DomainAdmin(admin.ModelAdmin):
     list_filter = (
         ('city', RelatedDropdownFilter),
     )
+    list_select_related = ('city',)
     search_fields = ('title', 'slug',)
