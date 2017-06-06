@@ -25,9 +25,13 @@ class EventContainer(models.Model):
         verbose_name='Порядок',
     )
     img_width = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
         verbose_name='Ширина афиши',
     )
     img_height = models.PositiveSmallIntegerField(
+        blank=True,
+        null=True,
         verbose_name='Высота афиши',
     )
     is_published = models.BooleanField(
