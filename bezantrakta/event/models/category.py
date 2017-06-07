@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.urls.base import reverse
 
 
 class EventCategory(models.Model):
@@ -50,3 +51,6 @@ class EventCategory(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('show_event_category', args=[self.slug])
