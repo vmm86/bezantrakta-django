@@ -135,9 +135,9 @@ class Event(models.Model):
         return reverse(
             'show_event',
             args=[
-                str(self.datetime.year),
-                str(self.datetime.month),
-                str(self.datetime.day),
+                str(self.date.year),
+                str(self.date.month),
+                str(self.date.day),
                 self.slug
             ]
         )
