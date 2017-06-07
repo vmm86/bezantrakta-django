@@ -24,7 +24,7 @@ class EventLinkBinderInline(SortableInlineAdminMixin, admin.TabularInline):
 class EventAdmin(admin.ModelAdmin):
     filter_horizontal = ('event_container',)
     inlines = (EventContainerBinderInline, EventLinkBinderInline,)
-    list_display = ('title', 'datetime', 'event_category', 'event_venue',
+    list_display = ('title', 'date', 'time', 'event_category', 'event_venue',
                     'is_published', 'is_on_index', 'container_count',
                     'link_count', 'domain',)
     list_filter = (
