@@ -3,7 +3,6 @@ import uuid
 from ckeditor.fields import RichTextField
 
 from django.db import models
-# from django.urls.base import reverse
 
 
 class Event(models.Model):
@@ -22,7 +21,7 @@ class Event(models.Model):
     )
     slug = models.SlugField(
         max_length=64,
-        unique_for_date='datetime',
+        unique_for_date='date',
         verbose_name='Псевдоним'
     )
     description = models.TextField(
@@ -73,8 +72,11 @@ class Event(models.Model):
         blank=False,
         verbose_name='Возрастное ограничение',
     )
-    datetime = models.DateTimeField(
-        verbose_name='Дата/время события',
+    date = models.DateField(
+        verbose_name='Дата события',
+    )
+    time = models.TimeField(
+        verbose_name='Время начала события',
     )
     event_group = models.ManyToManyField(
         'event.EventGroup',
@@ -120,23 +122,13 @@ class Event(models.Model):
         db_table = 'bezantrakta_event'
         verbose_name = 'событие'
         verbose_name_plural = 'события'
-        ordering = ('domain', 'datetime', 'title',)
+        ordering = ('domain', 'date', 'time', 'title',)
         unique_together = (
-            ('domain', 'datetime', 'slug',),
+            ('domain', 'date', 'slug',),
         )
 
     def __str__(self):
         return self.title
-
-    # def get_absolute_url(self):
-    #     return reverse(
-    #         'show_event',
-    #         args=[
-    #             self.datetime.year,
-    #             self.datetime.month,
-    #             self.datetime.day, self.slug
-    #         ]
-    #     )
 
     def container_count(self):
         return self.event_container.count()
