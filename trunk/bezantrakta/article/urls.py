@@ -1,10 +1,9 @@
 from django.conf.urls import url
 
-from . import views
+from .views import article
 
 app_name = 'article'
 
 urlpatterns = [
-    url(r'^$', views.show_index, name='show_index'),
-    url(r'^(?P<slug>[\w-]+)/$', views.show_article, name='show_article'),
+    url(r'^(?P<slug>[\w-]+)/$', article, name='article'),
 ]
