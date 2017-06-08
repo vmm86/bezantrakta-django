@@ -258,9 +258,9 @@ USE_TZ = True
 
 FIRST_DAY_OF_WEEK = 1  # Понедельник
 
-# DATETIME_INPUT_FORMATS = ['%Y-%m-%d %H:%M:%S', ]
-# DATE_INPUT_FORMATS = ['%Y-%m-%d', ]
-# TIME_INPUT_FORMATS = ['%H:%M:%S', ]
+DATETIME_INPUT_FORMATS = ['%Y-%m-%d %H:%M', ]
+DATE_INPUT_FORMATS = ['%Y-%m-%d', ]
+TIME_INPUT_FORMATS = ['%H:%M', ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
