@@ -53,4 +53,4 @@ class EventCategory(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('show_event_category', args=[self.slug])
+        return reverse('category', args=[self.slug])
