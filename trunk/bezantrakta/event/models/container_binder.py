@@ -17,7 +17,7 @@ def img_path(instance, filename):
         domain,
         instance._meta.app_label,
         ''.join(
-            (instance.event.datetime.strftime('%Y-%m-%d_%H-%M_'), instance.event.slug,)
+            (instance.event.date.strftime('%Y-%m-%d'), '_', instance.event.slug,)
         ),
         ''.join(
             (instance.event_container.slug, dot, extension,)
