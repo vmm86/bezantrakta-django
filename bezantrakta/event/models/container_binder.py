@@ -84,3 +84,10 @@ class EventContainerBinder(models.Model):
             '<img src="{}" style="width: auto; height: 100px;">'.format(self.img.url)
         )
     img_preview.short_description = 'Афиша'
+
+    def event_date(self):
+        from django.contrib.humanize.templatetags.humanize import naturalday
+        return mark_safe(
+            '{}'.format(naturalday(self.event.date))
+        )
+    event_date.short_description = 'Дата'
