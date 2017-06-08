@@ -1,8 +1,9 @@
 import uuid
 
-from ckeditor.fields import RichTextField
-
 from django.db import models
+from django.urls.base import reverse
+
+from ckeditor.fields import RichTextField
 
 
 class Article(models.Model):
@@ -63,3 +64,6 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('article', args=[self.slug])
