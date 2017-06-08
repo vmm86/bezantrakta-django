@@ -1,4 +1,5 @@
 import os
+import uuid
 
 from django.conf import settings
 from django.db import models
@@ -37,6 +38,11 @@ class EventContainerBinder(models.Model):
     """
     Связующая таблица событий и контейнеров событий.
     """
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
     event = models.ForeignKey(
         'event.Event',
         on_delete=models.CASCADE,
