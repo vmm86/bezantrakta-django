@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 
@@ -5,6 +7,11 @@ class EventGroupBinder(models.Model):
     """
     Связующая таблица событий и групп событий.
     """
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
     event = models.ForeignKey(
         'event.Event',
         on_delete=models.CASCADE,
