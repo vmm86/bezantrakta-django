@@ -5,9 +5,14 @@ $(document).ready(function(){
     touchEnabled: true,
     auto: true,
     randomStart: true,
-    speed: 2000,
+    infiniteLoop: true,
+    auto: true,
+    speed: 1500,
     slideWidth: 822,
     minSlides: 1,
-    slideMargin: 0
-  });
+    slideMargin: 0,
+    responsive: true,
+    preloadImages: 'visible',
+    // controls: true
+    });
 });
