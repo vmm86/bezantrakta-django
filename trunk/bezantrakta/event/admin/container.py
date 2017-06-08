@@ -8,8 +8,8 @@ from ..models import EventContainer, EventContainerBinder
 class EventContainerBinderInline(SortableInlineAdminMixin, admin.TabularInline):
     model = EventContainerBinder
     extra = 0
-    fields = ('order', 'event_container', 'img', 'img_preview',)
-    readonly_fields = ('img_preview',)
+    fields = ('order', 'event_container', 'img', 'img_preview', 'event_date',)
+    readonly_fields = ('img_preview', 'event_date',)
 
 
 @admin.register(EventContainer)
