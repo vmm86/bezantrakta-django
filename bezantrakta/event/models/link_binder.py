@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.utils.safestring import mark_safe
 
@@ -6,6 +8,11 @@ class EventLinkBinder(models.Model):
     """
     Связующая таблица событий и ссылок.
     """
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
     event = models.ForeignKey(
         'event.Event',
         on_delete=models.CASCADE,
