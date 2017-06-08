@@ -353,4 +353,4 @@ CKEDITOR_CONFIGS = {
 
 CKEDITOR_JQUERY_URL = '/static/global/js/jquery/jquery-1.9.1.min.js'
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_UPLOAD_PATH = 'global/uploads/'
