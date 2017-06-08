@@ -133,7 +133,7 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            'show_event',
+            'event',
             args=[
                 str(self.date.year),
                 str(self.date.month),
