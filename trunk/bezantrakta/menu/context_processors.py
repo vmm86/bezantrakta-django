@@ -1,3 +1,6 @@
+from django.db.models import Case, F, URLField, Value, When
+from django.db.models.functions.base import Concat
+
 from .models import Menu, MenuItem
 
 
@@ -17,11 +20,21 @@ def menu_items(request):
 
         menu_items = {}
         for m in menu_values:
-            menu_items[m['slug']] = MenuItem.objects.filter(
+            menu_items[m['slug']] = MenuItem.objects.annotate(
+                url=Case(
+                    When(slug='', then=Value('/')),
+                    default=Concat(
+                        Value('/'),
+                        F('slug'),
+                        Value('/'),
+                    ),
+                    output_field=URLField()
+                )
+            ).filter(
                 menu_id=m['id'],
                 is_published=True,
                 domain_id=request.domain_id,
-            ).values('title', 'slug')
+            ).values('title', 'slug', 'url')
 
         return {
             'menu': menu,
