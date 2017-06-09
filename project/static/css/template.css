@@ -295,7 +295,7 @@
 */
 
 .top-menu ul li a:hover,
-.top-menu ul li #active_menu {
+.top-menu ul li.active a {
     background: url(/static/global/svg/left-menu-active.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -563,7 +563,7 @@
 
     list-style: none;
 
-    padding: 0.5rem 2rem 0.5rem 1rem;
+    padding: 0.5rem 0;
     margin-right: 0.5rem;
 
     color: #000;
@@ -585,11 +585,15 @@
     -moz-background-size: 100% 100%;
     background-size: 100% 100%;
 }
-/*
-.events-menu ul li.active {
-    color: #000;
+.events-menu ul li a {
+    padding: 0.5rem 2rem 0.5rem 1rem;
+    text-decoration: none;
 }
-*/
+.events-menu ul li:hover a,
+.events-menu ul li.active a {
+    color: #FFF;
+}
+
 /* Содержание */
 
 .content {

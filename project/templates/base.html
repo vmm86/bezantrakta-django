@@ -3,56 +3,30 @@
 <html lang="ru">
 <head>
 {% load i18n static %}
-    {# Название сайта - главная ли это страница или нет #}
-    <title>{{ domain_title }}{{ title }}</title>
-    {# Название сайта - главная ли это страница или нет #}
-
-    {% comment %}
-    {# Список городов #}
-    include('cities.php')
-    city = config->getValue('config.city')
-
-    yandex_webmaster = config->getValue('config.yandex_webmaster')
-    google_webmaster = config->getValue('config.google_webmaster')
-    yandex_counter   = config->getValue('config.yandex_counter')
-    google_counter   = config->getValue('config.google_counter')
-    uptolike_counter = config->getValue('config.google_counter')
-    vkontakte_pixel  = config->getValue('config.vkontakte_pixel')
-    {% endcomment %}
+    <title>{{ request.settings.domain.title }}{{ title }}</title>
 
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
     {# Общие CSS-файлы - загружаются в любом случае #}
-
     <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
 
-    {# Условная загрузка CSS-файлов - только для всего сайта или только для заказа билетов #}
-    {% comment %}
-    view = JRequest::getVar('view');
-
-    if app == order
-        <link rel="stylesheet" type="text/css" href="{% static "global/css/mq-order.css" %}">
-    else
-        <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
-        <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
-    endif
-    {% endcomment %}
-    {# Условная загрузка CSS-файлов - только для всего сайта или только для заказа билетов #}
-
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-    <meta name="description" content="{{ description }}">
-    <meta name="keywords" content="{{ keywords }}">
+    <meta name="description" content="{{ request.settings.domain.description }}">
+    <meta name="keywords" content="{{ request.settings.domain.keywords }}">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="google-site-verification" content="{# google_webmaster #}">
-    <meta name="yandex-verification" content="{# yandex_webmaster #}">
     {# Не индексировать тестовую версию сайта #}
     {% if debug %}<meta name="robots" content="noindex, nofollow">{% endif %}
     {# Не индексировать тестовую версию сайта #}
     <meta name="robots" body="NOODP">
+
+{% if request.settings.webmaster %}
+    <meta name="google-site-verification" content="{{ request.settings.webmaster.google }}">
+    <meta name="yandex-verification" content="{{ request.settings.webmaster.yandex }}">
+{% endif %}
 
     <meta name="city_config" content="{{ request.city_slug }}">
 
@@ -62,7 +36,7 @@
     {# `tel:` links NO auto-detection #}
 
     {# Метатеги для кнопок "Поделиться" #}
-    <meta property="og:site_name" content="{{ domain_title }}">
+    <meta property="og:site_name" content="{{ request.settings.domain.title }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.full_url }}">
     <link rel="image_src" href="{% static "global/ico/android-chrome-192x192.png" %}">
@@ -70,12 +44,12 @@
     <meta property="og:image:width"  content="192">
     <meta property="og:image:height" content="192">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:title" content="{{ domain_title }}{{ title }}">
-    <meta property="og:description" content="{{ description }}">
+    <meta property="og:title" content="{{ request.settings.domain.title }}{{ title }}">
+    <meta property="og:description" content="{{ request.settings.domain.description }}">
     <meta property="twitter:card" content="summary">
     <meta property="twitter:site" content="@bezantrakta">
-    <meta property="twitter:title" content="{{ domain_title }}{{ title }}">
-    <meta property="twitter:description" content="{{ description }}">
+    <meta property="twitter:title" content="{{ request.settings.domain.title }}{{ title }}">
+    <meta property="twitter:description" content="{{ request.settings.domain.description }}">
     <meta property="twitter:image" content="{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="twitter:image:width"  content="192">
     <meta property="twitter:image:height" content="192">
@@ -113,11 +87,31 @@
 <a href="/"><div class="panorama"></div></a>
 
 <div class="poster-left">
-    {# type="modules" name="poster-left" #}
+{% if big_vertical_left %}
+    <div class="bannergroup">
+    {% for event in big_vertical_left %}
+        <div class="banneritem">
+            <a href="{% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                <img src="/media/{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+            </a>
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}
 </div>
 
 <div class="poster-right">
-    {# type="modules" name="poster-right" #}
+{% if big_vertical_right %}
+    <div class="bannergroup">
+    {% for event in big_vertical_right %}
+        <div class="banneritem">
+            <a href="{% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                <img src="/media/{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+            </a>
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}
 </div>
 
 <div class="body">
@@ -139,12 +133,10 @@
 
             <div class="top-menu">
             {% if menu_items.top_menu %}
-                <ul id="mainlevel">
+                <ul>
                 {% for item in menu_items.top_menu %}
-                    <li>
-                        <a {% if item.slug == request.url_path %}id="active_menu"{% endif %} href="/{{ item.slug }}" title="{{ item.title }}">
-                            <strong>{{ item.title }}</strong>
-                        </a>
+                    <li{% if item.url == request.url_path %} class="active"{% endif %}>
+                        <a href="{{ item.url }}" title="{{ item.title }}">{{ item.title }}</a>
                     </li>
                 {% endfor %}
                 </ul>
@@ -196,47 +188,40 @@
                         <div class="mod_bot"></div>
                     </div>
                     {# Поиск #}
-
                 </div>
 
                 <div class="posters-level1-body">
-                    {# type="modules" name="poster-level1" #}
+                {% if big_horizontal %}
+                    <ul class="slider">
+                    {% for event in big_horizontal %}
+                        <li class="slide">
+                            <a href="{% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                                <img src="/media/{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
                 </div>
 
         </div>
 
     </header>
 
+    {# Категории событий #}
     <div class="events-menu">
-        {# type="modules" name="events-menu" #}
-
-            {# Вывод категорий событий из БД #}
-            {# Кнопка выбранной категории получает класс active #}
-            {% comment %}
+        {% if categories %}
             <ul>
-                {# Если категория выбрана    - получаем её `id` из URL #}
-                {# Если категория не выбрана - она равна `null` #}
-                category_id = JRequest::getVar('category', 'null')
-                category_id = (empty(category_id) and category_id == 0 ? ' class="active"' : '')
-
-                {# Вывод категории "Все события" #}
-                <li id="{{ category_id }}"><a href="?category=0">Все события</a></li>
-
-                {# Запрос к БД для получения данных из таблицы `sb_categories` #}
-                categories = "SELECT * FROM #__sb_categories";
-
-                {# Вывод всех остальных категорий #}
-                if (is_array(categories) and categories) {
-                    for category in categories:
-                        if ($category['published'] == 1) {
-                            <li id="{{ category_id }}"><a href="?category=' . $category['id'] . '">{{ category["name"] }}</a></li>;
-                        }
-                    endfor
-                endif
+            {% for category in categories %}
+                {% url 'event:category' slug=category.slug as category_url %}
+                <li id="category_{{ category.slug }}" {% if category_url == request.url_path %}class="active"{% endif %}>
+                    <a href="{{ category_url }}">{{ category.title }} ({{ category.event_count }})</a>
+                </li>
+            {% endfor %}
             </ul>
-            {% endcomment %}
-            {# Вывод категорий событий из БД #}
+        {% endif %}
     </div>
+    {# Категории событий #}
 
     <main class="content">
         {% block content_header %}{% endblock %}
@@ -245,11 +230,11 @@
 
     <div class="bottom-menu">
     {% if menu_items.bottom_menu %}
-        <ul id="mainlevel">
+        <ul>
         {% for item in menu_items.bottom_menu %}
             <li>
-                <a href="/{{ item.slug|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
-                    <strong>{{ item.title }}</strong>
+                <a href="{{ item.url|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
+                    {{ item.title }}
                 </a>
             </li>
         {% endfor %}
@@ -323,7 +308,7 @@
 <footer class="footer">
     
     <div class="counters">
-{% if google_counter %}
+    {% if request.settings.counter.google %}
         {# Google.Analytics #}
         <div id="google-analytics-counter">
             <script type="text/javascript">
@@ -331,21 +316,21 @@
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
               })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-              ga('create', '{# echo $google_counter; #}', 'auto');
+              ga('create', '{{ request.settings.counter.google }}', 'auto');
               ga('send', 'pageview');
             </script>
         </div>
         {# Google.Analytics #}
-{% endif %}
-{% if yandex_counter %}
+    {% endif %}
+    {% if request.settings.counter.yandex %}
         {# Яндекс.Метрика #}
         <div id="yandex-metrika-counter">
             <script type="text/javascript">
             (function (d, w, c) {
                 (w[c] = w[c] || []).push(function() {
                     try {
-                        w.yaCounter{# echo $yandex_counter; #} = new Ya.Metrika({
-                            id:{# echo $yandex_counter; #}, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true
+                        w.yaCounter{{ request.settings.counter.yandex }} = new Ya.Metrika({
+                            id:{{ request.settings.counter.yandex }}, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true
                         });
                     } catch(e) {}
                 });
@@ -356,11 +341,11 @@
                 if (w.opera == "[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else {f();}
             })(document, window, "yandex_metrika_callbacks");
             </script>
-            <noscript><div><img src="//mc.yandex.ru/watch/{# echo $yandex_counter; #}" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+            <noscript><div><img src="//mc.yandex.ru/watch/{{ request.settings.counter.yandex }}" style="position:absolute; left:-9999px;" alt=""></div></noscript>
         </div>
         {# Яндекс.Метрика #}
-{% endif %}
-{% if uptolike_counter %}
+    {% endif %}
+    {% if request.settings.counter.uptolike %}
         {# UpToLike - кнопки "Поделиться" #}
         <div id="uptolike-counter">
             <script type="text/javascript">(function(w,doc) {
@@ -375,16 +360,16 @@
             </script>
         </div>
         {# UpToLike - кнопки "Поделиться" #}
-{% endif %}
-{% if vkontakte_pixel %}
+    {% endif %}
+    {% if request.settings.counter.vkontakte %}
         {# Пиксель вКонтакте #}
         <div id="vkontakte_pixel">
             <script type="text/javascript">
-                (window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={# echo $vkontakte_pixel; #}';
+                (window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={{ request.settings.counter.vkontakte }}';
             </script>
         </div>
         {# Пиксель вКонтакте #}
-{% endif %}
+    {% endif %}
     </div>
 
     <div class="bottom-logos"></div>
