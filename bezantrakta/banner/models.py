@@ -126,3 +126,10 @@ class BannerGroupItem(models.Model):
 
     def __str__(self):
         return self.title
+
+    def delete(self, *args, **kwargs):
+        full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
+        if os.path.isfile(full_file_path):
+            os.remove(full_file_path)
+
+        super().delete(*args, **kwargs)
