@@ -735,6 +735,10 @@ h1, h2 {
     float: none !important;
 }
 
+.event-description iframe {
+    float: left;
+}
+
 .share-help {
     width: 90vw;
 }

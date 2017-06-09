@@ -115,6 +115,8 @@ TEMPLATES = [
 
                 'bezantrakta.menu.context_processors.menu_items',
                 'bezantrakta.banner.context_processors.banner_group_items',
+                'bezantrakta.event.context_processors.big_containers',
+                'bezantrakta.event.context_processors.categories'
             ],
         },
     },
