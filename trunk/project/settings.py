@@ -21,7 +21,10 @@ SECRET_KEY = 't%#tk0-z%+)4)bz7t4$hd8uc*^3rd8nrsn93&$y$9!al!e$7h#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Корневой домен для всех сайтов
 ROOT_DOMAIN = 'bezantrakta.local'
+# Псевдоним сайта, работающего на корневом домене (указан в БД в модели Domain)
+ROOT_DOMAIN_SLUG = 'vrn'
 
 ALLOWED_HOSTS = [
     '.bezantrakta.local',

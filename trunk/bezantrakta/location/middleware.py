@@ -18,7 +18,7 @@ class CurrentDomainMiddleware(MiddlewareMixin):
         if url_domain.endswith(settings.ROOT_DOMAIN):
             domain_slug = url_domain[:-len(settings.ROOT_DOMAIN)].rstrip('.')
             # Обход отсутствия поддомена для воронежского сайта
-            domain_slug = 'vrn' if domain_slug == '' else domain_slug
+            domain_slug = settings.ROOT_DOMAIN_SLUG if domain_slug == '' else domain_slug
 
         request.domain_is_published = False
 
