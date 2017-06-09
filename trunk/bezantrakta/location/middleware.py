@@ -74,3 +74,19 @@ class CurrentDomainMiddleware(MiddlewareMixin):
                 path = full_path.split('?')[0]
                 request.url_path = path
                 request.url_full = ''.join((url_domain, path,))
+
+            # Получение из JSON настроек, специфичных для каждого домена
+            import json
+            import os
+
+            domain_settings_file = os.path.join(
+                settings.BASE_DIR,
+                'bezantrakta',
+                'location',
+                'domain_settings',
+                ''.join((request.domain_slug, '.json',))
+            )
+            with open(domain_settings_file) as dsf:
+                domain_settings = json.load(dsf)
+
+            request.settings = domain_settings
