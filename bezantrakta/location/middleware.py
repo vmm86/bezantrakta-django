@@ -72,6 +72,5 @@ class CurrentDomainMiddleware(MiddlewareMixin):
                 full_path = request.get_full_path()
                 # Path without optional query string
                 path = full_path.split('?')[0]
-                # Path without boundary slashes
-                request.url_path = path.strip('/')
+                request.url_path = path
                 request.url_full = ''.join((url_domain, path,))
