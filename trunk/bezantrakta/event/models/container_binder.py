@@ -79,6 +79,13 @@ class EventContainerBinder(models.Model):
     def __str__(self):
         return ''
 
+    def delete(self, *args, **kwargs):
+        full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
+        if os.path.isfile(full_file_path):
+            os.remove(full_file_path)
+
+        super().delete(*args, **kwargs)
+
     def img_preview(self):
         return mark_safe(
             '<img src="{}" style="width: auto; height: 100px;">'.format(self.img.url)

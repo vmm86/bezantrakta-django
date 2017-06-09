@@ -7,14 +7,10 @@ from django.utils.safestring import mark_safe
 
 
 def img_path(instance, filename):
-    # if instance.event.domain is None:
-    #     domain = 'global'
-    # else:
-    #     domain = instance.event.domain.slug
-
     name, dot, extension = filename.rpartition('.')
     # Относительный путь до файла
     file_path = os.path.join(
+        'global',
         'link',
         ''.join(
             (instance.slug, dot, extension,)
@@ -53,7 +49,7 @@ class EventLink(models.Model):
         upload_to=img_path,
         blank=True,
         null=True,
-        help_text="""Размер логотипа 200x32 px""",
+        help_text="""Размер логотипа 192x64 px""",
         verbose_name='Логотип'
     )
 
@@ -66,6 +62,13 @@ class EventLink(models.Model):
 
     def __str__(self):
         return self.title
+
+    def delete(self, *args, **kwargs):
+        full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
+        if os.path.isfile(full_file_path):
+            os.remove(full_file_path)
+
+        super().delete(*args, **kwargs)
 
     def img_preview(self):
         return mark_safe('<img src="{}" style="width: 200px; height: auto;">'.format(self.img.url))
