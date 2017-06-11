@@ -4,18 +4,6 @@
 @import url(http://fonts.googleapis.com/css?family=Roboto:700,900&subset=latin,cyrillic);
 /*@import url(http://fonts.googleapis.com/css?family=Arimo:700,900&subset=latin,cyrillic);*/
 
-/* Для отладочной информации в тестовой версии сайта */
-
-.content pre {
-    display: block;
-    background: #F5F5F5;
-    border: 1px dashed #000;
-    font-size: 0.75rem;
-    overflow: auto;
-    width: 65vw;
-    height: 20vw;
-}
-
 /* Основные элементы */
 
 * {
@@ -60,8 +48,6 @@ body {
 
     z-index: 1;
 }
-
-div { border: 1px dotted grey; }
 
 h1, h2, h3, h4, h5, h6,
 .componentheading {
