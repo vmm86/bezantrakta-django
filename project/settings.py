@@ -28,6 +28,7 @@ ROOT_DOMAIN_SLUG = 'vrn'
 
 ALLOWED_HOSTS = [
     '.bezantrakta.local',
+    '.bezantrakta.rterm.ru'
 ]
 
 INTERNAL_IPS = ['127.0.0.1']
