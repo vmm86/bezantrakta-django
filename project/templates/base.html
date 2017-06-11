@@ -12,6 +12,8 @@
     <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
 
+    {% if debug %}<link rel="stylesheet" type="text/css" href="{% static "global/css/dev.css" %}">{% endif %}
+
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
     <meta name="description" content="{{ request.settings.domain.description }}">
