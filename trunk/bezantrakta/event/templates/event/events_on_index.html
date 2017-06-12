@@ -61,6 +61,7 @@
 {% endif %}
 </div>
 
+{% if debug %}
 <br><br>
 categories: {{ categories|pprint }}
  <br><br>
@@ -72,4 +73,5 @@ big_horizontal: {{ big_horizontal|pprint }}
 <br><br>
 small_vertical: {{ small_vertical|pprint }}
 <br><br>
+{% endif %}
 {% endblock %}
