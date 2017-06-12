@@ -1,7 +1,7 @@
 import datetime
 
 from django.db.models import F, Q
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from project.shortcuts import add_small_vertical_poster
 
@@ -9,11 +9,9 @@ from ..models import Event
 
 
 def search(request):
-    try:
-        text = request.GET['text']
-    except KeyError:
-        pass
-    else:
+    text = request.GET['text']
+
+    if text and text != '':
         today = datetime.datetime.today()
 
         events = Event.objects.select_related(
@@ -41,3 +39,5 @@ def search(request):
         context = {'events': events}
 
         return render(request, 'event/search.html', context)
+    else:
+        return redirect('/')
