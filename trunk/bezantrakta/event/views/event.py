@@ -1,11 +1,11 @@
 import datetime
 
-from django.db.models import BooleanField, F, Case, When, Value
+from django.db.models import CharField, BooleanField, F, Case, When, Value
 from django.shortcuts import render
 
 from project.shortcuts import add_small_vertical_poster
 
-from ..models import Event, EventLinkBinder
+from ..models import Event, EventLinkBinder, EventGroupBinder
 
 
 def event(request, year, month, day, slug):
@@ -45,9 +45,15 @@ def event(request, year, month, day, slug):
                 default=False,
                 output_field=BooleanField()
             ),
+            group_id=Case(
+                When(event_group__isnull=False, then=F('event_group')),
+                default=None,
+                output_field=CharField()
+            ),
         ).values(
             'is_published',
             'is_coming',
+            'group_id',
             'title',
             'slug',
             'description',
@@ -103,6 +109,32 @@ def event(request, year, month, day, slug):
             # Ссылки есть
             else:
                 context['links'] = links
+
+            # Запрос событий в группе, если это событие добавлено в группу
+            if event['group_id']:
+                group_events = EventGroupBinder.objects.select_related(
+                    'event_group',
+                    'event',
+                    'domain'
+                ).annotate(
+                    title=F('event__title'),
+                    slug=F('event__slug'),
+                    date=F('event__date'),
+                    time=F('event__time'),
+                    venue=F('event__event_venue__title'),
+                ).filter(
+                    event_group=event['group_id'],
+                    event__is_published=True,
+                    event__date__gt=today,
+                    event__domain_id=request.domain_id
+                ).values(
+                    'title',
+                    'slug',
+                    'date',
+                    'time',
+                    'venue',
+                )
+                context['group_events'] = group_events
 
             context['event'] = event
             return render(request, 'event/event.html', context)

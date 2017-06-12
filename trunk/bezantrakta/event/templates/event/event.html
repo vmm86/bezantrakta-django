@@ -114,12 +114,13 @@
         <div class="order-header">
             <div id="basket-container">
 
-            {% if group %}
+            {% if group_events %}
                 <div class="show-events">
                     <h3 id="related-events-header">Билеты на другую дату</h3>
                     <ul id="related-events">
-                {% for event in group %}
-                    {% if event.url == request.url %}
+                {% for event in group_events %}
+                    {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
+                    {% if event_url == request.url_path %}
                         <li class="r-e-chosen">
                             {{ event.date|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
                         </li>
@@ -263,7 +264,9 @@
 
 {% if debug %}
 <br><br>
-{{ event|pprint }}
+event: {{ event|pprint }}
+<br><br>
+group_events: {{ group_events|pprint }}
 <br><br>
 {% endif %}
 
