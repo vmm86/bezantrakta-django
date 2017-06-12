@@ -74,10 +74,10 @@ class Event(models.Model):
         verbose_name='Возрастное ограничение',
     )
     date = models.DateField(
-        verbose_name='Дата события',
+        verbose_name='Дата',
     )
     time = models.TimeField(
-        verbose_name='Время начала события',
+        verbose_name='Время',
     )
     event_group = models.ManyToManyField(
         'event.EventGroup',
@@ -129,7 +129,8 @@ class Event(models.Model):
         )
 
     def __str__(self):
-        return self.title
+        from django.contrib.humanize.templatetags.humanize import naturalday
+        return '{} ({})'.format(self.title, naturalday(self.date),)
 
     def get_absolute_url(self):
         return reverse(

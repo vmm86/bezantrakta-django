@@ -3,7 +3,7 @@ from django.contrib import admin
 from adminsortable2.admin import SortableInlineAdminMixin
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from ..models import Event, EventContainerBinder, EventLinkBinder
+from ..models import Event, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
 class EventContainerBinderInline(admin.TabularInline):
@@ -20,10 +20,16 @@ class EventLinkBinderInline(SortableInlineAdminMixin, admin.TabularInline):
     readonly_fields = ('img_preview',)
 
 
+class EventGroupBinderInline(admin.TabularInline):
+    model = EventGroupBinder
+    extra = 0
+    fields = ('event_group',)
+
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     filter_horizontal = ('event_container',)
-    inlines = (EventContainerBinderInline, EventLinkBinderInline,)
+    inlines = (EventContainerBinderInline, EventLinkBinderInline, EventGroupBinderInline,)
     list_display = ('title', 'date', 'time', 'event_category', 'event_venue',
                     'is_published', 'is_on_index', 'container_count',
                     'link_count', 'domain',)
