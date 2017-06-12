@@ -3,6 +3,7 @@ from django.conf.urls import url
 from .views.events_on_index import events_on_index
 from .views.event import event
 from .views.category import category
+from .views.search import search
 
 app_name = 'event'
 
@@ -22,4 +23,9 @@ urlpatterns = [
         category,
         name='category'
     ),
+    url(
+        r'^search/$',
+        search,
+        name='search'
+    )
 ]
