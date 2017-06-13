@@ -32,7 +32,10 @@
     <meta name="yandex-verification" content="{{ request.settings.webmaster.yandex }}">
 {% endif %}
 
-    <meta name="city_config" content="{{ request.city_slug }}">
+    {# Метатаеги для выбора городов #}
+    <meta name="city" content="{{ request.city_slug }}">
+    <meta name="domain" content="{{ request.root_domain }}">
+    {# Метатаеги для выбора городов #}
 
     {# `tel:` links NO auto-detection #}
     <meta name="format-detection" content="telephone=no">
@@ -162,23 +165,9 @@
         <div class="header-right">
 
                 <div class="search">
-
-                    <span id="choose-city-button">
-                    {{ request.city_title }}
-                    {# Вывод выбранного города из списка всех городов по куке #}
-                    {% comment %}
-                        for city in cities:
-                            {# Если кука создана - выводится название города по этой куке #}
-                            if (cookie["city"]):
-                                if cookie["city"] == $city["prefix"]:
-                                    print(city["title"])
-                            {# Если кука ещё не создана - выводится название города текущего сайта #}
-                            else:
-                                if (city == city["prefix"]):
-                                    print($city["title"])
-                    {% endcomment %}
-                    {# Вывод выбранного города из списка всех городов по куке #}
-                    </span>
+                    {# Вывод города текущего сайта #}
+                    <span id="choose-city-button">{{ request.city_title }}</span>
+                    {# Вывод города текущего сайта #}
 
                     {# Поиск #}
                     <div class="modul">
@@ -230,6 +219,10 @@
     <main class="content">
         {% block content_header %}{% endblock %}
         {% block content_body %}{% endblock %}
+
+    {% if debug%}
+        <p>cities: {{ request.cities }}</p>
+    {% endif %}
     </main>
 
     <div class="bottom-menu">
@@ -398,7 +391,7 @@ lightbox.option({
 {# Подключение лайтбоксов для изображений #}
 
 {# Кастомный лайтбокс для выбора городов #}
-<script type="text/javascript" src="cities.js" defer></script>
+<script type="text/javascript" src="{% static "global/js/cities.js" %}" defer></script>
 <div id="choose-city-modal" class="modal" style="display: none;">
     <div>
         <div class="modal-body">
@@ -407,23 +400,31 @@ lightbox.option({
                 <img class="bzlogo" src="{% static "global/svg/bzlogo.svg" %}">
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
-                {% comment %}
-                <ul id="choose-city-list">
-                    for city in cities:
-                        {# Если город найден в cookie `city` - присвоить пункту с ним класс `chosen` #}
-                        city_chosen = ($_cookie['city'] and cookie['city'] == city['prefix']) ? 'chosen' : "";
-                        city_status = city["status"]
-                        data_city   = (city["status"] == "ready" ? 'data-city="{{ city["prefix"] }} : "")
-                        city_status_text = (city["status"] == "coming-soon" ? "скоро открытие" : "")
 
-                        <li class="{{ city_status }} {{ city_chosen }}" data-city="{{ data_city }}">
-                            <img class="city-icon" src="{% static "global/cities/{{ city["prefix"] }}.png" %}">
-                            <span class="city-name">{{ city["title"] }}</span>
-                            <span class="city-status-text">{{ city_status_text }}</span>
-                        </li>
-                    {# endfor #}
+            {% if debug%}
+                <p>cities: {{ request.cities }}</p>
+                <br><br>
+                <p>cookies['bezantrakta_city']: {{ request.bezantrakta_city }}</p>
+            {% endif %}
+
+                <ul id="choose-city-list">
+                {% for city in request.cities %}
+                {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
+                {% if request.bezantrakta_city == city.slug %}
+                    <li class="{{ city.status }} chosen" data-city="{{ city.slug }}">
+                {% else %}
+                    <li class="{{ city.status }}" data-city="{{ city.slug }}">
+                {% endif %}
+                    {% with city_icon="global/ico/cities/"|add:city.slug|add:".png" %}
+                        <img class="city-icon" src="{% static city_icon %}">
+                    {% endwith %}
+                        <span class="city-name">{{ city.title }}</span>
+                    {% if not city.is_published %}
+                        <span class="city-status-text">скоро открытие</span>
+                    {% endif %}
+                    </li>
+                {% endfor %}
                 </ul>
-                {% endcomment %}
             </div>
         </div>
     </div>
