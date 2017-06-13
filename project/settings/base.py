@@ -318,6 +318,10 @@ CKEDITOR_CONFIGS = {
             # },
         ],
         'removePlugins': 'stylesheetparser',
+        # 👉 Распаковать содержимое архива `ckeditor_plugins/codemirror_1.15.zip` из репозитория
+        # в виртуальное окружение в папку `lib/python3.X/site-packages/ckeditor/static/ckeditor/ckeditor/plugins`,
+        # иначе редактор не будет работать.
+        # 👉 Если подсветка не нужна - закомментировать параметр `extraPlugins`.
         'extraPlugins': 'codemirror',
         'uiColor': '#cccccc',
         'allowedContent': True,
