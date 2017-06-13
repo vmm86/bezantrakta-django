@@ -13,7 +13,7 @@ class CityAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
-    list_display = ('title', 'slug', 'timezone',)
+    list_display = ('title', 'slug', 'timezone', 'is_published',)
     search_fields = ('title',)
 
 
