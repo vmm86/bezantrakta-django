@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     # 'flat',
     # 'colorfield',
 
-    # 'admin_reorder',
+    'admin_reorder',
 
     'ckeditor',
     'ckeditor_uploader',
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # 'admin_reorder.middleware.ModelAdminReorder',
+    'admin_reorder.middleware.ModelAdminReorder',
 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
