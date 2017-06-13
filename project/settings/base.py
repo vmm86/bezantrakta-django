@@ -318,7 +318,7 @@ CKEDITOR_CONFIGS = {
             # },
         ],
         'removePlugins': 'stylesheetparser',
-        # 'extraPlugins': 'codesnippet',
+        'extraPlugins': 'codemirror',
         'uiColor': '#cccccc',
         'allowedContent': True,
         'contentsCss': '/static/global/css/editor.css',
