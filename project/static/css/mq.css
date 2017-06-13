@@ -33,13 +33,6 @@
 
 }
 
-@media all and (max-width: 1800px) {
-
-    .header {
-        height: 38rem;
-    }
-}
-
 @media all and (max-width: 1650px) {
 
     html {
@@ -53,23 +46,12 @@
         font-size: 16px;
     }
 
-    .header {
-        height: 38rem;
-    }
-
     .events-menu {
         text-align: center;
 
         left: 0;
 
         width: 100%;
-    }
-}
-
-@media all and (max-width: 1366px) {
-
-    .header {
-        height: 36rem;
     }
 }
 
@@ -92,10 +74,6 @@
         height: 12rem;
     }
 
-    .header {
-        height: 35rem;
-    }
-
     .poster-level2 a {
         letter-spacing: -0.05rem;
     }
@@ -115,10 +93,6 @@
     .pinnacle {
         width: 16rem;
         height: 10rem;
-    }
-
-    .header {
-        height: 30rem;
     }
 
     h1 {
@@ -143,20 +117,12 @@
         font-size: 13px;
     }
 
-    .header {
-        height: 34rem;
-    }
-
 }
 
 @media all and (max-width: 900px) {
 
-    .header {
-        height: 33rem;
-    }
-
     #choose-city-button {
-        padding: 2%;
+        padding: 2vw;
     }
 
     .events-menu {
@@ -197,22 +163,12 @@
         flex: 0 1 50%;
     }
 
-    /* Галерея Phoca */
-
-    #phocagallery-categories-detail > div {
-        flex: 0 1 25%;
-    }
-
 }
 
 @media all and (max-width: 800px) {
 
     html {
         font-size: 12px;
-    }
-
-    .header {
-        height: 29rem;
     }
 
     .header-left img.bzlogo {
@@ -275,43 +231,21 @@
 
 @media all and (max-width: 720px) {
 
-    .header {
-        height: 29rem;
-    }
-
     .search form {
         height: 1.8rem;
     }
 
     #choose-city-button {
-        padding: 1.25%;
+        padding: 1.25vw;
         margin: 0;
     }
 
-
-    /* Галерея Phoca */
-
-    #phocagallery-categories-detail > div {
-        flex: 0 1 33%;
-    }
-
-}
-
-@media all and (max-width: 640px) {
-
-    .header {
-        height: 28rem;
-    }
 }
 
 @media all and (max-width: 560px) {
 
     html {
         font-size: 11px;
-    }
-
-    .header {
-        height: 28rem;
     }
 
     #choose-city-list li {
@@ -327,11 +261,6 @@
         letter-spacing: -0.085rem;
     }
 
-    /* Галерея Phoca */
-
-    #phocagallery-categories-detail > div {
-        flex: 0 1 50%;
-    }
 }
 
 @media all and (max-width: 480px) {
@@ -350,10 +279,6 @@
     .pinnacle {
         width: 11rem;
         height: 6rem;
-    }
-
-    .header {
-        height: 26rem;
     }
 
     .header,
@@ -587,10 +512,6 @@
 
     html {
         font-size: 10px;
-    }
-
-    .header {
-        height: 22rem;
     }
 
     .header-left {
