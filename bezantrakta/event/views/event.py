@@ -39,7 +39,7 @@ def event(request, year, month, day, slug):
             'domain'
         ).annotate(
             venue=F('event_venue__title'),
-            city=F('domain__city__title'),
+            venue_city=F('event_venue__domain__city__title'),
             is_coming=Case(
                 When(date__gt=today, then=Value(True)),
                 default=False,
@@ -62,7 +62,7 @@ def event(request, year, month, day, slug):
             'date',
             'time',
             'venue',
-            'city',
+            'venue_city',
         ).get(
             date=date,
             slug=slug,
