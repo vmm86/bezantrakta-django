@@ -22,7 +22,6 @@ class Event(models.Model):
     )
     slug = models.SlugField(
         max_length=64,
-        unique_for_date='date',
         verbose_name='Псевдоним'
     )
     description = models.TextField(
