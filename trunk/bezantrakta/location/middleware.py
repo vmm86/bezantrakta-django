@@ -1,10 +1,11 @@
 from django.conf import settings
+from django.db.models import CharField, Case, When, Value
 from django.http.request import split_domain_port
 from django.shortcuts import render
 from django.utils.deprecation import MiddlewareMixin
 
 
-from .models import Domain
+from .models import City, Domain
 
 
 class CurrentDomainMiddleware(MiddlewareMixin):
@@ -72,8 +73,34 @@ class CurrentDomainMiddleware(MiddlewareMixin):
                 full_path = request.get_full_path()
                 # Path without optional query string
                 path = full_path.split('?')[0]
+                request.root_domain = settings.ROOT_DOMAIN
                 request.url_path = path
                 request.url_full = ''.join((url_domain, path,))
+
+            # Получение списка городов для выбора
+            try:
+                cities = City.objects.annotate(
+                    status=Case(
+                        When(is_published=True, then=Value("ready")),
+                        default=Value("coming-soon"),
+                        output_field=CharField()
+                    ),
+                ).values(
+                    'title',
+                    'slug',
+                    'is_published',
+                    'status'
+                )
+            except City.DoesNotExist:
+                context = {
+                    'title': """Городов пока нет""",
+                    'message': """<p>К сожалению, ни один город пока не опубликован. 🙁</p>""",
+                }
+                return render(request, 'empty.html', context, status=500)
+            else:
+                request.cities = cities
+                # Псевдоним города из куки `bezantrakta_city`
+                request.bezantrakta_city = request.COOKIES.get('bezantrakta_city', None)
 
             # Получение из JSON настроек, специфичных для каждого домена
             import json
