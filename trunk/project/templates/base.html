@@ -12,6 +12,8 @@
     <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
 
+    <link rel="stylesheet" href="{% static "global/js/lightbox2/lightbox.min.css" %}">
+
     {% if debug %}<link rel="stylesheet" type="text/css" href="{% static "global/css/dev.css" %}">{% endif %}
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -379,10 +381,24 @@
 </footer>
 
 <script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
+
 <script type="text/javascript" src="{% static "global/js/bxslider/jquery.bxslider.min.js" %}"></script>
 <script type="text/javascript" src="{% static "global/js/bxslider/carousel.js" %}"></script>
 
-{# Лайтбокс для выбора городов #}
+{# Подключение лайтбоксов для изображений #}
+<script type="text/javascript" src="{% static "global/js/lightbox2/lightbox.min.js" %}" defer></script>
+<script type="text/javascript">
+lightbox.option({
+    'alwaysShowNavOnTouchDevices': true,
+    'fadeDuration': 200,
+    'resizeDuration': 200,
+    'wrapAround': true
+})
+</script>
+{# Подключение лайтбоксов для изображений #}
+
+{# Кастомный лайтбокс для выбора городов #}
+<script type="text/javascript" src="cities.js" defer></script>
 <div id="choose-city-modal" class="modal" style="display: none;">
     <div>
         <div class="modal-body">
@@ -412,9 +428,7 @@
         </div>
     </div>
 </div>
-{# Лайтбокс для выбора городов #}
-
-<script type="text/javascript" src="cities.js" defer></script>
+{# Кастомный лайтбокс для выбора городов #}
 
 <script type="text/javascript">
 {# Скрытие меню на небольших экранах #}
@@ -432,9 +446,11 @@ function menuToggle() {
 $(document).ready(menuToggle());
 $(window).on('orientationchange', menuToggle());
 $(window).on('resize', menuToggle());
+</script>
 
+{# Вывод размеров viewport в dev-версии сайта #}
 {% if debug %}
-{# Вывод размеров viewport в тестовой версии сайта #}
+<script type="text/javascript">
 $(document).ready(function(e) {
     $('body').prepend('<span class="viewport" style="background: #FFF; border: 2px dotted #000; border-radius: 1rem; font-weight: bold; padding: 0.5rem; position: fixed; bottom: 0; right: 0; z-index: 10000;"></span>');
     showViewportSize();    
@@ -448,10 +464,9 @@ function showViewportSize() {
     $('.viewport').text(viewport);
 
 }
-{# Вывод размеров viewport в тестовой версии сайта #}
 {% endif %}
-
 </script>
+{# Вывод размеров viewport в dev-версии сайта #}
 
 </body>
 </html>
