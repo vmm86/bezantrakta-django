@@ -91,6 +91,7 @@
 </head>
 {% endspaceless %}
 <body>
+
 <a href="/"><div class="panorama"></div></a>
 
 <div class="poster-left">
@@ -125,6 +126,15 @@
 
     <header class="header">
 
+        {# Вывод города текущего сайта #}
+        <div id="choose-city">
+        {% with city_icon="global/ico/cities/"|add:request.city_slug|add:".png" %}
+            <img id="choose-city-icon" class="city-icon" src="{% static city_icon %}">
+        {% endwith %}
+            <span id="choose-city-button">{{ request.city_title }}</span>
+        </div>
+        {# Вывод города текущего сайта #}
+
         <a href="/"><div class="pinnacle"></div></a>
 
         <span id="hamburger"></span>
@@ -156,15 +166,10 @@
         <div class="header-right">
 
                 <div class="search">
-                    {# Вывод города текущего сайта #}
-                    <span id="choose-city-button">{{ request.city_title }}</span>
-                    {# Вывод города текущего сайта #}
-
                     {# Поиск #}
                     <div class="modul">
                         <div class="mod_top">
                             <form action="/search" method="GET">
-                                <span>Поиск по сайту</span>
                                 <input name="text" id="search" alt="Поиск" class="inputbox" type="text" size="20" value="{% if request.GET.text %}{{ request.GET.text }}{% endif %}">
                                 <input type="submit" value="Поиск" class="button">
                             </form>
