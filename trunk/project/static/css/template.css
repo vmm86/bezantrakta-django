@@ -425,12 +425,6 @@
     z-index: 10;
 }
 
-#choose-city-modal .modal-body {
-    padding-top: 0;
-
-/*    width: 25%;*/
-}
-
 #choose-city-list {
     display: flex;
     flex-direction: row;
