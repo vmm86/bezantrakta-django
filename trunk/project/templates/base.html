@@ -151,15 +151,6 @@
             </div>
 
             <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
-
-        {% if debug %}
-            <p>domain_slug: {{ request.domain_slug }}</p>
-            <p>domain_id: {{ request.domain_id }}</p>
-            <p>city_title: {{ request.city_title }}</p>
-            <p>city_slug: {{ request.city_slug }}</p>
-            <p>url_path: {{ request.url_path }}</p>
-            <p>url_full: {{ request.url_full }}</p>
-        {% endif %}
         </div>
 
         <div class="header-right">
@@ -219,9 +210,15 @@
     <main class="content">
         {% block content_header %}{% endblock %}
         {% block content_body %}{% endblock %}
-
     {% if debug%}
+        <hr>
+        <p>domain_slug: {{ request.domain_slug }}</p>
+        <p>domain_id: {{ request.domain_id }}</p>
+        <p>city_title: {{ request.city_title }}</p>
+        <p>city_slug: {{ request.city_slug }}</p>
         <p>cities: {{ request.cities }}</p>
+        <p>url_path: {{ request.url_path }}</p>
+        <p>url_full: {{ request.url_full }}</p>
     {% endif %}
     </main>
 
