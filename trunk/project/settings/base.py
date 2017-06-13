@@ -321,6 +321,7 @@ CKEDITOR_CONFIGS = {
         # 'extraPlugins': 'codesnippet',
         'uiColor': '#cccccc',
         'allowedContent': True,
+        'contentsCss': '/static/global/css/editor.css',
     },
 }
 
