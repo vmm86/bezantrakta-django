@@ -79,14 +79,17 @@ class CurrentDomainMiddleware(MiddlewareMixin):
             import json
             import os
 
-            domain_settings_file = os.path.join(
-                settings.BASE_DIR,
-                'bezantrakta',
-                'location',
-                'domain_settings',
-                ''.join((request.domain_slug, '.json',))
-            )
-            with open(domain_settings_file) as dsf:
-                domain_settings = json.load(dsf)
-
-            request.settings = domain_settings
+            try:
+                domain_settings_file = os.path.join(
+                    settings.BASE_DIR,
+                    'bezantrakta',
+                    'location',
+                    'domain_settings',
+                    ''.join((request.domain_slug, '.json',))
+                )
+                with open(domain_settings_file) as dsf:
+                    domain_settings = json.load(dsf)
+            except FileNotFoundError:
+                pass
+            else:
+                request.settings = domain_settings
