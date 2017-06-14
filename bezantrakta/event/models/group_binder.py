@@ -30,6 +30,7 @@ class EventGroupBinder(models.Model):
         db_table = 'bezantrakta_event_group_binder'
         verbose_name = 'связка событий и групп событий'
         verbose_name_plural = 'связки событий и групп событий'
+        ordering = ('event_group', 'event',)
 
     def __str__(self):
         return ''
