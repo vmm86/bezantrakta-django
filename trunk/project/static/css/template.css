@@ -397,14 +397,22 @@
     justify-content: flex-start;
     align-items: center;
 
+    background: url(/static/global/svg/background-white.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    padding: 0 0.5rem;
+
     position: absolute;
-    top: 1.5rem;
+    top: 1rem;
     left: 24vw;
 }
 
 #choose-city-icon {
-    margin-right: 1rem;
-    max-width: 48px;
+    padding: 0.35rem; /* ВРЕМЕННО */
+    /*margin-right: 0.5rem;*/
+    max-width: 64px;
 }
 
 #choose-city-button {
@@ -412,19 +420,21 @@
 
     display: inline-block;
 
+/*
     background: url(/static/global/svg/background-yellow.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
+*/
 
     font-family: 'Roboto', sans-serif;
-    font-size: 1rem;
+    font-size: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 0.15rem;
     text-align: center;
     vertical-align: middle;
 
-    padding: 0.5vw 1.5vw;
+    padding: 0.5rem 1rem;
     margin: 0;
 
     z-index: 10;
@@ -457,7 +467,9 @@
     padding: 0;
     margin: 0;
 
-    width: 100%;
+    width: 75%;
+
+    position: relative;
 }
 #choose-city-list li.ready {
     cursor: pointer;
@@ -514,6 +526,10 @@
     text-align: center;
     text-transform: uppercase;
     margin-left: 1vw;
+
+    position: absolute;
+    left: 35%;
+    bottom: 0;
 }
 
 /* Карусель афиш 1-го уровня */
@@ -586,10 +602,6 @@
 .events-menu ul li a {
     padding: 0.5rem 2rem 0.5rem 1rem;
     text-decoration: none;
-}
-.events-menu ul li:hover a,
-.events-menu ul li.active a {
-    color: #FFF;
 }
 
 /* Содержание */
