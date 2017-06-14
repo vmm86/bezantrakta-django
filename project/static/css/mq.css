@@ -4,6 +4,23 @@
 
 @media all and (min-width: 1px) and (max-width: 1500px) {
 
+    html {
+        font-size: 16px;
+    }
+
+    #choose-city {
+        top: 0.5rem;
+        left: 12%;
+    }
+
+    .events-menu {
+        text-align: center;
+
+        left: 0;
+
+        width: 100%;
+    }
+
     .poster-left, .poster-right,
     .bottom-left-logo, .bottom-right-logo {
         display: none;
@@ -40,21 +57,6 @@
     }
 }
 
-@media all and (max-width: 1500px) {
-
-    html {
-        font-size: 16px;
-    }
-
-    .events-menu {
-        text-align: center;
-
-        left: 0;
-
-        width: 100%;
-    }
-}
-
 @media all and (max-width: 1180px) {
 
     html {
@@ -67,6 +69,19 @@
         -webkit-background-size: 100% 75%;
 
         height: 4rem;
+    }
+
+    #choose-city {
+        top: 0.5rem;
+        left: 12%;
+    }
+
+    #choose-city-icon {
+        max-width: 48px;
+    }
+
+    #choose-city-button {
+        font-size: 1rem;
     }
 
     .pinnacle {
@@ -84,10 +99,6 @@
 
     html {
         font-size: 14px;
-    }
-
-    .panorama {
-        height: 4rem;
     }
 
     .pinnacle {
@@ -120,10 +131,6 @@
 }
 
 @media all and (max-width: 900px) {
-
-    #choose-city-button {
-        padding: 2vw;
-    }
 
     .events-menu {
         top: -0.1rem;
@@ -171,12 +178,17 @@
         font-size: 12px;
     }
 
+    #choose-city {
+        top: 0.25rem;
+        left: 14%;
+    }
+
     .header-left img.bzlogo {
         height: 2.75rem;
 
         position: absolute;
-        top: -3rem;
-        left: 100%;
+        top: -3.25rem;
+        left: 150%;
     }
 
     .posters-level2-body.order1 .poster-level2-min_price {
@@ -235,11 +247,6 @@
         height: 1.8rem;
     }
 
-    #choose-city-button {
-        padding: 1.25vw;
-        margin: 0;
-    }
-
 }
 
 @media all and (max-width: 560px) {
@@ -267,6 +274,15 @@
 
     .body {
         margin-bottom: -4rem;
+    }
+
+    #choose-city {
+        top: -0.1rem;
+        left: 14%;
+    }
+
+    #choose-city-icon {
+        max-width: 32px;
     }
 
     .panorama {
@@ -323,7 +339,7 @@
         z-index: 7;
     }
 
-    .calendar-body {
+    .calendar {
         display: none;
     }
 
@@ -366,8 +382,8 @@
         height: 2rem;
 
         position: absolute;
-        top: -5rem;
-        left: 35%;
+        top: -4.75rem;
+        left: 50%;
 
         z-index: 6;
     }
@@ -412,14 +428,6 @@
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-    }
-
-    .events-menu > ul > li:hover,
-    .events-menu > ul > li.active {
-        background-image: url(/static/global/svg/events-menu.svg);
-        -webkit-background-size: 100% 100%;
-        -moz-background-size: 100% 100%;
-        background-size: 100% 100%;
     }
 
     .label,

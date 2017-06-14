@@ -131,7 +131,7 @@
         {% with city_icon="global/ico/cities/"|add:request.city_slug|add:".png" %}
             <img id="choose-city-icon" class="city-icon" src="{% static city_icon %}">
         {% endwith %}
-            <span id="choose-city-button">{{ request.city_title }}</span>
+            <span id="choose-city-button" title="Выбрать город">{{ request.city_title }}</span>
         </div>
         {# Вывод города текущего сайта #}
 
@@ -385,6 +385,7 @@
 <script type="text/javascript">
 lightbox.option({
     'alwaysShowNavOnTouchDevices': true,
+    'albumLabel': '',
     'fadeDuration': 200,
     'resizeDuration': 200,
     'wrapAround': true
