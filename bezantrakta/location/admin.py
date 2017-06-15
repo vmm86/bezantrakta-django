@@ -14,6 +14,7 @@ class CityAdmin(admin.ModelAdmin):
         'slug': ('title',),
     }
     list_display = ('title', 'slug', 'timezone', 'is_published',)
+    list_per_page = 10
     search_fields = ('title',)
 
 
@@ -23,5 +24,6 @@ class DomainAdmin(admin.ModelAdmin):
     list_filter = (
         ('city', RelatedDropdownFilter),
     )
+    list_per_page = 10
     list_select_related = ('city',)
     search_fields = ('title', 'slug',)
