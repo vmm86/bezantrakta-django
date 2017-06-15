@@ -390,7 +390,7 @@
 
 /* Выбор города */
 
-#choose-city {
+.choose-city-button {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -409,13 +409,13 @@
     left: 24vw;
 }
 
-#choose-city-icon {
+.choose-city-button .icon {
     padding: 0.35rem; /* ВРЕМЕННО */
     /*margin-right: 0.5rem;*/
     max-width: 64px;
 }
 
-#choose-city-button {
+.choose-city-button .title {
     cursor: pointer;
 
     display: inline-block;
@@ -440,7 +440,7 @@
     z-index: 10;
 }
 
-#choose-city-list {
+.choose-city-list {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -457,7 +457,7 @@
     width: 50%;
 }
 
-#choose-city-list li {
+.choose-city-list li {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -471,11 +471,11 @@
 
     position: relative;
 }
-#choose-city-list li.ready {
+.choose-city-list li.ready {
     cursor: pointer;
 }
 
-#choose-city-list li .city-icon {
+.choose-city-list li .city-icon {
     margin: 1.5vw;
 
     width: 7vw;
@@ -483,11 +483,12 @@
     max-width: 96px;
 }
 
-#choose-city-list li.coming-soon .city-icon {
+.choose-city-list li.coming-soon .city-icon,
+.choose-city-list li.coming-soon .city-name {
     opacity: 0.33;
 }
 
-#choose-city-list li .city-name {
+.choose-city-list li .city-name {
     background: url(/static/global/svg/city.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -506,8 +507,8 @@
     width: 24rem;
 }
 
-#choose-city-list li.ready:hover .city-name,
-#choose-city-list li.chosen .city-name {
+.choose-city-list li.ready:hover .city-name,
+.choose-city-list li.chosen .city-name {
     background: url(/static/global/svg/city-chosen.svg);
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -517,7 +518,7 @@
     text-shadow: 1px 0 0 #000;
 }
 
-#choose-city-list li .city-status-text {
+.choose-city-list li .city-status-text {
     color: #000;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;

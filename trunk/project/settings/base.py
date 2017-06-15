@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'bezantrakta.location.middleware.CurrentDomainMiddleware',
+    'bezantrakta.location.middleware.CurrentLocationMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
