@@ -13,8 +13,9 @@ class CityAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
-    list_display = ('title', 'slug', 'timezone', 'is_published',)
+    list_display = ('title', 'slug', 'timezone', 'state_icons',)
     list_per_page = 10
+    radio_fields = {'state': admin.VERTICAL, }
     search_fields = ('title',)
 
 

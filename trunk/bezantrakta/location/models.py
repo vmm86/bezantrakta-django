@@ -12,11 +12,11 @@ class City(models.Model):
     )
     title = models.CharField(
         max_length=64,
-        verbose_name='Название города',
+        verbose_name='Название',
     )
     slug = models.SlugField(
         max_length=8,
-        verbose_name='Псевдоним города',
+        verbose_name='Псевдоним',
     )
     timezone = TimeZoneField(
         default='Europe/Moscow',
@@ -29,6 +29,27 @@ class City(models.Model):
         False - отключен (скоро открытие).""",
         verbose_name='Публикация',
     )
+    STATE_DISABLED = False
+    STATE_PROGRESS = None
+    STATE_ENABLED = True
+    STATE_CHOICES = (
+        (STATE_DISABLED, 'отключен'),
+        (STATE_PROGRESS, 'подготовка'),
+        (STATE_ENABLED, 'включен'),
+    )
+    state = models.NullBooleanField(
+        choices=STATE_CHOICES,
+        default=STATE_DISABLED,
+        blank=False,
+        help_text="""
+        <ul>
+        <li>отключен - НЕ виден в списке городов и НЕ работает;</li>
+        <li>подготовка - виден в списке городов, но НЕ доступен для выбора ("скоро открытие");</li>
+        <li>включен - виден в списке городов и работает.</li>
+        </ul>
+        """,
+        verbose_name='Состояние',
+    )
 
     class Meta:
         app_label = 'location'
@@ -39,6 +60,17 @@ class City(models.Model):
 
     def __str__(self):
         return self.title
+
+    def state_icons(self):
+        from django.contrib.admin.templatetags.admin_list import _boolean_icon
+
+        if self.state is False:
+            return _boolean_icon(False)
+        elif self.state is None:
+            return _boolean_icon(None)
+        elif self.state is True:
+            return _boolean_icon(True)
+    state_icons.short_description = 'Состояние'
 
 
 class Domain(models.Model):
