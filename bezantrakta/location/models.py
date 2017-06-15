@@ -22,13 +22,6 @@ class City(models.Model):
         default='Europe/Moscow',
         verbose_name='Часовой пояс',
     )
-    is_published = models.BooleanField(
-        default=False,
-        help_text="""
-        True - включен и работает,
-        False - отключен (скоро открытие).""",
-        verbose_name='Публикация',
-    )
     STATE_DISABLED = False
     STATE_PROGRESS = None
     STATE_ENABLED = True
