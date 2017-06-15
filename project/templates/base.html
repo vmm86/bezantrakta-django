@@ -128,11 +128,11 @@
     <header class="header">
 
         {# Вывод города текущего сайта #}
-        <div id="choose-city">
+        <div id="choose-city-button" class="choose-city-button">
         {% with city_icon="global/svg/city/"|add:request.city_slug|add:".svg" %}
-            <img id="choose-city-icon" class="city-icon" src="{% static city_icon %}">
+            <img class="icon" src="{% static city_icon %}">
         {% endwith %}
-            <span id="choose-city-button" title="Выбрать город">{{ request.city_title }}</span>
+            <span class="title" title="Выбрать город">{{ request.city_title }}</span>
         </div>
         {# Вывод города текущего сайта #}
 
@@ -411,7 +411,7 @@ lightbox.option({
                 <p>cookies['bezantrakta_city']: {{ request.bezantrakta_city }}</p>
             {% endif %}
 
-                <ul id="choose-city-list">
+                <ul id="choose-city-list" class="choose-city-list">
                 {% for city in request.cities %}
                 {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
                 {% if request.bezantrakta_city == city.slug %}
@@ -423,7 +423,7 @@ lightbox.option({
                         <img class="city-icon" src="{% static city_icon %}">
                     {% endwith %}
                         <span class="city-name">{{ city.title }}</span>
-                    {% if not city.is_published %}
+                    {% if city.state == None %}
                         <span class="city-status-text">скоро открытие</span>
                     {% endif %}
                     </li>
