@@ -3,7 +3,11 @@
 <html lang="ru">
 <head>
 {% load i18n static %}
-    <title>{{ request.settings.domain.title }}{{ title }}</title>
+{% if title %}
+    <title>{{ request.settings.domain.title }}: {{ title }}</title>
+{% else %}
+    <title>{{ request.settings.domain.title }}</title>
+{% endif %}
 
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
