@@ -57,6 +57,7 @@ $('#choose-city-list').on('click', 'li.ready', function() {
 if (window.location.href.indexOf('afisha') === -1) {
     // Удаление куки `city` (лучше использовать более специфичное название `bezantrakta_city`)
     if (getCookie('city')) {
+        setCity(getCookie('city'));
         document.cookie = 'city=; domain=.' + domain + '; expires=Thu, 01 Jan 1970 00:00:00 GMT;';
     }
     // Если кука уже создана ранее
