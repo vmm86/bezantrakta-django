@@ -5,7 +5,7 @@ $('#choose-city-modal').hide();
 
 //// Адрес главного сайта, к которому могут добавляться поддомены
 var domain = $('meta[name="domain"]').attr('content');
-//// Получение города текущего сайта из метатега city_config, а в нём - из конфига Joomla
+//// Получение города текущего сайта из метатега `city`, а в нём - из БД
 var city = $('meta[name="city"]').attr('content');
 
 // Функции
@@ -39,6 +39,7 @@ function setCity(city) {
 //// только если куки включены в браузере
 $('#choose-city-button').click(function() {
     if (navigator.cookieEnabled) {
+        $('body').css({'overflow': 'hidden'});
         $('#choose-city-modal').fadeIn();
     }
 });
@@ -48,6 +49,7 @@ $('#choose-city-modal .close').click(function() {
 });
 //// Создавать куку `bezantrakta_city` при клике по городу в лайтбоксе
 $('#choose-city-list').on('click', 'li.ready', function() {
+    $('body').css({'overflow': 'visible'});
     setCity($(this).data('city'));
 });
 
