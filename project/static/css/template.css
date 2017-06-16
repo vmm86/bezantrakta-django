@@ -479,20 +479,23 @@
 
     margin: 0 auto;
 
-    width: 50%;
+    width: 90%;
+    height: 70vh;
+
+    overflow: hidden;
 }
 
 .choose-city-list li {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
 
     padding: 0;
     margin: 0;
 
-    width: 75%;
+    width: 33%;
 
     position: relative;
 }
@@ -501,14 +504,15 @@
 }
 
 .choose-city-list li .city-icon {
-    margin: 1.5vw;
+    margin: 0;
 
-    width: 7vw;
     height: auto;
-    max-width: 96px;
+    width: 64px;
 }
 
-.choose-city-list li.coming-soon .city-icon,
+.choose-city-list li.coming-soon .city-icon {
+    opacity: 0.15;
+}
 .choose-city-list li.coming-soon .city-name {
     opacity: 0.33;
 }
@@ -527,7 +531,7 @@
     text-align: center;
     text-transform: uppercase;
 
-    padding: 1vw 2vw 1vw 1vw;
+    padding: 0.5rem 1rem 0.5rem 0.5rem;
 
     width: 24rem;
 }
@@ -544,6 +548,8 @@
 }
 
 .choose-city-list li .city-status-text {
+    background-color: #FFE57F;
+
     color: #000;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
@@ -553,9 +559,13 @@
     text-transform: uppercase;
     margin-left: 1vw;
 
+    padding: 0.25rem 0.75rem;
+
+    border-radius: 1rem;
+
     position: absolute;
-    left: 35%;
-    bottom: 0;
+/*    left: 23%;*/
+    bottom: 0.1rem;
 }
 
 /* Горизонтальное меню событий */

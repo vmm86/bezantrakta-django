@@ -42,10 +42,9 @@
 
 }
 
-@media all and (max-width: 1650px) {
-
-    html {
-        font-size: 14px;
+@media all and (max-width: 1180px) {
+    .choose-city-list li {
+        width: 50%;
     }
 }
 
@@ -149,6 +148,10 @@
 
     html {
         font-size: 12px;
+    }
+
+    .choose-city-list li {
+        width: 100%;
     }
 
     .header-left .bzlogo {
