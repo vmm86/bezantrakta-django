@@ -3,18 +3,26 @@
 <html lang="ru">
 <head>
 {% load i18n static %}
-    <title>{{ domain_title }}{{ event.title }}</title>
-
-    {# Общие CSS-файлы - загружаются в любом случае #}
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
-    {# Общие CSS-файлы - загружаются в любом случае #}
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/mq-order.css" %}">
+{% if event.title %}
+    <title>{{ domain_title }}: {{ event.title }}</title>
+{% else %}
+    <title>{{ domain_title }}</title>
+{% endif %}
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
     <meta name="description" content="{{ event.description }}">
     <meta name="keywords" content="{{ event.keywords }}">
+
+    {# Общие CSS-файлы - загружаются в любом случае #}
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/mq-order.css" %}">
+    {# Общие CSS-файлы - загружаются в любом случае #}
+
+    <link rel="stylesheet" href="{% static "global/js/lightbox2/lightbox.min.css" %}">
+
+    {% if debug %}<link rel="stylesheet" type="text/css" href="{% static "global/css/dev.css" %}">{% endif %}
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <meta name="google-site-verification" content="{# google_webmaster #}">
@@ -24,7 +32,10 @@
     {# Не индексировать тестовую версию сайта #}
     <meta name="robots" body="NOODP">
 
-    <meta name="city_config" content="{{ request.city_slug }}">
+    {# Метатеги для выбора городов #}
+    <meta name="city" content="{{ request.city_slug }}">
+    <meta name="domain" content="{{ request.root_domain }}">
+    {# Метатеги для выбора городов #}
 
     {# `tel:` links NO auto-detection #}
     <meta name="format-detection" content="telephone=no">

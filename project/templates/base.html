@@ -9,6 +9,11 @@
     <title>{{ request.settings.domain.title }}</title>
 {% endif %}
 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    <meta name="description" content="{{ request.settings.domain.description }}">
+    <meta name="keywords" content="{{ request.settings.domain.keywords }}">
+
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
@@ -21,11 +26,6 @@
 
     {% if debug %}<link rel="stylesheet" type="text/css" href="{% static "global/css/dev.css" %}">{% endif %}
 
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
-    <meta name="description" content="{{ request.settings.domain.description }}">
-    <meta name="keywords" content="{{ request.settings.domain.keywords }}">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     {# Не индексировать тестовую версию сайта #}
     {% if debug %}<meta name="robots" content="noindex, nofollow">{% endif %}
@@ -37,10 +37,10 @@
     <meta name="yandex-verification" content="{{ request.settings.webmaster.yandex }}">
 {% endif %}
 
-    {# Метатаеги для выбора городов #}
+    {# Метатеги для выбора городов #}
     <meta name="city" content="{{ request.city_slug }}">
     <meta name="domain" content="{{ request.root_domain }}">
-    {# Метатаеги для выбора городов #}
+    {# Метатеги для выбора городов #}
 
     {# `tel:` links NO auto-detection #}
     <meta name="format-detection" content="telephone=no">
