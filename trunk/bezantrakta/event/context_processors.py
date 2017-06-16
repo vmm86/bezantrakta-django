@@ -68,17 +68,15 @@ def categories(request):
         today = datetime.datetime.today()
 
         # Получение опубликованных категорий, у которых есть связанные предстоящие события
+        # .annotate(event_count=Count('event'))
         categories = EventCategory.objects.filter(
             is_published=True,
             event__is_published=True,
             event__date__gt=today,
             event__domain_id=request.domain_id
-        ).annotate(
-            event_count=Count('event')
         ).values(
             'title',
             'slug',
-            'event_count'
         ).distinct()
 
         # Пункт "Все категории"
