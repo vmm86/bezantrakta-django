@@ -8,11 +8,6 @@
         font-size: 16px;
     }
 
-    #choose-city {
-        top: 0.5rem;
-        left: 12%;
-    }
-
     .events-menu {
         text-align: center;
 
@@ -36,10 +31,7 @@
         width: 100%;
     }
 
-    .pinnacle {
-        left: 2%;
-    }
-
+    .top,
     .body {
         width: 100%;
     }
@@ -71,24 +63,6 @@
         height: 4rem;
     }
 
-    #choose-city {
-        top: 0.5rem;
-        left: 12%;
-    }
-
-    #choose-city-icon {
-        max-width: 48px;
-    }
-
-    #choose-city-button {
-        font-size: 1rem;
-    }
-
-    .pinnacle {
-        width:  18rem;
-        height: 12rem;
-    }
-
     .poster-level2 a {
         letter-spacing: -0.05rem;
     }
@@ -99,11 +73,6 @@
 
     html {
         font-size: 14px;
-    }
-
-    .pinnacle {
-        width: 16rem;
-        height: 10rem;
     }
 
     h1 {
@@ -126,6 +95,10 @@
 
     html {
         font-size: 13px;
+    }
+
+    .top {
+        height: 4.5rem;
     }
 
 }
@@ -178,17 +151,12 @@
         font-size: 12px;
     }
 
-    #choose-city {
-        top: 0.25rem;
-        left: 14%;
-    }
-
-    .header-left img.bzlogo {
-        height: 2.75rem;
+    .header-left .bzlogo {
+        height: 3.5rem;
 
         position: absolute;
-        top: -3.25rem;
-        left: 150%;
+        top: -4.5rem;
+        left: 165%;
     }
 
     .posters-level2-body.order1 .poster-level2-min_price {
@@ -241,26 +209,18 @@
 
 }
 
-@media all and (max-width: 720px) {
-
-    .search form {
-        height: 1.8rem;
-    }
-
-}
-
 @media all and (max-width: 560px) {
 
     html {
         font-size: 11px;
     }
 
-    #choose-city-list li {
-        width: 33%;
-    }
-
-    .search form {
+/*    .search form {
         height: 1.6rem;
+    }*/
+
+    .choose-city-button .icon {
+        max-width: 25%;
     }
 
     .poster-level2-date a,
@@ -276,25 +236,12 @@
         margin-bottom: -4rem;
     }
 
-    #choose-city {
-        top: -0.1rem;
-        left: 14%;
-    }
-
-    #choose-city-icon {
-        max-width: 32px;
-    }
-
     .panorama {
         background-size: 90% 70%;
         -moz-background-size: 90% 70%;
         -webkit-background-size: 90% 70%;
 
         height: 2.5rem;
-    }
-    .pinnacle {
-        width: 11rem;
-        height: 6rem;
     }
 
     .header,
@@ -303,7 +250,7 @@
         padding: 1% 0;
     }
 
-    #hamburger {
+    .hamburger {
         display: inline-block;
 
         cursor: pointer;
@@ -313,12 +260,14 @@
         -moz-background-size: 100% 100%;
         -webkit-background-size: 100% 100%;
 
-        width:  28px;
-        height: 28px;
+        border-radius: 0 0 0 1rem;
+
+        width:  4rem;
+        height: 4rem;
 
         position: absolute;
         top: 0;
-        left: 0;
+        right: 0;
 
         z-index: 5;
     }
@@ -327,12 +276,10 @@
         background: transparent;
 
         width: 100%;
-        height: 22rem;
+        height: 25rem;
 
         position: absolute;
         top: 5rem;
-
-        z-index: 6;
     }
 
     .top-menu {
@@ -344,7 +291,7 @@
     }
 
     .top-menu {
-        background: url(/static/global/svg/posters-level1-body.svg);
+        background: url(/static/global/svg/header-left.svg);
         background-size: 100% 100%;
         -moz-background-size: 100% 100%;
         -webkit-background-size: 100% 100%;
@@ -377,15 +324,8 @@
         color: #000;
     }
 
-    .header-left img.bzlogo {
-        width: auto;
-        height: 2rem;
-
-        position: absolute;
-        top: -4.75rem;
-        left: 50%;
-
-        z-index: 6;
+    .header-left .bzlogo {
+        left: 40%;
     }
 
     .header-right {
@@ -520,22 +460,6 @@
 
     html {
         font-size: 10px;
-    }
-
-    .header-left {
-        height: 18rem;
-    }
-
-    #hamburger {
-        width:  20px;
-        height: 20px;
-
-        z-index: 5;
-    }
-
-    .top-menu > ul > li > a,
-    .events-menu > ul > a > li {
-        padding: 0.25rem 0.5rem;
     }
 
     .modal .modal-body .bzlogo {

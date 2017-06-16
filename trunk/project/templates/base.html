@@ -97,7 +97,19 @@
 {% endspaceless %}
 <body>
 
-<a href="/"><div class="panorama"></div></a>
+<div class="top">
+    <div class="top-left">
+        {# Вывод города текущего сайта #}
+        <div id="choose-city-button" class="choose-city-button">
+        {% with city_icon="global/svg/city/"|add:request.city_slug|add:".svg" %}
+            <img class="icon" src="{% static city_icon %}">
+        {% endwith %}
+            <span class="title" title="Выбрать город">{{ request.city_title }}</span>
+        </div>
+        {# Вывод города текущего сайта #}
+    </div>
+    <div class="top-right">&nbsp;</div>
+</div>
 
 <div class="poster-left">
 {% if big_vertical_left %}
@@ -131,18 +143,7 @@
 
     <header class="header">
 
-        {# Вывод города текущего сайта #}
-        <div id="choose-city-button" class="choose-city-button">
-        {% with city_icon="global/svg/city/"|add:request.city_slug|add:".svg" %}
-            <img class="icon" src="{% static city_icon %}">
-        {% endwith %}
-            <span class="title" title="Выбрать город">{{ request.city_title }}</span>
-        </div>
-        {# Вывод города текущего сайта #}
-
-        <a href="/"><div class="pinnacle"></div></a>
-
-        <span id="hamburger"></span>
+        <span class="hamburger"></span>
 
         <div class="header-left">
 
@@ -444,7 +445,7 @@ lightbox.option({
 function menuToggle() {
     if (window.innerWidth <= 480) {
         $('.top-menu').hide();
-        $('#hamburger').click(function(event) {
+        $('.hamburger').click(function(event) {
             $('.top-menu').toggle();
         });
     } else {
