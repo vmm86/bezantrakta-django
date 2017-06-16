@@ -17,6 +17,9 @@ class CityForm(forms.ModelForm):
         # initial='Europe/Moscow',
         widget=autocomplete.ListSelect2(),
         label='Часовой пояс',
+        help_text="""
+        <a href="https://askgeo.com/" target="_blank">👉 Поиск часового пояса для конкретного города</a>
+        """
     )
 
     class Meta:
