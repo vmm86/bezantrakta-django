@@ -210,7 +210,7 @@
             {% for category in categories %}
                 {% url 'event:category' slug=category.slug as category_url %}
                 <li id="category_{{ category.slug }}" {% if category_url == request.url_path %}class="active"{% endif %}>
-                    <a href="{{ category_url }}">{{ category.title }} ({{ category.event_count }})</a>
+                    <a href="{{ category_url }}">{{ category.title }}</a>
                 </li>
             {% endfor %}
             </ul>
@@ -221,7 +221,7 @@
     <main class="content">
         {% block content_header %}{% endblock %}
         {% block content_body %}{% endblock %}
-    {% if debug%}
+    {% if debug %}
         <hr>
         <p>domain_slug: {{ request.domain_slug }}</p>
         <p>domain_id: {{ request.domain_id }}</p>
