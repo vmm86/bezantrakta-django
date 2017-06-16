@@ -4,7 +4,7 @@ $(document).ready(function(){
         controls: false,
         touchEnabled: true,
         auto: true,
-        // randomStart: true,
+        randomStart: true,
         infiniteLoop: true,
         auto: true,
         speed: 1500,
