@@ -14,12 +14,12 @@ urlpatterns = [
         name='events_on_index'
     ),
     url(
-        r'^(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[\w-]+)/$',
+        r'^afisha/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[\w-]+)/$',
         event,
         name='event'
     ),
     url(
-        r'^category/(?P<slug>[\w-]+)/$',
+        r'^afisha/category/(?P<slug>[\w-]+)/$',
         category,
         name='category'
     ),
