@@ -11,11 +11,11 @@
 
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/bxslider.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
-    {# Общие CSS-файлы - загружаются в любом случае #}
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/bxslider.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
+    {# Общие CSS-файлы - загружаются в любом случае #}
 
     <link rel="stylesheet" href="{% static "global/js/lightbox2/lightbox.min.css" %}">
 
@@ -185,7 +185,7 @@
                     {# Поиск #}
                 </div>
 
-                <div class="posters-level1-body">
+                <div class="posters-level1-body" style="height: 0;">
                 {% if big_horizontal %}
                     <ul class="slider">
                     {% for event in big_horizontal %}
