@@ -558,26 +558,6 @@
     bottom: 0;
 }
 
-/* Карусель афиш 1-го уровня */
-
-.posters-level1-body {
-    display: inline-block;
-
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: center;
-
-    padding: 0.5vw 0;
-    margin: 0;
-
-    width: 100%;
-    height: auto;
-
-    overflow: hidden;
-}
-
 /* Горизонтальное меню событий */
 
 .events-menu {
