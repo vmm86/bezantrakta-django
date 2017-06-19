@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.db.models import CharField, Case, When, Value, Q
 from django.http.request import split_domain_port
@@ -30,6 +32,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                 'id',
                 'slug',
                 'is_published',
+                'settings',
                 'city__title',
                 'city__slug',
                 'city__state'
@@ -46,6 +49,8 @@ class CurrentLocationMiddleware(MiddlewareMixin):
             request.domain_slug = domain['slug']
             request.domain_id = domain['id']
             request.domain_is_published = domain['is_published']
+            # Получение настроек домена в формате JSON из БД
+            request.settings = json.loads(domain['settings'])
 
             request.city_title = domain['city__title']
             request.city_slug = domain['city__slug']
@@ -110,22 +115,3 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     request.cities = cities
                     # Псевдоним города из куки `bezantrakta_city`
                     request.bezantrakta_city = request.COOKIES.get('bezantrakta_city', None)
-
-                # Получение из JSON настроек, специфичных для каждого домена
-                import json
-                import os
-
-                try:
-                    domain_settings_file = os.path.join(
-                        settings.BASE_DIR,
-                        'bezantrakta',
-                        'location',
-                        'domain_settings',
-                        ''.join((request.domain_slug, '.json',))
-                    )
-                    with open(domain_settings_file) as dsf:
-                        domain_settings = json.load(dsf)
-                except FileNotFoundError:
-                    pass
-                else:
-                    request.settings = domain_settings

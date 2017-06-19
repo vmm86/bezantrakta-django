@@ -1,3 +1,7 @@
+import json
+import os
+
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 
@@ -63,6 +67,17 @@ class City(models.Model):
     state_icons.short_description = _('city_state_icons')
 
 
+def get_default_domain_settings():
+    domain_settings_file = os.path.join(
+        settings.BASE_DIR,
+        'bezantrakta',
+        'location',
+        'domain_settings.json',
+    )
+    with open(domain_settings_file, 'r') as dsf:
+        return json.dumps(json.load(dsf), ensure_ascii=False)
+
+
 class Domain(models.Model):
     """
     Сайты Безантракта, работающие в разных городах России.
@@ -91,6 +106,10 @@ class Domain(models.Model):
         on_delete=models.CASCADE,
         db_column='city_id',
         verbose_name=_('domain_city'),
+    )
+    settings = models.TextField(
+        default=get_default_domain_settings,
+        verbose_name=_('domain_settings'),
     )
 
     class Meta:
