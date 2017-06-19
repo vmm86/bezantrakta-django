@@ -71,7 +71,7 @@ svn checkout http://svn.rterm.ru/bezantrakta-django
 ln -s "/opt/bezantrakta-django/trunk" "/var/www/bezantrakta-django"
 ```
 
-6. Создание и активация виртуального окружения Python 3, установка необходимых Python-пакетов.
+6. Создание и активация виртуального окружения Python 3, установка необходимых Python-пакетов, синхронизация с БД.
 
 ```bash
 cd /opt/bezantrakta-django
@@ -79,7 +79,10 @@ cd /opt/bezantrakta-django
 (virtualenv -p /usr/bin/python3 venv || pyvenv venv)
 source venv/bin/activate
 
+[ venv ] cd trunk
 [ venv ] pip install -r requirements.txt
+# Предварительно создать БД с именем, указанным в project.settings.base.DATABASES
+[ venv ] python manage.py migrate
 ```
 
 7. Создание uWSGI-приложения.
@@ -174,4 +177,33 @@ service nginx configtest
 service nginx restart
 
 service uwsgi restart
+```
+
+## Разработка и поддержка
+
+После любого изменения py-файлов в проекте:
+
+```bash
+service uwsgi restart
+```
+
+После изменения любой модели:
+
+```bash
+[ venv ] python manage.py makemigrations
+[ venv ] python manage.py migrate
+```
+
+После любого изменения статических файлов в папках `static`:
+
+```bash
+[ venv ] python manage.py collectstatic
+```
+
+При добавлении новых строк `_('...')` для файлов локализации:
+
+```bash
+[ venv ] python manage.py makemessages
+# Заполнение строк локализации в папках `locale/ru/LC_MESSAGES/django.po`
+[ venv ] python manage.py compilemessages
 ```
