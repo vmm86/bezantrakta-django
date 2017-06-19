@@ -120,7 +120,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'location.City', 'label': 'Города'},
-            {'model': 'location.Domain', 'label': 'Домены'},
+            {'model': 'location.Domain', 'label': 'Сайты'},
         )
 
     },
@@ -129,6 +129,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'event.Event', 'label': 'События'},
+            {'model': 'event.EventLink', 'label': 'Ссылки'},
             {'model': 'event.EventCategory', 'label': 'Категории'},
             {'model': 'event.EventGroup', 'label': 'Группы'},
             {'model': 'event.EventContainer', 'label': 'Контейнеры'},
