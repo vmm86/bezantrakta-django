@@ -3,6 +3,7 @@ import uuid
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import ugettext as _
 
 
 class BannerGroup(models.Model):
@@ -16,24 +17,24 @@ class BannerGroup(models.Model):
     )
     title = models.CharField(
         max_length=32,
-        verbose_name='Название',
+        verbose_name=_('bannergroup_title'),
     )
     slug = models.SlugField(
         max_length=32,
-        verbose_name='Псевдоним',
+        verbose_name=_('bannergroup_slug'),
     )
     order = models.PositiveSmallIntegerField(
         default=1,
         blank=False,
         null=False,
-        verbose_name='Порядок',
+        verbose_name=_('bannergroup_order'),
     )
 
     class Meta(object):
         app_label = 'banner'
         db_table = 'bezantrakta_banner_group'
-        verbose_name = 'группа баннеров'
-        verbose_name_plural = 'группы баннеров'
+        verbose_name = _('bannergroup')
+        verbose_name_plural = _('bannergroups')
         ordering = ('order', 'title',)
 
     def __str__(self):
@@ -77,48 +78,48 @@ class BannerGroupItem(models.Model):
     )
     title = models.CharField(
         max_length=32,
-        verbose_name='Название',
+        verbose_name=_('bannergroupitem_title'),
     )
     slug = models.SlugField(
         max_length=32,
-        verbose_name='Псевдоним',
+        verbose_name=_('bannergroupitem_slug'),
     )
     img = models.ImageField(
         upload_to=img_path,
-        verbose_name='Изображение'
+        verbose_name=_('bannergroupitem_img')
     )
     href = models.URLField(
         blank=True,
-        verbose_name='Внешняя ссылка',
+        verbose_name=_('bannergroupitem_href'),
     )
     is_published = models.BooleanField(
         default=False,
-        verbose_name='Публикация',
+        verbose_name=_('bannergroupitem_is_published'),
     )
     order = models.PositiveSmallIntegerField(
         default=1,
         blank=False,
         null=False,
-        verbose_name='Порядок',
+        verbose_name=_('bannergroupitem_order'),
     )
     banner_group = models.ForeignKey(
         'banner.BannerGroup',
         on_delete=models.CASCADE,
         db_column='banner_group_id',
-        verbose_name='Группа баннеров',
+        verbose_name=_('bannergroupitem_banner_group'),
     )
     domain = models.ForeignKey(
         'location.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
-        verbose_name='Домен',
+        verbose_name=_('bannergroupitem_domain'),
     )
 
     class Meta(object):
         app_label = 'banner'
         db_table = 'bezantrakta_banner_group_item'
-        verbose_name = 'баннер'
-        verbose_name_plural = 'баннеры'
+        verbose_name = _('bannergroupitem')
+        verbose_name_plural = _('bannergroupitems')
         ordering = ('order', 'banner_group', 'domain', 'title',)
         unique_together = (
             ('domain', 'banner_group', 'slug',),

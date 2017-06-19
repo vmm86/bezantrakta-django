@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 from django.urls.base import reverse
+from django.utils.translation import ugettext as _
 
 from ckeditor.fields import RichTextField
 
@@ -17,46 +18,42 @@ class Article(models.Model):
     )
     title = models.CharField(
         max_length=64,
-        help_text='Всего не более 60-65 символов',
-        verbose_name='Название',
+        help_text=_('article_title_help_text'),
+        verbose_name=_('title'),
     )
     slug = models.SlugField(
         max_length=64,
-        verbose_name='Псевдоним',
+        verbose_name=_('article_slug'),
     )
     description = models.TextField(
         max_length=200,
-        help_text="""Должно сдержать ключевые слова или фразы,
-        описывающие событие, но не более 3-5 раз.\n
-        Всего не более 150-200 символов""",
-        verbose_name='Метатег `description`',
+        help_text=_('article_description_help_text'),
+        verbose_name=_('article_description'),
     )
     keywords = models.TextField(
         max_length=150,
-        help_text="""Несколько ключевых слов или фраз,
-        разделённых запятыми, которые описывают содержимое текста.\n
-        Всего не более 100-150 символов""",
-        verbose_name='Метатег `keywords`',
+        help_text=_('article_keywords_help_text'),
+        verbose_name=_('article_keywords'),
     )
     text = RichTextField(
-        verbose_name='Содержимое страницы',
+        verbose_name=_('article_text'),
     )
     is_published = models.BooleanField(
         default=False,
-        verbose_name='Публикация',
+        verbose_name=_('article_is_published'),
     )
     domain = models.ForeignKey(
         'location.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
-        verbose_name='Домен',
+        verbose_name=_('article_domain'),
     )
 
     class Meta:
         app_label = 'article'
         db_table = 'bezantrakta_article'
-        verbose_name = 'HTML-страница'
-        verbose_name_plural = 'HTML-страницы'
+        verbose_name = _('article')
+        verbose_name_plural = _('articles')
         ordering = ('domain', 'title', 'is_published',)
         unique_together = (
             ('domain', 'slug',),

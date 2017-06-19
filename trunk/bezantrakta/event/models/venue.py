@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.utils.translation import ugettext as _
 
 
 class EventVenue(models.Model):
@@ -14,25 +15,24 @@ class EventVenue(models.Model):
     )
     title = models.CharField(
         max_length=64,
-        help_text='Всего не более 60-65 символов',
-        verbose_name='Название',
+        verbose_name=_('eventvenue_title'),
     )
     slug = models.SlugField(
         max_length=64,
-        verbose_name='Псевдоним'
+        verbose_name=_('eventvenue_slug'),
     )
     domain = models.ForeignKey(
         'location.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
-        verbose_name='Домен',
+        verbose_name=_('eventvenue_domain'),
     )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_venue'
-        verbose_name = 'зал'
-        verbose_name_plural = 'залы'
+        verbose_name = _('eventvenue')
+        verbose_name_plural = _('eventvenues')
         ordering = ('domain', 'title',)
         unique_together = (
             ('domain', 'slug',),

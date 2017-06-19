@@ -4,6 +4,7 @@ import uuid
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
 
 
 def img_path(instance, filename):
@@ -39,25 +40,25 @@ class EventLink(models.Model):
     )
     title = models.CharField(
         max_length=32,
-        verbose_name='Название',
+        verbose_name=_('eventlink_title'),
     )
     slug = models.SlugField(
         max_length=32,
-        verbose_name='Псевдоним'
+        verbose_name=_('eventlink_slug'),
     )
     img = models.ImageField(
         upload_to=img_path,
         blank=True,
         null=True,
-        help_text="""Размер логотипа 192x64 px""",
-        verbose_name='Логотип'
+        help_text=_('eventlink_img_help_text'),
+        verbose_name=_('eventlink_img'),
     )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_link'
-        verbose_name = 'ссылка'
-        verbose_name_plural = 'ссылки'
+        verbose_name = _('eventlink')
+        verbose_name_plural = _('eventlinks')
         ordering = ('title',)
 
     def __str__(self):
@@ -71,5 +72,5 @@ class EventLink(models.Model):
         super().delete(*args, **kwargs)
 
     def img_preview(self):
-        return mark_safe('<img src="{}" style="width: 200px; height: auto;">'.format(self.img.url))
-    img_preview.short_description = 'Логотип'
+        return mark_safe('<img src="{}" style="width: 192px; height: auto;">'.format(self.img.url))
+    img_preview.short_description = _('eventlinks_img_preview')
