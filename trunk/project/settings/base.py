@@ -17,6 +17,8 @@ INSTALLED_APPS = [
 
     'admin_reorder',
 
+    'jsoneditor',
+
     'ckeditor',
     'ckeditor_uploader',
 
@@ -333,3 +335,6 @@ CKEDITOR_CONFIGS = {
 CKEDITOR_JQUERY_URL = '/static/global/js/jquery/jquery-1.9.1.min.js'
 
 CKEDITOR_UPLOAD_PATH = 'global/uploads/'
+
+JSON_EDITOR_JS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.js'
+JSON_EDITOR_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.css'

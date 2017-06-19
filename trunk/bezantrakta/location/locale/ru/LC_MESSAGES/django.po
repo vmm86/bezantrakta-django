@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-19 10:54+0000\n"
+"POT-Creation-Date: 2017-06-19 14:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,98 +20,102 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: bezantrakta/location/models.py:13
+#: bezantrakta/location/models.py:17
 msgid "city_id_help_text"
 msgstr "Идентификатор города - его телефонный код."
 
-#: bezantrakta/location/models.py:14
+#: bezantrakta/location/models.py:18
 msgid "city_id"
 msgstr "Идентификатор"
 
-#: bezantrakta/location/models.py:18
+#: bezantrakta/location/models.py:22
 msgid "city_title"
 msgstr "Название"
 
-#: bezantrakta/location/models.py:22
+#: bezantrakta/location/models.py:26
 msgid "city_slug"
 msgstr "Псевдоним"
 
-#: bezantrakta/location/models.py:26
+#: bezantrakta/location/models.py:30
 msgid "city_timezone"
 msgstr "Часовой пояс"
 
-#: bezantrakta/location/models.py:32
+#: bezantrakta/location/models.py:36
 msgid "city_state_disabled"
 msgstr "отключен"
 
-#: bezantrakta/location/models.py:33
+#: bezantrakta/location/models.py:37
 msgid "city_state_progress"
 msgstr "подготовка"
 
-#: bezantrakta/location/models.py:34
+#: bezantrakta/location/models.py:38
 msgid "city_state_enabled"
 msgstr "включен"
 
-#: bezantrakta/location/models.py:40
+#: bezantrakta/location/models.py:44
 msgid "city_state_help_text"
 msgstr ""
 "<ul><li>отключен - НЕ виден в списке городов и НЕ работает;</"
 "li><li>подготовка - виден в списке городов, но НЕ доступен для выбора (скоро "
 "открытие);</li><li>включен - виден в списке городов и работает.</li></ul>"
 
-#: bezantrakta/location/models.py:41
+#: bezantrakta/location/models.py:45
 msgid "city_state"
 msgstr "Состояние"
 
-#: bezantrakta/location/models.py:47
+#: bezantrakta/location/models.py:51
 msgid "city"
 msgstr "город"
 
-#: bezantrakta/location/models.py:48
+#: bezantrakta/location/models.py:52
 msgid "cities"
 msgstr "города"
 
-#: bezantrakta/location/models.py:63
+#: bezantrakta/location/models.py:67
 msgid "city_state_icons"
 msgstr "Состояние"
 
-#: bezantrakta/location/models.py:72
+#: bezantrakta/location/models.py:87
 msgid "domain_id_help_text"
 msgstr ""
 "Идентификатор сайта - число из 3-х цифр.<br>Первые 2 цифры - автомобильный "
 "код региона, в котором находится город сайта.<br>Третья цифра - порядковый "
 "номер от 0 до 9."
 
-#: bezantrakta/location/models.py:73
+#: bezantrakta/location/models.py:88
 msgid "domain_id"
 msgstr "Идентификатор"
 
-#: bezantrakta/location/models.py:77
+#: bezantrakta/location/models.py:92
 msgid "domain_title"
 msgstr "Название"
 
-#: bezantrakta/location/models.py:82
+#: bezantrakta/location/models.py:97
 msgid "domain_slug"
 msgstr "Псевдоним"
 
-#: bezantrakta/location/models.py:86
+#: bezantrakta/location/models.py:101
 msgid "domain_is_published_help_text"
 msgstr ""
 "<ul><li>опубликован - включен и работает;</li><li>НЕ опубликован - отключен "
 "(сайт недоступен, проводятся технические работы).</li></ul>"
 
-#: bezantrakta/location/models.py:87
+#: bezantrakta/location/models.py:102
 msgid "domain_is_published"
 msgstr "Публикация"
 
-#: bezantrakta/location/models.py:93
+#: bezantrakta/location/models.py:108
 msgid "domain_city"
 msgstr "Город"
 
-#: bezantrakta/location/models.py:99
+#: bezantrakta/location/models.py:112
+msgid "domain_settings"
+msgstr "Настройки в JSON"
+
+#: bezantrakta/location/models.py:118
 msgid "domain"
 msgstr "сайт"
 
-#: bezantrakta/location/models.py:100
+#: bezantrakta/location/models.py:119
 msgid "domains"
 msgstr "сайты"

@@ -12,6 +12,7 @@ django-flat-responsive==1.3.0
 django-flat-theme==1.1.4
 django-fluent-pages==1.1.1
 django-fluent-utils==1.3
+django-jsoneditor==0.0.9
 django-modeladmin-reorder==0.2
 django-mptt==0.8.7
 django-parler==1.7
@@ -26,6 +27,7 @@ olefile==0.44
 packaging==16.8
 Pillow==4.1.1
 pyparsing==2.2.0
+python-dateutil==2.6.0
 pytz==2017.2
 pyup-django==0.4.0
 requests==2.14.2

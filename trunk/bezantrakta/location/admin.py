@@ -1,6 +1,8 @@
 from django.contrib import admin
+from django.db.models import TextField
 
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
+from jsoneditor.forms import JSONEditor
 
 from .forms import CityForm
 from .models import City
@@ -21,6 +23,9 @@ class CityAdmin(admin.ModelAdmin):
 
 @admin.register(Domain)
 class DomainAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        TextField: {'widget': JSONEditor},
+    }
     list_display = ('title', 'slug', 'is_published',)
     list_filter = (
         ('city', RelatedDropdownFilter),
