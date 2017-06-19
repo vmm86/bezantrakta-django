@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-19 10:54+0000\n"
+"POT-Creation-Date: 2017-06-19 14:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,8 +25,8 @@ msgid "article_title_help_text"
 msgstr "Всего не более 60-65 символов."
 
 #: bezantrakta/article/models.py:22
-msgid "title"
-msgstr ""
+msgid "article_title"
+msgstr "Название"
 
 #: bezantrakta/article/models.py:26
 msgid "article_slug"
@@ -71,6 +71,3 @@ msgstr "HTML-страница"
 #: bezantrakta/article/models.py:56
 msgid "articles"
 msgstr "HTML-страницы"
-
-#~ msgid "article_title"
-#~ msgstr "Название"

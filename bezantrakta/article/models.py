@@ -19,7 +19,7 @@ class Article(models.Model):
     title = models.CharField(
         max_length=64,
         help_text=_('article_title_help_text'),
-        verbose_name=_('title'),
+        verbose_name=_('article_title'),
     )
     slug = models.SlugField(
         max_length=64,
