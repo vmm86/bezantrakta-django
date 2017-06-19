@@ -4,6 +4,7 @@ import uuid
 from django.conf import settings
 from django.db import models
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
 
 
 def img_path(instance, filename):
@@ -47,30 +48,30 @@ class EventContainerBinder(models.Model):
         'event.Event',
         on_delete=models.CASCADE,
         db_column='event_id',
-        verbose_name='Событие',
+        verbose_name=_('eventcontainerbinder_event'),
     )
     event_container = models.ForeignKey(
         'event.EventContainer',
         on_delete=models.CASCADE,
         db_column='event_container_id',
-        verbose_name='Группа событий',
+        verbose_name=_('eventcontainerbinder_event_container'),
     )
     order = models.PositiveSmallIntegerField(
         default=1,
-        verbose_name='Порядок в контейнере',
+        verbose_name=_('eventcontainerbinder_order'),
     )
     img = models.ImageField(
         upload_to=img_path,
         blank=True,
         null=True,
-        verbose_name='Афиша'
+        verbose_name=_('eventcontainerbinder_img'),
     )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_container_binder'
-        verbose_name = 'связь событий и контейнеров'
-        verbose_name_plural = 'связь событий и контейнеров'
+        verbose_name = _('eventcontainerbinder')
+        verbose_name_plural = _('eventcontainerbinders')
         ordering = ('order', 'event', 'event_container',)
         unique_together = (
             ('event', 'event_container', 'order',),
@@ -90,11 +91,11 @@ class EventContainerBinder(models.Model):
         return mark_safe(
             '<img src="{}" style="width: auto; height: 100px;">'.format(self.img.url)
         )
-    img_preview.short_description = 'Афиша'
+    img_preview.short_description = _('eventcontainerbinders_img_preview')
 
     def event_date(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
         return mark_safe(
             '{}'.format(naturalday(self.event.date))
         )
-    event_date.short_description = 'Дата'
+    event_date.short_description = _('eventcontainerbinders_event_date')

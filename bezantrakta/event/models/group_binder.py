@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import models
+from django.utils.translation import ugettext as _
 
 
 class EventGroupBinder(models.Model):
@@ -16,20 +17,20 @@ class EventGroupBinder(models.Model):
         'event.Event',
         on_delete=models.CASCADE,
         db_column='event_id',
-        verbose_name='Событие',
+        verbose_name=_('eventgroupbinder_event'),
     )
     event_group = models.ForeignKey(
         'event.EventGroup',
         on_delete=models.CASCADE,
         db_column='event_group_id',
-        verbose_name='Группа событий',
+        verbose_name=_('eventgroupbinder_event_group'),
     )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event_group_binder'
-        verbose_name = 'связка событий и групп событий'
-        verbose_name_plural = 'связки событий и групп событий'
+        verbose_name = _('eventgroupbinder')
+        verbose_name_plural = _('eventgroupbinders')
         ordering = ('event_group', 'event',)
 
     def __str__(self):

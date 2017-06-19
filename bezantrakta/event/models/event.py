@@ -4,6 +4,7 @@ from ckeditor.fields import RichTextField
 
 from django.db import models
 from django.urls.base import reverse
+from django.utils.translation import ugettext as _
 
 
 class Event(models.Model):
@@ -17,42 +18,38 @@ class Event(models.Model):
     )
     title = models.CharField(
         max_length=64,
-        help_text='Всего не более 60-65 символов',
-        verbose_name='Название',
+        help_text=_('event_title_help_text'),
+        verbose_name=_('event_title'),
     )
     slug = models.SlugField(
         max_length=64,
-        verbose_name='Псевдоним'
+        verbose_name=_('event_slug'),
     )
     description = models.TextField(
         max_length=200,
-        help_text="""Должно сдержать ключевые слова или фразы,
-        описывающие событие, но не более 3-5 раз.\n
-        Всего не более 150-200 символов""",
-        verbose_name='Метатег `description`',
+        help_text=_('event_description_help_text'),
+        verbose_name=_('event_description'),
     )
     keywords = models.TextField(
         max_length=150,
-        help_text="""Несколько ключевых слов или фраз,
-        разделённых запятыми, которые описывают содержимое текста.\n
-        Всего не более 100-150 символов""",
-        verbose_name='Метатег `keywords`',
+        help_text=_('event_keywords_help_text'),
+        verbose_name=_('event_keywords'),
     )
     text = RichTextField(
-        verbose_name='Описание события',
+        verbose_name=_('event_text'),
     )
     is_published = models.BooleanField(
         default=False,
-        verbose_name='Публикация',
+        verbose_name=_('event_is_published'),
     )
     is_on_index = models.BooleanField(
         default=False,
-        verbose_name='На главной',
+        verbose_name=_('event_is_on_index'),
     )
     min_price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name='Минимальная цена билета',
+        verbose_name=_('event_min_price'),
     )
     AGE_00 = 0
     AGE_06 = 6
@@ -70,31 +67,31 @@ class Event(models.Model):
         choices=MIN_AGE_CHOICES,
         default=AGE_00,
         blank=False,
-        verbose_name='Возрастное ограничение',
+        verbose_name=_('event_min_age'),
     )
     date = models.DateField(
-        verbose_name='Дата',
+        verbose_name=_('event_date'),
     )
     time = models.TimeField(
-        verbose_name='Время',
+        verbose_name=_('event_time'),
     )
     event_group = models.ManyToManyField(
         'event.EventGroup',
         through='event.EventGroupBinder',
         blank=True,
-        verbose_name='Группа, в которую входит событие',
+        verbose_name=_('event_event_group'),
     )
     event_container = models.ManyToManyField(
         'event.EventContainer',
         through='event.EventContainerBinder',
         blank=True,
-        verbose_name='Контейнеры, в которых отображается событие',
+        verbose_name=_('event_event_container'),
     )
     event_link = models.ManyToManyField(
         'event.EventLink',
         through='event.EventLinkBinder',
         blank=True,
-        verbose_name='Ссылки, добавленные к событию',
+        verbose_name=_('event_event_link'),
     )
     event_category = models.ForeignKey(
         'event.EventCategory',
@@ -102,26 +99,26 @@ class Event(models.Model):
         null=True,
         on_delete=models.CASCADE,
         db_column='event_category_id',
-        verbose_name='Категория',
+        verbose_name=_('event_event_category'),
     )
     event_venue = models.ForeignKey(
         'event.EventVenue',
         on_delete=models.CASCADE,
         db_column='event_venue_id',
-        verbose_name='Зал',
+        verbose_name=_('event_event_venue'),
     )
     domain = models.ForeignKey(
         'location.Domain',
         on_delete=models.CASCADE,
         db_column='domain_id',
-        verbose_name='Домен',
+        verbose_name=_('event_domain'),
     )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event'
-        verbose_name = 'событие'
-        verbose_name_plural = 'события'
+        verbose_name = _('event')
+        verbose_name_plural = _('events')
         ordering = ('domain', 'date', 'time', 'title',)
         unique_together = (
             ('domain', 'date', 'slug',),
@@ -144,8 +141,8 @@ class Event(models.Model):
 
     def container_count(self):
         return self.event_container.count()
-    container_count.short_description = 'Контейнеров'
+    container_count.short_description = _('event_container_count')
 
     def link_count(self):
         return self.event_link.count()
-    link_count.short_description = 'Ссылок'
+    link_count.short_description = _('event_link_count')
