@@ -245,9 +245,10 @@ TIME_INPUT_FORMATS = ['%H:%M', ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-# Общая статика для всего проекта
+# Параметры сбора статики
 STATICFILES_DIRS = [
-    ('global', os.path.join(BASE_DIR, 'project', 'static')),
+    # Общая статика для всего проекта
+    ('global', os.path.join(BASE_DIR, 'project', 'static', 'global')),
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
