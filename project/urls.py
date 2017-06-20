@@ -20,8 +20,8 @@ from django.contrib import admin
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('bezantrakta.event.urls')),
-    url(r'', include('bezantrakta.article.urls')),
     url(r'', include('bezantrakta.seo.urls')),
+    url(r'', include('bezantrakta.article.urls')),
 ]
 
 if settings.DEBUG:
