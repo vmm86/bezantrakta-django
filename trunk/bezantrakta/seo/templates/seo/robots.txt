@@ -1,0 +1,20 @@
+{% spaceless %}{% if debug %}
+User-agent: *
+Disallow: /
+{% else %}
+User-agent: *
+Crawl-delay: {{ crawl_delay|safe }}
+Disallow: /admin/
+Disallow: /bezantrakta/
+Disallow: /project/
+Disallow: manage.py
+Disallow: README.md
+Disallow: requirements.txt
+Allow: /media/
+Allow: /static/
+
+User-agent: Twitterbot
+Disallow:
+{% endif %}{% endspaceless %}
+
+Host: {{ host }}

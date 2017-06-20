@@ -86,6 +86,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     path = request.get_full_path().split('?')[0]
 
                     request.root_domain = settings.ROOT_DOMAIN
+                    request.url_domain = url_domain
                     request.url_path = path
                     request.url_full = ''.join((url_domain, path,))
 
