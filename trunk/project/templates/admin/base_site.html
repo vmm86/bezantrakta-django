@@ -1,0 +1,9 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "bezantrakta_admin" %}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url "admin:index" %}">{% trans "bezantrakta_admin" %}</a></h1>
+{% endblock %}
+
