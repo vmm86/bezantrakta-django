@@ -16,20 +16,12 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-# from django.views.generic import RedirectView
-
-# handler404 = 'bezantrakta.article.views.my_custom_page_not_found_view'
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('bezantrakta.event.urls')),
     url(r'', include('bezantrakta.article.urls')),
     url(r'', include('bezantrakta.seo.urls')),
-    # url(
-    #     r'^favicon\.ico$',
-    #     RedirectView.as_view(url='/global/ico/favicon.ico', permanent=True),
-    #     name='favicon'
-    # ),
 ]
 
 if settings.DEBUG:
