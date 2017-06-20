@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'bezantrakta.article',
     'bezantrakta.banner',
     'bezantrakta.event',
+    'bezantrakta.seo',
 ]
 
 MIDDLEWARE = [

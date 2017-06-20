@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'', include('bezantrakta.event.urls')),
     url(r'', include('bezantrakta.article.urls')),
+    url(r'', include('bezantrakta.seo.urls')),
     # url(
     #     r'^favicon\.ico$',
     #     RedirectView.as_view(url='/global/ico/favicon.ico', permanent=True),
