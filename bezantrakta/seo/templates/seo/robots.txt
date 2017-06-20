@@ -7,9 +7,6 @@ Crawl-delay: {{ crawl_delay|safe }}
 Disallow: /admin/
 Disallow: /bezantrakta/
 Disallow: /project/
-Disallow: /manage.py
-Disallow: /README.md
-Disallow: /requirements.txt
 Allow: /media/
 Allow: /static/
 
