@@ -5,7 +5,7 @@
 
 {% block extrastyle %}
 {{ block.super }}
-{% if ENVIRONMENT_NAME != "production" %}
+{% if request.user.is_superuser %}
 <style type="text/css">
 body:before,
 body:after {

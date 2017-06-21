@@ -17,11 +17,16 @@ body.login,
     align-items: stretch;
     align-content: stretch;
 
+    height: 100%;
+}
+
+html,
+body,
+#container {
     margin: 0;
     padding: 0;
 
     width: 100%;
-    height: 100%;
 }
 
 body {
@@ -530,18 +535,6 @@ textarea:focus,
 .login .submit-row {
     text-align: center;
     padding: 12px 0;
-}
-
-.button,
-input[type=submit],
-input[type=button],
-.submit-row input,
-a.button {
-    background: #03A9F4;
-    font-size: 16px;
-    font-weight: bold;
-    letter-spacing: 0.05rem;
-    text-transform: uppercase;
 }
 
 .button:active,
