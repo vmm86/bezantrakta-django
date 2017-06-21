@@ -10,11 +10,6 @@ PREPEND_WWW = False
 # Application definition
 
 INSTALLED_APPS = [
-    # 'admin_interface',
-    # 'flat_responsive',
-    # 'flat',
-    # 'colorfield',
-
     'admin_reorder',
 
     'jsoneditor',
@@ -249,6 +244,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     # Общая статика для всего проекта
     ('global', os.path.join(BASE_DIR, 'project', 'static', 'global')),
+    ('admin', os.path.join(BASE_DIR, 'project', 'static', 'admin')),
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
