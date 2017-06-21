@@ -14,7 +14,7 @@ ALLOWED_HOSTS = [
     '.bezantrakta.ru'
 ]
 
-# Email для автоматических сообщений от менеджера сайтаы.
+# Email для автоматических сообщений от менеджера сайта.
 DEFAULT_FROM_EMAIL = 'webmaster@bezantrakta.ru'
 # The email that error messages come from, sent to ADMINS and MANAGERS.
 SERVER_EMAIL = 'webmaster@bezantrakta.ru'
