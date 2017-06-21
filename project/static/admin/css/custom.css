@@ -1,0 +1,313 @@
+/* Основные стили */
+*, html, body {
+    box-sizing: border-box;
+}
+
+body {
+    color: #111;
+    background: #fff;
+}
+
+h1 {
+    color: #111;
+    font-weight: bold;
+}
+
+a {
+    cursor: pointer;
+}
+
+a:link,
+a:visited {
+    color: #111;
+    text-decoration: none;
+}
+
+td, th {
+    border-bottom: 1px solid #ccc;
+}
+
+/* Заголовок */
+
+#header {
+    background: #999;
+    height: auto;
+}
+
+#header a:link,
+#header a:visited {
+    border-bottom: none;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0px 1px 0 #111;
+}
+
+#branding img {
+    width: 350px;
+    height: auto;
+}
+
+#branding h1 {
+    font-weight: bold;
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: #fff;
+    text-shadow: 1px 1px 0px #111;
+}
+
+#user-tools {
+    color: #111;
+}
+
+#user-tools a:focus,
+#user-tools a:hover {
+    border-bottom: 1px solid #111;
+    color: inherit;
+    text-shadow: none;
+}
+
+/* Хлебные крошки */
+
+div.breadcrumbs {
+    background: #fc0;
+    color: #111;
+}
+
+div.breadcrumbs a {
+    border-bottom: none;
+    color: #111;
+    font-weight: bold;
+}
+
+div.breadcrumbs a:focus,
+div.breadcrumbs a:hover {
+    border-bottom: 1px solid #111;
+    color: inherit;
+}
+
+/* Модули */
+
+.module {
+    border-radius: 1rem 1rem 0 0;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: #fc0;
+    border-radius: 1rem 1rem 0 0;
+    color: #111;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+a.section:link,
+a.section:visited {
+    color: #111;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #fff;
+}
+
+.dashboard .module table th:first-child,
+.dashboard .module table td:first-child {
+    border-left: 1px solid #ccc;
+}
+
+.dashboard .module table th:last-child,
+.dashboard .module table td:last-child {
+    border-right: 1px solid #ccc;
+}
+
+#content-related {
+    background: transparent;
+    border-radius: 2rem 2rem 0 0;
+}
+
+#content-related h3 {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    color: #222;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    margin: 0;
+}
+
+#content-related .actionlist {
+    border: 1px solid #ccc;
+    padding: 0;
+    margin: 0;
+}
+
+#content-related .actionlist li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 12px 12px 18px;
+    border-bottom: 1px solid #ccc;
+}
+
+#content-related .actionlist li:first-child {
+    margin-top: 12px;
+}
+
+#content-related .actionlist li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+#content-related .actionlist li br {
+    display: none;
+}
+
+#content-related .actionlist li span {
+    text-transform: lowercase;
+}
+
+#content-related .module h2 {
+    background: #fc0;
+    color: #111;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #fff;
+    text-transform: uppercase;
+    padding: 8px;
+    margin-bottom: 0;
+}
+
+/* Кнопки */
+
+.object-tools a.viewsitelink,
+.object-tools a.golink,
+.object-tools a.addlink {
+    background-repeat: no-repeat;
+    background-position: left 7px center;
+    padding-left: 26px;
+    padding-right: 13px;
+}
+
+.object-tools a.addlink {
+    background-image: url(../img/tooltag-add.svg);
+}
+
+.object-tools a:focus,
+.object-tools a:hover {
+    background-color: #fc0;
+    color: #111;
+}
+
+/* Фильтры */
+
+#changelist-filter h2 {
+    color: #111;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Пагинация */
+
+.paginator a:link,
+.paginator a:visited {
+    padding: 2px 6px;
+    background: #999;
+    text-decoration: none;
+    color: #fff;
+}
+
+.paginator a:focus,
+.paginator a:hover,
+.paginator a.showall:focus,
+.paginator a.showall:hover {
+    background: #fc0;
+    color: #111;
+}
+
+/* Формы */
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+textarea,
+.vTextField {
+    border: 2px solid #999;
+    border-radius: 0.33rem;
+}
+
+.submit-row input,
+.submit-row a.deletelink {
+    border-radius: 1rem;
+    text-shadow: 0 1px 0px #111;
+}
+
+.submit-row a.deletelink,
+.submit-row a.deletelink:focus,
+.submit-row a.deletelink:hover,
+.submit-row a.deletelink:active {
+    background: #C62828;
+    height: auto;
+}
+
+.button,
+input[type=submit],
+input[type=button],
+.submit-row input,
+a.button {
+    background: #03A9F4;
+}
+
+.button:active,
+input[type=submit]:active,
+input[type=button]:active,
+.button:focus,
+input[type=submit]:focus,
+input[type=button]:focus,
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+input[name=_addanother],
+input[name=_continue] {
+    background: #66BB6A;
+}
+
+.button.default,
+.submit-row input.default,
+input[type=submit].default,
+input[name=_save].default {
+    background: #2E7D32;
+}
+
+label,
+.required label,
+label.required,
+p.datetime {
+    color: #111;
+}
+
+.form-row {
+    border-bottom: 1px solid #ccc;
+}
+
+.form-row div.help {
+    color: #555;
+    padding-top: 8px;
+    padding-left: 0;
+}
+
+form .aligned input + p.help,
+form .aligned textarea + p.help,
+form .aligned select + p.help,
+form .aligned input + div.help,
+form .aligned textarea + div.help,
+form .aligned select + div.help,
+form .aligned p.help,
+form .aligned div.help {
+    padding-left: 0;
+}

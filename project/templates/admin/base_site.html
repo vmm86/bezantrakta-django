@@ -1,9 +1,16 @@
 {% extends "admin/base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block title %}{% trans "bezantrakta_admin" %}{% endblock %}
 
-{% block branding %}
-<h1 id="site-name"><a href="{% url "admin:index" %}">{% trans "bezantrakta_admin" %}</a></h1>
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/custom.css" %}">
 {% endblock %}
 
+{% block branding %}
+<a href="{% url "admin:index" %}" title="{% trans "bezantrakta_admin" %}">
+    <img id="site-name" src="{% static "global/svg/bzlogo-transparent.svg" %}" alt="{% trans "bezantrakta_admin" %}">
+</a>
+{# <h1 id="site-name"><a href="{% url "admin:index" %}">{% trans "bezantrakta_admin" %}</a></h1> #}
+{% endblock %}
