@@ -3,6 +3,15 @@ import debug_toolbar
 from .base import *
 
 
+# Вывод типа рабочего окружения в админ-панели:
+# * development - разработка (DEBUG = True)
+# * staging - проверка работы на тестовом окружении (DEBUG = False)
+# * production - готовое бизнес-приложение (DEBUG = False)
+ENVIRONMENT = {
+    'NAME': 'development',
+    'COLOR': '#D50000'
+}
+
 DEBUG = True
 
 SECRET_KEY = 'cd$#-aw&3c7t&-6120+ro&gl59(h8!0f^x(ewuly)7v$-d&h^$'
@@ -17,9 +26,9 @@ ALLOWED_HOSTS = [
 ]
 
 # Email для автоматических сообщений от менеджера сайта.
-DEFAULT_FROM_EMAIL = 'webmaster@bezantrakta.local'
+DEFAULT_FROM_EMAIL = 'webmaster@rterm.local'
 # The email that error messages come from, sent to ADMINS and MANAGERS.
-SERVER_EMAIL = 'webmaster@bezantrakta.local'
+SERVER_EMAIL = 'webmaster@rterm.local'
 
 INSTALLED_APPS += [
     'debug_toolbar',

@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
+                'bezantrakta.location.context_processors.environment',
                 'bezantrakta.menu.context_processors.menu_items',
                 'bezantrakta.banner.context_processors.banner_group_items',
                 'bezantrakta.event.context_processors.big_containers',
