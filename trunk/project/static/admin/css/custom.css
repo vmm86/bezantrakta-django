@@ -100,7 +100,7 @@ select {
 .login #container {
     border: none;
     margin: auto;
-    height: 100%;
+    height: calc(100vh - 60px);
 }
 
 .login #container {
@@ -235,7 +235,6 @@ a.section:visited {
 
 .login #content {
     padding: 20px 20px 0;
-    width: 20%;
 }
 
 #content-related {
@@ -250,6 +249,14 @@ a.section:visited {
     font-size: 12px;
     text-transform: uppercase;
     padding: 12px 18px;
+    margin: 0;
+}
+
+#content-related p {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 0 16px 16px 16px;
     margin: 0;
 }
 

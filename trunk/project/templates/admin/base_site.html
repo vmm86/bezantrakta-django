@@ -7,8 +7,7 @@
 {{ block.super }}
 {% if request.user.is_superuser %}
 <style type="text/css">
-body:before,
-body:after {
+body:before {
     display: block;
     text-align: center;
     font-size: 15px;
@@ -17,8 +16,15 @@ body:after {
     text-transform: uppercase;
     padding: 5px 0;
     color: #fff;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 100;
     content: '{{ ENVIRONMENT_NAME }}';
     background-color: {{ ENVIRONMENT_COLOR }};
+}
+body {
+    margin-top: 30px !important;
 }
 </style>
 {% endif %}
