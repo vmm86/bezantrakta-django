@@ -18,7 +18,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^simsim/', admin.site.urls),
     url(r'', include('bezantrakta.event.urls')),
     url(r'', include('bezantrakta.seo.urls')),
     url(r'', include('bezantrakta.article.urls')),
