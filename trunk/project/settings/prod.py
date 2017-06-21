@@ -7,7 +7,7 @@ from .base import *
 # * production - готовое бизнес-приложение (DEBUG = False)
 ENVIRONMENT = {
     'NAME': 'production',
-    'COLOR': '#00C853'
+    'COLOR': '#00C853',
 }
 
 DEBUG = False
