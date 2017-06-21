@@ -1,7 +1,17 @@
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Получение имеющегося или генерация нового SECRET_KEY
+try:
+    from project.settings.simsim import SECRET_KEY
+except ImportError:
+    from django.utils.crypto import get_random_string
+    key = get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+    with open(os.path.join(BASE_DIR, 'project', 'settings', 'simsim.py'), 'w') as key_file:
+        key_file.write("SECRET_KEY = '{}'\n".format(key))
 
 INTERNAL_IPS = ['127.0.0.1']
 
