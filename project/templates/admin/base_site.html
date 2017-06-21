@@ -5,6 +5,7 @@
 
 {% block extrastyle %}
 {{ block.super }}
+{% if ENVIRONMENT_NAME != "production" %}
 <style type="text/css">
 body:before,
 body:after {
@@ -19,6 +20,7 @@ body:after {
     background-color: {{ ENVIRONMENT_COLOR }};
 }
 </style>
+{% endif %}
 {% endblock %}
 
 {% block extrahead %}
