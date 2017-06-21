@@ -12,8 +12,6 @@ ENVIRONMENT = {
 
 DEBUG = False
 
-SECRET_KEY = 'ye)g4dae85*jqw-py(88@vp4wg51$dvd1tcxe6y2f6e(x%_x4%'
-
 # Корневой домен для всех сайтов
 ROOT_DOMAIN = 'bezantrakta.rterm.ru'
 # Псевдоним сайта, работающего на корневом домене (указан в БД в модели Domain)
