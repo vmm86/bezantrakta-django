@@ -72,8 +72,8 @@
     min-height: 100%;
 }
 
-.poster-left,
-.poster-right {
+.poster-big-vertical-left,
+.poster-big-vertical-right {
 /*  display: inline-block;*/
 
     text-align: center;
@@ -86,14 +86,14 @@
 
     z-index: 2;
 }
-.poster-left {
+.poster-big-vertical-left {
     left: 0;
 }
-.poster-right {
+.poster-big-vertical-right {
     right: 0;
 }
-.poster-left img,
-.poster-right img {
+.poster-big-vertical-left img,
+.poster-big-vertical-right img {
     width: 90%;
     height: auto;
 }
@@ -149,7 +149,7 @@
     justify-content: flex-start;
     align-items: stretch;
 
-    background: url(/static/global/svg/posters-level1-body.svg) no-repeat;
+    background: url(/static/global/svg/poster-big-horizontal-body.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
@@ -714,7 +714,7 @@
 
 /* Блок маленьких вертикальных афиш */
 
-.posters-level2-body {
+.poster-small-vertical-body {
     display: block;
 
     text-align: left;
@@ -724,9 +724,9 @@
     width: 100%;
 }
 
-/* VIP-блок маленьких вертикальных с надписью "Рекомендуем" */
-.posters-level2-body.vip:before,
-.posters-level2-body.vip::before {
+/* VIP-блок маленьких вертикальных афиш с надписью "Рекомендуем" */
+.poster-small-vertical-body.vip:before,
+.poster-small-vertical-body.vip::before {
     display: inline-block;
     content: 'Рекомендуем';
 
@@ -743,8 +743,8 @@
     left: 2.5vw;
 }
 
-.posters-level2-body.vip {
-    background-image: url('/static/global/svg/posters-level2-special.svg'), url('/static/global/svg/header-left.svg');
+.poster-small-vertical-body.vip {
+    background-image: url('/static/global/svg/poster-small-vertical-body-vip.svg'), url('/static/global/svg/header-left.svg');
     background-repeat: no-repeat;
     background-position: 50% 75%, top left;
     background-size: 98% 82%, 100% 100%;
@@ -754,12 +754,12 @@
     padding: 0.75rem 0.5rem 0 0.5rem;
 }
 
-.posters-level2-body.vip .poster-level2-min_price {
+.poster-small-vertical-body.vip .poster-small-vertical-min_price {
     left: 28%;
 }
-/* VIP-блок маленьких вертикальных с надписью "Рекомендуем" */
+/* VIP-блок маленьких вертикальных афиш с надписью "Рекомендуем" */
 
-.poster-level2 {
+.poster-small-vertical {
     display: inline-block;
 
    /* margin: 3vw 0.3vw 1vw 0.3vw;*/
@@ -770,8 +770,8 @@
     width: 15.4%;
 }
 
-.poster-level2 a,
-.poster-level3 a {
+.poster-small-vertical a,
+.poster-small-horizontal a {
     display: block;
     color: #FFF;
     font-family: 'Roboto', sans-serif;
@@ -780,17 +780,17 @@
     position: relative;
 }
 
-.poster-level2-image {
+.poster-small-vertical-image {
 }
 
-.poster-level2-image a img {
+.poster-small-vertical-image a img {
     width: 100%;
     height: auto;
 
 /*    box-shadow: 0.1rem 0.1rem black;*/
 }
 
-.poster-level2-image a span {
+.poster-small-vertical-image a span {
     display: block;
     background: url(/static/global/svg/search-input.svg) no-repeat;
     background-size: 100% 100%;
@@ -809,14 +809,14 @@
 /*    box-shadow: 0.1rem 0.1rem black;*/
 }
 
-.poster-level2-price {
+.poster-small-vertical-price {
     width: 100%;
     height: 3rem;
 }
-.poster-level2-date {
+.poster-small-vertical-date {
     display: inline-block;
 
-    background: url(/static/global/svg/posters-level2-price-range.svg) no-repeat;
+    background: url(/static/global/svg/poster-small-vertical-date.svg) no-repeat;
 
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -825,7 +825,7 @@
     width: 100%;
     height: 3rem;
 }
-.poster-level2-date a {
+.poster-small-vertical-date a {
     font-size: 0.9rem;
 
     text-align: left;
@@ -841,10 +841,10 @@
     top: 0.9rem;
     left: 0;
 }
-.poster-level2-min_price {
+.poster-small-vertical-min_price {
     display: inline-block;
 
-    background: url(/static/global/svg/posters-level2-price-buy.svg) right no-repeat;
+    background: url(/static/global/svg/poster-small-vertical-min-price.svg) right no-repeat;
 
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -859,7 +859,7 @@
     top: -3.3rem;
     left: 55%;
 }
-.poster-level2-min_price a {
+.poster-small-vertical-min_price a {
     color: #000;
 
     width: 100%;
@@ -873,7 +873,7 @@
 
 /* Блок маленьких горизонтальных афиш */
 
-.posters-level3-body {
+.poster-small-horizontal-body {
     display: block;
 
     text-align: left;
@@ -881,7 +881,7 @@
     width: 100%;
 }
 
-.poster-level3 {
+.poster-small-horizontal {
     display: inline-block;
 
     margin: 0 0.5%;
@@ -892,14 +892,14 @@
     width: 11%;
 }
 /*
-.poster-level3:first-child {
+.poster-small-horizontal:first-child {
     margin-left: 0;
 }
-.poster-level3:last-child {
+.poster-small-horizontal:last-child {
     margin-right: 0;
 }
 */
-.poster-level3-image a img {
+.poster-small-horizontal-image a img {
     width: 100%;
     height: auto;
 

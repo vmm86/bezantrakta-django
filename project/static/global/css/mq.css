@@ -62,7 +62,7 @@
         height: 4rem;
     }
 
-    .poster-level2 a {
+    .poster-small-vertical a {
         letter-spacing: -0.05rem;
     }
 
@@ -108,17 +108,17 @@
         top: -0.1rem;
     }
 
-    .poster-level2 {
+    .poster-small-vertical {
         width: 14.8%;
     }
-    .poster-level2-date a,
-    .poster-level2-min_price a {
+    .poster-small-vertical-date a,
+    .poster-small-vertical-min_price a {
         letter-spacing: -0.085rem;
     }
-    .poster-level2-min_price a {
+    .poster-small-vertical-min_price a {
     }
 
-    .poster-level3 {
+    .poster-small-horizontal {
         width: 10.6%;
     }
 
@@ -162,21 +162,21 @@
         left: 165%;
     }
 
-    .posters-level2-body.order1 .poster-level2-min_price {
+    .poster-small-vertical-body.order1 .poster-small-vertical-min_price {
         left: 0;
     }
 
-    .poster-level2-price {
+    .poster-small-vertical-price {
         height: 4rem;
     }
 
-    .poster-level2-date {
+    .poster-small-vertical-date {
         display: block;
 
         width: 100%;
         height: 50%;
     }
-    .poster-level2-date a {
+    .poster-small-vertical-date a {
         letter-spacing: 0;
         text-align: center;
 
@@ -184,7 +184,7 @@
 
         top: 0.5rem;
     }
-    .poster-level2-min_price {
+    .poster-small-vertical-min_price {
         display: block;
 
         width: 100%;
@@ -193,7 +193,7 @@
         left: -0.2rem;
         top: -0.75rem;
     }
-    .poster-level2-min_price a {
+    .poster-small-vertical-min_price a {
         letter-spacing: 0.025rem;
         
         top: 0.25rem;
@@ -226,8 +226,8 @@
         max-width: 25%;
     }
 
-    .poster-level2-date a,
-    .poster-level2-min_price a {
+    .poster-small-vertical-date a,
+    .poster-small-vertical-min_price a {
         letter-spacing: -0.085rem;
     }
 
@@ -382,17 +382,17 @@
         left: 0;
     }
 
-    .posters-level2-body.order1 {
+    .poster-small-vertical-body.order1 {
         background-position: 50% 80%, top left;
         background-size: 98% 92%, 100% 100%;
         padding: 2rem 0.5rem 1rem 0.5rem;
     }
 
-    .posters-level2-body.order1 .poster-level2-min_price {
+    .poster-small-vertical-body.order1 .poster-small-vertical-min_price {
         left: -0.25rem;
     }
 
-    .poster-level2 {
+    .poster-small-vertical {
         display: inline-block;
 
         margin: 2rem 0.25rem 0 0.25rem;
@@ -400,12 +400,12 @@
         width: 29.25%;
     }
 
-    .poster-level2-date a,
-    .poster-level2-min_price a {
+    .poster-small-vertical-date a,
+    .poster-small-vertical-min_price a {
         letter-spacing: -0.01rem;
     }
 
-    .poster-level3 {
+    .poster-small-horizontal {
         width: 22.5%;
     }
 
@@ -469,11 +469,11 @@
         width: 95%;
     }
 
-    .poster-level2 {
+    .poster-small-vertical {
         width: 28.7%;
     }
 
-    .poster-level3 {
+    .poster-small-horizontal {
         width: 22.25%;
     }
 
