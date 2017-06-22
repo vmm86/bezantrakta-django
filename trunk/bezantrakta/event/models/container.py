@@ -21,6 +21,24 @@ class EventContainer(models.Model):
         max_length=32,
         verbose_name=_('eventcontainer_slug'),
     )
+    MODE_BV = 'big_vertical'
+    MODE_BH = 'big_horizontal'
+    MODE_SV = 'small_vertical'
+    MODE_SH = 'small_horizontal'
+    MODE_CHOICES = (
+        (MODE_BV, _('eventcontainer_mode_big_vertical')),
+        (MODE_BH, _('eventcontainer_mode_big_horizontal')),
+        (MODE_SV, _('eventcontainer_mode_small_vertical')),
+        (MODE_SH, _('eventcontainer_mode_small_horizontal')),
+    )
+    mode = models.CharField(
+        choices=MODE_CHOICES,
+        default=MODE_SV,
+        blank=False,
+        max_length=16,
+        db_index=True,
+        verbose_name=_('eventcontainer_mode'),
+    )
     order = models.PositiveSmallIntegerField(
         default=1,
         verbose_name=_('eventcontainer_order'),

@@ -15,8 +15,13 @@ class EventContainerBinderInline(SortableInlineAdminMixin, admin.TabularInline):
 @admin.register(EventContainer)
 class EventContainerAdmin(admin.ModelAdmin):
     inlines = (EventContainerBinderInline,)
-    list_display = ('title', 'slug', 'order', 'is_published',)
+    list_display = ('title', 'slug', 'mode', 'order', 'is_published',)
     prepopulated_fields = {
         'slug': ('title',),
     }
-    readonly_fields = ('img_width', 'img_height',)
+    radio_fields = {'mode': admin.VERTICAL, }
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return self.readonly_fields + ('img_width', 'img_height',)
+        return self.readonly_fields
