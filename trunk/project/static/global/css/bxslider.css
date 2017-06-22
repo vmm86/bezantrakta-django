@@ -15,7 +15,7 @@
 
 /* Карусель афиш 1-го уровня */
 
-.posters-level1-body {
+.poster-big-horizontal-body {
     display: inline-block;
 
     display: flex;
@@ -104,7 +104,7 @@
 }
 
 .bx-wrapper .bx-pager.bx-default-pager a {
-    background: url(/static/global/svg/posters-level1-choose-button.svg) no-repeat;
+    background: url(/static/global/svg/poster-big-horizontal-pager.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
@@ -121,7 +121,7 @@
 }
 
 .bx-wrapper .bx-pager.bx-default-pager a.active {
-    background: url(/static/global/svg/posters-level1-choose-button-active.svg) no-repeat;
+    background: url(/static/global/svg/poster-big-horizontal-pager-active.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
@@ -132,7 +132,7 @@
 .bx-wrapper .bx-prev {
     left: 10px;
 
-    background: url(/static/global/svg/posters-level3-choose-button-left.svg) no-repeat;
+    background: url(/static/global/svg/poster-small-horizontal-pager-prev.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
@@ -141,7 +141,7 @@
 .bx-wrapper .bx-next {
     right: 10px;
 
-    background: url(/static/global/svg/posters-level3-choose-button-right.svg) no-repeat;
+    background: url(/static/global/svg/poster-small-horizontal-pager-next.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;

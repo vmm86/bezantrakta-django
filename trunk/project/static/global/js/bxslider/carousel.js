@@ -15,8 +15,8 @@ $(document).ready(function(){
         preloadImages: 'visible',
         // controls: true,
         onSliderLoad: function() {
-            $('.posters-level1-body').css('opacity', '1');
-            $('.posters-level1-body').css('height', 'auto');
+            $('.poster-big-horizontal-body').css('opacity', '1');
+            $('.poster-big-horizontal-body').css('height', 'auto');
         }
     });
 });
