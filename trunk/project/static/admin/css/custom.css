@@ -327,7 +327,6 @@ a.section:visited {
     background-position-x: center;
 }
 
-
 /* Кнопки */
 
 .object-tools a {
@@ -631,4 +630,25 @@ p.file-upload {
 
 .timezonewarning {
     color: #111;
+}
+
+.related-widget-wrapper-link {
+    display: none;
+}
+
+.inline-group .tabular tr.has_original td {
+    padding: 0;
+    vertical-align: middle;
+}
+
+div.inline-group table.ui-sortable tr.form-row.has_original td.drag {
+    background: url(../img/sorting-icons.svg) 0 1px no-repeat !important;
+    background-position-x: center !important;
+    background-size: 100% 550% !important;
+}
+
+div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
+    background: url(../img/sorting-icons.svg) 0 20% no-repeat !important;
+    background-position-x: center !important;
+    background-size: 100% 550% !important;
 }

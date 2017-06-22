@@ -22,7 +22,7 @@ def img_path(instance, filename):
             (instance.event.date.strftime('%Y-%m-%d'), '_', instance.event.slug,)
         ),
         ''.join(
-            (instance.event_container.slug, dot, extension,)
+            (instance.event_container.mode, dot, extension,)
         )
     )
     # Абсолютный путь до файла
@@ -89,7 +89,7 @@ class EventContainerBinder(models.Model):
 
     def img_preview(self):
         return mark_safe(
-            '<img src="{}" style="width: auto; height: 100px;">'.format(self.img.url)
+            '<img src="{}" style="width: auto; height: 64px;">'.format(self.img.url)
         )
     img_preview.short_description = _('eventcontainerbinders_img_preview')
 

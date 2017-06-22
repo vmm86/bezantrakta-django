@@ -712,7 +712,7 @@
     width: 100%;
 }
 
-/* Блок афиш 2-го уровня */
+/* Блок маленьких вертикальных афиш */
 
 .posters-level2-body {
     display: block;
@@ -724,9 +724,9 @@
     width: 100%;
 }
 
-/* Первый блок афиш 2-го уровня с надписью "Рекомендуем" */
-.posters-level2-body.order1:before,
-.posters-level2-body.order1::before {
+/* VIP-блок маленьких вертикальных с надписью "Рекомендуем" */
+.posters-level2-body.vip:before,
+.posters-level2-body.vip::before {
     display: inline-block;
     content: 'Рекомендуем';
 
@@ -743,7 +743,7 @@
     left: 2.5vw;
 }
 
-.posters-level2-body.order1 {
+.posters-level2-body.vip {
     background-image: url('/static/global/svg/posters-level2-special.svg'), url('/static/global/svg/header-left.svg');
     background-repeat: no-repeat;
     background-position: 50% 75%, top left;
@@ -754,10 +754,10 @@
     padding: 0.75rem 0.5rem 0 0.5rem;
 }
 
-.posters-level2-body.order1 .poster-level2-min_price {
+.posters-level2-body.vip .poster-level2-min_price {
     left: 28%;
 }
-/* Первый блок афиш 2-го уровня с надписью "Рекомендуем" */
+/* VIP-блок маленьких вертикальных с надписью "Рекомендуем" */
 
 .poster-level2 {
     display: inline-block;
@@ -871,7 +871,7 @@
     left: 0;
 }
 
-/* Блок афиш 3-го уровня */
+/* Блок маленьких горизонтальных афиш */
 
 .posters-level3-body {
     display: block;
