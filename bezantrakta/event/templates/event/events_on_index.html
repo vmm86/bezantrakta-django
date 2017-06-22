@@ -1,29 +1,52 @@
 {% extends "base.html" %}
 
-{% block content_header %}
-{% endblock %}
-
 {% block content_body %}
-<div class="posters-level2-body orderN">
-{% for event in events_on_index %}
-    {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
-    <div class="poster-level2">
-        <div class="poster-level2-image">
-            <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-            </a>
-        </div>
-        <div class="poster-level2-price">
-            <div class="poster-level2-date">
-                <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
+
+{% if small_vertical_vip %}
+<div class="posters-level2-body vip">
+{% for event in small_vertical_vip %}
+        {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
+        <div class="poster-level2">
+            <div class="poster-level2-image">
+                <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                    <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                </a>
             </div>
-            <div class="poster-level2-min_price">
-                <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
+            <div class="poster-level2-price">
+                <div class="poster-level2-date">
+                    <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
+                </div>
+                <div class="poster-level2-min_price">
+                    <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
+                </div>
             </div>
         </div>
-    </div>
 {% endfor %}
 </div>
+{% endif %}
+
+{% if small_vertical %}
+<div class="posters-level2-body">
+{% for event in small_vertical %}
+        {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
+        <div class="poster-level2">
+            <div class="poster-level2-image">
+                <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                    <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                </a>
+            </div>
+            <div class="poster-level2-price">
+                <div class="poster-level2-date">
+                    <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
+                </div>
+                <div class="poster-level2-min_price">
+                    <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
+                </div>
+            </div>
+        </div>
+{% endfor %}
+</div>
+{% endif %}
 
 <div class="share-help">
 
@@ -64,12 +87,14 @@
 {% if debug %}
 <br><br>
 categories: {{ categories|pprint }}
- <br><br>
+<br><br>
 big_vertical_left: {{ big_vertical_left|pprint }}
 <br><br>
 big_vertical_right: {{ big_vertical_right|pprint }}
 <br><br>
 big_horizontal: {{ big_horizontal|pprint }}
+<br><br>
+small_vertical_vip: {{ small_vertical_vip|pprint }}
 <br><br>
 small_vertical: {{ small_vertical|pprint }}
 <br><br>

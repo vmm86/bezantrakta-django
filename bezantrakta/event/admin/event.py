@@ -3,14 +3,15 @@ from django.contrib import admin
 from adminsortable2.admin import SortableInlineAdminMixin
 from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
-from ..models import Event, EventContainerBinder, EventLinkBinder, EventGroupBinder
+from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
 class EventContainerBinderInline(admin.TabularInline):
     model = EventContainerBinder
     extra = 0
     fields = ('event_container', 'order', 'img', 'img_preview',)
-    readonly_fields = ('img_preview',)
+    readonly_fields = ('order', 'img_preview',)
+    radio_fields = {'event_container': admin.VERTICAL, }
 
 
 class EventLinkBinderInline(SortableInlineAdminMixin, admin.TabularInline):
@@ -40,4 +41,12 @@ class EventAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
-    radio_fields = {'min_age': admin.HORIZONTAL, }
+    radio_fields = {
+        'event_category': admin.VERTICAL,
+        'min_age': admin.HORIZONTAL,
+    }
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'event_category':
+            kwargs['queryset'] = EventCategory.objects.filter(is_published=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)

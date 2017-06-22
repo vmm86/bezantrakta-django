@@ -20,7 +20,7 @@ function getCookie(name) {
 //// Функция для создания куки `bezantrakta_city`
 function setCity(city) {
     // Запись куки и редирект
-    cookie_city    = 'bezantrakta_city='    + city + '; ';
+    cookie_city    = 'bezantrakta_city=' + city + '; ';
     cookie_domain  = 'domain=.' + domain + '; ';
     // Период действия куки (год)
     date = new Date(new Date().getTime() + 31622400000);
