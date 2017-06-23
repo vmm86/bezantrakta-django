@@ -1,0 +1,6 @@
+<select name="choose_domain" id="choose_domain" style="background-color: #fff;">
+    <option value="">все сайты</option>
+{% for domain in domains %}
+    <option class="{{ domain.is_published|yesno:'published,not_published' }}" value="{{ domain.slug }}" {% if domain.slug == bezantrakta_domain_slug %}selected=""{% endif %}>{{ domain.title }}</option>
+{% endfor %}
+</select>

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'bezantrakta.simsim',
     'bezantrakta.location',
     'bezantrakta.menu',
     'bezantrakta.article',
@@ -74,6 +75,8 @@ TEMPLATES = [
         'DIRS': [
             # Общие шаблоны для всего проекта
             os.path.join(BASE_DIR, 'project', 'templates'),
+            # Шаблоны для кастомной админ-панели
+            os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -81,9 +84,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.template.context_processors.tz',
                 'django.template.context_processors.static',
+                'django.template.context_processors.csrf',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
+                'bezantrakta.simsim.context_processors.domain_filter',
                 'bezantrakta.location.context_processors.environment',
                 'bezantrakta.menu.context_processors.menu_items',
                 'bezantrakta.banner.context_processors.banner_group_items',
@@ -136,12 +141,12 @@ ADMIN_REORDER = (
         'app': 'event',
         'models':
         (
+            {'model': 'event.EventVenue', 'label': 'Залы'},
             {'model': 'event.Event', 'label': 'События'},
-            {'model': 'event.EventLink', 'label': 'Ссылки'},
-            {'model': 'event.EventCategory', 'label': 'Категории'},
             {'model': 'event.EventGroup', 'label': 'Группы'},
             {'model': 'event.EventContainer', 'label': 'Контейнеры'},
-            {'model': 'event.EventVenue', 'label': 'Залы'},
+            {'model': 'event.EventLink', 'label': 'Ссылки'},
+            {'model': 'event.EventCategory', 'label': 'Категории'},
         )
     },
     {'app': 'menu', },
@@ -162,15 +167,6 @@ ADMIN_REORDER = (
             {'model': 'auth.Group', 'label': 'Группы пользователей'},
             {'model': 'auth.User', 'label': 'Пользователи'},
         )
-    },
-    {
-        'app': 'admin_interface',
-        'label': 'Оформление',
-        'models':
-        (
-            {'model': 'admin_interface.Theme', 'label': 'Темы оформления'},
-        )
-
     },
 )
 
@@ -254,7 +250,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     # Общая статика для всего проекта
     ('global', os.path.join(BASE_DIR, 'project', 'static', 'global')),
-    ('admin', os.path.join(BASE_DIR, 'project', 'static', 'admin')),
+    # Статика кастомной админ-панели
+    ('admin', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'admin')),
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

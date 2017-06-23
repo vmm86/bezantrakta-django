@@ -165,6 +165,10 @@ select {
     text-shadow: 1px 1px 0px #111;
 }
 
+select#choose_domain option.not_published {
+    text-decoration: line-through;
+}
+
 #user-tools {
     color: #111;
 }
@@ -362,7 +366,12 @@ a.section:visited {
 }
 
 .object-tools a.addlink {
+    background-color: #66BB6A;
     background-image: url(../img/tooltag-add.svg);
+    padding-left: 26px;
+    padding-right: 13px;
+}
+
     padding-left: 22px;
 }
 

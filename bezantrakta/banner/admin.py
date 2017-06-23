@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from adminsortable2.admin import SortableAdminMixin
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from project.decorators import domain_filter
 from .models import BannerGroup, BannerGroupItem
 
 
@@ -18,7 +18,6 @@ class BannerGroupAdmin(SortableAdminMixin, admin.ModelAdmin):
 class BannerGroupItemAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ('title', 'slug', 'is_published', 'banner_group', 'domain',)
     list_filter = (
-        ('domain', RelatedDropdownFilter),
         'banner_group',
     )
     list_select_related = ('banner_group', 'domain',)
@@ -26,3 +25,7 @@ class BannerGroupItemAdmin(SortableAdminMixin, admin.ModelAdmin):
         'slug': ('title',),
     }
     radio_fields = {'banner_group': admin.VERTICAL, }
+
+    @domain_filter('domain__slug')
+    def get_queryset(self, request):
+        return super().get_queryset(request)

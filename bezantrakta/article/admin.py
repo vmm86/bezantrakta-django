@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
-
+from project.decorators import domain_filter
 from .models import Article
 
 
@@ -12,6 +11,7 @@ class ArticleAdmin(admin.ModelAdmin):
     }
     list_display = ('title', 'slug', 'is_published', 'domain',)
     list_select_related = ('domain',)
-    list_filter = (
-        ('domain', RelatedDropdownFilter),
-    )
+
+    @domain_filter('domain__slug')
+    def get_queryset(self, request):
+        return super().get_queryset(request)
