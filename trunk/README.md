@@ -94,7 +94,7 @@ touch /etc/uwsgi/sites-available/bezantrakta.ini
 
 ```ini
 [uwsgi]
-project = /var/www/bezantrakta-django
+project = /var/www/bezantrakta-django/tags/1.0
 chdir = %(project)
 
 plugin = python3
@@ -123,7 +123,7 @@ touch /etc/nginx/sites-available/bezantrakta.conf
 server {
     listen 80;
     listen [::]:80;
-    root /var/www/bezantrakta-django/;
+    root /var/www/bezantrakta-django/tags/1.0;
     server_name bezantrakta.rterm.ru *.bezantrakta.rterm.ru;
 
     client_body_buffer_size 10M;
@@ -147,11 +147,6 @@ server {
         alias /var/www/bezantrakta-django/media/;
         access_log off;
         expires 3600;
-    }
-
-    location ~ /favicon.ico {
-        log_not_found off;
-        access_log off;
     }
 }
 ```
