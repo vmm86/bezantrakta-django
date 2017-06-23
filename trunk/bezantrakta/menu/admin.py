@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from adminsortable2.admin import SortableAdminMixin
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from project.decorators import domain_filter
 from .models import Menu, MenuItem
 
 
@@ -18,11 +18,14 @@ class MenuAdmin(SortableAdminMixin, admin.ModelAdmin):
 class MenuItemAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ('title', 'slug', 'order', 'is_published', 'menu', 'domain',)
     list_filter = (
-        ('domain', RelatedDropdownFilter),
-        'menu'
+        'menu',
     )
     list_select_related = ('menu', 'domain',)
     prepopulated_fields = {
         'slug': ('title',),
     }
     radio_fields = {'menu': admin.VERTICAL, }
+
+    @domain_filter('domain__slug')
+    def get_queryset(self, request):
+        return super().get_queryset(request)

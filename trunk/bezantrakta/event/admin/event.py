@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from adminsortable2.admin import SortableInlineAdminMixin
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 
+from project.decorators import domain_filter
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
@@ -25,6 +25,10 @@ class EventGroupBinderInline(admin.TabularInline):
     model = EventGroupBinder
     extra = 0
     fields = ('event_group',)
+    readonly_fields = ('event_group',)
+
+    def has_add_permission(self, request):
+        return False
 
 
 @admin.register(Event)
@@ -34,9 +38,6 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ('title', 'date', 'time', 'event_category', 'event_venue',
                     'is_published', 'is_on_index', 'container_count',
                     'link_count', 'domain',)
-    list_filter = (
-        ('domain', RelatedDropdownFilter),
-    )
     list_select_related = ('event_category', 'event_venue', 'domain',)
     prepopulated_fields = {
         'slug': ('title',),
@@ -46,7 +47,14 @@ class EventAdmin(admin.ModelAdmin):
         'min_age': admin.HORIZONTAL,
     }
 
+    @domain_filter('domain__slug')
+    def get_queryset(self, request):
+        return super().get_queryset(request)
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """
+        В событии выводятся только опубликованные категории событий.
+        """
         if db_field.name == 'event_category':
             kwargs['queryset'] = EventCategory.objects.filter(is_published=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

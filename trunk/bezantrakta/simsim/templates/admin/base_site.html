@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+{% load i18n static admin_urls %}
+
+{% block title %}{% trans "bezantrakta_admin" %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% if request.user.is_superuser %}
+<style type="text/css">
+body:before {
+    display: block;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    padding: 5px 0;
+    color: #fff;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    content: '{{ ENVIRONMENT_NAME }}';
+    background-color: {{ ENVIRONMENT_COLOR }};
+}
+body {
+    margin-top: 30px !important;
+}
+</style>
+{% endif %}
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/custom.css" %}">
+{% endblock %}
+
+{% block branding %}
+<div id="branding_logo">
+    <a href="{% url "admin:index" %}" title="{% trans "bezantrakta_admin" %}">
+        <img id="site-name" src="{% static "global/svg/bzlogo-transparent.svg" %}" alt="{% trans "bezantrakta_admin" %}">
+    </a>
+</div>
+{% if user.is_authenticated %}
+<div id="branding_choose_domain" style="padding-left: 1rem;">
+    {% load choose_domain %}
+    {% choose_domain %}
+</div>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    {# Сохранение выбранного для фильтрации данных сайта в cookie `bezantrakta_domain` #}
+    $('#choose_domain').change(function() {
+        var value = $('#choose_domain option:selected').val();
+        {# Адрес главного сайта, к которому могут добавляться поддомены #}
+        var domain = '.{{ request.root_domain }}';
+        {# Период действия куки (год) #}
+        var expires = new Date(new Date().getTime() + 31622400000);
+        {# Запись в cookie выбранного фильтра по домену в админке #}
+        Cookies.set('bezantrakta_domain', value, {expires: expires, domain: domain});
+        location.reload();
+    });
+
+    {# При создании новых записей #}
+    var domain_id = {{ bezantrakta_domain_id }};
+    if (domain_id !== 0) {
+        $('.object-tools .addlink').attr('href', function(i, h) {
+            var qs = h + (h.indexOf('?') != -1 ? '&' : '?');
+            return qs + 'domain=' + domain_id;
+        });
+    }
+});
+</script>
+{% endblock %}
