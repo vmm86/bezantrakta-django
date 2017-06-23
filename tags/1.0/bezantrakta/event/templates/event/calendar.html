@@ -1,0 +1,50 @@
+{% now "Y" as year %}
+{% now "F" as month %}
+{% now "j" as today %}
+<table class="event_calendar">
+    <thead>
+        <tr>
+            <td colspan="1" class="title">‹</td>
+            <td colspan="5" class="title">{{ month|lower }} {{ year }}</td>
+            <td colspan="1" class="title">›</td>
+        </tr>
+        <tr class="daynames">
+            <td class="day name">&nbsp;пн&nbsp;</td>
+            <td class="day name">&nbsp;вт&nbsp;</td>
+            <td class="day name">&nbsp;ср&nbsp;</td>
+            <td class="day name">&nbsp;чт&nbsp;</td>
+            <td class="day name">&nbsp;пт&nbsp;</td>
+            <td class="name day weekend">&nbsp;сб&nbsp;</td>
+            <td class="name day weekend">&nbsp;вс&nbsp;</td>
+        </tr>
+{% comment %}
+        <tr class="daynames">
+        {% for day in head %}
+            <td class="day name">{{ day|date:"D"|slice:":2"|lower }}</td>
+        {% endfor %}
+        </tr>
+{% endcomment %}
+    </thead>
+    <tbody>
+{% for week in body %}
+    <tr class="daysrow">
+    {% for day in week %}
+        <td class="
+            {% if day.in_month %}day{% if day.day|date:"j" == today %} today{% endif %}
+            {% else %}emptycell{% endif %}
+            ">
+        {# if day.event #}
+        {% if day.in_month %}
+            <a href="/afisha/{{ day.day|date:"Y" }}/{{ day.day|date:"m" }}/{{ day.day|date:"d" }}/">
+                {{ day.day|date:"j" }}
+            </a>
+        {% endif %}
+        {# else #}
+            {# day.day|date:"j" #}
+        {# endif #}
+        </td>
+    {% endfor %}
+    </tr>
+{% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,671 @@
+/* Основные стили */
+*, *:before, *:after,
+html, html:before, html:after,
+body, body:before, body:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html,
+body.login,
+.login #container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+
+    height: 100%;
+}
+
+html,
+body,
+#container {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+}
+
+body {
+    color: #111;
+    background: #fff;
+}
+
+body.login {
+    background: transparent;
+}
+
+h1 {
+    color: #111;
+    font-weight: bold;
+}
+
+a {
+    cursor: pointer;
+}
+
+a:link,
+a:visited {
+    border-bottom: none;
+    color: #111;
+    text-decoration: none;
+}
+
+a:focus,
+a:hover {
+    border-bottom: 1px solid inherit;
+}
+
+thead th,
+thead th.sorted {
+    background: #ccc;
+    color: #111;
+    text-shadow: 0px 1px 0 #fff;
+}
+
+thead th.sorted {
+    background: #aaa;
+}
+
+table thead th .text a:focus,
+table thead th .text a:hover {
+    background: inherit;
+}
+
+thead th a:link,
+thead th a:visited {
+    color: inherit;
+}
+
+td, th {
+    border-bottom: 1px solid #ccc;
+}
+
+*:focus {
+    outline: none;
+}
+
+input,
+select {
+    height: auto;
+    vertical-align: middle;
+}
+
+/* Контейнер */
+
+#container,
+.login #container {
+    border: none;
+    margin: auto;
+    height: calc(100vh - 60px);
+}
+
+.login #container {
+    justify-content: center;
+    align-items: center;
+}
+
+/* Заголовок */
+
+#header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #999;
+    padding: 0 40px;
+    width: 100%;
+    height: auto;
+}
+
+#header a:link,
+#header a:visited {
+    border-bottom: none;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0px 1px 0 #111;
+}
+
+.login #header {
+    justify-content: center;
+
+    background: transparent;
+    border-radius: 0.25rem;
+    padding: 0;
+}
+
+#branding {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+#branding img {
+    width: 250px;
+    height: auto;
+    position: relative;
+    top: 2px;
+}
+
+#branding h1 {
+    font-weight: bold;
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: #fff;
+    text-shadow: 1px 1px 0px #111;
+}
+
+select#choose_domain option.not_published {
+    text-decoration: line-through;
+}
+
+#user-tools {
+    color: #111;
+}
+
+#user-tools a:focus,
+#user-tools a:hover {
+    border-bottom: 1px solid #111;
+    color: inherit;
+    text-shadow: none;
+}
+
+/* Хлебные крошки */
+
+div.breadcrumbs {
+    background: #fc0;
+    color: #111;
+}
+
+div.breadcrumbs a {
+    border-bottom: none;
+    color: #111;
+    font-weight: bold;
+    text-shadow: 0 1px 0px #fff;
+}
+
+div.breadcrumbs a:focus,
+div.breadcrumbs a:hover {
+    border-bottom: 1px solid #111;
+    color: inherit;
+}
+
+/* Сообщения */
+
+ul.messagelist li {
+    font-size: 14px;
+    padding: 10px 10px 10px 65px;
+    margin: 0;
+    background: #C8E6C9 url(../img/icon-yes.svg) 40px 12px no-repeat;
+    background-size: 16px auto;
+    color: #111;
+}
+
+/* Модули */
+
+.module {
+    border-radius: 1rem 1rem 0 0;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: #fc0;
+    border-radius: 1rem 1rem 0 0;
+    color: #111;
+    font-weight: bold;
+    text-shadow: 0 1px 0px #fff;
+    text-transform: uppercase;
+}
+
+a.section:link,
+a.section:visited {
+    color: #111;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #fff;
+}
+
+.dashboard .module table th:first-child,
+.dashboard .module table td:first-child {
+    border-left: 1px solid #ccc;
+}
+
+.dashboard .module table th:last-child,
+.dashboard .module table td:last-child {
+    border-right: 1px solid #ccc;
+}
+
+.login #content {
+    padding: 20px 20px 0;
+}
+
+#content-related {
+    background: transparent;
+    border-radius: 2rem 2rem 0 0;
+}
+
+#content-related h3 {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    color: #222;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    margin: 0;
+}
+
+#content-related p {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 0 16px 16px 16px;
+    margin: 0;
+}
+
+#content-related .actionlist {
+    border: 1px solid #ccc;
+    padding: 0;
+    margin: 0;
+}
+
+#content-related .actionlist li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 12px 12px 18px;
+    border-bottom: 1px solid #ccc;
+}
+
+#content-related .actionlist li:first-child {
+    margin-top: 12px;
+}
+
+#content-related .actionlist li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+#content-related .actionlist li a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 70%;
+}
+
+#content-related .actionlist li br {
+    display: none;
+}
+
+#content-related .actionlist li span {
+    text-align: right;
+    text-overflow: ellipsis;
+    text-transform: lowercase;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 30%;
+}
+
+#content-related .module h2 {
+    background: #fc0;
+    color: #111;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #fff;
+    text-transform: uppercase;
+    padding: 8px;
+    margin-bottom: 0;
+}
+
+#result_list div.drag {
+    background: url(../img/sorting-icons.svg) 0 1px no-repeat;
+    background-position-x: center;
+}
+
+#result_list div.drag:hover {
+    background: url(../img/sorting-icons.svg) 0 -13px no-repeat;
+    background-position-x: center;
+}
+
+/* Кнопки */
+
+.object-tools a {
+    text-shadow: 0 1px 0px #111;
+}
+
+.object-tools a.viewsitelink,
+.object-tools a.golink,
+.object-tools a.addlink {
+    background-repeat: no-repeat;
+    background-position: left 7px center;
+    padding-left: 26px;
+    padding-right: 13px;
+}
+
+.object-tools a:link,
+.object-tools a:visited {
+    border-radius: 1rem;
+    background-color: #fc0;
+    color: #111;
+    font-size: 13px;
+    line-height: 15px;
+    text-shadow: 0 1px 0px #fff;
+    padding: 10px 15px;
+}
+
+.object-tools a.addlink {
+    background-color: #66BB6A;
+    background-image: url(../img/tooltag-add.svg);
+    padding-left: 26px;
+    padding-right: 13px;
+}
+
+    padding-left: 22px;
+}
+
+.object-tools a.historylink {
+
+}
+
+.object-tools a.viewsitelink {
+    padding-left: 20px;
+}
+
+.object-tools a:focus,
+.object-tools a:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+
+/* Фильтры */
+
+#changelist table tr:hover {
+    background-color: #ffc;
+}
+
+#changelist .actions select {
+    border: 2px solid #999;
+    height: auto;
+}
+
+#changelist .actions select:focus {
+    border: 2px solid #fc0;
+}
+
+#changelist #toolbar {
+    background: transparent;
+    border: none;
+}
+
+#changelist #toolbar form #searchbar {
+    border: 2px solid #999;
+    height: auto;
+}
+
+#changelist #toolbar form #searchbar:focus {
+    border: 2px solid #fc0;
+}
+
+#changelist-filter {
+    background: transparent;
+}
+
+#changelist-filter h2 {
+    color: #111;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0 1px 0px #fff;
+    margin: 0;
+}
+
+#changelist-filter h3 {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    color: #222;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    margin: 0;
+}
+
+#changelist-filter ul {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding: 0 16px 16px 16px;
+    margin: 0;
+}
+
+#changelist-filter ul:last-child {
+    border-bottom: 1px solid #ccc;
+}
+
+#changelist-filter li.selected {
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+#changelist-filter a:focus,
+#changelist-filter a:hover,
+#changelist-filter li.selected a:focus,
+#changelist-filter li.selected a:hover {
+    color: inherit;
+}
+
+#changelist-filter a {
+    display: inline-block;
+    border-radius: 1rem;
+    background-color: #999;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+    padding: 2px 10px 3px 10px;
+}
+
+#changelist-filter li.selected a,
+#changelist-filter a:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+
+/* Пагинация */
+
+.paginator a:link,
+.paginator a:visited {
+    border-radius: 1rem;
+    background: #999;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 1px 0px #111;
+    padding: 4px 10px 6px 10px;
+}
+
+.paginator a:focus,
+.paginator a:hover,
+.paginator a.showall:focus,
+.paginator a.showall:hover,
+.paginator .this-page {
+    border-radius: 1rem;
+    background: #fc0;
+    color: #111;
+    font-weight: bold;
+    text-shadow: 1px 1px 0px #fff;
+    padding: 4px 10px 6px 10px;
+}
+
+#changelist .actions {
+    color: #111;
+}
+
+#changelist .paginator {
+    color: #111;
+}
+
+/* Формы */
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+select,
+textarea,
+.vTextField {
+    border: 2px solid #999;
+    border-radius: 0.33rem;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus,
+input[type=url]:focus,
+input[type=number]:focus,
+textarea:focus,
+.vTextField:focus {
+    border: 2px solid #fc0;
+}
+
+.submit-row input,
+.submit-row a.deletelink {
+    border-radius: 1rem;
+    font-size: 13px;
+    text-shadow: 0 1px 0px #111;
+}
+
+.submit-row a.deletelink,
+.submit-row a.deletelink:focus,
+.submit-row a.deletelink:hover,
+.submit-row a.deletelink:active {
+    background: #C62828;
+    text-transform: uppercase;
+    height: auto;
+}
+
+.login .submit-row {
+    text-align: center;
+    padding: 12px 0;
+}
+
+.button:active,
+input[type=submit]:active,
+input[type=button]:active,
+.button:focus,
+input[type=submit]:focus,
+input[type=button]:focus,
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+input[name=_addanother],
+input[name=_continue] {
+    background: #66BB6A;
+}
+
+.button.default,
+.submit-row input.default,
+input[type=submit].default,
+input[name=_save].default {
+    background: #2E7D32;
+}
+
+label,
+.required label,
+label.required,
+p.datetime {
+    color: #111;
+}
+
+.form-row {
+    border-bottom: 1px solid #ccc;
+}
+
+.form-row img,
+.form-row input {
+    vertical-align: middle;
+}
+
+.form-row div.help {
+    color: #111;
+    padding-top: 8px;
+    padding-left: 0;
+}
+
+form .aligned input + p.help,
+form .aligned textarea + p.help,
+form .aligned select + p.help,
+form .aligned input + div.help,
+form .aligned textarea + div.help,
+form .aligned select + div.help,
+form .aligned p.help,
+form .aligned div.help {
+    padding-left: 0;
+}
+
+.help,
+p.help,
+form p.help,
+div.help,
+form div.help,
+div.help li {
+    color: #111;
+}
+
+form ul.radiolist input[type="radio"] {
+    vertical-align: middle;
+}
+
+p.file-upload {
+    color: #111;
+    line-height: 1;
+}
+
+.submit-row {
+    background: transparent;
+    border: none;
+}
+
+.aligned .vCheckboxLabel {
+    display: block; 
+    vertical-align: baseline; 
+    padding: 0; 
+    width: 160px; 
+    float: left; 
+}
+
+.timezonewarning {
+    color: #111;
+}
+
+.related-widget-wrapper-link {
+    display: none;
+}
+
+.inline-group .tabular tr.has_original td {
+    padding: 0;
+    vertical-align: middle;
+}
+
+div.inline-group table.ui-sortable tr.form-row.has_original td.drag {
+    background: url(../img/sorting-icons.svg) 0 1px no-repeat !important;
+    background-position-x: center !important;
+    background-size: 100% 550% !important;
+}
+
+div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
+    background: url(../img/sorting-icons.svg) 0 20% no-repeat !important;
+    background-position-x: center !important;
+    background-size: 100% 550% !important;
+}
