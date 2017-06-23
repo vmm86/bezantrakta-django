@@ -1,4 +1,4 @@
-import debug_toolbar
+import os
 
 from .base import *
 
@@ -23,10 +23,14 @@ ALLOWED_HOSTS = [
     '.bezantrakta.local',
 ]
 
+# Папки `media` и `static` хранятся в родительской папке проекта на уровень выше
+STATIC_ROOT = os.path.join(PARENT_DIR, 'static')
+MEDIA_ROOT = os.path.join(PARENT_DIR, 'media')
+
 # Email для автоматических сообщений от менеджера сайта.
-DEFAULT_FROM_EMAIL = 'webmaster@rterm.local'
+DEFAULT_FROM_EMAIL = 'webmaster@bezantrakta.local'
 # The email that error messages come from, sent to ADMINS and MANAGERS.
-SERVER_EMAIL = 'webmaster@rterm.local'
+SERVER_EMAIL = 'webmaster@bezantrakta.local'
 
 INSTALLED_APPS += [
     'debug_toolbar',
@@ -35,19 +39,3 @@ INSTALLED_APPS += [
 MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 TEMPLATES[0]['OPTIONS']['context_processors'].insert(0, 'django.template.context_processors.debug')
-
-DEBUG_TOOLBAR_PANELS = [
-    'debug_toolbar.panels.versions.VersionsPanel',
-    'debug_toolbar.panels.timer.TimerPanel',
-    'debug_toolbar.panels.settings.SettingsPanel',
-    'debug_toolbar.panels.headers.HeadersPanel',
-    'debug_toolbar.panels.request.RequestPanel',
-    'debug_toolbar.panels.sql.SQLPanel',
-    'debug_toolbar.panels.templates.TemplatesPanel',
-    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-    'debug_toolbar.panels.cache.CachePanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
-    'debug_toolbar.panels.logging.LoggingPanel',
-    'debug_toolbar.panels.redirects.RedirectsPanel',
-    # 'debug_toolbar.panels.profiling.ProfilingPanel',
-]

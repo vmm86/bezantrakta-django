@@ -1,3 +1,5 @@
+import os
+
 from .base import *
 
 
@@ -20,6 +22,10 @@ ROOT_DOMAIN_SLUG = 'vrn'
 ALLOWED_HOSTS = [
     '.bezantrakta.rterm.ru'
 ]
+
+# Папки `media` и `static` хранятся в родительской папке проекта на уровень выше
+STATIC_ROOT = os.path.join(PARENT_DIR, 'static')
+MEDIA_ROOT = os.path.join(PARENT_DIR, 'media')
 
 # Email для автоматических сообщений от менеджера сайта.
 DEFAULT_FROM_EMAIL = 'webmaster@rterm.ru'
