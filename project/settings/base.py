@@ -1,8 +1,10 @@
 import os
 
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# Папка проекта, пути внутри строятся с помощью: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Родительская папка проекта на уровень выше
+PARENT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Получение имеющегося или генерация нового SECRET_KEY
 try:
@@ -243,8 +245,8 @@ TIME_INPUT_FORMATS = ['%H:%M', ]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # Параметры сбора статики
 STATICFILES_DIRS = [
@@ -253,9 +255,6 @@ STATICFILES_DIRS = [
     # Статика кастомной админ-панели
     ('admin', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'admin')),
 ]
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
 
 
 # CKEditor settings
