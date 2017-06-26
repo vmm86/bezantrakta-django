@@ -228,6 +228,7 @@
         <p>domain_id: {{ request.domain_id }}</p>
         <p>city_title: {{ request.city_title }}</p>
         <p>city_slug: {{ request.city_slug }}</p>
+        <p>city_timezone: {{ request.city_timezone }}</p>
         <p>cities: {{ request.cities }}</p>
         <p>url_domain: {{ request.url_domain }}</p>
         <p>url_path: {{ request.url_path }}</p>
@@ -426,6 +427,7 @@ lightbox.option({
 
                 <ul id="choose-city-list" class="choose-city-list">
                 {% for city in request.cities %}
+            {% if city.slug != "adm" %}
                 {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
                 {% if request.bezantrakta_city == city.slug %}
                     <li class="{{ city.status }} chosen" data-city="{{ city.slug }}">
@@ -440,6 +442,7 @@ lightbox.option({
                         <span class="city-status-text">скоро открытие</span>
                     {% endif %}
                     </li>
+            {% endif %}
                 {% endfor %}
                 </ul>
             </div>
