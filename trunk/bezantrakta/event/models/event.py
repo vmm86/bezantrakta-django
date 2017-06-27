@@ -72,7 +72,6 @@ class Event(models.Model):
         verbose_name=_('event_min_age'),
     )
     datetime = models.DateTimeField(
-        default=timezone.now,
         verbose_name=_('event_datetime'),
     )
     event_group = models.ManyToManyField(
