@@ -13,13 +13,22 @@ def img_path(instance, filename):
     else:
         domain = instance.event.domain.slug
 
+    current_timezone = instance.event.domain.city.timezone
+    event_datetime_localized = instance.event.datetime.astimezone(current_timezone)
+
     name, dot, extension = filename.rpartition('.')
     # Относительный путь до файла
     file_path = os.path.join(
         domain,
         instance._meta.app_label,
         ''.join(
-            (instance.event.date.strftime('%Y-%m-%d'), '_', instance.event.slug,)
+            (
+                event_datetime_localized.strftime('%Y-%m-%d'),
+                '_',
+                event_datetime_localized.strftime('%H-%M'),
+                '_',
+                instance.event.slug,
+            )
         ),
         ''.join(
             (instance.event_container.mode, dot, extension,)
@@ -89,13 +98,19 @@ class EventContainerBinder(models.Model):
 
     def img_preview(self):
         return mark_safe(
-            '<img src="{}" style="width: auto; height: 64px;">'.format(self.img.url)
+            '<img class="img_preview_eventcontainerbinder" src="{url}">'.format(url=self.img.url)
         )
-    img_preview.short_description = _('eventcontainerbinders_img_preview')
+    img_preview.short_description = _('eventcontainerbinder_img_preview')
 
-    def event_date(self):
+    def event_datetime_localized(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
+        # Дата и время события в часовом поясе его города
+        current_timezone = self.event.domain.city.timezone
+        event_datetime_localized = self.event.datetime.astimezone(current_timezone)
         return mark_safe(
-            '{}'.format(naturalday(self.event.date))
+            '{date} {time}'.format(
+                date=naturalday(event_datetime_localized),
+                time=event_datetime_localized.strftime('%H:%M'),
+            )
         )
-    event_date.short_description = _('eventcontainerbinders_event_date')
+    event_datetime_localized.short_description = _('eventcontainerbinder_event_datetime')

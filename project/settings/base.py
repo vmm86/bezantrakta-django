@@ -13,11 +13,16 @@ except ImportError:
     from django.utils.crypto import get_random_string
     key = get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
     with open(os.path.join(BASE_DIR, 'project', 'settings', 'simsim.py'), 'w') as key_file:
-        key_file.write("SECRET_KEY = '{}'\n".format(key))
+        key_file.write("SECRET_KEY = '{key}'\n".format(key=key))
 
 INTERNAL_IPS = ['127.0.0.1']
 
 PREPEND_WWW = False
+
+# Кастомный адрес для админ-панели
+BEZANTRAKTA_ADMIN_URL = 'simsim'
+# Псевдоним категории "Все события"
+BEZANTRAKTA_CATEGORY_ALL = 'vse'
 
 # Application definition
 
@@ -143,22 +148,35 @@ ADMIN_REORDER = (
         'app': 'event',
         'models':
         (
-            {'model': 'event.EventVenue', 'label': 'Залы'},
-            {'model': 'event.Event', 'label': 'События'},
-            {'model': 'event.EventGroup', 'label': 'Группы'},
-            {'model': 'event.EventContainer', 'label': 'Контейнеры'},
-            {'model': 'event.EventLink', 'label': 'Ссылки'},
             {'model': 'event.EventCategory', 'label': 'Категории'},
+            {'model': 'event.EventLink', 'label': 'Ссылки'},
+            {'model': 'event.EventVenue', 'label': 'Залы 🔗'},
+            {'model': 'event.Event', 'label': 'События 🔗'},
+            {'model': 'event.EventGroup', 'label': 'Группы 🔗'},
+            {'model': 'event.EventContainer', 'label': 'Контейнеры 🔗'},
         )
     },
-    {'app': 'menu', },
-    {'app': 'article', },
+    {
+        'app': 'menu',
+        'models':
+        (
+            {'model': 'menu.Menu', 'label': 'Меню'},
+            {'model': 'menu.MenuItem', 'label': 'Пункты меню 🔗'},
+        )
+    },
+    {
+        'app': 'article',
+        'models':
+        (
+            {'model': 'article.Article', 'label': 'HTML-страницы 🔗'},
+        )
+    },
     {
         'app': 'banner',
         'models':
         (
             {'model': 'banner.BannerGroup', 'label': 'Группы баннеров'},
-            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры'},
+            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры 🔗'},
         )
     },
     {
@@ -183,6 +201,7 @@ DATABASES = {
         'USER':     'belcanto',
         'PASSWORD': 'wrtwefsf352',
         'HOST':     'localhost',
+        'TIME_ZONE': 'UTC',
         'TEST': {
             'NAME': 'belcanto_bezantrakta_django_test'
         }
@@ -228,14 +247,19 @@ LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
+USE_TZ = True
+
 USE_I18N = True
 
 USE_L10N = True
 
-LOCALE_PATHS = (os.path.join(BASE_DIR, 'project', 'locale'),)
-
-USE_TZ = True
-
+# DATE_FORMAT = 'd-m-Y'
+# TIME_FORMAT = 'H:i'
+# DATETIME_FORMAT = 'r'
+# YEAR_MONTH_FORMAT = 'F Y'
+# MONTH_DAY_FORMAT = 'F j'
+# SHORT_DATE_FORMAT = 'm/d/Y'
+# SHORT_DATETIME_FORMAT = 'm/d/Y P'
 FIRST_DAY_OF_WEEK = 1  # Понедельник
 
 DATETIME_INPUT_FORMATS = ['%Y-%m-%d %H:%M', ]

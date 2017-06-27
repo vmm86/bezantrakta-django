@@ -14,7 +14,7 @@ class EventGroupBinderInline(admin.TabularInline):
         Для добавления в группу выводятся только привязанные к выбранному долмену события.
         """
         if db_field.name == 'event':
-            domain_filter = request.COOKIES.get('bezantrakta_domain', None)
+            domain_filter = request.COOKIES.get('bezantrakta_admin_domain', None)
             kwargs['queryset'] = Event.objects.filter(domain__slug=domain_filter)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

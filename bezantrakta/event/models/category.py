@@ -24,12 +24,12 @@ class EventCategory(models.Model):
         unique=True,
         verbose_name=_('eventcategory_slug'),
     )
-    description = models.CharField(
+    description = models.TextField(
         max_length=200,
         help_text=_('eventcategory_description_help_text'),
         verbose_name=_('eventcategory_description'),
     )
-    keywords = models.CharField(
+    keywords = models.TextField(
         max_length=150,
         help_text=_('eventcategory_keywords_help_text'),
         verbose_name=_('eventcategory_keywords'),

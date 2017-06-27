@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db.models import CharField, Case, When, Value, Q
 from django.http.request import split_domain_port
 from django.shortcuts import render
+from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 
 from .models import City, Domain
@@ -35,7 +36,8 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                 'settings',
                 'city__title',
                 'city__slug',
-                'city__state'
+                'city__timezone',
+                'city__state',
             ).get(slug=domain_slug)
         # Если домен НЕ добавлен в БД - такой сайт не существует (ошибка 500)
         except Domain.DoesNotExist:
@@ -54,6 +56,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
 
             request.city_title = domain['city__title']
             request.city_slug = domain['city__slug']
+            request.city_timezone = domain['city__timezone']
             request.city_state = domain['city__state']
 
             # Если город отключен - такой город не существует (ошибка 500)
@@ -89,6 +92,17 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     request.url_domain = url_domain
                     request.url_path = path
                     request.url_full = ''.join((url_domain, path,))
+
+                    # Активация текущего часового пояса
+                    if request.city_timezone:
+                        # На сайте (но не в админке!)
+                        # активируется часовой пояс города текущего сайта из БД
+                        if settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
+                            current_timezone = request.city_timezone
+                            timezone.activate(current_timezone)
+                    # Иначе - часовой пояс по умолчанию из базовых настроек проекта (UTC)
+                    else:
+                        timezone.deactivate()
 
                 # Получение списка городов для выбора
                 try:

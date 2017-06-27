@@ -1,6 +1,10 @@
 from django.db.models import F
+from django.utils import timezone
 
 from .models import Event, EventCategory, EventContainerBinder
+
+
+today = timezone.now()
 
 
 def big_containers(request):
@@ -16,20 +20,21 @@ def big_containers(request):
         ).annotate(
             title=F('event__title'),
             slug=F('event__slug'),
-            date=F('event__date'),
-            time=F('event__time'),
+            datetime=F('event__datetime'),
+            timezone=F('event__domain__city__timezone'),
             min_price=F('event__min_price'),
             min_age=F('event__min_age'),
             venue=F('event__event_venue__title'),
-            container=F('event_container__slug')
+            container=F('event_container__slug'),
         ).filter(
             event__is_published=True,
+            event__datetime__gt=today,
             event__domain_id=request.domain_id
         ).values(
             'title',
             'slug',
-            'date',
-            'time',
+            'datetime',
+            'timezone',
             'min_price',
             'min_age',
             'venue',
@@ -62,17 +67,12 @@ def categories(request):
     """
     # Только если домен опубликован
     if request.domain_is_published:
-        import datetime
-        from django.db.models import Count
-
-        today = datetime.datetime.today()
-
         # Получение опубликованных категорий, у которых есть связанные предстоящие события
         # .annotate(event_count=Count('event'))
         categories = EventCategory.objects.filter(
             is_published=True,
             event__is_published=True,
-            event__date__gt=today,
+            event__datetime__gt=today,
             event__domain_id=request.domain_id
         ).values(
             'title',
@@ -85,7 +85,7 @@ def categories(request):
         category_all['slug'] = 'vse'
         category_all['event_count'] = Event.objects.filter(
             is_published=True,
-            date__gt=today,
+            datetime__gt=today,
             domain_id=request.domain_id,
         ).count()
         cat_all = []
@@ -96,7 +96,8 @@ def categories(request):
         categories = list(chain(cat_all, categories))
 
         return {
-            'categories': categories
+            'today': today,
+            'categories': categories,
         }
     else:
         return {}

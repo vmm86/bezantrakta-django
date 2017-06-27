@@ -4,6 +4,8 @@ from ckeditor.fields import RichTextField
 
 from django.db import models
 from django.urls.base import reverse
+from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 
@@ -69,11 +71,9 @@ class Event(models.Model):
         blank=False,
         verbose_name=_('event_min_age'),
     )
-    date = models.DateField(
-        verbose_name=_('event_date'),
-    )
-    time = models.TimeField(
-        verbose_name=_('event_time'),
+    datetime = models.DateTimeField(
+        default=timezone.now,
+        verbose_name=_('event_datetime'),
     )
     event_group = models.ManyToManyField(
         'event.EventGroup',
@@ -119,25 +119,47 @@ class Event(models.Model):
         db_table = 'bezantrakta_event'
         verbose_name = _('event')
         verbose_name_plural = _('events')
-        ordering = ('domain', 'date', 'time', 'title',)
+        ordering = ('domain', 'datetime', 'title',)
         unique_together = (
-            ('domain', 'date', 'slug',),
+            ('domain', 'datetime', 'slug',),
         )
 
     def __str__(self):
         from django.contrib.humanize.templatetags.humanize import naturalday
-        return '{} ({})'.format(self.title, naturalday(self.date),)
+        # Дата и время события в часовом поясе его города
+        current_timezone = self.domain.city.timezone
+        event_datetime_localized = self.datetime.astimezone(current_timezone)
+        return '{title} ({date} {time})'.format(
+            title=self.title,
+            date=naturalday(event_datetime_localized),
+            time=event_datetime_localized.strftime('%H:%M')
+        )
 
     def get_absolute_url(self):
         return reverse(
             'event',
             args=[
-                str(self.date.year),
-                str(self.date.month),
-                str(self.date.day),
+                str(self.datetime.year),
+                str(self.datetime.month),
+                str(self.datetime.day),
+                str(self.datetime.hour),
+                str(self.datetime.minute),
                 self.slug
             ]
         )
+
+    def datetime_localized(self):
+        from django.contrib.humanize.templatetags.humanize import naturalday
+        # Дата и время события в часовом поясе его города
+        current_timezone = self.domain.city.timezone
+        event_datetime_localized = self.datetime.astimezone(current_timezone)
+        return mark_safe(
+            '{date} {time}'.format(
+                date=naturalday(event_datetime_localized),
+                time=event_datetime_localized.strftime('%H:%M'),
+            )
+        )
+    datetime_localized.short_description = _('event_datetime')
 
     def container_count(self):
         return self.event_container.count()

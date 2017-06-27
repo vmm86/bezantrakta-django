@@ -47,6 +47,14 @@ body {
     {% choose_domain %}
 </div>
 {% endif %}
+{% if debug %}
+    TIME_ZONE: {{ TIME_ZONE }}
+{% endif %}
+{% endblock %}
+
+{% block content_title %}
+<h1>{% trans 'bezantrakta_admin' %}</h1>
+<p>Иконкой 🔗 обозначены компоненты, привязанные к конкретному сайту.</p>
 {% endblock %}
 
 {% block footer %}
@@ -55,20 +63,21 @@ body {
 <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    {# Сохранение выбранного для фильтрации данных сайта в cookie `bezantrakta_domain` #}
+    {# Сохранение данных выбранного для фильтрации сайта в cookie #}
     $('#choose_domain').change(function() {
         var value = $('#choose_domain option:selected').val();
+        var timezone = $('#choose_domain option:selected').data('timezone');
         {# Адрес главного сайта, к которому могут добавляться поддомены #}
         var domain = '.{{ request.root_domain }}';
         {# Период действия куки (год) #}
         var expires = new Date(new Date().getTime() + 31622400000);
-        {# Запись в cookie выбранного фильтра по домену в админке #}
-        Cookies.set('bezantrakta_domain', value, {expires: expires, domain: domain});
+        {# Запись в cookie выбранного домена для фильтрации админки #}
+        Cookies.set('bezantrakta_admin_domain', value, {expires: expires, domain: domain});
         location.reload();
     });
 
     {# При создании новых записей #}
-    var domain_id = {{ bezantrakta_domain_id }};
+    var domain_id = {{ bezantrakta_admin_domain_id }};
     if (domain_id !== 0) {
         $('.object-tools .addlink').attr('href', function(i, h) {
             var qs = h + (h.indexOf('?') != -1 ? '&' : '?');

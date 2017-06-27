@@ -1,12 +1,11 @@
 {% extends "base.html" %}
+{% load tz %}
 
 {% block content_header %}
 {% for category in categories %}
     {% url 'event:category' slug=category.slug as category_url %}
     {% if category_url == request.url_path %}
-        {% with category_title=category.title %}
-            <h1>{{ category_title }}</h1>
-        {% endwith %}
+        <h1>{{ category.title }}</h1>
     {% endif %}
 {% endfor %}
 {% endblock %}
@@ -14,27 +13,17 @@
 {% block content_body %}
 <div class="poster-small-vertical-body">
 {% for event in category_events %}
-    {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
-    <div class="poster-small-vertical">
-        <div class="poster-small-vertical-image">
-            <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-            </a>
-        </div>
-        <div class="poster-small-vertical-price">
-            <div class="poster-small-vertical-date">
-                <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
-            </div>
-            <div class="poster-small-vertical-min_price">
-                <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
-            </div>
-        </div>
-    </div>
+{% localtime on %}
+    {% include "event/small_vertical_posters.html" with event=event %}
+{% endlocaltime %}
 {% endfor %}
 </div>
 
 {% if debug %}
 <br><br>
+today: {{ today|pprint }} {{ today }}
+<br>
 categories: {{ categories|pprint }}
+<br><br>
 {% endif %}
 {% endblock %}

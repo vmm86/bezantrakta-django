@@ -117,8 +117,8 @@
     <div class="bannergroup">
     {% for event in big_vertical_left %}
         <div class="banneritem">
-            <a href="{% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                <img src="/media/{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+            <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                <img src="{% get_media_prefix %}{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
             </a>
         </div>
     {% endfor %}
@@ -131,8 +131,8 @@
     <div class="bannergroup">
     {% for event in big_vertical_right %}
         <div class="banneritem">
-            <a href="{% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                <img src="/media/{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+            <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                <img src="{% get_media_prefix %}{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
             </a>
         </div>
     {% endfor %}
@@ -191,8 +191,8 @@
                     <ul class="slider">
                     {% for event in big_horizontal %}
                         <li class="slide">
-                            <a href="{% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                                <img src="/media/{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                            <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                                <img src="{% get_media_prefix %}{{ event.img }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
                             </a>
                         </li>
                     {% endfor %}
@@ -229,6 +229,7 @@
         <p>city_title: {{ request.city_title }}</p>
         <p>city_slug: {{ request.city_slug }}</p>
         <p>city_timezone: {{ request.city_timezone }}</p>
+        <p>TIME_ZONE: {{ TIME_ZONE }}</p>
         <p>cities: {{ request.cities }}</p>
         <p>url_domain: {{ request.url_domain }}</p>
         <p>url_path: {{ request.url_path }}</p>
@@ -255,8 +256,8 @@
 
     <div class="banners-body">
 
+        {% if banner_group_items.banner_social %}
         <div class="banners banners-left">
-        {% if banner_group.banner_social %}
             <div class="bannergroup">
                 <div class="bannerheader">{{ banner_group.banner_social }}</div>
                 {% for banner in banner_group_items.banner_social %}
@@ -264,18 +265,18 @@
                         {% if banner.href %}
                             <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
                         {% endif %}
-                                <img src="/media/{{ banner.img }}" alt="{{ banner.title }}">
+                                <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
                         {% if banner.href %}
                             </a>
                         {% endif %}
                     </div>
                 {% endfor %}
             </div>
-        {% endif %}
         </div>
+        {% endif %}
 
+        {% if banner_group_items.banner_partners %}
         <div class="banners banners-center">
-        {% if banner_group.banner_partners %}
             <div class="bannergroup">
                 <div class="bannerheader">{{ banner_group.banner_partners }}</div>
                 {% for banner in banner_group_items.banner_partners %}
@@ -283,18 +284,18 @@
                         {% if banner.href %}
                             <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
                         {% endif %}
-                                <img src="/media/{{ banner.img }}" alt="{{ banner.title }}">
+                                <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
                         {% if banner.href %}
                             </a>
                         {% endif %}
                     </div>
                 {% endfor %}
             </div>
-        {% endif %}
         </div>
+        {% endif %}
 
+        {% if banner_group_items.banner_payment %}
         <div class="banners banners-right">
-        {% if banner_group.banner_payment %}
             <div class="bannergroup">
                 <div class="bannerheader">{{ banner_group.banner_payment }}</div>
                 {% for banner in banner_group_items.banner_payment %}
@@ -302,15 +303,15 @@
                         {% if banner.href %}
                             <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
                         {% endif %}
-                                <img src="/media/{{ banner.img }}" alt="{{ banner.title }}">
+                                <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
                         {% if banner.href %}
                             </a>
                         {% endif %}
                     </div>
                 {% endfor %}
             </div>
-        {% endif %}
         </div>
+        {% endif %}
 
     </div>
 

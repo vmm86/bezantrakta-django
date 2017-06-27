@@ -8,7 +8,7 @@ from .models import Menu, MenuItem
 
 @admin.register(Menu)
 class MenuAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ('title',)
+    list_display = ('title', 'slug',)
     prepopulated_fields = {
         'slug': ('title',),
     }
@@ -16,7 +16,7 @@ class MenuAdmin(SortableAdminMixin, admin.ModelAdmin):
 
 @admin.register(MenuItem)
 class MenuItemAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ('title', 'slug', 'order', 'is_published', 'menu', 'domain',)
+    list_display = ('title', 'slug', 'is_published', 'menu', 'domain',)
     list_filter = (
         'menu',
     )

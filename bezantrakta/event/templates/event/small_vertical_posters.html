@@ -1,0 +1,16 @@
+{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
+<div class="poster-small-vertical">
+    <div class="poster-small-vertical-image">
+        <a href="{{ event_url }}" title="{{ event.datetime }} {{ event.title }} {{ event.venue }}">
+            <img src="{{ event.poster }}" alt="{{ event.datetime }} {{ event.title }} {{ event.venue }}">
+        </a>
+    </div>
+    <div class="poster-small-vertical-price">
+        <div class="poster-small-vertical-date">
+            <a href="{{ event_url }}">{{ event.datetime|date:"j" }} {{ event.datetime|date:"E" }}</a>
+        </div>
+        <div class="poster-small-vertical-min_price">
+            <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
+        </div>
+    </div>
+</div>

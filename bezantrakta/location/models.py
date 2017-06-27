@@ -53,7 +53,7 @@ class City(models.Model):
         ordering = ('title',)
 
     def __str__(self):
-        return self.title
+        return '{title} - {slug}'.format(title=self.title, slug=self.slug)
 
     def state_icons(self):
         from django.contrib.admin.templatetags.admin_list import _boolean_icon
@@ -94,6 +94,7 @@ class Domain(models.Model):
     slug = models.CharField(
         max_length=32,
         unique=True,
+        help_text=_('domain_slug_help_text'),
         verbose_name=_('domain_slug'),
     )
     is_published = models.BooleanField(
@@ -120,4 +121,4 @@ class Domain(models.Model):
         ordering = ('city', 'title',)
 
     def __str__(self):
-        return self.title
+        return '{title} - {slug}'.format(title=self.title, slug=self.slug)
