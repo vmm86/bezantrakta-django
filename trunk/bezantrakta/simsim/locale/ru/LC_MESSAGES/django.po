@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-20 13:20+0000\n"
+"POT-Creation-Date: 2017-06-27 11:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,19 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: templates/admin/base_site.html:4
+#: templates/admin/base_site.html:4 templates/admin/base_site.html:40
+#: templates/admin/base_site.html:41 templates/admin/base_site.html:56
 msgid "bezantrakta_admin"
 msgstr "Админ-панель Безантракта"
+
+#: templates/admin/index.html:8
+msgid "Recent actions"
+msgstr "Последние действия"
+
+#: templates/admin/index.html:11
+msgid "None available"
+msgstr "Ничего не обнаружено"
+
+#: templates/admin/index.html:24
+msgid "Unknown content"
+msgstr "?"

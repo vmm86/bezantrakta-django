@@ -2,3 +2,4 @@ media
 static
 venv
 *.sublime-*
+settings.py

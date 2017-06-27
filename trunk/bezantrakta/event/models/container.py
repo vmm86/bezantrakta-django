@@ -14,11 +14,11 @@ class EventContainer(models.Model):
         editable=False,
     )
     title = models.CharField(
-        max_length=32,
+        max_length=64,
         verbose_name=_('eventcontainer_title'),
     )
     slug = models.SlugField(
-        max_length=32,
+        max_length=64,
         verbose_name=_('eventcontainer_slug'),
     )
     MODE_BV = 'big_vertical'
@@ -66,4 +66,4 @@ class EventContainer(models.Model):
         ordering = ('order', 'is_published', 'title',)
 
     def __str__(self):
-        return self.title
+        return '{width}x{height} px - {title}'.format(width=self.img_width, height=self.img_height, title=self.title)

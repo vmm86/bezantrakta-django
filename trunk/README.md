@@ -49,8 +49,8 @@ Production deployment - на базе `nginx` как проксирующего 
 ```bash
 sudo su
 apt-get install g++ gcc build-essential automake autoconf
-apt-get install python3 pythn3-pip python3-virtualenv python3-dev libpython3-dev python-imaging libjpeg-dev
-apt-get install php
+apt-get install python3 python3-pip python3-virtualenv python3-dev libpython3-dev python-imaging libjpeg-dev
+apt-get install php php-mbstring php-mysqli
 apt-get install (mysql-server || mariadb-server) (libmysqlclient-dev || libmariadbclient-dev)
 apt-get install nginx
 apt-get install uwsgi uwsgi-plugin-python3 uwsgi-plugin-php

@@ -6,7 +6,7 @@ def domain_filter(field):
     def filter_queryset(get_queryset):
         def wrapper(self, request):
             queryset = get_queryset(self, request)
-            domain_filter = request.COOKIES.get('bezantrakta_domain', None)
+            domain_filter = request.COOKIES.get('bezantrakta_admin_domain', None)
             if domain_filter and domain_filter != '':
                 return queryset.filter(**{field: domain_filter})
             else:

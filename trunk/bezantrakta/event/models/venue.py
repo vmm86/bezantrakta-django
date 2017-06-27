@@ -39,4 +39,4 @@ class EventVenue(models.Model):
         )
 
     def __str__(self):
-        return self.title
+        return '{venue} - {city}'.format(venue=self.title, city=self.domain.city.title)

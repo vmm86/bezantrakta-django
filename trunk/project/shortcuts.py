@@ -11,11 +11,21 @@ def add_small_vertical_poster(request, query):
     так и при выводе страницы конкретного события.
     """
     def process(request, data):
+        # Дата и время события в часовом поясе его города
+        current_timezone = request.city_timezone
+        event_datetime_localized = data['datetime'].astimezone(current_timezone)
+
         poster_file = os.path.join(
             request.domain_slug,
             'event',
             ''.join(
-                (str(data['date']), '_', data['slug'],)
+                (
+                    event_datetime_localized.strftime('%Y-%m-%d'),
+                    '_',
+                    event_datetime_localized.strftime('%H-%M'),
+                    '_',
+                    data['slug'],
+                )
             ),
             'small_vertical.png',
         )

@@ -1,26 +1,14 @@
 {% extends "base.html" %}
+{% load tz %}
 
 {% block content_body %}
 
 {% if small_vertical_vip %}
 <div class="poster-small-vertical-body vip">
 {% for event in small_vertical_vip %}
-        {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
-        <div class="poster-small-vertical">
-            <div class="poster-small-vertical-image">
-                <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                    <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                </a>
-            </div>
-            <div class="poster-small-vertical-price">
-                <div class="poster-small-vertical-date">
-                    <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
-                </div>
-                <div class="poster-small-vertical-min_price">
-                    <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
-                </div>
-            </div>
-        </div>
+{% localtime on %}
+    {% include "event/small_vertical_posters.html" with event=event %}
+{% endlocaltime %}
 {% endfor %}
 </div>
 {% endif %}
@@ -28,28 +16,14 @@
 {% if small_vertical %}
 <div class="poster-small-vertical-body">
 {% for event in small_vertical %}
-        {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
-        <div class="poster-small-vertical">
-            <div class="poster-small-vertical-image">
-                <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                    <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
-                </a>
-            </div>
-            <div class="poster-small-vertical-price">
-                <div class="poster-small-vertical-date">
-                    <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
-                </div>
-                <div class="poster-small-vertical-min_price">
-                    <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
-                </div>
-            </div>
-        </div>
+{% localtime on %}
+    {% include "event/small_vertical_posters.html" with event=event %}
+{% endlocaltime %}
 {% endfor %}
 </div>
 {% endif %}
 
 <div class="share-help">
-
 {% if request.settings.counter.uptolike %}
     <div class="share">
         <span class="label grey">Поделиться</span>
@@ -75,6 +49,7 @@
 {% endif %}
 
 {# Иконка для страницы Бельканто выводится только на основном сайте Безантракта #}
+{% comment %}
 {% if request.domain == "vrn" %}
     <div class="belcanto-banner">
         <a href="/gastroli">
@@ -82,6 +57,7 @@
         </a>
     </div>
 {% endif %}
+{% endcomment %}
 </div>
 
 {% if debug %}

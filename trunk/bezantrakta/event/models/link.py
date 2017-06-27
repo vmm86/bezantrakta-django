@@ -72,5 +72,5 @@ class EventLink(models.Model):
         super().delete(*args, **kwargs)
 
     def img_preview(self):
-        return mark_safe('<img src="{}" style="width: 192px; height: auto;">'.format(self.img.url))
+        return mark_safe('<img class="img_preview_link" src="{url}">'.format(url=self.img.url))
     img_preview.short_description = _('eventlinks_img_preview')

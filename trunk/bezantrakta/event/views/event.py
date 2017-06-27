@@ -2,13 +2,17 @@ import datetime
 
 from django.db.models import CharField, BooleanField, F, Case, When, Value
 from django.shortcuts import render
+from django.utils import timezone
 
 from project.shortcuts import add_small_vertical_poster
 
 from ..models import Event, EventLinkBinder, EventGroupBinder
 
 
-def event(request, year, month, day, slug):
+today = timezone.now()
+
+
+def event(request, year, month, day, hour, minute, slug):
     """
     Отображение страницы конкретного события
 
@@ -29,8 +33,15 @@ def event(request, year, month, day, slug):
             else: Событие НЕ опубликовано и уже прошло
                 [ Ошибка 410 ]
     """
-    date = datetime.datetime(year=int(year), month=int(month), day=int(day))
-    today = datetime.datetime.today()
+    current_timezone = request.city_timezone
+    event_datetime = datetime.datetime(
+        year=int(year),
+        month=int(month),
+        day=int(day),
+        hour=int(hour),
+        minute=int(minute),
+    )
+    event_datetime_localized = current_timezone.localize(event_datetime)
 
     # Запрос события в БД для конкретного домена
     try:
@@ -41,7 +52,7 @@ def event(request, year, month, day, slug):
             venue=F('event_venue__title'),
             venue_city=F('event_venue__domain__city__title'),
             is_coming=Case(
-                When(date__gt=today, then=Value(True)),
+                When(datetime__gt=today, then=Value(True)),
                 default=False,
                 output_field=BooleanField()
             ),
@@ -59,14 +70,13 @@ def event(request, year, month, day, slug):
             'description',
             'keywords',
             'text',
-            'date',
-            'time',
+            'datetime',
             'venue',
             'venue_city',
         ).get(
-            date=date,
+            datetime=event_datetime_localized,
             slug=slug,
-            domain_id=request.domain_id
+            domain_id=request.domain_id,
         )
     # Событие НЕ существует в БД
     except Event.DoesNotExist:
@@ -82,6 +92,7 @@ def event(request, year, month, day, slug):
         if event['is_published']:
             context = {}
 
+            # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
             add_small_vertical_poster(request, event)
 
             # Запрос ссылок в этом событии
@@ -92,16 +103,16 @@ def event(request, year, month, day, slug):
                     'domain'
                 ).annotate(
                     title=F('event_link__title'),
-                    img=F('event_link__img')
+                    img=F('event_link__img'),
                 ).filter(
                     event__is_published=True,
-                    event__date=date,
+                    event__datetime=event_datetime_localized,
                     event__slug=slug,
-                    event__domain_id=request.domain_id
+                    event__domain_id=request.domain_id,
                 ).values(
                     'title',
                     'href',
-                    'img'
+                    'img',
                 )
             # Ссылок нет
             except EventLinkBinder.DoesNotExist:
@@ -115,23 +126,21 @@ def event(request, year, month, day, slug):
                 group_events = EventGroupBinder.objects.select_related(
                     'event_group',
                     'event',
-                    'domain'
+                    'domain',
                 ).annotate(
                     title=F('event__title'),
                     slug=F('event__slug'),
-                    date=F('event__date'),
-                    time=F('event__time'),
+                    datetime=F('event__datetime'),
                     venue=F('event__event_venue__title'),
                 ).filter(
                     event_group=event['group_id'],
                     event__is_published=True,
-                    event__date__gt=today,
-                    event__domain_id=request.domain_id
+                    event__datetime__gt=today,
+                    event__domain_id=request.domain_id,
                 ).values(
                     'title',
                     'slug',
-                    'date',
-                    'time',
+                    'datetime',
                     'venue',
                 )
                 context['group_events'] = group_events

@@ -1,8 +1,8 @@
 <select name="choose_domain" id="choose_domain" style="background-color: #fff;">
-    <option value="">все сайты</option>
+    <option value="" data-timezone="UTC">все сайты</option>
 {% for domain in domains %}
     {% if domain.slug != "adm" %}
-    <option class="{{ domain.is_published|yesno:'published,not_published' }}" value="{{ domain.slug }}" {% if domain.slug == bezantrakta_domain_slug %}selected=""{% endif %}>{{ domain.title }}</option>
+    <option class="{{ domain.is_published|yesno:'published,not_published' }}" value="{{ domain.slug }}" data-timezone={{ domain.timezone }} {% if domain.slug == bezantrakta_admin_domain_slug %}selected=""{% endif %}>{{ domain.title }}</option>
     {% endif %}
 {% endfor %}
 </select>
