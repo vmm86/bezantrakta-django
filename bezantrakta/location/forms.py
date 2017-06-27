@@ -8,7 +8,7 @@ from .models import City
 
 
 def get_timezone_list():
-    return [tz for tz in pytz.common_timezones]
+    return [tz for tz in pytz.country_timezones('ru')]
 
 
 class CityForm(forms.ModelForm):
