@@ -119,6 +119,7 @@ select {
     align-items: center;
 
     background: #999;
+    color: #fff;
     padding: 0 40px;
     width: 100%;
     height: auto;
@@ -130,6 +131,12 @@ select {
     color: #fff;
     font-weight: bold;
     text-shadow: 0px 1px 0 #111;
+}
+
+#header .warning {
+    font-weight: bold;
+    margin: 0;
+    margin-left: 16px;
 }
 
 .login #header {
@@ -166,7 +173,31 @@ select {
     text-shadow: 1px 1px 0px #111;
 }
 
-select#choose_domain option.not_published {
+#choose_domain {
+    background-color: #fff;
+}
+
+#choose_domain option {
+    color: #111;
+}
+
+#choose_domain .enabled {
+    background-color: #4caf50;
+}
+
+#choose_domain .progress {
+    background-color: #fc0;
+}
+
+#choose_domain .disabled {
+    background-color: #f44336;
+}
+
+#choose_domain .published {
+    text-decoration: none;
+}
+
+#choose_domain .not_published {
     text-decoration: line-through;
 }
 

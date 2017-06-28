@@ -99,7 +99,9 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                         # активируется часовой пояс города текущего сайта из БД
                         if settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
                             current_timezone = request.city_timezone
-                            timezone.activate(current_timezone)
+                        else:
+                            current_timezone = request.COOKIES.get('bezantrakta_admin_timezone', 'Europe/Moscow')
+                        timezone.activate(current_timezone)
                     # Иначе - часовой пояс по умолчанию из базовых настроек проекта (UTC)
                     else:
                         timezone.deactivate()
