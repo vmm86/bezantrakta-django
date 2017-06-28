@@ -43,6 +43,11 @@ def img_path(instance, filename):
     # удаляем его и сохраняем новый файл с таким же именем
     if os.path.isfile(full_file_path):
         os.remove(full_file_path)
+    # Удаление старых пустых папок без изображений
+    domain_subfolders = os.path.join(settings.MEDIA_ROOT, domain, instance._meta.app_label)
+    for path, dirs, files in os.walk(domain_subfolders, topdown=False):
+        if not dirs and not files:
+            os.rmdir(path)
 
     return file_path
 
