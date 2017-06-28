@@ -19,6 +19,9 @@ def img_path(instance, filename):
     )
     # Абсолютный путь до файла
     full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)
+    # Создание дерева папок до файла со стандартными правами 755
+    if not os.path.exists(full_file_path):
+        os.makedirs(os.path.dirname(full_file_path), mode=0o755, exist_ok=True)
     # Если файл уже был загружен ранее,
     # удаляем его и сохраняем новый файл с таким же именем
     if os.path.isfile(full_file_path):
