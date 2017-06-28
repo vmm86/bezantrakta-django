@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-27 11:38+0000\n"
+"POT-Creation-Date: 2017-06-28 09:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,6 +24,18 @@ msgstr ""
 #: templates/admin/base_site.html:41 templates/admin/base_site.html:56
 msgid "bezantrakta_admin"
 msgstr "Админ-панель Безантракта"
+
+#: templates/admin/base_site.html:50
+msgid "choose_city_warning"
+msgstr "Обязательно выбирайте сайт перед добавлением в него информации!"
+
+#: templates/admin/base_site.html:57
+msgid "domain_icon_help_text"
+msgstr "Иконкой 🔗 обозначены компоненты, привязанные к конкретному сайту."
+
+#: templates/admin/choose_domain.html:3
+msgid "choose_domain_help_text"
+msgstr "Цветом обозначено состояние города.&#013;Если сайт отключен - его название зачёркнуто."
 
 #: templates/admin/index.html:8
 msgid "Recent actions"

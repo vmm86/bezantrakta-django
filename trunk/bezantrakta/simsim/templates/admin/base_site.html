@@ -47,14 +47,12 @@ body {
     {% choose_domain %}
 </div>
 {% endif %}
-{% if debug %}
-    TIME_ZONE: {{ TIME_ZONE }}
-{% endif %}
+<div class="warning">{% trans 'choose_city_warning' %}</div>
 {% endblock %}
 
 {% block content_title %}
-<h1>{% trans 'bezantrakta_admin' %}</h1>
-<p>Иконкой 🔗 обозначены компоненты, привязанные к конкретному сайту.</p>
+<h1>{% trans 'bezantrakta_admin' %}{% if debug %}<br>TIME_ZONE: {{ TIME_ZONE }}{% endif %}</h1>
+<p>{% trans 'domain_icon_help_text' %}</p>
 {% endblock %}
 
 {% block footer %}
@@ -73,6 +71,8 @@ $(document).ready(function() {
         var expires = new Date(new Date().getTime() + 31622400000);
         {# Запись в cookie выбранного домена для фильтрации админки #}
         Cookies.set('bezantrakta_admin_domain', value, {expires: expires, domain: domain});
+        {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
+        Cookies.set('bezantrakta_admin_timezone', timezone, {expires: expires, domain: domain});
         location.reload();
     });
 

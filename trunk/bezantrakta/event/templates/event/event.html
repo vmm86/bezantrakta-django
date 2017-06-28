@@ -133,14 +133,14 @@
                     <ul id="related-events">
                 {% for event in group_events %}
                 {% localtime on %}
-                    {% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" slug=event.slug as event_url %}
+                    {% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
                     {% if event_url == request.url_path %}
                         <li class="r-e-chosen">
                             {{ event.datetime|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
                         </li>
                     {% else %}
                         <li>
-                            <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" slug=event.slug %}" title="">
+                            <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="">
                                 {{ event.datetime|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
                             </a>
                         </li>
@@ -274,9 +274,6 @@
         </div>
     {% endif %}
 
-    </main>
-</div>
-
 {% if debug %}
 <br><br>
 event: {{ event|pprint }}
@@ -284,6 +281,9 @@ event: {{ event|pprint }}
 group_events: {{ group_events|pprint }}
 <br><br>
 {% endif %}
+
+    </main>
+</div>
 
 <script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
 
