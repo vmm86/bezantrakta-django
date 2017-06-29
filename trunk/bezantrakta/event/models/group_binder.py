@@ -34,4 +34,4 @@ class EventGroupBinder(models.Model):
         ordering = ('event_group', 'event',)
 
     def __str__(self):
-        return ''
+        return '{group} <-> {event}'.format(group=self.event_group, event=self.event)
