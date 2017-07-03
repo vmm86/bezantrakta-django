@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import EventVenueAutocomplete
+# from .views import EventVenueAutocomplete
 
 from .views import events_on_index
 from .views import event
@@ -10,11 +10,11 @@ from .views import search
 app_name = 'event'
 
 urlpatterns = [
-    url(
-        r'^simsim/venue-autocomplete/$',
-        EventVenueAutocomplete.as_view(),
-        name='venue_autocomplete',
-    ),
+    # url(
+    #     r'^simsim/venue-autocomplete/$',
+    #     EventVenueAutocomplete.as_view(),
+    #     name='venue_autocomplete',
+    # ),
     url(
         r'^$',
         events_on_index,
