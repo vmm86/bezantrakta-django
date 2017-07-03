@@ -369,6 +369,13 @@ a.section:visited {
     background-position-x: center;
 }
 
+.nowrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100px;
+}
+
 /* Кнопки */
 
 .object-tools a {
@@ -422,6 +429,22 @@ a.section:visited {
 
 /* Фильтры */
 
+/*#changelist .actions,
+.change-list .filtered .results,
+.change-list .filtered .paginator,
+.filtered #toolbar,
+.filtered div.xfull {
+    margin-right: 0;
+}*/
+
+/*.change-list .filtered table tbody th {
+    padding-right: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50px;
+    white-space: nowrap;
+}*/
+
 #changelist table tr:hover {
     background-color: #ffc;
 }
@@ -450,7 +473,12 @@ a.section:visited {
 }
 
 #changelist-filter {
-    background: transparent;
+/*    background: transparent;
+    padding-top: 46px;
+    float: right;
+    position: fixed;
+    top: auto;
+    right: 40px;*/
 }
 
 #changelist-filter h2 {
@@ -462,6 +490,7 @@ a.section:visited {
 }
 
 #changelist-filter h3 {
+    background: #fff;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
     color: #222;
@@ -473,6 +502,7 @@ a.section:visited {
 }
 
 #changelist-filter ul {
+    background: #fff;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
     padding: 0 16px 16px 16px;

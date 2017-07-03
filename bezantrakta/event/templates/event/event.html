@@ -3,16 +3,16 @@
 <html lang="ru">
 <head>
 {% load i18n static tz %}
-{% if event.title %}
-    <title>{{ domain_title }}: {{ event.title }}</title>
+{% if event.event_title %}
+    <title>{{ domain_title }}: {{ event.event_title }}</title>
 {% else %}
     <title>{{ domain_title }}</title>
 {% endif %}
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-    <meta name="description" content="{{ event.description }}">
-    <meta name="keywords" content="{{ event.keywords }}">
+    <meta name="description" content="{{ event.event_description }}">
+    <meta name="keywords" content="{{ event.event_keywords }}">
 
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
@@ -110,16 +110,16 @@
     {% endif %}
 
         <h1 id="event-title-date-time">
-            <span id="event-title">{{ event.title }}</span>
+            <span id="event-title">{{ event.event_title }}</span>
             {% localtime on %}
-            <span id="event-date">{{ event.datetime|date:"d.m.Y" }}</span>
-            <span id="event-time">{{ event.datetime|date:"G:i" }}</span>
+            <span id="event-date">{{ event.event_datetime|date:"d.m.Y" }}</span>
+            <span id="event-time">{{ event.event_datetime|date:"G:i" }}</span>
             {% endlocaltime %}
         </h1>
 
         <h2 id="event-venue">
             <span id="stagehall_name">
-                {{ event.venue }}{% if event.venue_city %} ({{ event.venue_city }}){% endif %}
+                {{ event.event_venue_title }}{% if event.event_venue_city %} ({{ event.event_venue_city }}){% endif %}
             </span>
         </h2>
 
@@ -129,19 +129,27 @@
 
             {% if group_events %}
                 <div class="show-events">
-                    <h3 id="related-events-header">Билеты на другую дату</h3>
+                    <h3 id="related-events-header">Билеты на другую дату / сектор</h3>
                     <ul id="related-events">
                 {% for event in group_events %}
                 {% localtime on %}
                     {% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
                     {% if event_url == request.url_path %}
                         <li class="r-e-chosen">
-                            {{ event.datetime|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
+                            {% if event.caption %}
+                                {{ event.caption }}
+                            {% else %}
+                                {{ event.datetime|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
+                            {% endif %}
                         </li>
                     {% else %}
                         <li>
                             <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="">
+                            {% if event.caption %}
+                                {{ event.caption }}
+                            {% else %}
                                 {{ event.datetime|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
+                            {% endif %}
                             </a>
                         </li>
                     {% endif %}
@@ -222,12 +230,12 @@
             <div class="description">
                 <div id="info-poster" class="event-poster">
                     <div class="event-poster-body">
-                        <img rel="image_src" src="{{ event.poster }}" alt="{{ event.title }}">
+                        <img rel="image_src" src="{{ event.poster }}" alt="{{ event.event_title }}">
                     </div>
                 </div>
 
                 <div id="info" class="event-description">
-                    {{ event.text|safe }}
+                    {{ event.event_text|safe }}
                 </div>
             </div>
 
@@ -276,9 +284,9 @@
 
 {% if debug %}
 <br><br>
-event: {{ event|pprint }}
+event: <pre>{{ event|pprint }}</pre>
 <br><br>
-group_events: {{ group_events|pprint }}
+group_events: <pre>{{ group_events|pprint }}</pre>
 <br><br>
 {% endif %}
 

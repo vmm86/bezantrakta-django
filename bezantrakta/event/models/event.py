@@ -4,7 +4,6 @@ from ckeditor.fields import RichTextField
 
 from django.db import models
 from django.urls.base import reverse
-from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
@@ -74,24 +73,6 @@ class Event(models.Model):
     datetime = models.DateTimeField(
         verbose_name=_('event_datetime'),
     )
-    event_group = models.ManyToManyField(
-        'event.EventGroup',
-        through='event.EventGroupBinder',
-        blank=True,
-        verbose_name=_('event_event_group'),
-    )
-    event_container = models.ManyToManyField(
-        'event.EventContainer',
-        through='event.EventContainerBinder',
-        blank=True,
-        verbose_name=_('event_event_container'),
-    )
-    event_link = models.ManyToManyField(
-        'event.EventLink',
-        through='event.EventLinkBinder',
-        blank=True,
-        verbose_name=_('event_event_link'),
-    )
     event_category = models.ForeignKey(
         'event.EventCategory',
         blank=True,
@@ -112,6 +93,33 @@ class Event(models.Model):
         db_column='domain_id',
         verbose_name=_('event_domain'),
     )
+    is_group = models.BooleanField(
+        default=False,
+        verbose_name=_('event_is_group'),
+    )
+    event_group = models.ManyToManyField(
+        'self',
+        through='event.EventGroupBinder',
+        through_fields=('group', 'event',),
+        related_name='event_groups',
+        symmetrical=False,
+        blank=True,
+        verbose_name=_('event_event_group'),
+    )
+    event_container = models.ManyToManyField(
+        'event.EventContainer',
+        through='event.EventContainerBinder',
+        related_name='event_containers',
+        blank=True,
+        verbose_name=_('event_event_container'),
+    )
+    event_link = models.ManyToManyField(
+        'event.EventLink',
+        through='event.EventLinkBinder',
+        related_name='event_links',
+        blank=True,
+        verbose_name=_('event_event_link'),
+    )
 
     class Meta:
         app_label = 'event'
@@ -128,10 +136,11 @@ class Event(models.Model):
         # Дата и время события в часовом поясе его города
         current_timezone = self.domain.city.timezone
         event_datetime_localized = self.datetime.astimezone(current_timezone)
-        return '{title} ({date} {time})'.format(
+        return '{title} ({date} {time}) - {domain}'.format(
             title=self.title,
             date=naturalday(event_datetime_localized),
-            time=event_datetime_localized.strftime('%H:%M')
+            time=event_datetime_localized.strftime('%H:%M'),
+            domain=self.domain.title,
         )
 
     def get_absolute_url(self):
@@ -160,10 +169,14 @@ class Event(models.Model):
         )
     datetime_localized.short_description = _('event_datetime')
 
-    def container_count(self):
-        return self.event_container.count()
-    container_count.short_description = _('event_container_count')
+    def group_count(self):
+        return self.event_group.count()
+    group_count.short_description = _('event_group_count')
 
     def link_count(self):
         return self.event_link.count()
     link_count.short_description = _('event_link_count')
+
+    def container_count(self):
+        return self.event_container.count()
+    container_count.short_description = _('event_container_count')

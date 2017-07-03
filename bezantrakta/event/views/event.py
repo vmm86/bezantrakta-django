@@ -1,15 +1,11 @@
 import datetime
 
-from django.db.models import CharField, BooleanField, F, Case, When, Value
+from django.db.models import BooleanField, Case, F, Value, When
 from django.shortcuts import render
-from django.utils import timezone
 
-from project.shortcuts import add_small_vertical_poster
+from project.shortcuts import add_small_vertical_poster, today
 
-from ..models import Event, EventLinkBinder, EventGroupBinder
-
-
-today = timezone.now()
+from ..models import Event, EventGroupBinder, EventLinkBinder
 
 
 def event(request, year, month, day, hour, minute, slug):
@@ -49,30 +45,47 @@ def event(request, year, month, day, hour, minute, slug):
             'event_venue',
             'domain'
         ).annotate(
-            venue=F('event_venue__title'),
-            venue_city=F('event_venue__domain__city__title'),
+            # Общие параметры
             is_coming=Case(
                 When(datetime__gt=today, then=Value(True)),
                 default=False,
                 output_field=BooleanField()
             ),
-            group_id=Case(
-                When(event_group__isnull=False, then=F('event_group')),
-                default=None,
-                output_field=CharField()
+            is_in_group=Case(
+                When(event_groups__isnull=False, then=Value(True)),
+                default=False,
+                output_field=BooleanField()
             ),
+            # Параметры события
+            event_title=F('title'),
+            event_slug=F('slug'),
+            event_datetime=F('datetime'),
+            event_description=F('description'),
+            event_keywords=F('keywords'),
+            event_text=F('text'),
+            event_venue_title=F('event_venue__title'),
+            event_venue_city=F('event_venue__domain__city__title'),
+            # Параметры группы, если событие в неё входит
+            group_id=F('event_groups'),
+            group_slug=F('event_groups__slug'),
+            group_datetime=F('event_groups__datetime'),
         ).values(
             'is_published',
             'is_coming',
+            'is_in_group',
+
+            'event_title',
+            'event_slug',
+            'event_datetime',
+            'event_description',
+            'event_keywords',
+            'event_text',
+            'event_venue_title',
+            'event_venue_city',
+
             'group_id',
-            'title',
-            'slug',
-            'description',
-            'keywords',
-            'text',
-            'datetime',
-            'venue',
-            'venue_city',
+            'group_slug',
+            'group_datetime',
         ).get(
             datetime=event_datetime_localized,
             slug=slug,
@@ -124,7 +137,6 @@ def event(request, year, month, day, hour, minute, slug):
             # Запрос событий в группе, если это событие добавлено в группу
             if event['group_id']:
                 group_events = EventGroupBinder.objects.select_related(
-                    'event_group',
                     'event',
                     'domain',
                 ).annotate(
@@ -133,7 +145,7 @@ def event(request, year, month, day, hour, minute, slug):
                     datetime=F('event__datetime'),
                     venue=F('event__event_venue__title'),
                 ).filter(
-                    event_group=event['group_id'],
+                    group=event['group_id'],
                     event__is_published=True,
                     event__datetime__gt=today,
                     event__domain_id=request.domain_id,
@@ -142,8 +154,9 @@ def event(request, year, month, day, hour, minute, slug):
                     'slug',
                     'datetime',
                     'venue',
+                    'caption',
                 )
-                context['group_events'] = group_events
+                context['group_events'] = list(group_events)
 
             context['event'] = event
             return render(request, 'event/event.html', context)
