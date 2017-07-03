@@ -22,6 +22,7 @@ class EventLinkBinderInline(admin.TabularInline):
 class EventLinkAdmin(admin.ModelAdmin):
     inlines = (EventLinkBinderInline,)
     list_display = ('title', 'slug', 'img_preview',)
+    list_select_related = ()
     prepopulated_fields = {
         'slug': ('title',),
     }

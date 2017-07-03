@@ -7,10 +7,16 @@
 
 {% block content_body %}
 <div class="poster-small-vertical-body">
-{% for event in events %}
+{% for item in events_found %}
 {% localtime on %}
-    {% include "event/small_vertical_posters.html" with event=event %}
+    {% include "event/small_vertical_posters.html" with item=item %}
 {% endlocaltime %}
 {% endfor %}
 </div>
+
+{% if debug %}
+<br><br>
+events_found: <pre>{{ events_found|pprint }}</pre>
+<br><br>
+{% endif %}
 {% endblock %}

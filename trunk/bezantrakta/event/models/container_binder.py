@@ -8,26 +8,26 @@ from django.utils.translation import ugettext as _
 
 
 def img_path(instance, filename):
-    if instance.event.domain is None:
-        domain = 'global'
-    else:
-        domain = instance.event.domain.slug
-
-    current_timezone = instance.event.domain.city.timezone
-    event_datetime_localized = instance.event.datetime.astimezone(current_timezone)
+    params = {}
+    params['domain_slug'] = instance.event.domain.slug if instance.event.domain is not None else 'global'
+    params['model_slug'] = 'group' if instance.event.is_group else 'event'
+    params['instance_slug'] = instance.event.slug
+    params['date_time'] = instance.event.datetime
+    params['current_timezone'] = instance.event.domain.city.timezone
+    params['datetime_localized'] = instance.event.datetime.astimezone(params['current_timezone'])
 
     name, dot, extension = filename.rpartition('.')
     # Относительный путь до файла
     file_path = os.path.join(
-        domain,
-        instance._meta.app_label,
+        params['domain_slug'],
+        params['model_slug'],
         ''.join(
             (
-                event_datetime_localized.strftime('%Y-%m-%d'),
+                params['datetime_localized'].strftime('%Y-%m-%d'),
                 '_',
-                event_datetime_localized.strftime('%H-%M'),
+                params['datetime_localized'].strftime('%H-%M'),
                 '_',
-                instance.event.slug,
+                params['instance_slug'],
             )
         ),
         ''.join(
@@ -44,7 +44,7 @@ def img_path(instance, filename):
     if os.path.isfile(full_file_path):
         os.remove(full_file_path)
     # Удаление старых пустых папок без изображений
-    domain_subfolders = os.path.join(settings.MEDIA_ROOT, domain, instance._meta.app_label)
+    domain_subfolders = os.path.join(settings.MEDIA_ROOT, params['domain_slug'], instance._meta.app_label)
     for path, dirs, files in os.walk(domain_subfolders, topdown=False):
         if not dirs and not files:
             os.rmdir(path)
@@ -89,13 +89,13 @@ class EventContainerBinder(models.Model):
         db_table = 'bezantrakta_event_container_binder'
         verbose_name = _('eventcontainerbinder')
         verbose_name_plural = _('eventcontainerbinders')
-        ordering = ('order', 'event', 'event_container',)
+        ordering = ('order', 'event_container', 'event',)
         unique_together = (
             ('event', 'event_container', 'order',),
         )
 
     def __str__(self):
-        return '{container} <-> {event}'.format(container=self.event_container, event=self.event)
+        return ''
 
     def delete(self, *args, **kwargs):
         full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
@@ -104,11 +104,19 @@ class EventContainerBinder(models.Model):
 
         super().delete(*args, **kwargs)
 
+    def order_preview(self):
+        return self.order
+    order_preview.short_description = _('eventcontainerbinder_order')
+
     def img_preview(self):
         return mark_safe(
             '<img class="img_preview_eventcontainerbinder" src="{url}">'.format(url=self.img.url)
         )
     img_preview.short_description = _('eventcontainerbinder_img_preview')
+
+    def event_or_group(self):
+        return _('event_is_group_group') if self.event.is_group else _('event_is_group_event')
+    event_or_group.short_description = _('event_is_group')
 
     def event_datetime_localized(self):
         from django.contrib.humanize.templatetags.humanize import naturalday

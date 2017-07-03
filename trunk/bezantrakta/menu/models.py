@@ -61,7 +61,7 @@ class MenuItem(models.Model):
         verbose_name=_('menuitem_is_published'),
     )
     order = models.PositiveSmallIntegerField(
-        default=0,
+        default=1,
         verbose_name=_('menuitem_order'),
     )
     menu = models.ForeignKey(

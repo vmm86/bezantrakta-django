@@ -1,16 +1,28 @@
-{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
+{% url 'event:event' year=item.event_datetime|date:"Y" month=item.event_datetime|date:"m" day=item.event_datetime|date:"d" hour=item.event_datetime|date:"H" minute=item.event_datetime|date:"i" slug=item.event_slug as item_url %}
+
 <div class="poster-small-vertical">
     <div class="poster-small-vertical-image">
-        <a href="{{ event_url }}" title="{{ event.datetime }} {{ event.title }} {{ event.venue }}">
-            <img src="{{ event.poster }}" alt="{{ event.datetime }} {{ event.title }} {{ event.venue }}">
+        <a href="{{ item_url }}" title="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
+            {% if debug %}
+                <span class="poster-type" style="font-size: 0.75rem;">
+                    {{ item.is_group|yesno:'group,event' }}
+                {% if not item.is_group %}
+                    {{ item.is_in_group|yesno:'in_group,not_in_group' }}
+                {% endif %}
+                    <br>{% if item.order %}order {{ item.order }}{% endif %}
+                    <br>{{ item.event_datetime }}
+                    <br>{{ item.event_category_title }}
+                </span>
+            {% endif %}
+            <img src="{{ item.poster }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
         </a>
     </div>
     <div class="poster-small-vertical-price">
         <div class="poster-small-vertical-date">
-            <a href="{{ event_url }}">{{ event.datetime|date:"j" }} {{ event.datetime|date:"E" }}</a>
+            <a href="{{ item_url }}">{{ item.event_datetime|date:"j" }} {{ item.event_datetime|date:"E" }}</a>
         </div>
         <div class="poster-small-vertical-min_price">
-            <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
+            <a href="{{ item_url }}">от {{ item.event_min_price|floatformat }}</a>
         </div>
     </div>
 </div>

@@ -35,9 +35,9 @@
             ">
         {# if day.event #}
         {% if day.in_month %}
-            <a href="/afisha/{{ day.day|date:"Y" }}/{{ day.day|date:"m" }}/{{ day.day|date:"d" }}/">
+            {# <a href="/afisha/{{ day.day|date:"Y" }}/{{ day.day|date:"m" }}/{{ day.day|date:"d" }}/"> #}
                 {{ day.day|date:"j" }}
-            </a>
+            {# </a> #}
         {% endif %}
         {# else #}
             {# day.day|date:"j" #}

@@ -129,6 +129,6 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     }
                     return render(request, 'empty.html', context, status=500)
                 else:
-                    request.cities = cities
+                    request.cities = list(cities)
                     # Псевдоним города из куки `bezantrakta_city`
                     request.bezantrakta_city = request.COOKIES.get('bezantrakta_city', None)

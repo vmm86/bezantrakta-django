@@ -46,7 +46,7 @@ class EventLinkBinder(models.Model):
         )
 
     def __str__(self):
-        return '{link} <-> {event}'.format(link=self.event_link, event=self.event)
+        return ''
 
     def img_preview(self):
         return mark_safe('<img class="img_preview_linkbinder" src="{url}">'.format(url=self.event_link.img.url))

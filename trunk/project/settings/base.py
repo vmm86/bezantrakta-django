@@ -101,7 +101,7 @@ TEMPLATES = [
                 'bezantrakta.menu.context_processors.menu_items',
                 'bezantrakta.banner.context_processors.banner_group_items',
                 'bezantrakta.event.context_processors.big_containers',
-                'bezantrakta.event.context_processors.categories'
+                'bezantrakta.event.context_processors.categories',
             ],
         },
     },
@@ -152,7 +152,7 @@ ADMIN_REORDER = (
             {'model': 'event.EventCategory', 'label': 'Категории'},
             {'model': 'event.EventLink', 'label': 'Ссылки'},
             {'model': 'event.EventVenue', 'label': 'Залы 🔗'},
-            {'model': 'event.Event', 'label': 'События 🔗'},
+            {'model': 'event.Event', 'label': 'События или группы 🔗'},
             {'model': 'event.EventGroup', 'label': 'Группы 🔗'},
             {'model': 'event.EventContainer', 'label': 'Контейнеры 🔗'},
         )
