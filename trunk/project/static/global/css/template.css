@@ -183,6 +183,20 @@
     float: none;
 }
 
+.fc-unthemed .fc-content,
+.fc-unthemed .fc-divider,
+.fc-unthemed .fc-list-heading td,
+.fc-unthemed .fc-list-view,
+.fc-unthemed .fc-popover,
+.fc-unthemed .fc-row,
+.fc-unthemed tbody,
+.fc-unthemed td,
+.fc-unthemed th,
+.fc-unthemed thead {
+    border: none;
+    border-color: transparent;
+}
+
 .calendar .fc-header-toolbar,
 .calendar .fc-view-container {
     margin: 0 auto;
