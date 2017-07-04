@@ -1,0 +1,106 @@
+{% extends "admin/base.html" %}
+{% load i18n static admin_urls %}
+
+{% block title %}{% trans "bezantrakta_admin" %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% if request.user.is_superuser %}
+<style type="text/css">
+body:before {
+    display: block;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    padding: 5px 0;
+    color: #fff;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    content: '{{ ENVIRONMENT_NAME }}';
+    background-color: {{ ENVIRONMENT_COLOR }};
+}
+body {
+    margin-top: 30px !important;
+}
+</style>
+{% endif %}
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/custom.css" %}">
+{% endblock %}
+
+{% block branding %}
+<div id="branding_logo">
+    <a href="{% url "admin:index" %}" title="{% trans "bezantrakta_admin" %}">
+        <img id="site-name" src="{% static "global/svg/bzlogo-transparent.svg" %}" alt="{% trans "bezantrakta_admin" %}">
+    </a>
+</div>
+{% if user.is_authenticated %}
+<div id="branding_choose_domain" style="padding-left: 1rem;">
+    {% load choose_domain %}
+    {% choose_domain %}
+</div>
+{% endif %}
+<div class="warning">{% trans 'choose_city_warning' %}</div>
+{% endblock %}
+
+{% block content_title %}
+<h1>{% trans 'bezantrakta_admin' %}{% if debug %}<br>TIME_ZONE: {{ TIME_ZONE }}{% endif %}</h1>
+<p>{% trans 'domain_icon_help_text' %}</p>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    {# Сохранение данных выбранного для фильтрации сайта в cookie #}
+    $('#choose_domain').change(function() {
+        var value = $('#choose_domain option:selected').val();
+        var timezone = $('#choose_domain option:selected').data('timezone');
+        {# Адрес главного сайта, к которому могут добавляться поддомены #}
+        var domain = '.{{ request.root_domain }}';
+        {# Период действия куки (год) #}
+        var expires = new Date(new Date().getTime() + 31622400000);
+        {# Запись в cookie выбранного домена для фильтрации админки #}
+        Cookies.set('bezantrakta_admin_domain', value, {expires: expires, domain: domain});
+        {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
+        Cookies.set('bezantrakta_admin_timezone', timezone, {expires: expires, domain: domain});
+        location.reload();
+    });
+
+    {# При создании новых записей #}
+    var domain_id = {{ bezantrakta_admin_domain_id }};
+    if (domain_id !== 0) {
+        $('.object-tools .addlink').attr('href', function(i, h) {
+            var qs = h + (h.indexOf('?') != -1 ? '&' : '?');
+            return qs + 'domain=' + domain_id;
+        });
+    }
+
+    {# Добавление событий в группе работает только для группы #}
+    {# Добавление ссылок в группе не работает, доступно только в событиях #}
+    function show_hide_add_group_link(){
+        if ($('#id_is_group').prop('checked') === true) {
+            $('#groups-group .tabular table .add-row a').show();
+            $('#eventlinkbinder_set-group .tabular table .add-row a').hide();
+        } else {
+            $('#groups-group .tabular table .add-row a').hide();
+            $('#eventlinkbinder_set-group .tabular table .add-row a').show();
+        }
+    }
+    show_hide_add_group_link();
+    $('#id_is_group').click(function(){
+        show_hide_add_group_link();
+    });
+
+});
+</script>
+{% endblock %}
