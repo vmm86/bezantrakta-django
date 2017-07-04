@@ -179,21 +179,62 @@
     z-index: 5;
 }
 
-.calendar table {
+.fc .fc-toolbar > * > * {
+    float: none;
+}
+
+.calendar .fc-header-toolbar,
+.calendar .fc-view-container {
     margin: 0 auto;
     width: 100%;
-    height: 100%;
+/*    height: 100%;*/
 
     font-family: 'Roboto', sans-serif;
     text-align: center;
     font-weight: bold;
 }
 
-.calendar .title {
+.calendar .fc-header-toolbar {
+    margin-bottom: 0;
+}
+
+.calendar .fc-header-toolbar .fc-left,
+.calendar .fc-header-toolbar .fc-center,
+.calendar .fc-header-toolbar .fc-right {
     background: url(/static/global/svg/calendar-day-header.svg) center center no-repeat;
     background-size: 95% 95%;
     -moz-background-size: 95% 95%;
     -webkit-background-size: 95% 95%;
+
+    font-size: 0.65rem;
+
+/*    height: 1.25rem;*/
+}
+
+.calendar .fc-header-toolbar .fc-center {
+    text-align: center;
+    width: 70%;
+}
+
+.calendar .fc-header-toolbar .fc-center h2 {
+    background: transparent;
+    color: #fff;
+    text-transform: lowercase;
+    margin: 0;
+    float: none;
+}
+
+.calendar .fc-header-toolbar .fc-left,
+.calendar .fc-header-toolbar .fc-right {
+    width: 15%;
+}
+
+.calendar .fc-header-toolbar button {
+    background: transparent;
+}
+
+.calendar .fc-header-toolbar .fc-icon {
+    color: #fff;
 }
 
 .calendar tr th,
@@ -206,8 +247,18 @@
     height: 1.25rem;
 }
 
-.calendar .name, 
-.calendar .ttip {
+.fc-day-grid-container {
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    height: auto !important;
+}
+
+.fc-widget-header {
+    margin-right: 0 !important;
+}
+
+.calendar .fc-header-toolbar .fc-day-header, 
+.calendar .fc-view-container .fc-head-container table th {
     background: url(/static/global/svg/calendar-day-header.svg) center center no-repeat;
     background-size: 95% 90%;
     -moz-background-size: 95% 90%;
@@ -218,18 +269,34 @@
     width: 14.285714286%;
 }
 
-.calendar .name.weekend {
+.calendar .fc-day-header.fc-sat,
+.calendar .fc-day-header.fc-sun {
     color: #999;
 }
 
-.calendar .daysrow .emptycell {
+.fc-basic-view .fc-body .fc-row {
+    height: unset !important;
+    min-height: unset !important;
+}
+
+.fc-row .fc-content-skeleton tbody {
+    display: none;
+}
+
+.fc-ltr .fc-basic-view .fc-day-top .fc-day-number {
+    float: none;
+}
+
+.calendar .fc-view-container .fc-other-month,
+.calendar .fc-view-container .fc-disabled-day {
     background: url(/static/global/svg/calendar-day-disabled.svg) center center no-repeat;
     background-size: 95% 90%;
     -moz-background-size: 95% 90%;
     -webkit-background-size: 95% 90%;
+    opacity: 1;
 }
 
-.calendar .daysrow .day {
+.calendar .fc-view-container .fc-day-top {
     cursor: pointer;
 
     background: url(/static/global/svg/calendar-day-enabled.svg) center center no-repeat;
@@ -240,25 +307,27 @@
     color: #000;
 }
 
-.calendar .daysrow .day:hover,
-.calendar .daysrow .selected,
-.calendar .daysrow .today {
+.fc td.fc-today {
+    background: transparent;
+}
+
+.calendar .fc-view-container .fc-day-top:hover,
+.calendar .fc-view-container .fc-day-top.fc-day-today,
+.calendar .fc-view-container .fc-day-top.fc-state-highlight {
     background: url(/static/global/svg/calendar-day-active.svg) center center no-repeat;
     background-size: 95% 90%;
     -moz-background-size: 95% 90%;
     -webkit-background-size: 95% 90%;
 
     color: #000;
-
-/*    text-shadow: 0.1rem 0.1rem 0.01rem rgb(0, 0, 0);*/
 }
 
-.calendar .day a {
+.calendar .fc-view-container .fc-day-top a {
     cursor: pointer;
     text-decoration: none;
 }
 
-.calendar .day_active a {
+.calendar .fc-view-container .fc-today a {
     color: #FFF;
     text-decoration: none;
 }

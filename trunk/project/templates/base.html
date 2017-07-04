@@ -16,6 +16,8 @@
     <meta name="description" content="{{ request.settings.domain.description }}">
     <meta name="keywords" content="{{ request.settings.domain.keywords }}">
 
+    <link rel="stylesheet" href="{% static "global/js/fullcalendar/fullcalendar.min.css" %}">
+
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
@@ -151,10 +153,12 @@
         <div class="header-left">
 
             <div class="calendar">
+                {% comment %}
                 {% now "Y" as year %}
                 {% now "n" as month %}
                 {% load calendar %}
                 {% calendar year month %}
+                {% endcomment %}
             </div>
 
             <div class="top-menu">
@@ -399,8 +403,48 @@
 <script type="text/javascript" src="{% static "global/js/bxslider/jquery.bxslider.min.js" %}"></script>
 <script type="text/javascript" src="{% static "global/js/bxslider/carousel.js" %}"></script>
 
+{# Подключение календаря событий #}
+<script type="text/javascript" src="{% static "global/js/fullcalendar/lib/moment.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/fullcalendar/fullcalendar.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/fullcalendar/locale-all.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function(e) {
+    calendar_date = '{{ request.calendar_date|date:"Y-m-d" }}';
+    $('.calendar').fullCalendar({
+        now: '{{ request.calendar_date|date:"Y-m-d" }}',
+        locale: 'ru',
+        timezone: '{{ request.city_timezone }}',
+        firstDay: 1,
+        showNonCurrentDates: false,
+        editable: false,
+        header: {
+            left:   'prev',
+            center: 'title',
+            right:  'next'
+        },
+        buttonIcons: {
+            prev: 'left-single-arrow',
+            next: 'right-single-arrow'
+        },
+        dayClick: function() {
+            data_date = $(this).data('date').split('-');
+            day_url = [
+                'http://{{ request.url_domain }}:8000',
+                'afisha',
+                data_date[0],
+                data_date[1],
+                data_date[2],
+                ''
+            ].join('/');
+            window.location.href = day_url;
+        }
+    });
+});
+</script>
+{# Подключение календаря событий #}
+
 {# Подключение лайтбоксов для изображений #}
-<script type="text/javascript" src="{% static "global/js/lightbox2/lightbox.min.js" %}" defer></script>
+<script type="text/javascript" src="{% static "global/js/lightbox2/lightbox.min.js" %}"></script>
 <script type="text/javascript">
 lightbox.option({
     'alwaysShowNavOnTouchDevices': true,
