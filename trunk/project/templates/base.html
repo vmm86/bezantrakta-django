@@ -429,7 +429,7 @@ $(document).ready(function(e) {
         dayClick: function() {
             data_date = $(this).data('date').split('-');
             day_url = [
-                'http://{{ request.url_domain }}:8000',
+                'http://{{ request.url_domain }}',
                 'afisha',
                 data_date[0],
                 data_date[1],
