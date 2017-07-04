@@ -200,7 +200,7 @@ h1, h2 {
 #basket-container-full #overall {
     text-transform: lowercase;
 }*/
-#related-events-header, 
+#group-events-header, 
 #chosen-tickets-header,
 #overall-header {
     display: block;
@@ -259,14 +259,14 @@ h1, h2 {
     margin: 0 0 0.25rem 0;
 }*/
 
-#basket-container #related-events {
+#basket-container #group-events {
 /*    padding-left: 1.5rem;*/
     display: table;
 
     background: transparent;
 }
 
-#basket-container #related-events li {
+#basket-container #group-events li {
     display: table;
 
     background: url(/static/global/svg/related-event.svg) no-repeat;
@@ -285,10 +285,10 @@ h1, h2 {
     margin: 0 0 0.25rem 0;
 }
 
-#basket-container #related-events li.r-e-chosen {
+#basket-container #group-events li.group-event-chosen {
     display: table;
 
-    background: url(/static/global/svg/related-event-chosen.svg) no-repeat;
+    background: url(/static/global/svg/group-event-chosen.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
@@ -298,7 +298,7 @@ h1, h2 {
     padding: 0.25rem 1.2rem 0.25rem 2.5rem !important;
 }
 
-#basket-container #related-events li a {
+#basket-container #group-events li a {
     color: #FFF;
     text-decoration: none;
 
@@ -1449,7 +1449,7 @@ p.input-body,
 
     #event-title-date-time,
     #event-venue,
-    #related-events-header, 
+    #group-events-header, 
     #chosen-tickets-header,
     #chosen-tickets,
     #overall-header,
@@ -1497,7 +1497,7 @@ p.input-body,
         font-size: 0.75rem;
     }
 
-    #basket-container #related-events-header + p {
+    #basket-container #group-events-header + p {
         display: none;
     }
 
