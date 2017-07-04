@@ -87,8 +87,8 @@ $(document).ready(function() {
 
     {# Добавление событий в группе работает только для группы #}
     {# Добавление ссылок в группе не работает, доступно только в событиях #}
-    function show_hide_add_group(){
-        if ($('input[name="is_group"]:checked').val() == 'True') {
+    function show_hide_add_group_link(){
+        if ($('#id_is_group').prop('checked') === true) {
             $('#groups-group .tabular table .add-row a').show();
             $('#eventlinkbinder_set-group .tabular table .add-row a').hide();
         } else {
@@ -96,9 +96,9 @@ $(document).ready(function() {
             $('#eventlinkbinder_set-group .tabular table .add-row a').show();
         }
     }
-    show_hide_add_group();
-    $('input[name="is_group"]:radio').click(function(){
-        show_hide_add_group();
+    show_hide_add_group_link();
+    $('#id_is_group').click(function(){
+        show_hide_add_group_link();
     });
 
 });
