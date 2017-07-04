@@ -21,7 +21,10 @@ class EventGroupBinderInline(admin.TabularInline):
             domain_filter = request.COOKIES.get('bezantrakta_admin_domain', None)
             kwargs['queryset'] = Event.objects.select_related(
                 'event_category', 'event_venue', 'domain'
-            ).filter(domain__slug=domain_filter)
+            ).filter(
+                is_group=False,
+                domain__slug=domain_filter
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
