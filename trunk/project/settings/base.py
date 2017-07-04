@@ -198,14 +198,21 @@ ADMIN_REORDER = (
 
 DATABASES = {
     'default': {
-        'ENGINE':   'django.db.backends.mysql',
-        'NAME':     'belcanto_bezantrakta_django',
-        'USER':     'belcanto',
-        'PASSWORD': 'wrtwefsf352',
-        'HOST':     'localhost',
+        'ENGINE':    'django.db.backends.mysql',
+        'NAME':      'belcanto_bezantrakta_django',
+        'USER':      'belcanto',
+        'PASSWORD':  'wrtwefsf352',
+        'HOST':      'localhost',
         'TIME_ZONE': 'UTC',
+        'CHARSET':   'utf8',
+        'COLLATION': 'utf8_general_ci',
+        'OPTIONS': {
+            'init_command': 'SET sql_mode="STRICT_TRANS_TABLES", innodb_strict_mode=1',
+        },
         'TEST': {
-            'NAME': 'belcanto_bezantrakta_django_test'
+            'NAME':      'belcanto_bezantrakta_django_test',
+            'CHARSET':   'utf8',
+            'COLLATION': 'utf8_general_ci',
         }
     }
 }
