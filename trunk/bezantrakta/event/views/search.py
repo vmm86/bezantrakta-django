@@ -12,6 +12,7 @@ def search(request):
 
     group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
         group=OuterRef('id'),
+        event__is_published=True,
         event__datetime__gt=today,
     ).order_by('event__datetime')[:1]
 

@@ -15,6 +15,7 @@ def big_containers(request):
         # Поиск опубликованных событий на главной, привязанных к текущему домену
         group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
             group=OuterRef('event__id'),
+            event__is_published=True,
             event__datetime__gt=today,
         ).order_by('event__datetime')[:1]
 
