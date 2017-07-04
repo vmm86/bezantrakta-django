@@ -11,9 +11,9 @@ try:
     from project.settings.simsim import SECRET_KEY
 except ImportError:
     from django.utils.crypto import get_random_string
-    key = get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+    SECRET_KEY = get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
     with open(os.path.join(BASE_DIR, 'project', 'settings', 'simsim.py'), 'w') as key_file:
-        key_file.write("SECRET_KEY = '{key}'\n".format(key=key))
+        key_file.write("SECRET_KEY = '{key}'\n".format(key=SECRET_KEY))
 
 INTERNAL_IPS = ['127.0.0.1']
 
