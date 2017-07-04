@@ -73,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'bezantrakta.location.middleware.CurrentLocationMiddleware',
+    'bezantrakta.event.middleware.EventCalendarMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'

@@ -4,6 +4,7 @@ from django.conf.urls import url
 
 from .views import events_on_index
 from .views import event
+from .views import calendar
 from .views import category
 from .views import search
 
@@ -24,6 +25,11 @@ urlpatterns = [
         r'^afisha/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/(?P<hour>\d+)-(?P<minute>\d+)/(?P<slug>[\w-]+)/$',
         event,
         name='event'
+    ),
+    url(
+        r'^afisha/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)/$',
+        calendar,
+        name='calendar'
     ),
     url(
         r'^afisha/category/(?P<slug>[\w-]+)/$',
