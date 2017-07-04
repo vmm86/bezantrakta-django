@@ -127,15 +127,16 @@
         <div class="order-header">
             <div id="basket-container">
 
-            {% if group_events %}
+            {# События в группе выводятся, только если их больше одного #}
+            {% if group_events and group_events|length > 1 %}
                 <div class="show-events">
-                    <h3 id="related-events-header">Билеты на другую дату / сектор</h3>
-                    <ul id="related-events">
+                    <h3 id="group-events-header">Билеты на другую дату / сектор</h3>
+                    <ul id="group-events">
                 {% for event in group_events %}
                 {% localtime on %}
                     {% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
                     {% if event_url == request.url_path %}
-                        <li class="r-e-chosen">
+                        <li class="group-event-chosen">
                             {% if event.caption %}
                                 {{ event.caption }}
                             {% else %}
@@ -188,7 +189,7 @@
 
             {% if links %}
                 <div class="show-links">
-                    <h3 id="related-events-header">Билеты в продаже</h3>
+                    <h3 id="group-events-header">Билеты в продаже</h3>
                     <ul style="background: none;">
                     {% for link in links %}
                         <li style="margin: 1rem 0;">
