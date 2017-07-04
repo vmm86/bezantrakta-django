@@ -21,12 +21,11 @@
 - `Banner` - баннеры
 * `event` - события
 - `Event` - события
+- `EventGroupBinder` - M2M-связка событий в группах
 - `EventVenue` - залы
 - `EventCategory` - категории событий
 - `EventContainer` - контейнеры для отображения событий
 - `EventContainerBinder` - M2M-связка событий и контейнеров
-- `EventGroup` - группы из нескольких событий
-- `EventGroupBinder` - M2M-связка событий и групп
 - `EventLink` - внешние ссылки со страниц событий
 - `EventLinkBinder` - M2M-связка событий и ссылок
 
@@ -40,11 +39,11 @@ Production deployment - на базе `nginx` как проксирующего 
 
 ## Этапы production deployment
 
-1. Установка ОС на виртуальной машине (Debian 9).
+1. Установка ОС на виртуальной машине (`Debian 9`).
 
 2. Настройка ОС.
 
-3. Установка необходимых системных пакетов - Python 3, PHP для phpMyAdmin, MySQL или MariaDB, nginx, uWSGI, SVN.
+3. Установка необходимых системных пакетов - `Python 3`, `PHP` для `phpMyAdmin`, `MySQL` или `MariaDB`, `nginx`, `uWSGI`, `SVN`.
 
 ```bash
 sudo su
@@ -57,22 +56,24 @@ apt-get install uwsgi uwsgi-plugin-python3 uwsgi-plugin-php
 apt-get install subversion
 ```
 
-4. Получение актуальной версии SVN-репозитория.
+4. Создание базы данных.
+
+```mysql
+CREATE USER 'belcanto'@'localhost' IDENTIFIED BY '************';
+CREATE DATABASE belcanto_bezantrakta_django CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON belcanto_bezantrakta_django.* TO 'belcanto'@'localhost';
+```
+
+5. Получение актуальной версии `SVN`-репозитория.
 
 ```bash
-cd /opt
+cd /var/www
 mkdir bezantrakta-django
 cd bezantrakta-django
-svn checkout http://svn.rterm.ru/bezantrakta-django
+svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y.Z
 ```
 
-5. Создание symlink из `trunk` SVN-репозитория в папку `/var/www/`.
-
-```bash
-ln -s "/opt/bezantrakta-django/trunk" "/var/www/bezantrakta-django"
-```
-
-6. Создание и активация виртуального окружения Python 3, установка необходимых Python-пакетов, синхронизация с БД.
+6. Создание и активация виртуального окружения `Python 3`, установка необходимых Python-пакетов, синхронизация с БД.
 
 ```bash
 cd /opt/bezantrakta-django
@@ -86,7 +87,7 @@ source venv/bin/activate
 [ venv ] python manage.py migrate
 ```
 
-7. Создание uWSGI-приложения.
+7. Создание `uWSGI`-приложения.
 
 ```bash
 touch /etc/uwsgi/sites-available/bezantrakta.ini
@@ -94,7 +95,7 @@ touch /etc/uwsgi/sites-available/bezantrakta.ini
 
 ```ini
 [uwsgi]
-project = /var/www/bezantrakta-django/tags/1.0
+project = /var/www/bezantrakta-django/tags/X.Y.Z
 chdir = %(project)
 
 plugin = python3
@@ -113,7 +114,7 @@ vacuum = 1
 ln -s /etc/uwsgi/sites-available/bezantrakta.ini /etc/uwsgi/sites-enabled/
 ```
 
-8. Создание виртуального хоста nginx, взаимодействующего с сокетом uWSGI-приложения.
+8. Создание виртуального хоста `nginx`, взаимодействующего с сокетом uWSGI-приложения.
 
 ```bash
 touch /etc/nginx/sites-available/bezantrakta.conf
