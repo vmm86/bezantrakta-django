@@ -24,7 +24,7 @@
 {% endif %}
 
 <div class="share-help">
-{% if request.settings.counter.uptolike %}
+{% if request.settings.counter.uptolike != "" %}
     <div class="share">
         <span class="label grey">Поделиться</span>
         <span class="input yellow">
@@ -35,7 +35,7 @@
     </div>
 {% endif %}
 
-{% if request.settings.telephone %}
+{% if request.settings.telephone.0 != "" %}
     <div class="order-telephone">
         <span class="help">Справки бронирование</span>
         <span class="bzlogo-mask"></span>

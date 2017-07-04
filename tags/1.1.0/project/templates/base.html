@@ -3,13 +3,7 @@
 <html lang="ru">
 <head>
 {% load i18n static tz %}
-    <title>
-    {% if title %}
-        {{ request.settings.domain.title }}: {{ title }}
-    {% else %}
-        {{ request.settings.domain.title }}
-    {% endif %}
-    </title>
+    <title>{% if title %}{{ request.settings.domain.title }}: {{ title }}{% else %}{{ request.settings.domain.title }}{% endif %}</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
@@ -36,8 +30,10 @@
     {# Не индексировать тестовую версию сайта #}
     <meta name="robots" body="NOODP">
 
-{% if request.settings.webmaster %}
+{% if request.settings.webmaster.google != "" %}
     <meta name="google-site-verification" content="{{ request.settings.webmaster.google }}">
+{% endif %}
+{% if request.settings.webmaster.yandex != "" %}
     <meta name="yandex-verification" content="{{ request.settings.webmaster.yandex }}">
 {% endif %}
 
@@ -330,7 +326,7 @@
 <footer class="footer">
     
     <div class="counters">
-    {% if request.settings.counter.google %}
+    {% if request.settings.counter.google != "" %}
         {# Google.Analytics #}
         <div id="google-analytics-counter">
             <script type="text/javascript">
@@ -344,7 +340,7 @@
         </div>
         {# Google.Analytics #}
     {% endif %}
-    {% if request.settings.counter.yandex %}
+    {% if request.settings.counter.yandex != "" %}
         {# Яндекс.Метрика #}
         <div id="yandex-metrika-counter">
             <script type="text/javascript">
@@ -367,7 +363,7 @@
         </div>
         {# Яндекс.Метрика #}
     {% endif %}
-    {% if request.settings.counter.uptolike %}
+    {% if request.settings.counter.uptolike != "" %}
         {# UpToLike - кнопки "Поделиться" #}
         <div id="uptolike-counter">
             <script type="text/javascript">(function(w,doc) {
@@ -383,7 +379,7 @@
         </div>
         {# UpToLike - кнопки "Поделиться" #}
     {% endif %}
-    {% if request.settings.counter.vkontakte %}
+    {% if request.settings.counter.vkontakte != "" %}
         {# Пиксель вКонтакте #}
         <div id="vkontakte_pixel">
             <script type="text/javascript">
