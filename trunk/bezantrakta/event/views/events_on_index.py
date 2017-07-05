@@ -106,6 +106,7 @@ def events_on_index(request):
     add_small_vertical_poster(request, small_vertical)
 
     context = {
+        'title': '',
         'small_vertical_vip': small_vertical_vip,
         'small_vertical': small_vertical,
     }

@@ -5,7 +5,7 @@ from django.shortcuts import render
 
 from project.shortcuts import add_small_vertical_poster, today
 
-from ..models import Event, EventGroupBinder
+from ..models import Event, EventGroupBinder, EventCategory
 
 
 def category(request, slug):
@@ -20,8 +20,10 @@ def category(request, slug):
 
     # Вывод событий во всех категориях или фильтр по конкретной категории
     if slug == settings.BEZANTRAKTA_CATEGORY_ALL:
+        category_name = 'Все события'
         category_event_filter = Q(event_category__isnull=False)
     else:
+        category_name = EventCategory.objects.values_list('title', flat=True).get(slug=slug)
         category_event_filter = Q(event_category__slug=slug)
 
     # Запрос событий из всех категорий или из какой-либо конкретной
@@ -118,7 +120,8 @@ def category(request, slug):
     add_small_vertical_poster(request, category_events)
 
     context = {
-        'category_events': list(category_events),
+        'title': category_name,
         'slug': slug,
+        'category_events': list(category_events),
     }
     return render(request, 'event/category.html', context)
