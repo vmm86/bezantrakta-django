@@ -213,7 +213,7 @@ h1, h2 {
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    font-weight: normal;
+    font-weight: bold;
     text-transform: uppercase;
 
     padding: 0.5rem 2.5rem;
@@ -269,7 +269,7 @@ h1, h2 {
 #basket-container #group-events li {
     display: table;
 
-    background: url(/static/global/svg/related-event.svg) no-repeat;
+    background: url(/static/global/svg/group-event.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
@@ -277,7 +277,7 @@ h1, h2 {
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    font-weight: normal;
+    font-weight: bold;
     text-transform: uppercase;
 
     /*padding: 0.2rem 1rem 0.2rem 2.5rem;*/

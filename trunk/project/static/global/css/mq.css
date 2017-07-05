@@ -16,7 +16,7 @@
         width: 100%;
     }
 
-    .poster-left, .poster-right,
+    .poster-big-vertical-left, .poster-big-vertical-right,
     .bottom-left-logo, .bottom-right-logo {
         display: none;
     }
@@ -96,10 +96,6 @@
         font-size: 13px;
     }
 
-    .top {
-        height: 4.5rem;
-    }
-
 }
 
 @media all and (max-width: 900px) {
@@ -155,14 +151,15 @@
     }
 
     .header-left .bzlogo {
-        height: 3.5rem;
+        width: auto;
+        height: 5rem;
 
         position: absolute;
-        top: -4.5rem;
-        left: 165%;
+        top: -5.5rem;
+        left: 120%;
     }
 
-    .poster-small-vertical-body.order1 .poster-small-vertical-min_price {
+    .poster-small-vertical-body.vip .poster-small-vertical-min_price {
         left: 0;
     }
 
@@ -328,7 +325,8 @@
     }
 
     .header-left .bzlogo {
-        left: 40%;
+        top: -4.75rem;
+        left: 35%;
     }
 
     .header-right {
