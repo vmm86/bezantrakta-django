@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.humanize.templatetags.humanize import naturalday
 from django.db.models import BooleanField, CharField, DateTimeField, DecimalField, IntegerField, SlugField
 from django.db.models import Case, OuterRef, Subquery, F, Q, Value, When
 from django.shortcuts import render
@@ -116,6 +117,7 @@ def calendar(request, year, month, day):
     add_small_vertical_poster(request, events_on_date)
 
     context = {
+        'title': 'События на {naturalday}'.format(naturalday=naturalday(calendar_date_localized)),
         'calendar_date': calendar_date_localized,
         'calendar_next_date': calendar_next_date_localized,
         'events_on_date': list(events_on_date),

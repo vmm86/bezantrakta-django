@@ -6,12 +6,12 @@
             {% if debug %}
                 <span class="poster-type" style="font-size: 0.75rem;">
                     {{ item.is_group|yesno:'group,event' }}
-                {% if not item.is_group %}
+                {% if not item.is_group and item.is_in_group %}
                     {{ item.is_in_group|yesno:'in_group,not_in_group' }}
                 {% endif %}
                     <br>{% if item.order %}order {{ item.order }}{% endif %}
                     <br>{{ item.event_datetime }}
-                    <br>{{ item.event_category_title }}
+                    <br>{% if item.event_category_title %}{{ item.event_category_title }}{% endif %}
                 </span>
             {% endif %}
             <img src="{{ item.poster }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">

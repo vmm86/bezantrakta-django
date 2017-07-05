@@ -2,12 +2,7 @@
 {% load tz %}
 
 {% block content_header %}
-{% for category in categories %}
-    {% url 'event:category' slug=category.slug as category_url %}
-    {% if category_url == request.url_path %}
-        <h1>{{ category.title }}</h1>
-    {% endif %}
-{% endfor %}
+<h1>{{ title }}</h1>
 {% endblock %}
 
 {% block content_body %}

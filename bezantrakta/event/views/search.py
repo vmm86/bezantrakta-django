@@ -110,6 +110,7 @@ def search(request):
         add_small_vertical_poster(request, events_found)
 
         context = {
+            'title': 'Поиск',
             'events_found': list(events_found),
         }
 
