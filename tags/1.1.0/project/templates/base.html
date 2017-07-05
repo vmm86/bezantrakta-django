@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
 {% load i18n static tz %}
-    <title>{% if title %}{{ request.settings.domain.title }}: {{ title }}{% else %}{{ request.settings.domain.title }}{% endif %}</title>
+    <title>{% if title and title != "" %}{{ request.settings.domain.title }}: {{ title }}{% else %}{{ request.settings.domain.title }}{% endif %}</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
 
@@ -179,7 +179,7 @@
                     <div class="modul">
                         <div class="mod_top">
                             <form action="/search" method="GET">
-                                <input name="text" id="search" alt="Поиск" class="inputbox" type="text" size="20" value="{% if request.GET.text %}{{ request.GET.text }}{% endif %}">
+                                <input name="text" id="search" alt="Поиск" class="inputbox" type="text" size="20" value="{% if request.GET.text and request.GET.text != "" %}{{ request.GET.text }}{% endif %}">
                                 <input type="submit" value="Поиск" class="button">
                             </form>
                         </div>
