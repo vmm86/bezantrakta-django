@@ -33,7 +33,7 @@ LOGGING_LOG_BACKUP_COUNT = 7
 
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     # Filters
     'filters': {
         'require_debug_false': {
