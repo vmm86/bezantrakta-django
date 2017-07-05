@@ -31,3 +31,6 @@ MEDIA_ROOT = os.path.join(PARENT_DIR, 'media')
 DEFAULT_FROM_EMAIL = 'webmaster@bezantrakta.ru'
 # The email that error messages come from, sent to ADMINS and MANAGERS.
 SERVER_EMAIL = 'webmaster@bezantrakta.ru'
+
+# Настройки логов
+from .logging import LOGGING

@@ -39,3 +39,6 @@ INSTALLED_APPS += [
 MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 TEMPLATES[0]['OPTIONS']['context_processors'].insert(0, 'django.template.context_processors.debug')
+
+# Настройки логов
+from .logging import LOGGING
