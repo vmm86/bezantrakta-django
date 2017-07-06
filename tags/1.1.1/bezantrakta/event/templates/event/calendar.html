@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load tz %}
+
+{% block content_header %}
+<h1>События на {{ calendar_date|date:"j E" }}</h1>
+{% endblock %}
+
+{% block content_body %}
+<div class="poster-small-vertical-body">
+{% for item in events_on_date %}
+{% localtime on %}
+    {% include "event/small_vertical_posters.html" with item=item %}
+{% endlocaltime %}
+{% endfor %}
+</div>
+
+{% if debug %}
+<br><br>
+request.calendar_date: {{ request.calendar_date }}
+<br>
+calendar_date: {{ calendar_date }}
+<br>
+calendar_next_date: {{ calendar_next_date }}
+<br>
+events_on_date: <pre>{{ events_on_dates|pprint }}</pre>
+<br><br>
+{% endif %}
+{% endblock %}
