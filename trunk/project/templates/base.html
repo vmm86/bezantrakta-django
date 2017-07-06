@@ -85,8 +85,8 @@
     <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-96x96.png" %}" sizes="96x96">
     <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-144x144.png" %}" sizes="144x144">
     <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-192x192.png" %}" sizes="192x192">
-    <link rel="manifest" href="manifest.json">
-    <meta name="msapplication-config" content="browserconfig.xml">
+    <link rel="manifest" href="http://{{ request.url_domain }}/manifest.json">
+    <meta name="msapplication-config" content="http://{{ request.url_domain }}/browserconfig.xml">
     <meta name="msapplication-TileColor" content="#FFCC00">
     <meta name="msapplication-TileImage" content="{% static "global/ico/mstile-144x144.png" %}">
     <meta name="theme-color" content="#FFE57F">
