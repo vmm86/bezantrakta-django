@@ -293,23 +293,17 @@ h1, h2 {
 }
 
 #links-header {
-    position: relative;
-    z-index: 2;
 }
 
 #links {
     display: block;
 
-    background: url(/static/global/svg/event-description.svg) no-repeat;
+    background: url(/static/global/svg/links.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
 
     padding: 1.25rem 1.75rem 0.5rem 1.75rem;
-
-    position: relative;
-    top: -1.2rem;
-    z-index: 1;
 }
 
 #links li .link-checkbox {
