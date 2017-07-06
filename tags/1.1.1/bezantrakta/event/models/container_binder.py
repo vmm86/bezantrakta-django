@@ -1,4 +1,5 @@
 import os
+import stat
 import uuid
 
 from django.conf import settings
@@ -44,8 +45,11 @@ def img_path(instance, filename):
     if os.path.isfile(full_file_path):
         os.remove(full_file_path)
     # Удаление старых пустых папок без изображений
-    domain_subfolders = os.path.join(settings.MEDIA_ROOT, params['domain_slug'], instance._meta.app_label)
+    domain_subfolders = os.path.join(settings.MEDIA_ROOT, params['domain_slug'], params['model_slug'])
     for path, dirs, files in os.walk(domain_subfolders, topdown=False):
+        for d in dirs:
+            if oct(stat.S_IMODE(os.lstat(os.path.join(path, d)).st_mode)) != '0o755':
+                os.chmod(os.path.join(path, d), 0o755)
         if not dirs and not files:
             os.rmdir(path)
 
