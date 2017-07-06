@@ -125,7 +125,7 @@
 
             {# События в группе выводятся, только если их больше одного #}
             {% if group_events and group_events|length > 1 %}
-                <div class="show-events">
+                <div class="group-events-container">
                     <h3 id="group-events-header">Билеты на другую дату / сектор</h3>
                     <ul id="group-events">
                 {% for event in group_events %}
@@ -184,14 +184,18 @@
             {% endif %}
 
             {% if links %}
-                <div class="show-links">
-                    <h3 id="group-events-header">Билеты в продаже</h3>
-                    <ul style="background: none;">
+                <div class="links-container">
+                    <h3 id="links-header">Билеты</h3>
+                    <ul id="links">
                     {% for link in links %}
                         <li style="margin: 1rem 0;">
+                            {% if link.href != "" %}
                             <a href="{{ link.href }}" title="{{ link.title }}" target="_blank">
-                                <img src="{% get_media_prefix %}{{ link.img }}" alt="{{ link.title }}">
+                            {% endif %}
+                                <img class="link-checkbox" border="0" style="border: 0; border-style: none"><img class="link-banner" src="{% get_media_prefix %}{{ link.img }}" alt="{{ link.title }}">
+                            {% if link.href != "" %}
                             </a>
+                            {% endif %}
                         </li>
                     {% endfor %}
                     </ul>
