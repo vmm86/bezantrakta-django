@@ -132,6 +132,7 @@ class Domain(models.Model):
     )
     settings = models.TextField(
         default=get_default_domain_settings,
+        help_text=_('domain_settings_help_text'),
         verbose_name=_('domain_settings'),
     )
 
