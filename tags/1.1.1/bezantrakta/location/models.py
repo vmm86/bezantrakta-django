@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 
@@ -6,6 +7,20 @@ from django.db import models
 from django.utils.translation import ugettext as _
 
 from timezone_field import TimeZoneField
+
+
+def timezone_offset_humanized(timezone):
+    offset = datetime.datetime.now(timezone).utcoffset()
+    seconds = offset.seconds
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    sign = '+' if offset >= datetime.timedelta(0) else '-'
+
+    return '{sign}{hours}:{minutes}'.format(
+        sign=sign,
+        hours=str(hours).zfill(2),
+        minutes=str(minutes).zfill(2)
+    )
 
 
 class City(models.Model):
@@ -65,6 +80,13 @@ class City(models.Model):
         elif self.state is True:
             return _boolean_icon(True)
     state_icons.short_description = _('city_state_icons')
+
+    def timezone_offset(self):
+        return '{offset} {timezone}'.format(
+            offset=timezone_offset_humanized(self.timezone),
+            timezone=self.timezone,
+        )
+    timezone_offset.short_description = _('city_timezone')
 
 
 def get_default_domain_settings():

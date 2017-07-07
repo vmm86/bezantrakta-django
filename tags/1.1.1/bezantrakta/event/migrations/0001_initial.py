@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('min_price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Минимальная цена билета')),
                 ('min_age', models.PositiveSmallIntegerField(choices=[(0, '0+'), (6, '6+'), (12, '12+'), (16, '16+'), (18, '18+')], default=0, verbose_name='Возрастное ограничение')),
                 ('datetime', models.DateTimeField(verbose_name='Дата и время')),
-                ('is_group', models.BooleanField(default=False, verbose_name='Тип')),
+                ('is_group', models.BooleanField(default=False, verbose_name='Группа событий')),
                 ('domain', models.ForeignKey(db_column='domain_id', on_delete=django.db.models.deletion.CASCADE, to='location.Domain', verbose_name='Сайт')),
             ],
             options={
