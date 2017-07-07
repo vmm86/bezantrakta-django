@@ -774,7 +774,7 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
 
 /* Порядок оформления настроек сайтов */
 
-.form-row.field-settings > div {
+fieldset.domain_settings {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -782,18 +782,23 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     align-items: flex-start;
 }
 
-.form-row.field-settings > div label {
+fieldset.domain_settings h2 {
     order: 1;
 }
 
-.form-row.field-settings > div #id_settings_jsoneditor {
+fieldset.domain_settings .form-row.field-settings {
+    padding: 0;
     width: 100%;
     order: 2;
 }
 
-.form-row.field-settings > div .help {
-    margin-left: 0;
+fieldset.domain_settings .description {
+    padding: 0;
     order: 3;
+}
+
+fieldset.domain_settings .description ul {
+    margin-left: 0;
 }
 
 /* JSON Editor */
