@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=64, verbose_name='Название')),
                 ('slug', models.SlugField(blank=True, help_text='При ссылке на страницу псевдоним пункта меню должен совпадать с псевдонимом страницы, которую требуется в нём отобразить.<br>Для главной страницы псевдоним должен быть пустым.', max_length=64, verbose_name='Псевдоним')),
                 ('is_published', models.BooleanField(default=False, verbose_name='Публикация')),
-                ('order', models.PositiveSmallIntegerField(default=0, verbose_name='Порядок')),
+                ('order', models.PositiveSmallIntegerField(default=1, verbose_name='Порядок')),
                 ('domain', models.ForeignKey(db_column='domain_id', on_delete=django.db.models.deletion.CASCADE, to='location.Domain', verbose_name='Сайт')),
                 ('menu', models.ForeignKey(db_column='menu_id', on_delete=django.db.models.deletion.CASCADE, to='menu.Menu', verbose_name='Меню')),
             ],
