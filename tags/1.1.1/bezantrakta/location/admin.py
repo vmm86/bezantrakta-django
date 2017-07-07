@@ -1,12 +1,12 @@
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from django.contrib import admin
 from django.db.models import TextField
+from django.utils.translation import ugettext as _
 
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from jsoneditor.forms import JSONEditor
 
 from .forms import CityForm
-from .models import City
-from .models import Domain
+from .models import City, Domain
 
 
 @admin.register(City)
@@ -33,3 +33,20 @@ class DomainAdmin(admin.ModelAdmin):
     list_per_page = 10
     list_select_related = ('city',)
     search_fields = ('title', 'slug',)
+
+    fieldsets = (
+        (
+            None,
+            {
+                'fields': ('id', 'title', 'slug', 'is_published', 'city',),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('settings',),
+                'classes': ('domain_settings',),
+                'description': _('domain_settings_help_text'),
+            }
+        ),
+    )

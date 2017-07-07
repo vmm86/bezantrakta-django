@@ -589,6 +589,10 @@ textarea,
     border-radius: 0.33rem;
 }
 
+input[type="number"] {
+    padding: 5px 1px 5px 6px;
+}
+
 input[type=text]:focus,
 input[type=password]:focus,
 input[type=email]:focus,
@@ -606,11 +610,16 @@ textarea:focus,
     text-shadow: 0 1px 0px #111;
 }
 
-.submit-row a.deletelink,
+.submit-row a.deletelink{
+    background: #C62828;
+    text-transform: uppercase;
+    height: auto;
+}
+
 .submit-row a.deletelink:focus,
 .submit-row a.deletelink:hover,
 .submit-row a.deletelink:active {
-    background: #C62828;
+    background: #b71c1c;
     text-transform: uppercase;
     height: auto;
 }
@@ -639,6 +648,15 @@ input[name=_continue] {
 input[type=submit].default,
 input[name=_save].default {
     background: #2E7D32;
+}
+
+.button.default:active,
+input.default[type="submit"]:active,
+.button.default:focus,
+input.default[type="submit"]:focus,
+.button.default:hover,
+input.default[type="submit"]:hover {
+    background: #1b5e20;
 }
 
 label,
@@ -752,4 +770,86 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
 .img_preview_linkbinder {
     width: 200px;
     height: auto;
+}
+
+/* Порядок оформления настроек сайтов */
+
+fieldset.domain_settings {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+fieldset.domain_settings h2 {
+    order: 1;
+}
+
+fieldset.domain_settings .form-row.field-settings {
+    padding: 0;
+    width: 100%;
+    order: 2;
+}
+
+fieldset.domain_settings .description {
+    padding: 0;
+    order: 3;
+}
+
+fieldset.domain_settings .description ul {
+    margin-left: 0;
+}
+
+/* JSON Editor */
+
+.jsoneditor {
+    color: #111 !important;
+    border: 2px solid #999 !important;
+}
+
+.jsoneditor .search {
+    margin: 2px 0;
+    position: static !important;
+}
+
+.jsoneditor .search .frame {
+    border: 1px solid #999 !important;
+}
+
+.jsoneditor .menu {
+    color: #111 !important;
+    background-color: #fc0 !important;
+    border-bottom: 2px solid #999 !important;
+}
+
+.jsoneditor .menu button {
+    border: 1px solid #999 !important;
+    border-radius: 0.33rem !important;
+    opacity: 1 !important;
+}
+
+.jsoneditor .search button {
+    border: none !important;
+}
+
+.jsoneditor table td,
+.jsoneditor table td {
+    border-bottom: none !important;
+}
+
+.jsoneditor .empty {
+    border: 1px dashed #999 !important;
+    border-radius: 0.33rem !important;
+}
+
+.jsoneditor .field,
+.jsoneditor .value,
+.jsoneditor .readonly {
+    min-height: 22px !important;
+    min-width: 38px !important;
+}
+
+.jsoneditor .field {
+    font-weight: bold !important;
 }
