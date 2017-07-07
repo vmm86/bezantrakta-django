@@ -138,7 +138,7 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['console', 'request_log', ],
+            'handlers': ['request_log', ],
             'level': LOGGING_LEVEL,
         },
         'django.server': {
@@ -146,11 +146,11 @@ LOGGING = {
             'level': LOGGING_LEVEL,
         },
         'django.template': {
-            'handlers': ['console', 'template_log', ],
+            'handlers': ['template_log', ],
             'level': LOGGING_LEVEL,
         },
         'django.db.backends': {
-            'handlers': ['console', 'database_log', ],
+            'handlers': ['database_log', ],
             'level': LOGGING_LEVEL,
         },
         'django.security': {
