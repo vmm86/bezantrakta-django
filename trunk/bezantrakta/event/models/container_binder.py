@@ -13,7 +13,6 @@ def img_path(instance, filename):
     params['domain_slug'] = instance.event.domain.slug if instance.event.domain is not None else 'global'
     params['model_slug'] = 'group' if instance.event.is_group else 'event'
     params['instance_slug'] = instance.event.slug
-    params['date_time'] = instance.event.datetime
     params['current_timezone'] = instance.event.domain.city.timezone
     params['datetime_localized'] = instance.event.datetime.astimezone(params['current_timezone'])
 
@@ -46,7 +45,7 @@ def img_path(instance, filename):
         os.remove(full_file_path)
     # Удаление старых пустых папок без изображений
     domain_subfolders = os.path.join(settings.MEDIA_ROOT, params['domain_slug'], params['model_slug'])
-    for path, dirs, files in os.walk(domain_subfolders, topdown=False):
+    for path, dirs, files in os.walk(domain_subfolders, topdown=True):
         for d in dirs:
             if oct(stat.S_IMODE(os.lstat(os.path.join(path, d)).st_mode)) != '0o755':
                 os.chmod(os.path.join(path, d), 0o755)
