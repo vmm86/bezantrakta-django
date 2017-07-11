@@ -301,6 +301,12 @@ group_events: <pre>{{ group_events|pprint }}</pre>
     </main>
 </div>
 
+<footer class="footer">
+    <div class="counters">
+        {% include "counters.html" with settings=request.settings.counter %}
+    </div>
+</footer>
+
 <script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
 
 <script type="text/javascript">
@@ -398,6 +404,8 @@ function eventsYandexGoogle() {
 document.getElementById('buy-tickets').addEventListener('click', eventsYandexGoogle);
 */
 </script>
+
+{% include "bottom_scripts.html" %}
 
 </body>
 </html>
