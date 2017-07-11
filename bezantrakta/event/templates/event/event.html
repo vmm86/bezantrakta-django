@@ -325,7 +325,10 @@ $(document).ready(function() {
 
     // временное сообщение
     var linksHeight = $("#links").height() + 16;
-    $(".ticket-message").css("height", linksHeight);
+    if (linksHeight > 16) {
+        $(".ticket-message").css("height", linksHeight);
+    }
+    // временное сообщение
 
     // Показ и скрытие прелоадера "Подождите, страница загружается" с временем его показа в .delay()
     $("#tickets-preloader").fadeIn().delay(3000).fadeOut();
