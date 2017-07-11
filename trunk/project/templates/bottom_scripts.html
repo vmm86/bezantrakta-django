@@ -1,0 +1,33 @@
+{% load static %}
+{# Подключение лайтбоксов для изображений #}
+<script type="text/javascript" src="{% static "global/js/lightbox2/lightbox.min.js" %}"></script>
+<script type="text/javascript">
+lightbox.option({
+    'alwaysShowNavOnTouchDevices': true,
+    'albumLabel': '',
+    'fadeDuration': 200,
+    'resizeDuration': 200,
+    'wrapAround': true
+});
+</script>
+{# Подключение лайтбоксов для изображений #}
+
+{# Вывод размеров viewport в dev-версии сайта #}
+{% if debug %}
+<script type="text/javascript">
+$(document).ready(function(e) {
+    $('body').prepend('<span class="viewport" style="background: #FFF; border: 2px dotted #000; border-radius: 1rem; font-weight: bold; padding: 0.5rem; position: fixed; bottom: 0; right: 0; z-index: 10000;"></span>');
+    showViewportSize();    
+});
+$(window).resize(function(e) {
+    showViewportSize();
+});
+
+function showViewportSize() {
+    var viewport  = ( $(window).width() + 17 ) + ' x ' + $(window).height();                  
+    $('.viewport').text(viewport);
+
+}
+{% endif %}
+</script>
+{# Вывод размеров viewport в dev-версии сайта #}
