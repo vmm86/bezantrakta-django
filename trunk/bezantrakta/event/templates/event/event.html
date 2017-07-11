@@ -208,9 +208,14 @@
             <div id="tickets">
                 {{ event.venue_scheme }}
             </div>
+        {% else %}
+            <div id="tickets" class="ticket-message">
+                <img class="ticket-message-checkbox" border="0" style="border: 0; border-style: none">
+                <span>Продажа электронных билетов на нашем сайте будет доступна<br>с 20 августа.</span>
+            </div>
         {% endif %}
 
-        </DIV>
+        </div>
 
     {% if is_ticket_service %}
         <div class="order-buttons">
