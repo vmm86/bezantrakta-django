@@ -209,9 +209,11 @@
                 {{ event.venue_scheme }}
             </div>
         {% else %}
-            <div id="tickets" class="ticket-message">
-                <img class="ticket-message-checkbox" border="0" style="border: 0; border-style: none">
-                <span>Продажа электронных билетов на нашем сайте будет доступна<br>с 20 августа.</span>
+            <div id="tickets">
+                <div class="ticket-message">
+                    <img class="ticket-message-checkbox" border="0" style="border: 0; border-style: none">
+                    <span>Продажа электронных билетов на нашем сайте будет доступна<br>с 20 августа.</span>
+                </div>
             </div>
         {% endif %}
 
@@ -314,6 +316,10 @@ $(document).ready(function() {
     // Добавление паддинга к блоку "Место проведения события", чтобы по высоте оно было соразмерно блоку "Название события/дата/время" (костыль)
     var eventTitleHeight = $("#event-title-date-time").height() / 28.75;
     $("#event-venue").css("padding-top", eventTitleHeight + "rem").css("padding-bottom", eventTitleHeight + "rem");
+
+    // временное сообщение
+    var linksHeight = $("#links").height() + 16;
+    $(".ticket-message").css("height", linksHeight);
 
     // Показ и скрытие прелоадера "Подождите, страница загружается" с временем его показа в .delay()
     $("#tickets-preloader").fadeIn().delay(3000).fadeOut();
