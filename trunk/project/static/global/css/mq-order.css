@@ -426,7 +426,7 @@ h1, h2 {
     display: table-cell;
 
     text-align: center;
-    vertical-align: top;
+    vertical-align: bottom; /* временно */
 
     padding: 0;
     margin-left: auto;
@@ -436,7 +436,6 @@ h1, h2 {
     width: -webkit-calc(70vw - 3rem);
     width:    -moz-calc(70vw - 3rem);
     width:         calc(70vw - 3rem);
-/*    height: 90%;*/
 }
 
 .stagehall {
