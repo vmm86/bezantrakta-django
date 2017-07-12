@@ -8,6 +8,14 @@
         font-size: 16px;
     }
 
+    .choose-city-list {
+        height: 100vh;
+    }
+
+    .choose-city-list li {
+        width: 33.3%;
+    }
+
     .events-menu {
         text-align: center;
 
@@ -43,9 +51,15 @@
 }
 
 @media all and (max-width: 1180px) {
+
+    .choose-city-list {
+        height: 140vh;
+    }
+
     .choose-city-list li {
         width: 50%;
     }
+
 }
 
 @media all and (max-width: 1180px) {
@@ -144,6 +158,10 @@
 
     html {
         font-size: 12px;
+    }
+
+    .choose-city-list {
+        height: auto;
     }
 
     .choose-city-list li {
