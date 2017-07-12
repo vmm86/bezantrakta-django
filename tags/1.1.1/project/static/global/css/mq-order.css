@@ -362,11 +362,8 @@ h1, h2 {
 
     height: 3rem;
     width: 3.5rem;
-}
 
-/* временное сообщение */
-.ticket-message span {
-    display: inline-block;
+    float: left;
 }
 
 /* Шаг 1 - Выбор билетов по схеме зала и описание события */

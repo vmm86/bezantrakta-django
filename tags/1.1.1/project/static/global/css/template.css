@@ -578,7 +578,7 @@
     padding: 0;
     margin: 0;
 
-    width: 33%;
+    width: 25%;
 
     position: relative;
 }
@@ -640,7 +640,7 @@
     letter-spacing: 0.1rem;
     text-align: center;
     text-transform: uppercase;
-    margin-left: 1vw;
+    margin-left: 1.5vw;
 
     padding: 0.25rem 0.75rem;
 
