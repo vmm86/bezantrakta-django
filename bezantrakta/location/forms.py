@@ -21,7 +21,7 @@ class CityForm(forms.ModelForm):
     timezone_list = [tz for tz in pytz.country_timezones('ru')]
     timezone = autocomplete.Select2ListChoiceField(
         choice_list=timezone_list,
-        # initial='Europe/Moscow',
+        initial='Europe/Moscow',
         widget=autocomplete.ListSelect2(),
         label='Часовой пояс',
         help_text="""
