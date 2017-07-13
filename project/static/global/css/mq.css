@@ -52,20 +52,16 @@
 
 @media all and (max-width: 1180px) {
 
+    html {
+        font-size: 15px;
+    }
+
     .choose-city-list {
         height: 140vh;
     }
 
     .choose-city-list li {
         width: 50%;
-    }
-
-}
-
-@media all and (max-width: 1180px) {
-
-    html {
-        font-size: 15px;
     }
 
     .panorama {
