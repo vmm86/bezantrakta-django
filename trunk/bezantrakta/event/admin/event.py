@@ -1,7 +1,5 @@
 from django.contrib import admin
 
-from adminsortable2.admin import SortableInlineAdminMixin
-
 from project.decorators import domain_filter
 # from ..forms import EventForm
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
@@ -28,7 +26,7 @@ class EventGroupBinderInline(admin.TabularInline):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
-class EventLinkBinderInline(SortableInlineAdminMixin, admin.TabularInline):
+class EventLinkBinderInline(admin.TabularInline):
     model = EventLinkBinder
     extra = 0
     fields = ('order', 'event_link', 'href', 'img_preview',)

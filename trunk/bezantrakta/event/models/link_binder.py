@@ -48,6 +48,23 @@ class EventLinkBinder(models.Model):
     def __str__(self):
         return ''
 
+    def order_preview(self):
+        return self.order
+    order_preview.short_description = _('eventlinkbunder_order')
+
     def img_preview(self):
         return mark_safe('<img class="img_preview_linkbinder" src="{url}">'.format(url=self.event_link.img.url))
     img_preview.short_description = _('eventlinkbunder_img_preview')
+
+    def event_datetime_localized(self):
+        from django.contrib.humanize.templatetags.humanize import naturalday
+        # Дата и время события в часовом поясе его города
+        current_timezone = self.event.domain.city.timezone
+        event_datetime_localized = self.event.datetime.astimezone(current_timezone)
+        return mark_safe(
+            '{date} {time}'.format(
+                date=naturalday(event_datetime_localized),
+                time=event_datetime_localized.strftime('%H:%M'),
+            )
+        )
+    event_datetime_localized.short_description = _('eventcontainerbinder_event_datetime')
