@@ -1,14 +1,16 @@
 from django.contrib import admin
 
+from adminsortable2.admin import SortableInlineAdminMixin
+
 from project.decorators import domain_filter
 from ..models import EventLink, EventLinkBinder
 
 
-class EventLinkBinderInline(admin.TabularInline):
+class EventLinkBinderInline(SortableInlineAdminMixin, admin.TabularInline):
     model = EventLinkBinder
     extra = 0
-    fields = ('event', 'event_link', 'href', 'order',)
-    readonly_fields = ('event', 'order',)
+    fields = ('order', 'order_preview', 'event', 'event_datetime_localized', 'href',)
+    readonly_fields = ('order_preview', 'event', 'event_datetime_localized',)
 
     @domain_filter('event__domain__slug')
     def get_queryset(self, request):

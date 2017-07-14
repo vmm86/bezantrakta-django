@@ -9,8 +9,8 @@ from ..models import EventContainer, EventContainerBinder
 class EventContainerBinderInline(SortableInlineAdminMixin, admin.TabularInline):
     model = EventContainerBinder
     extra = 0
-    fields = ('order', 'event_container', 'order_preview', 'event_or_group', 'img', 'img_preview', 'event_datetime_localized',)
-    readonly_fields = ('order_preview', 'event_or_group', 'img_preview', 'event_datetime_localized',)
+    fields = ('order', 'order_preview', 'event', 'event_datetime_localized', 'img', 'img_preview',)
+    readonly_fields = ('order_preview', 'event', 'event_datetime_localized', 'img_preview',)
 
     @domain_filter('event__domain__slug')
     def get_queryset(self, request):
