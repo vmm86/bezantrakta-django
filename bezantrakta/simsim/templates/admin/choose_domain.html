@@ -4,8 +4,8 @@
     <option value="" data-timezone="UTC">все сайты</option>
 {% for domain in domains %}
     {% if domain.slug != "adm" %}
-        {% with state=domain.state|yesno:'enabled,disabled,progress' is_published=domain.is_published|yesno:'published,not_published' %}
-            <option class="{{ state }} {{ is_published }}" value="{{ domain.slug }}" data-timezone={{ domain.timezone }} {% if domain.slug == bezantrakta_admin_domain_slug %}selected=""{% endif %}><s>{{ domain.title }} - {{ domain.slug }}</s></option>
+        {% with state=domain.city_state|yesno:'enabled,disabled,progress' is_published=domain.is_published|yesno:'published,not_published' %}
+            <option class="{{ state }} {{ is_published }}" value="{{ domain.slug }}" data-city={{ domain.city_slug }} data-timezone={{ domain.city_timezone }} {% if domain.slug == bezantrakta_admin_domain_slug %}selected=""{% endif %}><s>{{ domain.title }} - {{ domain.slug }}</s></option>
         {% endwith %}
     {% endif %}
 {% endfor %}

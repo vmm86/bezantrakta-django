@@ -70,10 +70,17 @@ def img_path(instance, filename):
     return file_path
 
 
+class BannerGroupItemManager(models.Manager):
+    def get_queryset(self):
+        return super(BannerGroupItemManager, self).get_queryset().select_related('domain')
+
+
 class BannerGroupItem(models.Model):
     """
     Баннеры, входящие в какую-то группу баннеров.
     """
+    objects = BannerGroupItemManager()
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,

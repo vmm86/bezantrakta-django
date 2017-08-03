@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import CharField, DateTimeField, DecimalField, IntegerField, SlugField
 from django.db.models import Case, OuterRef, Subquery, F, Q, When
 
@@ -11,11 +12,11 @@ def big_containers(request):
     Получение событий и их добавление в template context.
     """
     # Только если домен опубликован
-    if request.domain_is_published:
+    if request.domain_is_published and settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
         # Поиск опубликованных событий на главной, привязанных к текущему домену
         group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
-            group=OuterRef('event__id'),
-            event__is_published=True,
+            group_id=OuterRef('event__id'),
+            # event__is_published=True,
             event__datetime__gt=today,
         ).order_by('event__datetime')[:1]
 

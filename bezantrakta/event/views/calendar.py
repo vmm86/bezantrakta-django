@@ -27,8 +27,8 @@ def calendar(request, year, month, day):
     range_filter = (calendar_date_localized, calendar_next_date_localized)
 
     group_subquery = EventGroupBinder.objects.values('event__datetime').filter(
-        group=OuterRef('id'),
-        event__is_published=True,
+        group_id=OuterRef('id'),
+        # event__is_published=True,
         event__datetime__range=range_filter,
     ).order_by('event__datetime')[:1]
 

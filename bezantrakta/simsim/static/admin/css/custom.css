@@ -71,6 +71,10 @@ thead th.sorted {
     background: #aaa;
 }
 
+thead th.sorted .text {
+    padding-right: 24px;
+}
+
 table thead th .text a:focus,
 table thead th .text a:hover {
     background: inherit;
@@ -373,6 +377,12 @@ a.section:visited {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+#result_list .field-is_group {
+    max-width: 50px;
+}
+#result_list .field-event_venue {
     max-width: 100px;
 }
 
@@ -770,6 +780,11 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
 .img_preview_linkbinder {
     width: 200px;
     height: auto;
+}
+
+.delete-confirmation form .cancel-link {
+    height: auto;
+    line-height: initial;
 }
 
 /* Порядок оформления настроек сайтов */

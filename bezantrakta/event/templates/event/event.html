@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-{% load i18n static tz %}
+{% load i18n static tz compress %}
     <title>{% if event.event_title %}{{ request.settings.domain.title }}: {{ event.event_title }}{% else %}{{ request.settings.domain.title }}{% endif %}</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -76,7 +76,7 @@
     <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-96x96.png" %}" sizes="96x96">
     <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-144x144.png" %}" sizes="144x144">
     <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-192x192.png" %}" sizes="192x192">
-    <link rel="manifest" href="{% static "global/ico/manifest.json" %}">
+    <link rel="manifest" href="http://{{ request.url_domain }}/manifest.json">
     <meta name="msapplication-TileColor" content="#FFCC00">
     <meta name="msapplication-TileImage" content="{% static "global/ico/mstile-144x144.png" %}">
     <meta name="theme-color" content="#FFE57F">
@@ -91,7 +91,7 @@
 <div class="body">
     <main class="content">
 
-    {% if event.is_ticket_service and event.is_coming %}
+    {% if event.ticket_service_event and event.is_coming %}
         <div class="order-progress">
             <div class="order-progress-step1">
                 <div class="order-progress-step1-body active"><span>Шаг 1.</span> <span>Выбор билетов</span></div>
@@ -122,6 +122,38 @@
     {% if event.is_coming %}
         <div class="order-header">
             <div id="basket-container">
+
+            {# Корзина заказа билетов и легенда #}
+            {% if event.ticket_service_event %}
+                <h3 id="chosen-tickets-header">Выбранные места</h3>
+                <p>
+                    <ul id="chosen-tickets">
+                        <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
+                    </ul>
+                </p>
+
+                <h3 id="overall-header">Всего</h3>
+                <p id="overall">
+                    <span id="no-overall">пока ничего не выбрано</span>
+                    <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
+                </p>
+                <br>
+
+                <div id="legend-general">
+                    <p><a class="box stateS"></a> выбрано вами</p>
+                    <p><a class="box stateO"></a> выбрано другим</p>
+                    <p><a class="box stateE"></a> недоступно</p>
+                </div>
+                <br>
+
+                <div id="legend-prices">
+                    <ul id="legend-extension">
+                    {% for p in prices %}
+                        <li><a class="box stateF color{{ forloop.counter }}"></a> {{ p }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
             {# События в группе выводятся, только если их больше одного #}
             {% if group_events and group_events|length > 1 %}
@@ -156,33 +188,7 @@
                 </div>
             {% endif %}
 
-            {% if is_ticket_service %}
-                <h3 id="chosen-tickets-header">Выбранные места</h3>
-                <p>
-                    <ul id="chosen-tickets">
-                        <li id="no-tickets">пока ничего не выбрано</li>&nbsp;
-                    </ul>
-                </p>
-
-                <h3 id="overall-header">Всего</h3>
-                <p id="overall">
-                    <span id="no-overall">пока ничего не выбрано</span>
-                    <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img src="{% static "global/ico/ruble_sign.svg" %}" style="width: 0.525rem; vertical-align: baseline;"></span>&nbsp;
-                </p>
-                <br>
-
-                <div id="legend-general">
-                    <p><a class="box stateS"></a> выбрано вами</p>
-                    <p><a class="box stateO"></a> выбрано другим</p>
-                    <p><a class="box stateE"></a> недоступно</p>
-                </div>
-                <br>
-
-                <div id="legend-prices">
-                    <span id="legend-extension"></span>
-                </div>
-            {% endif %}
-
+            {# Ссылки, добавленные к событию #}
             {% if links %}
                 <div class="links-container">
                     <h3 id="links-header">Билеты</h3>
@@ -204,33 +210,29 @@
 
             </div>
 
-        {% if is_ticket_service %}
+        {# Схема зала в сервисе продажи билетов #}
+        {% if event.ticket_service_event %}
+            {% spaceless %}
             <div id="tickets">
-                {{ event.venue_scheme }}
+                {{ venue_scheme|safe }}
             </div>
-        {% else %}
-            <div id="tickets">
-                <div class="ticket-message">
-                    <img class="ticket-message-checkbox" border="0" style="border: 0; border-style: none">
-                    <span>Продажа электронных билетов на нашем сайте будет доступна<br>с 20 августа.</span>
-                </div>
-            </div>
+            {% endspaceless %}
         {% endif %}
 
         </div>
 
-    {% if is_ticket_service %}
-        <div class="order-buttons">
-            <div class="button-prev">
-                <a id="back" class="step1" href="javascript: history.go(-1)">Назад</a>
-            </div>
+        {% if event.ticket_service_event %}
+            <div class="order-buttons">
+                <div class="button-prev">
+                    <a id="back" class="step1" href="javascript: history.go(-1)">Назад</a>
+                </div>
 
-            <div class="button-next">
-                <a id="buy-tickets-inactive">Оформить</a>
-                <a id="buy-tickets" href="{{ gettickets }}">Оформить</a>
+                <div class="button-next">
+                    <a id="buy-tickets-inactive">Оформить</a>
+                    <a id="buy-tickets" href="{{ gettickets }}">Оформить</a>
+                </div>
             </div>
-        </div>
-    {% endif %}
+        {% endif %}
 
     {% endif %}
 
@@ -276,7 +278,7 @@
 
         </div>
 
-    {% if is_ticket_service %}
+    {% if event.ticket_service_event %}
         <div id="tickets-preloader" class="modal">
             <div>
                 <div class="modal-body">
@@ -290,34 +292,40 @@
         </div>
     {% endif %}
 
-{% if debug %}
-<br><br>
-event: <pre>{{ event|pprint }}</pre>
-<br><br>
-group_events: <pre>{{ group_events|pprint }}</pre>
-<br><br>
-{% endif %}
+    {% if debug %}
+    <br><br>
+    event: <pre>{{ event|pprint }}</pre>
+    <br><br>
+    group_events: <pre>{{ group_events|pprint }}</pre>
+    <br><br>
+    {% endif %}
 
     </main>
 </div>
 
 <footer class="footer">
+    {% spaceless %}
     <div class="counters">
+        {% compress js inline %}
         {% include "counters.html" with settings=request.settings.counter %}
+        {% endcompress %}
     </div>
+    {% endspaceless %}
 </footer>
 
-<script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
+{# <script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script> #}
+<script type="text/javascript" src="{% static "global/js/jquery/jquery-3.2.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/underscore/underscore.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
 
+{% compress js inline %}
 <script type="text/javascript">
-// var event_id = {{ event__ticketserviceeventbinder__id }};
-// var stage_id = {{ event__event_venue__ticketserviceeventvenuebinder__id }};
-// $(document).ready(function() {
-//     initStageHall();
-// });
+    {% include "ticket_service/ticket_service.js" with event=event %}
 </script>
+{% endcompress %}
 
-<script type="text/javascript">
+{% compress js inline %}
+<script type="text/javascript" defer>
 $(document).ready(function() {
     // Добавление паддинга к блоку "Место проведения события", чтобы по высоте оно было соразмерно блоку "Название события/дата/время" (костыль)
     var eventTitleHeight = $("#event-title-date-time").height() / 28.75;
@@ -331,7 +339,7 @@ $(document).ready(function() {
     // временное сообщение
 
     // Показ и скрытие прелоадера "Подождите, страница загружается" с временем его показа в .delay()
-    $("#tickets-preloader").fadeIn().delay(3000).fadeOut();
+    $("#tickets-preloader").fadeIn().delay(6000).fadeOut();
 
     // Включение отдельных файлов со схемами секторов в общую схему зала, только если зал большой 
     // (если в общей схеме зала задан булев параметр stagehall_composite)
@@ -407,6 +415,7 @@ function eventsYandexGoogle() {
 document.getElementById('buy-tickets').addEventListener('click', eventsYandexGoogle);
 */
 </script>
+{% endcompress %}
 
 {% include "bottom_scripts.html" %}
 

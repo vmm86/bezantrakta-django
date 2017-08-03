@@ -1,0 +1,97 @@
+{% spaceless %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+{% load i18n static %}
+    <title>{{ title }}</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="robots" content="noindex, nofollow">
+
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
+    {# favicons #}
+    <link rel="icon" type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
+    {# favicons #}
+</head>
+
+<body style="background: #fff;">
+<div class="body" style="display: flex; justify-content: flex-start; align-items: flex-start; width: 100%; height: 100%;">
+    <div class="content">
+        <p>
+            {% if ticket_services %}
+                <strong>ticket_services</strong>:
+                {% for ts in ticket_services %}
+                    <br>* {{ ts|pprint }}
+                {% endfor %}
+            {% endif %}
+        </p>
+        <br>
+        <p>
+            {% if ts %}
+                <strong>ts</strong>:
+                {% for t in ts %}
+                    <br>* {{ t }}
+                {% endfor %}
+            {% endif %}
+        </p>
+        <br>
+        <p>
+            {% if venues %}
+                <strong>venues</strong>:
+                {% for venue in venues %}
+                    {% for v in venue %}
+                        <br>* {{ v|pprint }}
+                    {% endfor %}<br>
+                {% endfor %}
+            {% endif %}
+        </p>
+        <br>
+        <p>
+            {% if ts_venue_binder_dict %}
+                <strong>ts_venue_binder_dict</strong>:
+                {% for tsvbd in ts_venue_binder_dict %}
+                    <br>* {{ tsvbd|pprint }}<br>
+                {% endfor %}
+            {% endif %}
+        </p>
+        <br>
+        <p>
+            {% if groups %}
+                <strong>groups</strong>:
+                {% for group in groups %}
+                    {% for g in group %}
+                        <br>* {{ g|pprint }}
+                    {% endfor %}<br>
+                {% endfor %}
+            {% endif %}
+        </p>
+        <br>
+        <p>
+            {% if group_id_uuid_mapping %}
+                <strong>group_id_uuid_mapping</strong>:
+                    <br>* {{ group_id_uuid_mapping }}
+                    <br>
+            {% endif %}
+        </p>
+        <br>
+        <p>
+            {% if events %}
+                <strong>events</strong>:
+                {% for event in events %}
+                    {% for e in event %}
+                        <br>* {{ e|pprint }}
+                    {% endfor %}<br>
+                {% endfor %}
+            {% endif %}
+        </p>
+        <br>
+    </div>
+</div>
+</body>
+{% endspaceless %}

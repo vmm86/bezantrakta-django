@@ -4,14 +4,24 @@ from ckeditor.fields import RichTextField
 
 from django.db import models
 from django.urls.base import reverse
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
+
+
+class EventManager(models.Manager):
+    def get_queryset(self):
+        return super(EventManager, self).get_queryset().select_related(
+            'event_category', 'event_venue', 'domain'
+        ).prefetch_related(
+            'event_group', 'event_container', 'event_link'
+        )
 
 
 class Event(models.Model):
     """
     События, привязанные к какому-то билетному сервису или независимые.
     """
+    objects = EventManager()
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -83,6 +93,8 @@ class Event(models.Model):
     )
     event_venue = models.ForeignKey(
         'event.EventVenue',
+        blank=True,
+        null=True,
         on_delete=models.CASCADE,
         db_column='event_venue_id',
         verbose_name=_('event_event_venue'),
@@ -120,26 +132,48 @@ class Event(models.Model):
         blank=True,
         verbose_name=_('event_event_link'),
     )
+    ticket_service = models.ForeignKey(
+        'ticket_service.TicketService',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        db_column='ticket_service_id',
+        verbose_name=_('event_ticket_service'),
+    )
+    ticket_service_event = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        db_column='ticket_service_event_id',
+        verbose_name=_('event_ticket_service_event'),
+    )
+    ticket_service_prices = models.TextField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name=_('event_ticket_service_prices'),
+    )
+    ticket_service_venue = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        db_column='ticket_service_venue_id',
+        verbose_name=_('event_ticket_service_venue'),
+    )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event'
         verbose_name = _('event')
         verbose_name_plural = _('events')
-        ordering = ('domain', 'datetime', 'title',)
+        ordering = ('domain', '-datetime', 'title', 'is_group',)
         unique_together = (
             ('domain', 'datetime', 'slug',),
         )
 
     def __str__(self):
-        from django.contrib.humanize.templatetags.humanize import naturalday
-        # Дата и время события в часовом поясе его города
-        current_timezone = self.domain.city.timezone
-        event_datetime_localized = self.datetime.astimezone(current_timezone)
-        return '{title} ({date} {time}) - {domain}'.format(
+        return '{title} ({datetime}) {ts_event_id} - {domain}'.format(
             title=self.title,
-            date=naturalday(event_datetime_localized),
-            time=event_datetime_localized.strftime('%H:%M'),
+            ts_event_id=self.ticket_service_event if self.ticket_service_event is not None else '',
+            datetime=self.datetime.strftime('%d.%m.%Y %H:%M'),
             domain=self.domain.title,
         )
 
@@ -155,28 +189,3 @@ class Event(models.Model):
                 self.slug
             ]
         )
-
-    def datetime_localized(self):
-        from django.contrib.humanize.templatetags.humanize import naturalday
-        # Дата и время события в часовом поясе его города
-        current_timezone = self.domain.city.timezone
-        event_datetime_localized = self.datetime.astimezone(current_timezone)
-        return mark_safe(
-            '{date} {time}'.format(
-                date=naturalday(event_datetime_localized),
-                time=event_datetime_localized.strftime('%H:%M'),
-            )
-        )
-    datetime_localized.short_description = _('event_datetime')
-
-    def group_count(self):
-        return self.event_group.count()
-    group_count.short_description = _('event_group_count')
-
-    def link_count(self):
-        return self.event_link.count()
-    link_count.short_description = _('event_link_count')
-
-    def container_count(self):
-        return self.event_container.count()
-    container_count.short_description = _('event_container_count')

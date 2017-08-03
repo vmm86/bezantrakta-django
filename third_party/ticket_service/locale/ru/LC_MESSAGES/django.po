@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-27 12:43+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: admin.py:33
+msgid "ticket_service_venue_binder_if_scheme_exists"
+msgstr "Схема зала"
+
+#: models/ticket_service.py:24
+msgid "ticketservice_id"
+msgstr "Идентификатор"
+
+#: models/ticket_service.py:28
+msgid "ticketservice_title"
+msgstr "Название"
+
+#: models/ticket_service.py:32
+msgid "ticketservice_slug_help_text"
+msgstr ""
+"<p>Псевдоним должен совпадать с атрибутом <strong>slug</strong> класса "
+"соответствующего билетного сервиса.</p><p><ul><li><strong>superbilet</"
+"strong> для СуперБилет;</li><li><strong>profticket</strong> для ПрофТикет;</"
+"li><li><strong>radario</strong> для Радарио.</li></ul></p>"
+
+#: models/ticket_service.py:33
+msgid "ticketservice_slug"
+msgstr "Псевдоним"
+
+#: models/ticket_service.py:37
+msgid "ticketservice_is_active"
+msgstr "Работает"
+
+#: models/ticket_service.py:41
+msgid "ticketservice_settings"
+msgstr "Настройки в JSON"
+
+#: models/ticket_service.py:47
+msgid "ticketservice_domain"
+msgstr "Сайт"
+
+#: models/ticket_service.py:54
+msgid "ticketservice_event_venue"
+msgstr "Зал"
+
+#: models/ticket_service.py:62
+msgid "ticketservice_payment_service"
+msgstr "Сервис онлайн-оплаты"
+
+#: models/ticket_service.py:68
+msgid "ticketservice"
+msgstr "Сервис продажи билетов"
+
+#: models/ticket_service.py:69
+msgid "ticketservices"
+msgstr "Сервисы продажи билетов"
+
+#: models/venue_binder.py:31
+msgid "ticketservicevenuebinder_ticket_service"
+msgstr "Сервис продажи билетов"
+
+#: models/venue_binder.py:34
+msgid "ticketservicevenuebinder_ticket_service_event_venue"
+msgstr "ID в сервисе продажи билетов"
+
+#: models/venue_binder.py:38
+msgid "ticketservicevenuebinder_ticket_service_event_venue_title"
+msgstr "Название в сервисе продажи билетов"
+
+#: models/venue_binder.py:46
+msgid "ticketservicevenuebinder_event_venue"
+msgstr "Зал"
+
+#: models/venue_binder.py:51
+msgid "ticketservicevenuebinder_scheme_help_text"
+msgstr ""
+"Схема зала, как правило, на основе таблиц. HTML-теги, являющиеся "
+"кликабельными местами, должны иметь специальные data-атрибуты."
+
+#: models/venue_binder.py:52
+msgid "ticketservicevenuebinder_scheme"
+msgstr "Схема зала"
+
+#: models/venue_binder.py:58
+msgid "ticketservicevenuebinder"
+msgstr "Связка сервисов продажи билетов и залов"
+
+#: models/venue_binder.py:59
+msgid "ticketservicevenuebinders"
+msgstr "Связки сервисов продажи билетов и залов"

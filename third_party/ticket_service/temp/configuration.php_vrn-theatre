@@ -1,0 +1,150 @@
+<?php
+class JConfig {
+// Общие параметры Joomla
+	var $dostavka = '200';
+	var $offline = '0';
+	var $editor = 'jce';
+	var $list_limit = '20';
+	var $helpurl = 'http://help.joomla.org';
+	var $debug = '0';
+	var $debug_lang = '0';
+	var $sef = '1';
+	var $sef_rewrite = '1';
+	var $sef_suffix = '0';
+	var $feed_limit = '10';
+	var $feed_email = 'author';
+	var $secret = 'jutierout90e48';
+	var $gzip = '0';
+	var $error_reporting = '-1';
+	var $xmlrpc_server = '0';
+	var $log_path = '/home/belcanto/theatre.bezantrakta.ru_v3.2/log';
+	var $tmp_path = '/home/belcanto/theatre.bezantrakta.ru_v3.2/tmp';
+	var $live_site = '';
+	var $force_ssl = '0';
+	var $offset = '0';
+	var $caching = '0';
+	var $cachetime = '15';
+	var $cache_handler = 'file';
+	var $memcache_settings = array();
+	var $ftp_enable = '0';
+	var $ftp_host = '127.0.0.1';
+	var $ftp_port = '21';
+	var $ftp_user = 'admin';
+	var $ftp_pass = 'E2E4seven7';
+	var $ftp_root = '';
+	var $dbtype = 'mysqli';
+	var $host = 'localhost';
+	var $user = 'belcanto';
+	var $db = 'bezantrakta_theatre';
+	var $dbprefix = 'jos_';
+	var $mailer = 'smtp';
+	var $mailfrom = 'zakaz@bezantrakta.ru';
+	var $fromname = 'БЕЗАНТРАКТА - Театр оперы и балета';
+	var $sendmail = '/usr/sbin/sendmail';
+	var $smtpauth = '1';
+	var $smtpsecure = 'none';
+	var $smtpport = '587';
+	var $smtpuser = 'zakaz@bezantrakta.ru';
+	var $smtppass = 'inc0m1ngfort';
+	var $smtphost = 'mail.rterm.ru';
+	var $MetaAuthor = '1';
+	var $MetaTitle = '1';
+	var $lifetime = '120';
+	var $session_handler = 'none';
+	var $password = 'wrtwefsf352';
+	var $sitename = 'Афиша Театра оперы и балета theatre.bezantrakta.ru';
+	var $MetaDesc = 'Афиша событий воронежского Театра оперы и балета theatre.bezantrakta.ru. Удобные варианты заказа и оформления билетов: 1) забронировать и выкупить в Центральной кассе или в кассе ТЦ «Галерея Чижова» 2) забронировать с ДОСТАВКОЙ 3) оплатить и получить в Центральной кассе или в кассе ТЦ «Галерея Чижова» 4) оплатить и распечатать дома';
+	var $MetaKeys = 'опера, балет, опера в воронеже, театр оперы и балета, воронежский театр оперы и балета, тоиб, театральная афиша,  театральная афиша воронежа, заказ билетов в театр, заказ билетов в тетры воронежа, куда сходить в воронеже, антракт, театр, театр начинается, театр начинается с вешалки';
+	var $offline_message = 'Сайт сейчас закрыт на техническое обслуживание. Пожалуйста, зайдите позже.';
+// Отключен ли сайт
+    var $off = '0';
+// Нужно ли выводить отладочную информацию в процессе разработки
+    var $test = '0';
+// Email для технических уведомлений
+    var $admin_email = 'web@rterm.ru';
+// Город и поддомен сайта
+    var $city = 'vrn';
+// Подтверждение доступа к сайту в средствах для вебмастеров Яндекс и Google
+    var $yandex_webmaster = '70d02078047f95fc';
+    var $google_webmaster = '-udRklmWJAa16hRenZ46rprg-YGgwb-fv70KXihql0c';
+// Идентификаторы счётчиков Яндекс.Метрика, Google.Analytics, UpToLike (кнопки соцсетей), пиксель вКонтакте
+    var $yandex_counter   = '28596801';
+    var $google_counter   = 'UA-59614371-2';
+    var $uptolike_counter = '1476416';
+    var $vkontakte_pixel  = 'VK-RTRG-118001-83Zl7';
+// Общий телефон для справок и бронирования
+    var $help_telephones = array(
+        'tel:74732100102'=>'+7 (473) 210-01-02'
+    );
+// Подтверждение согласия на обработку персональных данных и м.б. работает ли почтовая рассылка
+    var $emailing = 1;
+    var $emailingText = 'Оформляя заказ, Вы подтверждаете своё согласие на обработку Ваших персональных данных согласно <a href="/oferta" target="_blank">договору оферты</a>, а также получение почтовой рассылки о новых мероприятиях bezantrakta.ru. В свою очередь мы гарантируем, что Ваши персональные данные будут использоваться исключительно при оформлении заказа и не будут переданы третьим лицам.';
+// Сссылки на аккаунты в соцсетях
+    var $social_accounts = array(
+        array(
+            'alias'=>'vkontakte',
+            'title'=>'ВКонтакте',
+            'link' =>'https://vk.com/bezantrakta_ru'
+        ),
+        array(
+            'alias'=>'facebook',
+            'title'=>'Facebook',
+            'link' =>'https://www.facebook.com/bezantrakta'
+        ),
+        array(
+            'alias'=>'twitter',
+            'title'=>'Twitter',
+            'link' =>'https://twitter.com/bezantrakta'
+        ),
+        array(
+            'alias'=>'instagram',
+            'title'=>'Instagram',
+            'link' =>'https://www.instagram.com/bezantrakta.ru'
+        )
+    );
+// Режим оплаты
+// `test` - тестовая оплата, `production` - боевая оплата
+    var $payment_type = 'production';
+// СуперБилет: параметры подключения
+    var $SBGS_host = 'http://sbgs.gastroli.net/cgi-bin/theatre-opera-ballet/STicketGate.exe/wsdl/ISTicket'; // theatre-opera-ballet, theatre-test
+    var $SBGS_user = 'sbgs3'; // 'sbgs2';
+    var $SBGS_pass = 'badss53201'; // 'qwaz56ty';
+    var $SBGS_mode = 'theatre'; // 'agencyext'
+    var $sb_max_places_per_order = 7;
+    var $sb_courier_price = 200;
+    var $sb_active_payment         = 'Sberbank';
+    var $superbilet_active_payment = 'Sberbank';
+    var $commission_included = true;
+    var $superbilet_return_url = 'http://theatre.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentSuccess';
+    var $superbilet_fail_url   = 'http://theatre.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentError';
+//// СуперБилет: ID залов в этом городе (нужно пополнять по мере добавления новых залов)
+    var $sb_stages = array(
+        1=>'Театр оперы и балета'
+    );
+//// СуперБилет: глобальное включение/отключение способов получения/оплаты билетов
+    var $sb_delivery_self    = 1;
+    var $sb_delivery_courier = 1;
+    var $sb_delivery_payment = 1;
+    var $sb_delivery_eticket = 0;
+//// СуперБилет: описание способов получения/оплаты билетов на шаге 2
+    var $sb_self_description = "<p><strong>ВНИМАНИЕ! В кассе в ТРЦ «МАКСИМИР»:\n<p>● билеты на мероприятия воронежского Театра Оперы и Балета НЕ ПРОДАЮТСЯ;<p>\n<p>● ОПЛАТА проводится ТОЛЬКО НАЛИЧНЫМИ (не распечатывается ранее оплаченная бронь)!</strong></p>\n";
+    var $sb_courier_description = "<p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>\n<p>Стоимость доставки %d рублей.</p>\n";
+    var $sb_payment_description = "<p>Билеты, оплаченные банковской картой, можно получить не ранее 24-х часов после оплаты заказа и не позднее 24-х часов до начала мероприятия в любой из наших касс по номеру заказа, предъявив документ, удостоверяющий личность владельца карты (паспорт или водительское удостоверение).</p>\n<br><p><strong>ВНИМАНИЕ! В кассе в ТРЦ «МАКСИМИР»:\n<p>● билеты на мероприятия воронежского Театра Оперы и Балета НЕ ПРОДАЮТСЯ;<p>\n<p>● ОПЛАТА проводится ТОЛЬКО НАЛИЧНЫМИ (не распечатывается ранее оплаченная бронь)!</strong></p>\n";
+    var $sb_eticket_description = "<p>После успешного подтверждения оплаты PDF-файлы с билетами будут отправлены на указанную Вами электронную почту. Их нужно будет <strong>распечатать на листе формата А4</strong> и предъявить при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно!</strong> Для удобства его можно сложить по пунктирным линиям сгиба.</p>\n<br><p>Возврат билетов осуществляется только в случае переноса или отмены меропиятия, а также по согласованию с организатором.</p>\n<br><p><strong>В целях Вашей безопасности не сообщайте номер оплаченного заказа посторонним лицам и не выкладывайте изображения билетов в социальные сети – по ним могут пройти посторонние люди!</strong></p>\n";
+//// СуперБилет: описание способов получения/оплаты билетов в email-уведомлениях
+    var $sb_self_email_description = "<p>Вы сможете выкупить билеты в кассе Театра оперы и балета или в кассе в ТЦ \"Галерея Чижова\".</p>\n<p><strong>ВНИМАНИЕ! В кассе в ТРЦ «МАКСИМИР»:\n<p>● билеты на мероприятия воронежского Театра Оперы и Балета НЕ ПРОДАЮТСЯ;<p>\n<p>● ОПЛАТА проводится ТОЛЬКО НАЛИЧНЫМИ (не распечатывается ранее оплаченная бронь)!</strong></p>\n";
+    var $sb_courier_email_description = "<p>В течение 24-х часов с Вами по телефону свяжется наш курьер и доставит билеты по указанному адресу в удобное для Вас время.</p>\n";
+    var $sb_payment_email_description = "<p>Перед посещением мероприятия, пожалуйста, получите свои билеты в любой кассе Безантракта.</p>\n<p>Список касс и схемы проезда вы можете увидеть <a href=\"%s/kontakty\" target=\"_blank\">на странице \"Контакты\"</a>.</p>\n<p><strong>ВНИМАНИЕ! В кассе в ТРЦ «МАКСИМИР»:\n<p>● билеты на мероприятия воронежского Театра Оперы и Балета НЕ ПРОДАЮТСЯ;<p>\n<p>● ОПЛАТА проводится ТОЛЬКО НАЛИЧНЫМИ (не распечатывается ранее оплаченная бронь)!</strong></p>\n";
+    var $sb_eticket_email_description = "<p>PDF-файлы с билетами вложены в это письмо. Для того, чтобы их открыть, потребуется программа <a href=\"https://get.adobe.com/ru/reader/\" target=\"_blank\">Adobe Reader</a> или любая другая программа, открывающая файлы формата PDF.</p>\n<p>Вам необходимо распечатать каждый билет на отдельном листе формата A4 и предъявить его при входе на мероприятие.<br>\n<p>Билет на листе A4 обрезать не нужно! Для удобства его можно сложить по пунктирным линиям сгиба.</p>\n";
+// Сбербанк: параметры оплаты
+// `test` - тестовая оплата, `production` - боевая оплата
+    var $sberbank_api_username = 'bezantrakta-api';
+    var $sberbank_api_test_url      = 'https://3dsec.sberbank.ru/payment/rest/';
+    var $sberbank_api_test_password = 'bezantrakta';
+    var $sberbank_api_production_url      = 'https://securepayments.sberbank.ru/payment/rest/';
+    var $sberbank_api_production_password = 'zyUnW8Dp2LoL';
+    var $sberbank_commission = 2.8;
+    var $sberbank_timeout = 15;
+    var $sberbank_description = "<p>Оплата происходит через авторизационный сервер Процессингового центра Банка с использованием банковских кредитных карт платёжных систем <img src=\"/images/banners/visa.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"> <strong>VISA International</strong> и <img src=\"/images/banners/mastercard.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"> <strong>MasterCard World Wide</strong>.</p>\n<br><p>Для оплаты покупки Вы будете перенаправлены на платежный шлюз ПАО \"<strong>Сбербанк России</strong>\" для ввода реквизитов Вашей карты. Соединение с платежным шлюзом и передача информации осуществляется в защищенном режиме с использованием протокола шифрования <strong>SSL</strong>.</p>\n<p>В случае если Ваш банк поддерживает технологию безопасного проведения Интернет-платежей Verified By Visa или MasterCard Secure Code, для проведения платежа также <strong>может потребоваться ввод специального пароля</strong>. Способы и возможность получения паролей для совершения Интернет-платежей Вы можете уточнить в банке, выпустившем карту.</p>\n<p>Настоящий сайт поддерживает 256-битное шифрование. Конфиденциальность сообщаемой персональной информации обеспечивается ПАО \"<strong>Сбербанк России</strong>\". Введённая информация не будет предоставлена третьим лицам за исключением случаев, предусмотренных законодательством РФ. Проведение платежей по банковским картам осуществляется в строгом соответствии с требованиями платежных систем <strong>Visa Int.</strong> и <strong>MasterCard Europe Sprl</strong>.</p>\n";
+}
+?>

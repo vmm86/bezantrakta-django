@@ -1,4 +1,4 @@
-import json
+import simplejson as json
 
 from django.conf import settings
 from django.db.models import CharField, Case, When, Value, Q

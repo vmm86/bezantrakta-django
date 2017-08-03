@@ -1,5 +1,5 @@
 import datetime
-import json
+import simplejson as json
 import os
 
 from django.conf import settings
@@ -100,10 +100,17 @@ def get_default_domain_settings():
         return json.dumps(json.load(dsf), ensure_ascii=False)
 
 
+class DomainManager(models.Manager):
+    def get_queryset(self):
+        return super(DomainManager, self).get_queryset().select_related('city')
+
+
 class Domain(models.Model):
     """
     Сайты Безантракта, работающие в разных городах России.
     """
+    objects = DomainManager()
+
     id = models.IntegerField(
         primary_key=True,
         help_text=_('domain_id_help_text'),
