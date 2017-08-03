@@ -55,10 +55,17 @@ def img_path(instance, filename):
     return file_path
 
 
+class EventContainerBinderManager(models.Manager):
+    def get_queryset(self):
+        return super(EventContainerBinderManager, self).get_queryset().select_related('event', 'event_container')
+
+
 class EventContainerBinder(models.Model):
     """
     Связующая таблица событий и контейнеров событий.
     """
+    objects = EventContainerBinderManager()
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,

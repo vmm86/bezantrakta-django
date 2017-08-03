@@ -33,50 +33,66 @@
 
 ## Разработка и production deployment
 
-Тестовая разработка - с помощью встроенного локального мини-веб-сервера на порту `8000`.
+Тестовая разработка - с помощью встроенного локального мини-веб-сервера на порту `8000`. В частности, позволяет не собирать статику при любом её изменении - обслуживание статики происходит автоматически.
 
 Production deployment - на базе `nginx` как проксирующего веб-сервера и `uwsgi` как универсального сервера приложений, взаимодействующего с модулем `wsgi` в пакете `project`.
 
 ## Этапы production deployment
 
-1. Установка ОС на виртуальной машине (`Debian 9`).
+* Установка ОС на виртуальной машине (`Debian 9`).
 
-2. Настройка ОС.
-
-3. Установка необходимых системных пакетов - `Python 3`, `PHP` для `phpMyAdmin`, `MySQL` или `MariaDB`, `nginx`, `uWSGI`, `SVN`.
+* Настройка ОС (уствновка русской локали).
 
 ```bash
-sudo su
+sudo su || su
+dpkg-reconfigure locales
+```
+
+* Установка необходимых системных пакетов - `Python 3`, `PHP` для `phpMyAdmin`, `MySQL` или `MariaDB`, `nginx`, `uWSGI`, `SVN`. Если `PHP` вытянет за собой `Apache`, его нужно будет затем удалить за ненадобностью.
+
+```bash
+sudo su || su
 apt-get install g++ gcc build-essential automake autoconf
-apt-get install python3 python3-pip python3-virtualenv python3-dev libpython3-dev python-imaging libjpeg-dev
-apt-get install php php-mbstring php-mysqli
-apt-get install (mysql-server || mariadb-server) (libmysqlclient-dev || libmariadbclient-dev)
+apt-get install python3 python3-pip python-virtualenv virtualenv python-pkg-resources python3-virtualenv python3-dev libpython3-dev python-imaging libjpeg-dev
+apt-get install php php-mbstring php-mysqli zip unzip
+apt-get install (mysql-server libmysqlclient-dev) || (mariadb-server libmariadbclient-dev)
 apt-get install nginx
 apt-get install uwsgi uwsgi-plugin-python3 uwsgi-plugin-php
 apt-get install subversion
 ```
 
-4. Создание базы данных.
+* Настрока сервера баз данных и создание базы данных.
 
 ```mysql
+nano "/etc/mysql/mariadb.conf.d/50-server"
+# [mysqld]
+# init_connect='SET collation_connection = utf8_general_ci'
+# init_connect='SET NAMES utf8'
+# character-set-server=utf8
+# collation-server=utf8_general_ci
+
+mysql
+
 CREATE USER 'belcanto'@'localhost' IDENTIFIED BY '************';
 CREATE DATABASE belcanto_bezantrakta_django CHARACTER SET utf8 COLLATE utf8_general_ci;
 GRANT ALL PRIVILEGES ON belcanto_bezantrakta_django.* TO 'belcanto'@'localhost';
 ```
 
-5. Получение актуальной версии `SVN`-репозитория.
+* Получение актуальной версии `SVN`-репозитория.
 
 ```bash
 cd /var/www
 mkdir bezantrakta-django
 cd bezantrakta-django
-svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y.Z
+mkdir media static log
+svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y.Z current_stable_tag
 ```
 
-6. Создание и активация виртуального окружения `Python 3`, установка необходимых Python-пакетов, синхронизация с БД.
+* Создание и активация виртуального окружения `Python 3`, установка необходимых Python-пакетов, синхронизация с БД.
 
 ```bash
-cd /opt/bezantrakta-django
+cd /opt
+mkdir bezantrakta-django
 
 (virtualenv -p /usr/bin/python3 venv || pyvenv venv)
 source venv/bin/activate
@@ -87,7 +103,7 @@ source venv/bin/activate
 [ venv ] python manage.py migrate
 ```
 
-7. Создание `uWSGI`-приложения.
+* Создание `uWSGI`-приложения.
 
 ```bash
 touch /etc/uwsgi/sites-available/bezantrakta.ini
@@ -95,7 +111,7 @@ touch /etc/uwsgi/sites-available/bezantrakta.ini
 
 ```ini
 [uwsgi]
-project = /var/www/bezantrakta-django/tags/X.Y.Z
+project = /var/www/bezantrakta-django/current_stable_tag
 chdir = %(project)
 
 plugin = python3
@@ -111,10 +127,10 @@ vacuum = 1
 ```
 
 ```bash
-ln -s /etc/uwsgi/sites-available/bezantrakta.ini /etc/uwsgi/sites-enabled/
+ln -s /etc/uwsgi/apps-available/bezantrakta.ini /etc/uwsgi/apps-enabled/
 ```
 
-8. Создание виртуального хоста `nginx`, взаимодействующего с сокетом uWSGI-приложения.
+* Создание виртуального хоста `nginx`, взаимодействующего с сокетом uWSGI-приложения.
 
 ```bash
 touch /etc/nginx/sites-available/bezantrakta.conf
@@ -124,8 +140,8 @@ touch /etc/nginx/sites-available/bezantrakta.conf
 server {
     listen 80;
     listen [::]:80;
-    root /var/www/bezantrakta-django/tags/1.0;
-    server_name bezantrakta.rterm.ru *.bezantrakta.rterm.ru;
+    root /var/www/bezantrakta-django/current_stable_tag;
+    server_name bezantrakta.ru *.bezantrakta.ru;
 
     client_body_buffer_size 10M;
     client_max_body_size    10M;
@@ -156,18 +172,89 @@ server {
 ln -s /etc/nginx/sites-available/bezantrakta.conf /etc/nginx/sites-enabled/
 ```
 
-9. Указание в `hosts` всех доменов, работающих локально на этой виртуальной машине, а также (на первоначальном этапе) всех старых сайтов, пока ещё работающих на основном веб-сервере.
+* Скачать, распаковать и настроить `phpMyAdmin`.
 
 ```bash
-127.0.0.1    kur.bezantrakta.ru
-127.0.0.1    lip.bezantrakta.run
-...
-5.9.222.194    bezantrakta.ru
-5.9.222.194    theatre.bezantrakta.ru
-...
+cd /var/www
+wget https://files.phpmyadmin.net/phpMyAdmin/X.Y.Z/phpMyAdmin-X.Y.Z-all-languages.zip
+unzip phpMyAdmin-X.Y.Z-all-languages.zip
+rm phpMyAdmin-X.Y.Z-all-languages.zip
+mv phpMyAdmin-X.Y.Z-all-languages pma
+cd pma
+mv config.sample.inc.php config.inc.php
+# Настройка config.inc.php
 ```
 
-10. Перезапуск nginx и uWSGI, проверка работоспособности виртуального хоста.
+* Создание `uWSGI`-приложения для `phpMyAdmin`.
+
+```bash
+touch /etc/uwsgi/sites-available/pma.ini
+```
+
+```ini
+[uwsgi]
+project = /var/www/pma
+chdir   = %(project)
+
+plugin      = php
+php-docroot = %(project)
+php-set     = date.timezone=Europe/Moscow
+php-set     = log_errors=1
+
+master  = true
+workers = 8
+cheaper = 2
+idle    = 30
+vacuum  = 1
+buffer-size = 65535
+```
+
+```bash
+ln -s /etc/uwsgi/apps-available/pma.ini /etc/uwsgi/apps-enabled/
+```
+
+10. Создание виртуального хоста `nginx` для `phpMyAdmin`.
+
+```bash
+touch /etc/nginx/sites-available/pma.conf
+```
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name pma.bezantrakta.ru;
+    root        /var/www/pma;
+    access_log  /var/www/pma/log/access.log;
+    error_log   /var/www/pma/log/error.log;
+
+    location / {
+        index index.php;
+        try_files $uri $uri/ /index.php?q=$uri&$args;
+    }
+
+    location ~ \.php {
+        include uwsgi_params;
+        uwsgi_modifier1 14;
+        uwsgi_pass unix:/run/uwsgi/app/pma/socket;
+    }
+
+    location ~* \.($media_extensions)$ {
+        root /var/www/pma;
+        access_log off;
+        expires 7d;
+    }
+
+}
+```
+
+```bash
+ln -s /etc/nginx/sites-available/pma.conf /etc/nginx/sites-enabled/
+```
+
+11. Указывать в `hosts` все адреса сайтов, работающих локально на этой виртуальной машине, не нужно, если это настроено на уровне DNS (рекомендуется).
+
+12. Перезапуск nginx и uWSGI, проверка работоспособности виртуального хоста.
 
 ```bash
 service nginx configtest

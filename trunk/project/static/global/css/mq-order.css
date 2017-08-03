@@ -52,7 +52,7 @@
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    font-weight: normal;
+    font-weight: bold;
     text-align: center;
     vertical-align: middle;
     text-transform: uppercase;
@@ -292,6 +292,11 @@ h1, h2 {
     padding: 0.25rem 1.75rem 0.25rem 3.25rem !important;
 }
 
+.ruble-sign {
+    vertical-align: baseline;
+    width: 0.525rem;
+}
+
 #links-header {
 }
 
@@ -423,7 +428,7 @@ h1, h2 {
     display: table-cell;
 
     text-align: center;
-    vertical-align: bottom; /* временно */
+    vertical-align: top; /* временно */
 
     padding: 0;
     margin-left: auto;
@@ -649,7 +654,7 @@ h1, h2 {
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 1.5rem;
-    font-weight: normal;
+    font-weight: bold;
     text-decoration: none;
     text-transform: uppercase;
 }

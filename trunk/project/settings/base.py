@@ -1,4 +1,5 @@
 import os
+from django.conf.locale.ru import formats as ru_formats
 
 
 # Папка проекта, пути внутри строятся с помощью: os.path.join(BASE_DIR, ...)
@@ -51,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'compressor',
+
     'bezantrakta.simsim',
     'bezantrakta.location',
     'bezantrakta.menu',
@@ -58,6 +61,9 @@ INSTALLED_APPS = [
     'bezantrakta.banner',
     'bezantrakta.event',
     'bezantrakta.seo',
+
+    'third_party.ticket_service',
+    'third_party.payment_service',
 ]
 
 MIDDLEWARE = [
@@ -97,8 +103,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                'bezantrakta.simsim.context_processors.domain_filter',
-                'bezantrakta.location.context_processors.environment',
+                'bezantrakta.simsim.context_processors.environment',
+                'bezantrakta.simsim.context_processors.queryset_filter',
                 'bezantrakta.menu.context_processors.menu_items',
                 'bezantrakta.banner.context_processors.banner_group_items',
                 'bezantrakta.event.context_processors.big_containers',
@@ -182,6 +188,25 @@ ADMIN_REORDER = (
         )
     },
     {
+        'app': 'ticket_service',
+        'label': 'Сервисы продажи билетов',
+        'models':
+        (
+            {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов'},
+            {'model': 'ticket_service.TicketServiceVenueBinder', 'label': 'Залы в сервисах продажи билетов'},
+        )
+
+    },
+    {
+        'app': 'payment_service',
+        'label': 'Сервисы онлайн-оплаты',
+        'models':
+        (
+            {'model': 'payment_service.PaymentService', 'label': 'Сервисы онлайн-оплаты'},
+        )
+
+    },
+    {
         'app': 'auth',
         'label': 'Пользователи',
         'models':
@@ -262,9 +287,12 @@ USE_I18N = True
 
 USE_L10N = True
 
-# DATE_FORMAT = 'd-m-Y'
-# TIME_FORMAT = 'H:i'
-# DATETIME_FORMAT = 'r'
+ru_formats.DATE_FORMAT = 'd.m.Y'
+ru_formats.TIME_FORMAT = 'H:i'
+ru_formats.DATETIME_FORMAT = 'd.m.Y H:i'
+DATE_FORMAT = 'd.m.Y'
+TIME_FORMAT = 'H:i'
+DATETIME_FORMAT = 'd.m.Y H:i'
 # YEAR_MONTH_FORMAT = 'F Y'
 # MONTH_DAY_FORMAT = 'F j'
 # SHORT_DATE_FORMAT = 'm/d/Y'
@@ -282,6 +310,12 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # Параметры сбора статики
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+    'compressor.finders.CompressorFinder',
+]
 STATICFILES_DIRS = [
     # Общая статика для всего проекта
     ('global', os.path.join(BASE_DIR, 'project', 'static', 'global')),
@@ -289,11 +323,24 @@ STATICFILES_DIRS = [
     ('admin', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'admin')),
 ]
 
+# Caching settings
+# https://docs.djangoproject.com/en/1.11/topics/cache/
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+        'OPTIONS': {
+            # 'MAX_ENTRIES': 1024,
+        },
+        'TIMEOUT': None,
+    }
+}
 
 # CKEditor settings
 # https://github.com/django-ckeditor/django-ckeditor/
 
 CKEDITOR_CONFIGS = {
+    # Редактор по умолчанию
     'default': {
         'skin': 'moono-lisa',
         # 'toolbar': 'full',
@@ -367,6 +414,66 @@ CKEDITOR_CONFIGS = {
         'allowedContent': True,
         'contentsCss': '/static/global/css/editor.css',
     },
+    # Редактор схем залов
+    'scheme': {
+        'skin': 'moono-lisa',
+        'toolbar': [
+            {
+                'name': 'basic',
+                'items':
+                [
+                    'Source', '-',
+                    'Cut', 'Copy', 'Paste', '-',
+                    'Undo', 'Redo',
+                ]
+            },
+            {
+                'name': 'editing',
+                'items':
+                [
+                    'Find', 'Replace', '-',
+                    'SpellChecker', 'Scayt', '-',
+                    'RemoveFormat', '-',
+                    'ShowBlocks', '-',
+                    'Maximize',
+                ]
+            },
+            '/',
+            {
+                'name': 'text',
+                'items':
+                [
+                    'Bold', 'Italic', 'Underline', 'Strike', '-',
+                    'TextColor', 'BGColor', '-',
+                    'Format', 'Font', 'FontSize',
+                ]
+            },
+            '/',
+            {
+                'name': 'paragraph',
+                'items':
+                [
+                    'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-',
+                    'BulletedList', 'NumberedList', '-',
+                    'Outdent', 'Indent',
+                ]
+            },
+            {
+                'name': 'insert',
+                'items':
+                [
+                    'Link', 'Unlink', '-',
+                    'Image', 'Iframe', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', '-',
+                    'Blockquote', 'CreateDiv',
+                ]
+            },
+        ],
+        'removePlugins': 'stylesheetparser',
+        'extraPlugins': 'codemirror',
+        'uiColor': '#cccccc',
+        'allowedContent': True,
+        'contentsCss': '/static/global/css/stagehall-style.css',
+    },
 }
 
 CKEDITOR_JQUERY_URL = '/static/global/js/jquery/jquery-1.9.1.min.js'
@@ -375,3 +482,5 @@ CKEDITOR_UPLOAD_PATH = 'global/uploads/'
 
 JSON_EDITOR_JS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.js'
 JSON_EDITOR_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.css'
+
+COMPRESS_ENABLED = True

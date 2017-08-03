@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'', include('bezantrakta.event.urls')),
     url(r'', include('bezantrakta.seo.urls')),
     url(r'', include('bezantrakta.article.urls')),
+
+    url(r'', include('third_party.ticket_service.urls')),
 ]
 
 if settings.DEBUG:

@@ -37,10 +37,17 @@ class Menu(models.Model):
         return self.title
 
 
+class MenuItemManager(models.Manager):
+    def get_queryset(self):
+        return super(MenuItemManager, self).get_queryset().select_related('menu', 'domain')
+
+
 class MenuItem(models.Model):
     """
     Пункты меню с произвольными ссылками.
     """
+    objects = MenuItemManager()
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,

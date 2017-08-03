@@ -7,10 +7,17 @@ from django.utils.translation import ugettext as _
 from ckeditor.fields import RichTextField
 
 
+class ArticleManager(models.Manager):
+    def get_queryset(self):
+        return super(ArticleManager, self).get_queryset().select_related('domain')
+
+
 class Article(models.Model):
     """
     Простые HTML-страницы.
     """
+    objects = ArticleManager()
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,

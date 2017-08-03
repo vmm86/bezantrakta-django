@@ -1,10 +1,12 @@
 import datetime
+import simplejson as json
+from decimal import Decimal
 
 from django.db.models import BooleanField, Case, F, Value, When
 from django.shortcuts import render
 
 from project.shortcuts import add_small_vertical_poster, today
-
+from third_party.ticket_service.models import TicketServiceVenueBinder
 from ..models import Event, EventGroupBinder, EventLinkBinder
 
 
@@ -39,7 +41,7 @@ def event(request, year, month, day, hour, minute, slug):
     )
     event_datetime_localized = current_timezone.localize(event_datetime)
 
-    # Запрос события в БД для конкретного домена
+    # Запрос события в БД
     try:
         event = Event.objects.select_related(
             'event_venue',
@@ -64,12 +66,15 @@ def event(request, year, month, day, hour, minute, slug):
             event_keywords=F('keywords'),
             event_text=F('text'),
             event_venue_title=F('event_venue__title'),
-            event_venue_city=F('event_venue__domain__city__title'),
+            event_venue_city=F('event_venue__city__title'),
             # Параметры группы, если событие в неё входит
             group_id=F('event_groups'),
             group_slug=F('event_groups__slug'),
             group_datetime=F('event_groups__datetime'),
+            # Сервис продажи билетов
+            ticket_service_settings=F('ticket_service__settings'),
         ).values(
+            'id',
             'is_published',
             'is_coming',
             'is_in_group',
@@ -86,6 +91,12 @@ def event(request, year, month, day, hour, minute, slug):
             'group_id',
             'group_slug',
             'group_datetime',
+
+            'ticket_service_id',
+            'ticket_service_settings',
+            'ticket_service_event',
+            'ticket_service_venue',
+            'ticket_service_prices',
         ).get(
             datetime=event_datetime_localized,
             slug=slug,
@@ -101,8 +112,15 @@ def event(request, year, month, day, hour, minute, slug):
         return render(request, 'empty.html', context, status=404)
     # Событие существует в БД
     else:
+        # Получение настроек сервиса продажи билетов в JSON
+        event['ticket_service_settings'] = (
+            json.loads(event['ticket_service_settings']) if
+            event['ticket_service_settings'] is not None else
+            None
+        )
+
         # Событие опубликовано
-        if event['is_published']:
+        if event['is_in_group'] or (not event['is_in_group'] and event['is_published']):
             context = {}
 
             # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
@@ -135,7 +153,7 @@ def event(request, year, month, day, hour, minute, slug):
                 context['links'] = links
 
             # Запрос событий в группе, если это событие добавлено в группу
-            if event['group_id']:
+            if event['is_in_group']:
                 group_events = EventGroupBinder.objects.select_related(
                     'event',
                     'domain',
@@ -146,7 +164,7 @@ def event(request, year, month, day, hour, minute, slug):
                     venue=F('event__event_venue__title'),
                 ).filter(
                     group=event['group_id'],
-                    event__is_published=True,
+                    # event__is_published=True,
                     event__datetime__gt=today,
                     event__domain_id=request.domain_id,
                 ).values(
@@ -157,6 +175,25 @@ def event(request, year, month, day, hour, minute, slug):
                     'caption',
                 )
                 context['group_events'] = list(group_events)
+
+            # Если событие привязано к сервису продажи билетов
+            if event['ticket_service_event']:
+                # Цены на билеты в событии по возрастанию
+                prices = json.loads(event['ticket_service_prices'], parse_float=Decimal)
+                # Цены преобразуются в строки, если дробная часть нулевая - выводятся как целые
+                prices = [str(p).split('.')[0] if p % 1 == 0 else str(p) for p in prices]
+                context['prices'] = prices
+
+                # Схема зала из БД
+                try:
+                    venue_scheme = TicketServiceVenueBinder.objects.values_list('scheme', flat=True).get(
+                        ticket_service__domain_id=request.domain_id,
+                        ticket_service_event_venue_id=event['ticket_service_venue'],
+                    )
+                except TicketServiceVenueBinder.DoesNotExist:
+                    pass
+                else:
+                    context['venue_scheme'] = venue_scheme
 
             context['event'] = event
             return render(request, 'event/event.html', context)

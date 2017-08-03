@@ -1,15 +1,31 @@
-def domain_filter(field):
+def queryset_filter(model_name, field_name):
     """
-    Фильтрация записей модели в админке по сайту,
-    если эта модель привязана к Domain по внешнему ключу domain.
+    Фильтрация записей в админке по специфическому полю field_name модели model_name,
+    связанной с исходной моделью по соответствующему внешнему ключу.
+
+    Args:
+        model_name (str): Название модели для фильтрации по его полю
+        field_name (str): Поле модели для фильтрации
+
+    Returns:
+        function: Результаты исходного запроса с фильтрацией или без
     """
-    def filter_queryset(get_queryset):
+    def queryset_filter_wrapper(get_queryset):
         def wrapper(self, request):
-            queryset = get_queryset(self, request)
-            domain_filter = request.COOKIES.get('bezantrakta_admin_domain', None)
-            if domain_filter and domain_filter != '':
-                return queryset.filter(**{field: domain_filter})
-            else:
-                return queryset
+            qs = get_queryset(self, request)
+            qs_filters = {
+                'City':   'bezantrakta_admin_city',
+                'Domain': 'bezantrakta_admin_domain',
+            }
+            for mod, value in qs_filters.items():
+                if mod == model_name:
+                    qs_filter = request.COOKIES.get(value)
+                    # print('qs_filter: ', qs_filter, ' mod: ', mod, ' model_name: ', model_name)
+                    break
+                else:
+                    qs_filter = ''
+                    # print('qs_filter: empty')
+            qs = qs.filter(**{field_name: qs_filter}) if qs_filter and qs_filter != '' else qs
+            return qs
         return wrapper
-    return filter_queryset
+    return queryset_filter_wrapper

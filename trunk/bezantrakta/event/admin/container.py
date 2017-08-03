@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from adminsortable2.admin import SortableInlineAdminMixin
 
-from project.decorators import domain_filter
+from project.decorators import queryset_filter
 from ..models import EventContainer, EventContainerBinder
 
 
@@ -12,9 +12,9 @@ class EventContainerBinderInline(SortableInlineAdminMixin, admin.TabularInline):
     fields = ('order', 'order_preview', 'event', 'event_datetime_localized', 'img', 'img_preview',)
     readonly_fields = ('order_preview', 'event', 'event_datetime_localized', 'img_preview',)
 
-    @domain_filter('event__domain__slug')
+    @queryset_filter('Domain', 'event__domain__slug')
     def get_queryset(self, request):
-        return super().get_queryset(request)
+        return super(EventContainerBinderInline, self).get_queryset(request)
 
     def has_add_permission(self, request):
         return False
@@ -25,6 +25,7 @@ class EventContainerAdmin(admin.ModelAdmin):
     inlines = (EventContainerBinderInline,)
     list_display = ('title', 'slug', 'mode', 'is_published', 'order',)
     list_select_related = ()
+    list_per_page = 10
     prepopulated_fields = {
         'slug': ('title',),
     }

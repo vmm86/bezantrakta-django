@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from .models import BannerGroup, BannerGroupItem
 
 
@@ -6,7 +8,7 @@ def banner_group_items(request):
     Получение информации о баннерах и её добавление в template context.
     """
     # Только если домен опубликован
-    if request.domain_is_published:
+    if request.domain_is_published and settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
         banner_group_values = BannerGroup.objects.values('id', 'slug', 'title')
 
         banner_group = {

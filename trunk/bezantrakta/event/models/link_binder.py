@@ -5,10 +5,17 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 
+class EventLinkBinderManager(models.Manager):
+    def get_queryset(self):
+        return super(EventLinkBinderManager, self).get_queryset().select_related('event', 'event_link')
+
+
 class EventLinkBinder(models.Model):
     """
     Связующая таблица событий и ссылок.
     """
+    objects = EventLinkBinderManager()
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,

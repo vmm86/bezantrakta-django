@@ -12,14 +12,16 @@ def choose_domain(context):
     domains = Domain.objects.select_related(
         'city',
     ).all().annotate(
-        state=F('city__state'),
-        timezone=F('city__timezone'),
+        city_slug=F('city__slug'),
+        city_state=F('city__state'),
+        city_timezone=F('city__timezone'),
     ).values(
         'title',
         'slug',
         'is_published',
-        'state',
-        'timezone',
+        'city_slug',
+        'city_state',
+        'city_timezone',
     )
     return {
         'domains': domains,

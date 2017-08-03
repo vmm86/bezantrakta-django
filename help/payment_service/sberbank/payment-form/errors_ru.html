@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Сбербанк</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico"/>
+    <link rel="stylesheet" href="css/styles.css" type="text/css"/>
+    <script src="../../js/jquery-1.11.3.min.js" type="text/javascript"></script>
+    <script src="../../js/jquery.timers-1.2.js" type="text/javascript"></script>
+    <script src="../../js/jquery.url.js" type="text/javascript"></script>
+    <script src="../../js/error_page.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var lang = "ru";
+    </script>
+</head>
+<body>
+
+<!--#if expr="$request_uri = /\/([a-zA-Z]+)\//" -->
+<!--#set var="context" value="$1" -->
+<!--#endif -->
+<!--#if expr="$request_uri = /mdOrder=([a-zA-Z0-9-]+)/" -->
+<!--#set var="mdOrder" value="$1" -->
+<!--#endif -->
+<!--#include virtual="/$context/rest/merchantlogin.do?mdOrder=$mdOrder" set="merchantLogin" -->
+
+<div class="container">
+
+    <form name="errorForm" action="#" method="POST" id="errorForm">
+        <input type="hidden" id="language" value="ru" type="hidden">
+    </form>
+
+    <div class="row">
+        <div class="logo col2"><img src="img/main-logo.png" alt="Сбербанк"/></div>
+        <div class="merchant-logo col2"><img src="../<!--#echo var="merchantLogin" -->/custom/logo.png" height="64" alt="" onerror="$(this).parent().hide()"/></div>
+    </div>
+
+    <div class="row">
+        <div style="margin-top:30px" class="h1">Ошибка</div>
+    </div>
+
+    <div style="height: 188px; padding: 55px 20px; margin-top: 5px; text-align: center;" class="cardContainer">
+        <div class="warning-pic"><img src="img/warning.png" alt="Ошибка" width="75"/></div>
+        <div class="error-page">
+            <div id="errorBlock"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="system-logos">
+            <div class="logo visa"></div>
+            <div class="logo mastercard"></div>
+            <div class="logo verify-visa"></div>
+            <div class="logo verify-mastercard"></div>
+           <div class="logo pci"></div>
+        </div>
+        <div class="security-text">Настоящий сайт поддерживает 256-битное шифрование. Конфиденциальность сообщаемой персональной информации обеспечивается ПАО "Сбербанк России". Введенная информация не будет предоставлена третьим лицам за исключением случаев, предусмотренных законодательством РФ. Проведение платежей по банковским картам осуществляется в строгом соответствии с требованиями платежных систем Visa Int. и MasterCard Europe Sprl.</div>
+    </div>
+
+</div>
+
+</body>
+</html>

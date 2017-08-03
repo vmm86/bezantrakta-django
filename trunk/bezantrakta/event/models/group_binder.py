@@ -4,10 +4,17 @@ from django.db import models
 from django.utils.translation import ugettext as _
 
 
+class EventGroupBinderManager(models.Manager):
+    def get_queryset(self):
+        return super(EventGroupBinderManager, self).get_queryset().select_related('group', 'event')
+
+
 class EventGroupBinder(models.Model):
     """
     Связующая таблица событий и групп событий.
     """
+    objects = EventGroupBinderManager()
+
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,

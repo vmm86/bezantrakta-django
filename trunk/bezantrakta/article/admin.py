@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from project.decorators import domain_filter
+from project.decorators import queryset_filter
 from .models import Article
 
 
@@ -11,7 +11,8 @@ class ArticleAdmin(admin.ModelAdmin):
     }
     list_display = ('title', 'slug', 'is_published', 'domain',)
     list_select_related = ('domain',)
+    list_per_page = 10
 
-    @domain_filter('domain__slug')
+    @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):
-        return super().get_queryset(request)
+        return super(ArticleAdmin, self).get_queryset(request)

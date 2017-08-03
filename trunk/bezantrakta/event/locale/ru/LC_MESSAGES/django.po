@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-03 21:10+0000\n"
+"POT-Creation-Date: 2017-07-26 11:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,30 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: admin/event.py:103
+msgid "event_admin_delete_non_ticket_service_items"
+msgstr "Удалить группы/события, добавленные вручную"
+
+#: admin/event.py:113
+msgid "event_admin_publish_or_unpublish_items"
+msgstr "Опубликовать или снять с публикации"
+
+#: admin/event.py:118
+msgid "event_group_count"
+msgstr "событий"
+
+#: admin/event.py:123
+msgid "event_link_count"
+msgstr "Ссылок"
+
+#: admin/event.py:128
+msgid "event_container_count"
+msgstr "Контейнеров"
+
+#: admin/venue.py:39
+msgid "eventvenue_ts_venue_count"
+msgstr "Залов в сервисах продажи билетов"
 
 #: models/category.py:19
 msgid "eventcategory_title_help_text"
@@ -116,159 +140,163 @@ msgstr "контейнер"
 msgid "eventcontainers"
 msgstr "контейнеры"
 
-#: models/container_binder.py:68
+#: models/container_binder.py:78
 msgid "eventcontainerbinder_event"
 msgstr "Событие"
 
-#: models/container_binder.py:74
+#: models/container_binder.py:84
 msgid "eventcontainerbinder_event_container"
 msgstr "Контейнер"
 
-#: models/container_binder.py:78 models/container_binder.py:109
+#: models/container_binder.py:88 models/container_binder.py:119
 msgid "eventcontainerbinder_order"
 msgstr "Порядок"
 
-#: models/container_binder.py:84
+#: models/container_binder.py:94
 msgid "eventcontainerbinder_img"
 msgstr "Афиша"
 
-#: models/container_binder.py:90
+#: models/container_binder.py:100
 msgid "eventcontainerbinder"
 msgstr "привязка к контейнерам"
 
-#: models/container_binder.py:91
+#: models/container_binder.py:101
 msgid "eventcontainerbinders"
 msgstr "привязки к контейнерам"
 
-#: models/container_binder.py:115
+#: models/container_binder.py:125
 msgid "eventcontainerbinder_img_preview"
 msgstr "Афиша"
 
-#: models/container_binder.py:118
+#: models/container_binder.py:128
 msgid "event_is_group_group"
 msgstr "Группа событий"
 
-#: models/container_binder.py:118
+#: models/container_binder.py:128
 msgid "event_is_group_event"
 msgstr "Группа событий"
 
-#: models/container_binder.py:119 models/event.py:98
+#: models/container_binder.py:129 models/event.py:108
 msgid "event_is_group"
-msgstr "Группа событий"
+msgstr "Группа"
 
-#: models/container_binder.py:132
+#: models/container_binder.py:142 models/link_binder.py:77
 msgid "eventcontainerbinder_event_datetime"
 msgstr "Дата и время"
 
-#: models/event.py:22
+#: models/event.py:32
 msgid "event_title_help_text"
 msgstr "Всего не более 60-65 символов."
 
-#: models/event.py:23
+#: models/event.py:33
 msgid "event_title"
 msgstr "Название"
 
-#: models/event.py:27
+#: models/event.py:37
 msgid "event_slug"
 msgstr "Псевдоним"
 
-#: models/event.py:31
+#: models/event.py:41
 msgid "event_description_help_text"
 msgstr ""
 "Содержит ключевые слова или фразы, описывающие событие, но не более 3-5 шт."
 "<br>Всего не более 150-200 символов."
 
-#: models/event.py:32
+#: models/event.py:42
 msgid "event_description"
 msgstr "Метатег `description`"
 
-#: models/event.py:36
+#: models/event.py:46
 msgid "event_keywords_help_text"
 msgstr ""
 "Несколько ключевых слов или фраз, разделённых запятыми, которые описывают "
 "событие.<br>Всего не более 100-150 символов."
 
-#: models/event.py:37
+#: models/event.py:47
 msgid "event_keywords"
 msgstr "Метатег `keywords`"
 
-#: models/event.py:40
+#: models/event.py:50
 msgid "event_text"
 msgstr "Описание события"
 
-#: models/event.py:44
+#: models/event.py:54
 msgid "event_is_published"
 msgstr "Публикация"
 
-#: models/event.py:48
+#: models/event.py:58
 msgid "event_is_on_index"
 msgstr "На главной"
 
-#: models/event.py:53
+#: models/event.py:63
 msgid "event_min_price"
 msgstr "Минимальная цена билета"
 
-#: models/event.py:71
+#: models/event.py:81
 msgid "event_min_age"
 msgstr "Возрастное ограничение"
 
-#: models/event.py:74 models/event.py:170
+#: models/event.py:84
 msgid "event_datetime"
 msgstr "Дата и время"
 
-#: models/event.py:82
+#: models/event.py:92
 msgid "event_event_category"
 msgstr "Категория"
 
-#: models/event.py:88
+#: models/event.py:98
 msgid "event_event_venue"
 msgstr "Зал"
 
-#: models/event.py:94
+#: models/event.py:104
 msgid "event_domain"
 msgstr "Сайт"
 
-#: models/event.py:107
+#: models/event.py:117
 msgid "event_event_group"
 msgstr "Группа, содержащая другие события"
 
-#: models/event.py:114
+#: models/event.py:124
 msgid "event_event_container"
 msgstr "Контейнеры, в которых отображается событие"
 
-#: models/event.py:121
+#: models/event.py:131
 msgid "event_event_link"
 msgstr "Ссылки, добавленные к событию"
 
-#: models/event.py:127
+#: models/event.py:139
+msgid "event_ticket_service"
+msgstr "Сервис продажи билетов"
+
+#: models/event.py:145
+msgid "event_ticket_service_event"
+msgstr "ID в сервисе продажи билетов"
+
+#: models/event.py:151
+msgid "event_ticket_service_prices"
+msgstr "Цены в сервисе продажи билетов"
+
+#: models/event.py:157
+msgid "event_ticket_service_venue"
+msgstr "ID зала в сервисе продажи билетов"
+
+#: models/event.py:163
 msgid "event"
 msgstr "событие или группа"
 
-#: models/event.py:128
+#: models/event.py:164
 msgid "events"
 msgstr "события или группы"
 
-#: models/event.py:174
-msgid "event_group_count"
-msgstr "событий в группе"
-
-#: models/event.py:178
-msgid "event_link_count"
-msgstr "Ссылок"
-
-#: models/event.py:182
-msgid "event_container_count"
-msgstr "Контейнеров"
-
-#: models/group_binder.py:21
+#: models/group_binder.py:28
 msgid "eventgroupbinder_event_group"
 msgstr "Группа событий"
 
-#: models/group_binder.py:28
+#: models/group_binder.py:35
 msgid "eventgroupbinder_event"
 msgstr "Событие"
 
-#: models/group_binder.py:33
+#: models/group_binder.py:40
 msgid "eventgroupbinder_title_help_text"
 msgstr ""
 "<ul><li>Если событие в группе имеет особый статус, например, отдельные "
@@ -276,15 +304,15 @@ msgstr ""
 "необходимое название.</li><li>Если это просто отдельные события в группе - "
 "оставляется пустым.</li></ul>"
 
-#: models/group_binder.py:34
+#: models/group_binder.py:41
 msgid "eventgroupbinder_title"
 msgstr "Подпись события в группе"
 
-#: models/group_binder.py:40
+#: models/group_binder.py:47
 msgid "eventgroupbinder"
 msgstr "привязка к группе событий"
 
-#: models/group_binder.py:41
+#: models/group_binder.py:48
 msgid "eventgroupbinders"
 msgstr "привязки к группе событий"
 
@@ -316,50 +344,50 @@ msgstr "ссылки"
 msgid "eventlinks_img_preview"
 msgstr "Логотип"
 
-#: models/link_binder.py:21
+#: models/link_binder.py:28
 msgid "eventlinkbunder_event"
 msgstr "Событие"
 
-#: models/link_binder.py:27
+#: models/link_binder.py:34
 msgid "eventlinkbunder_event_link"
 msgstr "Ссылка"
 
-#: models/link_binder.py:31
+#: models/link_binder.py:38
 msgid "eventlinkbunder_href"
 msgstr "Внешняя ссылка"
 
-#: models/link_binder.py:35
+#: models/link_binder.py:42 models/link_binder.py:60
 msgid "eventlinkbunder_order"
 msgstr "Порядок"
 
-#: models/link_binder.py:41
+#: models/link_binder.py:48
 msgid "eventlinkbunder"
 msgstr "привязка к ссылкам"
 
-#: models/link_binder.py:42
+#: models/link_binder.py:49
 msgid "eventlinkbunders"
 msgstr "привязки к ссылкам"
 
-#: models/link_binder.py:53
+#: models/link_binder.py:64
 msgid "eventlinkbunder_img_preview"
 msgstr "Логотип"
 
-#: models/venue.py:18
+#: models/venue.py:25
 msgid "eventvenue_title"
 msgstr "Название"
 
-#: models/venue.py:22
+#: models/venue.py:29
 msgid "eventvenue_slug"
 msgstr "Псевдоним"
 
-#: models/venue.py:28
-msgid "eventvenue_domain"
-msgstr "Сайт"
+#: models/venue.py:35
+msgid "eventvenue_city"
+msgstr "Город"
 
-#: models/venue.py:34
+#: models/venue.py:41
 msgid "eventvenue"
 msgstr "зал"
 
-#: models/venue.py:35
+#: models/venue.py:42
 msgid "eventvenues"
 msgstr "залы"

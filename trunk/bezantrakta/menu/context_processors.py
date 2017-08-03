@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Case, F, URLField, Value, When
 from django.db.models.functions.base import Concat
 
@@ -9,7 +10,7 @@ def menu_items(request):
     Получение информации о меню и её добавление в template context.
     """
     # Только если домен опубликован
-    if request.domain_is_published:
+    if request.domain_is_published and settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
         menu_values = Menu.objects.values('id', 'slug', 'title')
 
         menu = {
