@@ -111,19 +111,6 @@ class JConfig {
     var $sb_courier_price = 0;
     var $sb_active_payment         = 'Sberbank';
     var $superbilet_active_payment = 'Sberbank';
-//// СуперБилет: ID залов в этом городе (нужно пополнять по мере добавления новых залов)
-    var $sb_stages = array(
-        1=>'Саратовский академический театр юного зрителя имени Ю.П. Киселёва',
-        2=>'Саратовский государственный академический театр драмы имени И.А. Слонова',
-        3=>'Саратовский академический театр оперы и балета',
-        4=>'Ледовый дворец спорта "Кристалл" (трибуны)',
-        5=>'Ледовый дворец спорта "Кристалл" (фан-зона и танцпартер)',
-        6=>'Саратовская областная филармония',
-        7=>'Ледовый дворец спорта "Кристалл" (партер)',
-        8=>'Ледовый дворец спорта "Кристалл" (танцпол)',
-        9=>'Саратовский цирк им. братьев Никитиных',
-        10=>'Клуб "Gatsby"'
-    );
 //// СуперБилет: глобальное включение/отключение способов получения/оплаты билетов
     var $sb_delivery_self    = 1;
     var $sb_delivery_courier = 1;
@@ -143,16 +130,16 @@ class JConfig {
 // `test` - тестовая оплата, `production` - боевая оплата
     var $sberbank_payment_type = 'production';
     var $sberbank_api_username = 'sar_bezantrakta-api';
-    var $sberbank_api_test_url      = 'https://3dsec.sberbank.ru/payment/rest/';
+
     var $sberbank_api_test_password = 'sar_bezantrakta';
     var $sberbank_api_test_return_url = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentSuccess';
     var $sberbank_api_test_fail_url   = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentError';
-    var $sberbank_api_production_url      = 'https://securepayments.sberbank.ru/payment/rest/';
+
     var $sberbank_api_production_password = 'ubHm37mjKaAE';
     var $sberbank_api_production_return_url = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentSuccess';
     var $sberbank_api_production_fail_url   = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentError';
+
     var $sberbank_commission = 2.2;
     var $sberbank_timeout = 15;
-    var $sberbank_description = "<p><strong>В окончательную сумму заказа включена комиссия платёжной системы</strong>.</p>\n<br><p>Оплата происходит через авторизационный сервер Процессингового центра Банка с использованием банковских кредитных карт платёжных систем <img src=\"/images/banners/visa.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"> <strong>VISA International</strong> и <img src=\"/images/banners/mastercard.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"> <strong>MasterCard World Wide</strong>.</p>\n<br><p>Для оплаты покупки Вы будете перенаправлены на платежный шлюз ПАО \"<strong>Сбербанк России</strong>\" для ввода реквизитов Вашей карты. Соединение с платежным шлюзом и передача информации осуществляется в защищенном режиме с использованием протокола шифрования <strong>SSL</strong>.</p>\n<p>В случае если Ваш банк поддерживает технологию безопасного проведения Интернет-платежей Verified By Visa или MasterCard Secure Code, для проведения платежа также <strong>может потребоваться ввод специального пароля</strong>. Способы и возможность получения паролей для совершения Интернет-платежей Вы можете уточнить в банке, выпустившем карту.</p>\n<p>Настоящий сайт поддерживает 256-битное шифрование. Конфиденциальность сообщаемой персональной информации обеспечивается ПАО \"<strong>Сбербанк России</strong>\". Введённая информация не будет предоставлена третьим лицам за исключением случаев, предусмотренных законодательством РФ. Проведение платежей по банковским картам осуществляется в строгом соответствии с требованиями платежных систем <strong>Visa Int.</strong> и <strong>MasterCard Europe Sprl</strong>.</p>\n";
 }
 ?>

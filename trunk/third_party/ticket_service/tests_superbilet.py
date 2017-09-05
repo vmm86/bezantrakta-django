@@ -1,3 +1,4 @@
+from datetime import datetime
 from pprint import pprint
 
 from ticket_service_abc import ticket_service_factory
@@ -7,7 +8,7 @@ AGENCY_VRN = {
     'user': 'sbgs2',
     'pswd': 'qwaz56ty',
     'mode': 'agency',
-}  # AGENCY_VRN_BEL
+}
 
 THEATRE_VRN = {
     'host': 'http://sbgs.gastroli.net/cgi-bin/theatre-opera-ballet/STicketGate.exe/wsdl/ISTicket',
@@ -44,8 +45,6 @@ AGENCY_NVAR = {
     'mode': 'agency',
 }
 
-commission_included = True
-
 slug = 'superbilet'
 init = AGENCY_VRN
 # init = THEATRE_VRN_TEST
@@ -59,9 +58,13 @@ ts = ticket_service_factory(slug, init)
 place_id = 14
 venue_id = 20
 group_id = 214
-event_id = 1875  # Test
+# event_id = 1875  # Test
 # event_id = 1887  # Billy's Band
-sector_id = 528
+# event_id = 1913  # arh test
+# event_id = 1914  # vluki test
+# event_id = 1915  # vluki test
+event_id = 1916  # nsk test
+sector_id = 509
 
 # THEATRE_VRN_TEST
 # venue_id = 1
@@ -69,8 +72,6 @@ sector_id = 528
 # group_id = 1
 # event_id = 615
 # sector_id = 15
-
-order_uuid = 'fe3ccf39-cba2-447b-9aae-41eb3edc5138'
 
 # VERSION
 # py_result = ts.version()
@@ -92,92 +93,68 @@ order_uuid = 'fe3ccf39-cba2-447b-9aae-41eb3edc5138'
 # py_result = ts.events(place_id=place_id)
 # py_result = ts.events(venue_id=venue_id)
 # DISCOVER_EVENTS
-# py_result = ts.discover_events()
+py_result = ts.discover_events()
 
 # SECTORS
 # py_result = ts.sectors(event_id=event_id)
+# SEATS
+# py_result = ts.seats(event_id=event_id)
 # PRICES
 # py_result = ts.prices(event_id=event_id)
-# SEATS
-py_result = ts.seats(event_id=event_id)
 
 # SCHEME
 # py_result = ts.scheme(event_id=event_id)
 
+order_uuid = 'cc9525df-a0c1-4214-a525-2b3bffdfe4d7'
 # RESERVE (ADD OR REMOVE)
 # action = 'add'
 action = 'remove'
 py_result = ts.reserve(
     action=action,
     event_id=event_id,
-    sector_id=509,
-    row_id=1,
-    seat_id=1,
+    sector_id=sector_id,
+    row_id=11,
+    seat_id=35,
     order_uuid=order_uuid
 )
 
-# ORDER_CREATE
-# tickets = [
-#     {
-#         'event_id': event_id, 'sector_id': sector_id, 'row_id': 1, 'seat_id': 3,
-#         'order_uuid': order_uuid,
-
-#         'name':  'TestClient', 'phone': '+74739876543', 'email': 'test@rterm.ru',
-#         'is_delivery': 0, 'delivery_address': '',
-#     },
-#     {
-#         'event_id': event_id, 'sector_id': sector_id, 'row_id': 1, 'seat_id': 4,
-#         'order_uuid': order_uuid,
-
-#         'name':  'TestClient', 'phone': '+74739876543', 'email': 'test@rterm.ru',
-#         'is_delivery': 0, 'delivery_address': '',
-#     },
-# ]
-# py_result = ts.order_create(tickets)
-
-# ORDER_DELETE
-# tickets = [
-#     {
-#         'event_id': event_id, 'sector_id': sector_id, 'row_id': 1, 'seat_id': 1,
-#         'order_uuid': order_uuid, 'order_id': 37868,
-#     },
-#     {
-#         'event_id': event_id, 'sector_id': sector_id, 'row_id': 1, 'seat_id': 2,
-#         'order_uuid': order_uuid, 'order_id': 37868,
-#     },
-# ]
-
-# py_result = ts.order_delete(tickets)
-
-# ORDER_CHECK
-# py_result = ts.order_check(
+# TICKET_STATUS
+# py_result = ts.ticket_status(
 #     # from_date='18.07.2017', from_time='15:30', to_date='18.07.2017', to_time='15:40',
-#     event_id=event_id, sector_id=sector_id, row_id=1, seat_id=1
+#     event_id=event_id, ticket_uuid='c1d1d880-c3c8-4d9b-ada6-325501af1cf8', sector_id=sector_id, row_id=1, seat_id=34
 # )
 
+# ORDER_CREATE
+customer = {
+    'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '89201234567',
+    'is_courier': True, 'address': 'Воронеж',
+    # 'is_courier': False, 'address': '',
+}
+tickets = [
+    {'ticket_uuid': 'c1d1d880-c3c8-4d9b-ada6-325501af1cf8', 'sector_id': sector_id, 'row_id': 1, 'seat_id': 35, },
+    # {'ticket_uuid': 'c0b88fc5-5f6b-4fcd-a19c-4f88f53bdf2b', 'sector_id': sector_id, 'row_id': 1, 'seat_id': 37, },
+]
+# py_result = ts.order_create(event_id=event_id, order_uuid=order_uuid, customer=customer, tickets=tickets)
+
+# ORDER_DELETE
+# order_id = 38293
+# py_result = ts.order_delete(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
+
 # ORDER_PAYMENT
-# tickets = [
-#     {
-#         'event_id': event_id, 'sector_id': sector_id, 'row_id': 1, 'seat_id': 1,
-#         'order_uuid': order_uuid,
-
-#         'transaction_id': '8d7c160bee45d9c92324c91bf6c2b138',
-#         'payment_date': '18.07.2017', 'payment_time': '15:40',
-#     },
-#     {
-#         'event_id': event_id, 'sector_id': sector_id, 'row_id': 1, 'seat_id': 2,
-#         'order_uuid': order_uuid,
-
-#         'transaction_id': '8d7c160bee45d9c92324c91bf6c2b138',
-#         'payment_date': '18.07.2017', 'payment_time': '15:40',
-#     },
-# ]
-# py_result = ts.order_payment(tickets)
+# payment_id = '2d529111-1da0-455a-be55-3456eaf97055'
+# payment_datetime = datetime.now()
+# py_result = ts.order_payment(
+#     event_id=event_id,
+#     order_uuid=order_uuid,
+#     payment_id=payment_id,
+#     payment_datetime=payment_datetime,  # 'payment_date': '18.07.2017', 'payment_time': '15:40',
+#     tickets=tickets
+# )
 
 # # LOG
 # py_result = ts.log(
-#     from_date='18.07.2017', from_time='15:30', to_date='18.07.2017', to_time='16:00',
-#     event_id=event_id, sector_id=sector_id, row_id=1, seat_id=1
+#     from_date='24.08.2017', from_time='12:00', to_date='26.08.2017', to_time='12:00',
+#     event_id=event_id, sector_id=sector_id, row_id=1, seat_id=42
 # )
 
 try:

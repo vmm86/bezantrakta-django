@@ -24,6 +24,11 @@ PREPEND_WWW = False
 BEZANTRAKTA_ADMIN_URL = 'simsim'
 # Псевдоним категории "Все события"
 BEZANTRAKTA_CATEGORY_ALL = 'vse'
+# Виды, при выполнении которых проходит заказ билетов
+# При их выполнении не должны работать context_processors для вывода событий в базовом шаблоне
+BEZANTRAKTA_ORDER_VIEWS = ('event', 'checkout', 'confirmation')
+# Путь для сохранения электронных билетов в формате PDF
+BEZANTRAKTA_ETICKET_PATH = os.path.join(PARENT_DIR, 'e_tickets')
 
 # Application definition
 
@@ -44,7 +49,10 @@ INSTALLED_APPS = [
 
     'adminsortable2',
 
+    'phonenumber_field',
+
     'django.contrib.admin',
+    # 'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.humanize',
@@ -54,6 +62,8 @@ INSTALLED_APPS = [
 
     'compressor',
 
+    'mail_templated',
+
     'bezantrakta.simsim',
     'bezantrakta.location',
     'bezantrakta.menu',
@@ -61,6 +71,8 @@ INSTALLED_APPS = [
     'bezantrakta.banner',
     'bezantrakta.event',
     'bezantrakta.seo',
+    'bezantrakta.order',
+    'bezantrakta.eticket',
 
     'third_party.ticket_service',
     'third_party.payment_service',
@@ -69,6 +81,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'admin_reorder.middleware.ModelAdminReorder',
 
+    # 'django.contrib.admindocs.middleware.XViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -165,12 +178,33 @@ ADMIN_REORDER = (
         )
     },
     {
-        'app': 'menu',
+        'app': 'ticket_service',
+        'label': 'Сервисы продажи билетов',
         'models':
         (
-            {'model': 'menu.Menu', 'label': 'Меню'},
-            {'model': 'menu.MenuItem', 'label': 'Пункты меню 🔗'},
+            {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
+            {'model': 'ticket_service.TicketServiceVenueBinder', 'label': 'Связки с залами 🔗'},
         )
+
+    },
+    {
+        'app': 'payment_service',
+        'label': 'Сервисы онлайн-оплаты',
+        'models':
+        (
+            {'model': 'payment_service.PaymentService', 'label': 'Сервисы онлайн-оплаты 🔗'},
+        )
+
+    },
+    {
+        'app': 'order',
+        'label': 'Заказы',
+        'models':
+        (
+            {'model': 'order.Order', 'label': 'Заказы 🔗'},
+            {'model': 'order.OrderTicket', 'label': 'Билеты в заказах 🔗'},
+        )
+
     },
     {
         'app': 'article',
@@ -180,31 +214,20 @@ ADMIN_REORDER = (
         )
     },
     {
+        'app': 'menu',
+        'models':
+        (
+            {'model': 'menu.Menu', 'label': 'Меню'},
+            {'model': 'menu.MenuItem', 'label': 'Пункты меню 🔗'},
+        )
+    },
+    {
         'app': 'banner',
         'models':
         (
             {'model': 'banner.BannerGroup', 'label': 'Группы баннеров'},
             {'model': 'banner.BannerGroupItem', 'label': 'Баннеры 🔗'},
         )
-    },
-    {
-        'app': 'ticket_service',
-        'label': 'Сервисы продажи билетов',
-        'models':
-        (
-            {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов'},
-            {'model': 'ticket_service.TicketServiceVenueBinder', 'label': 'Залы в сервисах продажи билетов'},
-        )
-
-    },
-    {
-        'app': 'payment_service',
-        'label': 'Сервисы онлайн-оплаты',
-        'models':
-        (
-            {'model': 'payment_service.PaymentService', 'label': 'Сервисы онлайн-оплаты'},
-        )
-
     },
     {
         'app': 'auth',
@@ -290,9 +313,9 @@ USE_L10N = True
 ru_formats.DATE_FORMAT = 'd.m.Y'
 ru_formats.TIME_FORMAT = 'H:i'
 ru_formats.DATETIME_FORMAT = 'd.m.Y H:i'
-DATE_FORMAT = 'd.m.Y'
+DATE_FORMAT = 'j E Y'
 TIME_FORMAT = 'H:i'
-DATETIME_FORMAT = 'd.m.Y H:i'
+DATETIME_FORMAT = 'j E Y H:i'
 # YEAR_MONTH_FORMAT = 'F Y'
 # MONTH_DAY_FORMAT = 'F j'
 # SHORT_DATE_FORMAT = 'm/d/Y'
@@ -305,6 +328,9 @@ TIME_INPUT_FORMATS = ['%H:%M', ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+STATIC_ROOT = os.path.join(PARENT_DIR, 'static')
+MEDIA_ROOT = os.path.join(PARENT_DIR, 'media')
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
@@ -323,15 +349,15 @@ STATICFILES_DIRS = [
     ('admin', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'admin')),
 ]
 
+# FILE_UPLOAD_DIRECTORY_PERMISSIONS = '0o755'
+# FILE_UPLOAD_PERMISSIONS = '0o644'
+
 # Caching settings
 # https://docs.djangoproject.com/en/1.11/topics/cache/
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-        'OPTIONS': {
-            # 'MAX_ENTRIES': 1024,
-        },
+        'BACKEND': 'project.custom_filebased_cache.FileBasedCache',
+        'LOCATION': os.path.join(PARENT_DIR, 'cache'),
         'TIMEOUT': None,
     }
 }
@@ -484,3 +510,11 @@ JSON_EDITOR_JS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoned
 JSON_EDITOR_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.css'
 
 COMPRESS_ENABLED = True
+
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'  # E164 INTERNATIONAL NATIONAL RFC3966
+PHONENUMBER_DEFAULT_REGION = 'RU'
+
+
+# The messages framework
+# https://docs.djangoproject.com/en/1.11/ref/contrib/messages/
+# MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'

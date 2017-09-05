@@ -3,9 +3,11 @@ import simplejson as json
 from django.conf import settings
 from django.db.models import CharField, Case, When, Value, Q
 from django.http.request import split_domain_port
-from django.shortcuts import render
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
+
+from project.shortcuts import message, render_messages
 
 from .models import City, Domain
 
@@ -17,8 +19,8 @@ class CurrentLocationMiddleware(MiddlewareMixin):
     def process_request(self, request):
         host = request.get_host()
         url_domain, url_port = split_domain_port(host)
-        root_domain = settings.ROOT_DOMAIN
-        root_domain_slug = settings.ROOT_DOMAIN_SLUG
+        root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
+        root_domain_slug = settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG
         # Если URL содержит основной домен, указанный в настройках, вытаскиваем его поддомен(ы)
         if url_domain.endswith(root_domain):
             domain_slug = url_domain[:-len(root_domain)].rstrip('.')
@@ -31,9 +33,11 @@ class CurrentLocationMiddleware(MiddlewareMixin):
         try:
             domain = Domain.objects.select_related('city').values(
                 'id',
+                'title',
                 'slug',
                 'is_published',
                 'settings',
+                'city_id',
                 'city__title',
                 'city__slug',
                 'city__timezone',
@@ -41,18 +45,19 @@ class CurrentLocationMiddleware(MiddlewareMixin):
             ).get(slug=domain_slug)
         # Если домен НЕ добавлен в БД - такой сайт не существует (ошибка 500)
         except Domain.DoesNotExist:
-            context = {
-                'title': """Сайт не существует""",
-                'message': """<p>К сожалению, такого сайта у нас пока нет. 🙁</p>""",
-            }
-            return render(request, 'empty.html', context, status=500)
+            # Сообщение об ошибке
+            msgs = [
+                message('error', 'К сожалению, такого сайта у нас пока нет. 😞'),
+            ]
+            render_messages(request, msgs)
+            return redirect('error_500')
         # Если домен добавлен в БД
         else:
-            request.domain_slug = domain['slug']
             request.domain_id = domain['id']
+            request.domain_title = domain['title']
+            request.domain_slug = domain['slug']
             request.domain_is_published = domain['is_published']
-            # Получение настроек домена в формате JSON из БД
-            request.settings = json.loads(domain['settings'])
+            request.domain_settings = json.loads(domain['settings'])
 
             request.city_title = domain['city__title']
             request.city_slug = domain['city__slug']
@@ -61,42 +66,46 @@ class CurrentLocationMiddleware(MiddlewareMixin):
 
             # Если город отключен - такой город не существует (ошибка 500)
             if request.city_state is False:
-                context = {
-                    'title': """Город не доступен""",
-                    'message': """<p>К сожалению, этот город не доступен для посещения.</p>""",
-                }
-                return render(request, 'empty.html', context, status=500)
+                # Сообщение об ошибке
+                msgs = [
+                    message('error', 'К сожалению, этот город не доступен для посещения. 😞'),
+                ]
+                render_messages(request, msgs)
+                return redirect('error_500')
+
             # Если город в процессе подготовки - "скоро открытие" (ошибка 503)
             elif request.city_state is None:
-                context = {
-                    'title': """Скоро открытие""",
-                    'message': """<p>Этот город пока в процессе подготовки, скоро открытие.</p>""",
-                }
-                return render(request, 'empty.html', context, status=503)
+                # Сообщение об ошибке
+                msgs = [
+                    message('error', 'Этот город пока в процессе подготовки, скоро открытие.'),
+                ]
+                render_messages(request, msgs)
+                return redirect('error_503')
+
             # Если город включен
             elif request.city_state is True:
                 # Если домен не опубликован - сайт недоступен (ошибка 503)
                 if not request.domain_is_published:
-                    context = {
-                        'title': """Сайт на данный момент недоступен""",
-                        'message': """<p>К сожалению, сайт временно недоступен.</p>
-                        <p>Проводятся технические работы.</p>""",
-                    }
-                    return render(request, 'empty.html', context, status=503)
+                    # Сообщение об ошибке
+                    msgs = [
+                        message('error', 'К сожалению, сайт временно недоступен.'),
+                        message('error', 'Проводятся технические работы.'),
+                    ]
+                    render_messages(request, msgs)
+                    return redirect('error_503')
                 # Если и город, и домен опубликованы
                 else:
                     # Полный URL без опциональных GET-параметров (query string)
                     path = request.get_full_path().split('?')[0]
 
-                    request.root_domain = settings.ROOT_DOMAIN
+                    request.root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
                     request.url_domain = url_domain
                     request.url_path = path
-                    request.url_full = ''.join((url_domain, path,))
+                    request.url_full = '{domain}{path}'.format(domain=url_domain, path=path)
 
                     # Активация текущего часового пояса
                     if request.city_timezone:
-                        # На сайте (но не в админке!)
-                        # активируется часовой пояс города текущего сайта из БД
+                        # На сайте (но не в админке!) активируется часовой пояс города текущего сайта из БД
                         if settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
                             current_timezone = request.city_timezone
                         else:
@@ -123,11 +132,12 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                         'status'
                     )
                 except City.DoesNotExist:
-                    context = {
-                        'title': """Городов пока нет""",
-                        'message': """<p>К сожалению, ни один город пока не доступен для показа. 🙁</p>""",
-                    }
-                    return render(request, 'empty.html', context, status=500)
+                    # Сообщение об ошибке
+                    msgs = [
+                        message('error', 'К сожалению, ни один город пока не доступен для показа. 😞'),
+                    ]
+                    render_messages(request, msgs)
+                    return redirect('error_500')
                 else:
                     request.cities = list(cities)
                     # Псевдоним города из куки `bezantrakta_city`

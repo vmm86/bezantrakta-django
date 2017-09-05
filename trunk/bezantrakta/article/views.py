@@ -5,7 +5,7 @@ from .models import Article
 
 def article(request, slug):
     article_values = Article.objects.values('title', 'description', 'keywords', 'text')
-    # Выдаём страницу, привязанную к текущему домену или ошибку 404
+    # Вывод страницы, привязанной к текущему домену или ошибки 404
     article = get_object_or_404(
         article_values,
         slug=slug,

@@ -51,7 +51,7 @@ body {
 {% endblock %}
 
 {% block content_title %}
-<h1>{% trans 'bezantrakta_admin' %}{% if debug %}<br>TIME_ZONE: {{ TIME_ZONE }}{% endif %}</h1>
+<h1>{% trans 'bezantrakta_admin' %}{% if debug %} TIME_ZONE: {{ TIME_ZONE }}{% endif %}</h1>
 <p>{% trans 'domain_icon_help_text' %}</p>
 {% endblock %}
 
@@ -69,7 +69,7 @@ $(document).ready(function() {
         {# Адрес главного сайта, к которому могут добавляться поддомены #}
         var domain = '.{{ request.root_domain }}';
         {# Период действия куки (год) #}
-        var expires = new Date(new Date().getTime() + 31622400000);
+        var expires = new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 366);
         {# Запись в cookie выбранного домена для фильтрации админки #}
         Cookies.set('bezantrakta_admin_domain', value, {expires: expires, domain: domain});
         {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
@@ -106,6 +106,38 @@ $(document).ready(function() {
         show_hide_add_group_link();
     });
 
+    {# Стилизация строк в таблице заказав в зависимости от из статуса #}
+    $('.model-order #result_list tbody tr').each(function(index, element) {
+        status_description = $(this).children('.field-status').html();
+        console.log(index, element, status);
+
+        if (status_description === 'создан') {
+            if ($(this).hasClass('row1')) {
+                $(this).css('background-color', '#c7d6e7');
+            } else if ($(this).hasClass('row2')) {
+                $(this).css('background-color', '#b5c9df');
+            }
+        } else if (status_description === 'подтверждён') {
+            if ($(this).hasClass('row1')) {
+                $(this).css('background-color', '#d9eeda');
+            } else if ($(this).hasClass('row2')) {
+                $(this).css('background-color', '#c7e7c8');
+            }
+        } else if (status_description === 'отменён') {
+            if ($(this).hasClass('row1')) {
+                $(this).css('background-color', '#e7c8c7');
+            } else if ($(this).hasClass('row2')) {
+                $(this).css('background-color', '#dfb7b5');
+            }
+        } else if (status_description === 'возвращён') {
+            if ($(this).hasClass('row1')) {
+                $(this).css('background-color', '#c8c7e7');
+            } else if ($(this).hasClass('row2')) {
+                $(this).css('background-color', '#b6b5df');
+            }
+        }
+
+    });
 });
 </script>
 {% endblock %}

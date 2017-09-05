@@ -1,86 +1,97 @@
-import os.path
-import simplejson as json
+import datetime
+import uuid
+from collections import namedtuple
+from decimal import Decimal
 
 from django.conf import settings
-from django.core.cache import cache
+from django.contrib import messages
 from django.utils import timezone
 
-from third_party.ticket_service.models import TicketService
-from third_party.ticket_service.ticket_service_abc import ticket_service_factory
 
+def timezone_now():
+    """Получение текущей даты и времени в текущем часовом поясе.
 
-# Получение сегодняшней даты в активном на данный момент часовом поясе.
-today = timezone.now()
-
-
-def add_small_vertical_poster(request, query):
+    Returns:
+        datetime: Текущая дата и время.
     """
-    Добавление к результату запроса URL афиши `small_vertical` или заглушки.
-    Метод выполняется как при фильтрации событий по какому-либо основанию
-    (события на главной, в категории, из поиска),
-    так и при выводе страницы конкретного события.
+    return timezone.now()
+
+
+def base_template_context_processor(request):
+    """Запускать context_processor для отображения в базовом шаблоне только в базовом шаблоне.
+    Т.е. на всех страницах, кроме процесса заказа билетов.
+
+    Returns:
+        bool: Запускать context_processor или нет.
     """
-    def process_event_data(request, data):
-        params = {}
-        # Событие или группа
-        if ('is_group' in data and data['is_group']) or ('is_in_group' in data and data['is_in_group']):
-            params['item'] = 'group'
-            params['datetime'] = data['group_datetime']
-            params['slug'] = data['group_slug']
-        else:
-            params['item'] = 'event'
-            params['datetime'] = data['event_datetime']
-            params['slug'] = data['event_slug']
-        # Дата и время события или группы в часовом поясе его города
-        current_timezone = request.city_timezone
-        try:
-            params['datetime_localized'] = params['datetime'].astimezone(current_timezone)
-        except AttributeError:
-            pass
-        else:
+    # Если сайт опубликован
+    domain_is_published = request.domain_is_published
+    # print('domain_is_published:', domain_is_published)
 
-            poster_file = os.path.join(
-                request.domain_slug,
-                params['item'],
-                ''.join(
-                    (
-                        params['datetime_localized'].strftime('%Y-%m-%d'),
-                        '_',
-                        params['datetime_localized'].strftime('%H-%M'),
-                        '_',
-                        params['slug'],
-                    )
-                ),
-                'small_vertical.png',
-            )
-            # data['poster'] = ''.join(
-            #     (settings.MEDIA_URL, poster_file)
-            # )
-            if os.path.isfile(os.path.join(settings.MEDIA_ROOT, poster_file)):
-                data['poster'] = ''.join(
-                    (settings.MEDIA_URL, poster_file)
-                )
-            else:
-                data['poster'] = ''.join(
-                    (settings.MEDIA_URL, 'global/event/small_vertical.png')
-                )
+    # Если пользователь не в админ-панели
+    frontend = settings.BEZANTRAKTA_ADMIN_URL not in request.url_path
+    # print('frontend:', frontend)
 
-    # Если обрабатывается множество событий - они перебираются в цикле
-    if type(query) is not dict:
-        for item in query:
-            process_event_data(request, item)
-    # Если обрабатывается одно событие в словаре - перебираются его ключи
-    else:
-        process_event_data(request, query)
+    # Если текущий вид не принадлежит к процессу оформления заказа билетов
+    order_in_progress = False
+    for v in settings.BEZANTRAKTA_ORDER_VIEWS:
+        if request.resolver_match.url_name == v:
+            order_in_progress = True
+
+    # print('order_in_progress:', order_in_progress)
+
+    return True if domain_is_published and frontend and not order_in_progress else False
+
+
+# Фабрика для помещения сообщений в очередь вывода
+message = namedtuple('Message', 'level text')
+message.__new__.__defaults__ = (None,) * len(message._fields)
+
+
+def render_messages(request, msgs):
+    """Добавление в очередь одного или более сообщений сообщений.
+
+    msgs - словарь с сообщениями для вывода.
+    Его ключи - уровень уведомления ('debug', 'info', 'success', 'warning', 'error').
+    Его значения - текстовые сообщения для вывода.
+
+    Сообщения кладутся в очередь messages и выводятся шаблоне того вида, в котором вызывается эта функция.
+
+    Args:
+        msgs (dict): Сообщения для вывода.
+    """
+    for msg in msgs:
+        if msg.level == 'debug':
+            messages.debug(request, msg.text)
+        elif msg.level == 'info':
+            messages.info(request, msg.text)
+        elif msg.level == 'success':
+            messages.success(request, msg.text)
+        elif msg.level == 'warning':
+            messages.warning(request, msg.text)
+        elif msg.level == 'error':
+            messages.error(request, msg.text)
+
+
+def decimal_price(value):
+    """Преобразование входного значения в денежную сумму с 2 знаками после запятой (копейки) типа Decimal.
+
+    Args:
+        value (str): Входное значение (в любом случае строка - для обхода проблем с округлением float).
+
+    Returns:
+        Decimal: Денежная сумма.
+    """
+    return Decimal(str(value)).quantize(Decimal('1.00'))
 
 
 def datetime_localize_or_utc(dt, tz):
     """
-    Если в дате/времени указан часовой пояс - дате/время остаётся неизменным.
+    Если в дате/времени указан часовой пояс - дате/время остаётся неизменным (должно писаться в БД в UTC!).
     Если в дате/времени НЕ указан часовой пояс - дате/время локализуется с учётом часового пояса.
 
     Args:
-        dt (datetime): Дата/время
+        dt (datetime): Дата и время
         tz (pytz.tzfile): Часовой пояс pytz
 
     Returns:
@@ -92,41 +103,12 @@ def datetime_localize_or_utc(dt, tz):
     return dt
 
 
-def ticket_service_instance_cached(event_uuid, ticket_service_id):
-    """
-    Кэширование параметров для инстанцирования экземпляров классов сервисов продажи билетов для конкретных событий.
-    Нет необходимости для этого каждый раз делать запрос к базе данных.
-    К каждому ключу добавляется параметр `updated`,
-    чтобы по истечении определённого времени его можно было удалить из кэша для экономии памяти.
-    """
-    event_ts_mapping = cache.get_or_set('event_ts_mapping', {})
+def json_serializer(obj):
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        obj = obj.isoformat()
+    elif isinstance(obj, uuid.UUID):
+        obj = str(obj)
+    else:
+        obj = None
 
-    try:
-        event_ts_mapping[event_uuid] is not None
-    except (KeyError, TypeError):
-        # Требуемый сервис продажи билетов
-        ticket_service = TicketService.objects.values(
-            'slug',
-            'settings',
-        ).get(
-            is_active=True,
-            id=ticket_service_id,
-        )
-        # Получение настроек из JSON
-        ticket_service['settings'] = json.loads(ticket_service['settings'])
-
-        event_ts_mapping[event_uuid] = {}
-        event_ts_mapping[event_uuid]['slug'] = ticket_service['slug']
-        event_ts_mapping[event_uuid]['init'] = ticket_service['settings']['init']
-        event_ts_mapping[event_uuid]['updated'] = today
-        cache.set('event_ts_mapping', event_ts_mapping)
-    finally:
-        print('\nevent_ts_mapping[', event_uuid, ']:\n', event_ts_mapping[event_uuid], '\n')
-
-        # Экземпляр класса требуемого сервиса продажи билетов
-        ts = ticket_service_factory(
-            event_ts_mapping[event_uuid]['slug'],
-            event_ts_mapping[event_uuid]['init'],
-        )
-
-        return ts
+    return obj

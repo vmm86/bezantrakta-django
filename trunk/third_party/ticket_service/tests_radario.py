@@ -27,7 +27,7 @@ price_group_id = 341031
 # py_result = ts.version()
 
 # PLACES
-# py_result = ts.places()
+py_result = ts.places()
 # VENUE (SCHEME)
 # py_result = ts.venue(venue_id=venue_id)
 # DISCOVER_VENUES
@@ -49,34 +49,42 @@ price_group_id = 341031
 
 # SECTORS
 # py_result = ts.sectors(venue_id=venue_id)
+# SEATS
+# py_result = ts.seats(event_id=event_id, venue_id=venue_id)
 # PRICE_GROUPS
 # py_result = ts.price_groups(event_id=event_id)
 # PRICES
 # py_result = ts.prices(event_id=event_id)
-# SEATS
-# py_result = ts.seats(event_id=event_id, venue_id=venue_id)
 
 # RESERVE (ADD OR REMOVE)
 # action = 'add'
-# action = 'remove'
+# # action = 'remove'
 # py_result = ts.reserve(
 #     action=action,
 #     event_id=event_id,
 #     price_group_id=price_group_id,
-#     seat_id=111
+#     seat_id=110
 # )
 
 # ORDER_CREATE
-# customer = {
-#     'name': 'Test Client',
-#     'phone': '+74731234567',
-#     'email': 'test@rterm.ru',
-# }
-# tickets = [
-#     {'price_group_id': price_group_id, 'seat_id': 87, },
-#     {'price_group_id': price_group_id, 'seat_id': 88, },
-# ]
+customer = {
+    'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '84739876543',
+}
+tickets = [
+    {'ticket_uuid': 'c1d1d880-c3c8-4d9b-ada6-325501af1cf8', 'price_group_id': price_group_id, 'seat_id': 110, },
+    # {'ticket_uuid': 'c0b88fc5-5f6b-4fcd-a19c-4f88f53bdf2b', 'price_group_id': price_group_id, 'seat_id': 109, },
+]
 # py_result = ts.order_create(event_id=event_id, customer=customer, tickets=tickets)
+
+# ORDER
+order_id = 1880161
+# py_result = ts.order(order_id=order_id)
+
+# ORDER_DELETE
+# py_result = ts.order_delete(order_id=order_id)
+
+# ORDER_PAYMENT
+# py_result = ts.order_payment(order_id=order_id)
 
 try:
     print(type(py_result))

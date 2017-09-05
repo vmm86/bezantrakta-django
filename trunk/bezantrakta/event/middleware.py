@@ -7,14 +7,12 @@ from django.urls import resolve, Resolver404
 
 
 class EventCalendarMiddleware(MiddlewareMixin):
-    """
-    Получение даты, выбранной в календаре её добавление в request.
-    """
+    """Получение даты, выбранной в календаре её добавление в request."""
     def process_request(self, request):
         host = request.get_host()
         url_domain, url_port = split_domain_port(host)
         url_path = request.get_full_path().split('?')[0]
-        # url_full = ''.join((url_domain, path,))
+        # url_full = '{domain}{path}'.format(domain=url_domain, path=path)
 
         try:
             resolved_view = resolve(url_path)

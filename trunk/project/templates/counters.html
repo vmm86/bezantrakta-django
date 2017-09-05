@@ -1,4 +1,4 @@
-{% if request.settings.counter.google != "" %}
+{% if request.domain_settings.counter.google != "" %}
     {# Google.Analytics #}
     <div id="google-analytics-counter">
         <script type="text/javascript">
@@ -6,21 +6,21 @@
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
           m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
           })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-          ga('create', '{{ request.settings.counter.google }}', 'auto');
+          ga('create', '{{ request.domain_settings.counter.google }}', 'auto');
           ga('send', 'pageview');
         </script>
     </div>
     {# Google.Analytics #}
 {% endif %}
-{% if request.settings.counter.yandex != "" %}
+{% if request.domain_settings.counter.yandex != "" %}
     {# Яндекс.Метрика #}
     <div id="yandex-metrika-counter">
         <script type="text/javascript">
         (function (d, w, c) {
             (w[c] = w[c] || []).push(function() {
                 try {
-                    w.yaCounter{{ request.settings.counter.yandex }} = new Ya.Metrika({
-                        id:{{ request.settings.counter.yandex }}, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true
+                    w.yaCounter{{ request.domain_settings.counter.yandex }} = new Ya.Metrika({
+                        id:{{ request.domain_settings.counter.yandex }}, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true
                     });
                 } catch(e) {}
             });
@@ -31,11 +31,11 @@
             if (w.opera == "[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else {f();}
         })(document, window, "yandex_metrika_callbacks");
         </script>
-        <noscript><div><img src="//mc.yandex.ru/watch/{{ request.settings.counter.yandex }}" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+        <noscript><div><img src="//mc.yandex.ru/watch/{{ request.domain_settings.counter.yandex }}" style="position:absolute; left:-9999px;" alt=""></div></noscript>
     </div>
     {# Яндекс.Метрика #}
 {% endif %}
-{% if request.settings.counter.uptolike != "" %}
+{% if request.domain_settings.counter.uptolike != "" %}
     {# UpToLike - кнопки "Поделиться" #}
     <div id="uptolike-counter">
         <script type="text/javascript">(function(w,doc) {
@@ -51,11 +51,11 @@
     </div>
     {# UpToLike - кнопки "Поделиться" #}
 {% endif %}
-{% if request.settings.counter.vkontakte != "" %}
+{% if request.domain_settings.counter.vkontakte != "" %}
     {# Пиксель вКонтакте #}
     <div id="vkontakte_pixel">
         <script type="text/javascript">
-            (window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={{ request.settings.counter.vkontakte }}';
+            (window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={{ request.domain_settings.counter.vkontakte }}';
         </script>
     </div>
     {# Пиксель вКонтакте #}

@@ -117,10 +117,6 @@ class JConfig {
     var $commission_included = true;
     var $superbilet_return_url = 'http://theatre.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentSuccess';
     var $superbilet_fail_url   = 'http://theatre.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentError';
-//// СуперБилет: ID залов в этом городе (нужно пополнять по мере добавления новых залов)
-    var $sb_stages = array(
-        1=>'Театр оперы и балета'
-    );
 //// СуперБилет: глобальное включение/отключение способов получения/оплаты билетов
     var $sb_delivery_self    = 1;
     var $sb_delivery_courier = 1;

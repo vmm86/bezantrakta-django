@@ -21,18 +21,12 @@ def img_path(instance, filename):
     file_path = os.path.join(
         params['domain_slug'],
         params['model_slug'],
-        ''.join(
-            (
-                params['datetime_localized'].strftime('%Y-%m-%d'),
-                '_',
-                params['datetime_localized'].strftime('%H-%M'),
-                '_',
-                params['instance_slug'],
-            )
+        '{date}_{time}_{slug}'.format(
+            date=params['datetime_localized'].strftime('%Y-%m-%d'),
+            time=params['datetime_localized'].strftime('%H-%M'),
+            slug=params['instance_slug'],
         ),
-        ''.join(
-            (instance.event_container.mode, dot, extension,)
-        )
+        '{slug}.{ext}'.join(slug=instance.event_container.mode, ext=extension)
     )
     # Абсолютный путь до файла
     full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)

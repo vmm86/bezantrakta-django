@@ -49,7 +49,7 @@ class TicketService(models.Model):
     event_venue = models.ManyToManyField(
         'event.EventVenue',
         through='ticket_service.TicketServiceVenueBinder',
-        related_name='domain_ticket_service_venues',
+        related_name='ticket_service_venues',
         blank=True,
         verbose_name=_('ticketservice_event_venue'),
     )

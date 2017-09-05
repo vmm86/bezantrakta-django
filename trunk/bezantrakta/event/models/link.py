@@ -13,9 +13,7 @@ def img_path(instance, filename):
     file_path = os.path.join(
         'global',
         'link',
-        ''.join(
-            (instance.slug, dot, extension,)
-        )
+        '{slug}.{ext}'.join(slug=instance.slug, ext=extension)
     )
     # Абсолютный путь до файла
     full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)

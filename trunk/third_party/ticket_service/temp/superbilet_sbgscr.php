@@ -1,50 +1,35 @@
 <?php
-// Импорт массива с ID залов в городе этого сайта из конфига сайта
-$stages = $config->sb_stages;
-
-// Фабрика для создания инстанса SBGS
-$sbgs = GetSBGS($SBGS_host, $SBGS_user, $SBGS_password, $SBGS_mode);
-
 function clearPlace($event_id, $sector_id, $row, $seat) {
-    global $sbgs;
     $info = $sbgs->GetState(array(array('event_id' => $event_id, 'sector_id' => $sector_id, 'row' => $row, 'seat' => $seat)));
     $session = $info["$sector_id-$row-$seat"]['session'];
-    $reservation_id = $info["$sector_id-$row-$seat"]['reservation_id'];
-    return $sbgs->ClearReservation(array(array('event_id' => $event_id, 'sector_id' => $sector_id, 'row' => $row, 'seat' => $seat, 'session'=>$session, 'reservation_id' => $reservation_id)));
+    $order_id = $info["$sector_id-$row-$seat"]['order_id'];
+    return $sbgs->ClearReservation(array(array('event_id' => $event_id, 'sector_id' => $sector_id, 'row' => $row, 'seat' => $seat, 'session'=>$session, 'order_id' => $order_id)));
 }
 
 switch ($_REQUEST['action']) {
     case 'list-sectors':
-        $event_id = $_REQUEST['event_id'] + 0;
+        $event_id = int($_REQUEST['event_id']);
         $sectors = $sbgs->GetSectors($event_id);
         $data = array_values($sectors);
         $json = true;
         break;
-    case 'list-reservations':
-        $event_id = $_REQUEST['event_id'] + 0;
-        $sector_id = $_REQUEST['sector_id'] + 0;
+    case 'list-reserve':
+        $event_id = int($_REQUEST['event_id']);
+        $sector_id = int($_REQUEST['sector_id']);
         $reservations = array_filter($sbgs->GetSectorState($event_id, $sector_id), function($a) {return $a['state'] == 'P';});
         $data = array_values($reservations);
         $json = true;
         break;
-    case 'clear-places':
-        $event_id = $_REQUEST['event_id'] + 0;
-        $sector_id = $_REQUEST['sector_id'] + 0;
+    case 'clear-seats':
+        $event_id = int($_REQUEST['event_id']);
+        $sector_id = int($_REQUEST['sector_id']);
         foreach($_POST['place'] as $key=>$val)
             foreach ($val as $key2=>$val2)
                 clearPlace($event_id, $sector_id, $key, $key2);
-
         header("Location: ?");
         break;
     default:
         $events = $sbgs->GetEvents();
-
-        // Из массива событий в СБ удаляются все события, которые проходят не в залах в городе этого сайта
-        foreach ($events as $event) {
-            if ( !array_key_exists($event['stage_id'], $stages) ) {
-                unset($events[$event['id']]);
-            }
-        }
 
         $html = true;
 }
@@ -78,7 +63,7 @@ if ($html) {
                 <th></th><th>Ряд</th><th>Место</th><th>Стоимость</th><th>ID</th><th>Сессия</th>
             </tr></thead>
             <tbody id="places"></tbody>
-            <tfoot><tr><td colspan="4"><button name="action" id="button-clear" value="clear-places">Освободить указанные места</button></td></tr></tfoot>
+            <tfoot><tr><td colspan="4"><button name="action" id="button-clear" value="clear-seats">Освободить указанные места</button></td></tr></tfoot>
         </table>
     </form>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -101,12 +86,12 @@ $(document).ready(function(){
     $("#select-sector").change(function(){
         sector_id = $(this).val();
         $('#loading').show();
-        $.get("?action=list-reservations&event_id=" + event_id + "&sector_id=" + sector_id, function(data) {
+        $.get("?action=list-reserve&event_id=" + event_id + "&sector_id=" + sector_id, function(data) {
             $("#places").html("");
             for (var i in data) {
                 var item = data[i];
                 var input = '<input type="checkbox" name="place[' + item.row + '][' + item.seat + ']">';
-                $("#places").append('<tr><td>' + input + '</td><td>' + item.row + '</td><td>' + item.seat + '</td><td>' + item.price + '</td><td>' + item.reservation_id + '</td><td>' + item.session + '</td></tr>');
+                $("#places").append('<tr><td>' + input + '</td><td>' + item.row + '</td><td>' + item.seat + '</td><td>' + item.price + '</td><td>' + item.order_id + '</td><td>' + item.session + '</td></tr>');
             }
             $('#loading').hide();
         });
