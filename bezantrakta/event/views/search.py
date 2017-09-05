@@ -2,13 +2,16 @@ from django.db.models import BooleanField, CharField, DateTimeField, DecimalFiel
 from django.db.models import Case, OuterRef, Subquery, F, Q, Value, When
 from django.shortcuts import redirect, render
 
-from project.shortcuts import add_small_vertical_poster, today
+from project.shortcuts import timezone_now
 
 from ..models import Event, EventGroupBinder
+from ..shortcuts import add_small_vertical_poster
 
 
 def search(request):
     text = request.GET['text']
+
+    today = timezone_now()
 
     group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
         group_id=OuterRef('id'),

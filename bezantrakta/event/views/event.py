@@ -2,17 +2,26 @@ import datetime
 import simplejson as json
 from decimal import Decimal
 
-from django.db.models import BooleanField, Case, F, Value, When
-from django.shortcuts import render
+from django.conf import settings
+from django.db.models import F
+from django.shortcuts import redirect, render
 
-from project.shortcuts import add_small_vertical_poster, today
+from project.shortcuts import message, render_messages, timezone_now
+
+from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
+
+from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
 from third_party.ticket_service.models import TicketServiceVenueBinder
+
+from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
+from ..shortcuts import add_small_vertical_poster
 
 
 def event(request, year, month, day, hour, minute, slug):
-    """
-    Отображение страницы конкретного события
+    """Отображение страницы конкретного события.
+
+    Схема зала с возможностью выбора билетов подгружается, если конкретное событие привязано к сервису продажи билетов.
 
     Логика отображения событий (псевдокод):
     try event: Запрос события в БД для конкретного домена
@@ -41,62 +50,15 @@ def event(request, year, month, day, hour, minute, slug):
     )
     event_datetime_localized = current_timezone.localize(event_datetime)
 
-    # Запрос события в БД
+    # Запрос базовой информации о событии в БД
     try:
-        event = Event.objects.select_related(
-            'event_venue',
-            'domain'
-        ).annotate(
-            # Общие параметры
-            is_coming=Case(
-                When(datetime__gt=today, then=Value(True)),
-                default=False,
-                output_field=BooleanField()
-            ),
-            is_in_group=Case(
-                When(event_groups__isnull=False, then=Value(True)),
-                default=False,
-                output_field=BooleanField()
-            ),
-            # Параметры события
-            event_title=F('title'),
-            event_slug=F('slug'),
-            event_datetime=F('datetime'),
-            event_description=F('description'),
-            event_keywords=F('keywords'),
-            event_text=F('text'),
-            event_venue_title=F('event_venue__title'),
-            event_venue_city=F('event_venue__city__title'),
-            # Параметры группы, если событие в неё входит
-            group_id=F('event_groups'),
-            group_slug=F('event_groups__slug'),
-            group_datetime=F('event_groups__datetime'),
-            # Сервис продажи билетов
-            ticket_service_settings=F('ticket_service__settings'),
+        event = Event.objects.annotate(
+            event_uuid=F('id'),
+            payment_service_id=F('ticket_service__payment_service_id'),
         ).values(
-            'id',
-            'is_published',
-            'is_coming',
-            'is_in_group',
-
-            'event_title',
-            'event_slug',
-            'event_datetime',
-            'event_description',
-            'event_keywords',
-            'event_text',
-            'event_venue_title',
-            'event_venue_city',
-
-            'group_id',
-            'group_slug',
-            'group_datetime',
-
+            'event_uuid',
             'ticket_service_id',
-            'ticket_service_settings',
-            'ticket_service_event',
-            'ticket_service_venue',
-            'ticket_service_prices',
+            'payment_service_id'
         ).get(
             datetime=event_datetime_localized,
             slug=slug,
@@ -104,22 +66,42 @@ def event(request, year, month, day, hour, minute, slug):
         )
     # Событие НЕ существует в БД
     except Event.DoesNotExist:
-        context = {
-            'title': """Событие не существует""",
-            'message': """<p>К сожалению, такого события не существует. 🙁</p>
-            <p>👉 <a href="/">Начните поиск с главной страницы</a>.</p>""",
-        }
-        return render(request, 'empty.html', context, status=404)
+        # Сообщение об ошибке
+        msgs = [
+            message('error', 'К сожалению, такого события не существует. 😞'),
+            message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
+        ]
+        render_messages(request, msgs)
+        return redirect('error_404')
+
     # Событие существует в БД
     else:
-        # Получение настроек сервиса продажи билетов в JSON
-        event['ticket_service_settings'] = (
-            json.loads(event['ticket_service_settings']) if
-            event['ticket_service_settings'] is not None else
-            None
-        )
+        # Кэширование информации о событии, сервисе продажи билетов и сервисе онлайн-оплаты
+        event = get_or_set_event_cache(event['event_uuid'])
 
-        # Событие опубликовано
+        # Настройки сервиса продажи билетов
+        ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+
+        # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
+        ticket_service_defaults = {
+            # Максимальное число билетов в заказе
+            'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
+            # Таймаут для повторения запроса списка мест в событии в секундах
+            'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
+            # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
+            'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
+        }
+        for param, value in ticket_service_defaults.items():
+            if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
+                ticket_service['settings'][param] = value
+
+        # Настройки сервиса онлайн-оплаты
+        payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
+
+        today = timezone_now()
+        event_is_coming = True if event['event_datetime'] > today else False
+
+        # Событие находится в группе событий или НЕ находится в группе событий и опубликовано
         if event['is_in_group'] or (not event['is_in_group'] and event['is_published']):
             context = {}
 
@@ -196,22 +178,27 @@ def event(request, year, month, day, hour, minute, slug):
                     context['venue_scheme'] = venue_scheme
 
             context['event'] = event
+            context['event']['is_coming'] = event_is_coming
+            context['ticket_service'] = ticket_service
+            context['payment_service'] = payment_service
             return render(request, 'event/event.html', context)
         # Событие НЕ опубликовано
         else:
             # Событие НЕ опубликовано и ещё НЕ прошло
-            if event['is_coming']:
-                context = {
-                    'title': """Событие не опубликовано""",
-                    'message': """<p>К сожалению, это событие ещё не опубликовано на сайте.</p>
-                    <p>👉 Зайдите позднее или <a href="/">начните поиск с главной страницы</a>.</p>""",
-                }
-                return render(request, 'empty.html', context, status=403)
+            if event_is_coming:
+                # Сообщение об ошибке
+                msgs = [
+                    message('error', 'К сожалению, это событие ещё не опубликовано на сайте. 😞'),
+                    message('info', '👉 Зайдите позднее или <a href="/">начните поиск с главной страницы</a>.'),
+                ]
+                render_messages(request, msgs)
+                return redirect('error_403')
             # Событие НЕ опубликовано и уже прошло
             else:
-                context = {
-                    'title': """Событие не опубликовано""",
-                    'message': """<p>К сожалению, это событие уже прошло и снято с публикации. 🙁</p>
-                    <p>👉 <a href="/">Начните поиск с главной страницы</a>.</p>""",
-                }
-                return render(request, 'empty.html', context, status=410)
+                # Сообщение об ошибке
+                msgs = [
+                    message('error', 'К сожалению, это событие уже прошло и снято с публикации. 😞'),
+                    message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
+                ]
+                render_messages(request, msgs)
+                return redirect('error_410')

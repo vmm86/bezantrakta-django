@@ -111,10 +111,6 @@ class JConfig {
     var $sb_courier_price = 200;
     var $sb_active_payment         = '';
     var $superbilet_active_payment = '';
-//// СуперБилет: ID залов в этом городе (нужно пополнять по мере добавления новых залов)
-    var $sb_stages = array(
-        1=>'Дворец искусств'
-    );
 //// СуперБилет: глобальное включение/отключение способов получения/оплаты билетов
     var $sb_delivery_self    = 1;
     var $sb_delivery_courier = 0;

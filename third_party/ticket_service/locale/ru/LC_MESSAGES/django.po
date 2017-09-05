@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-27 12:43+0000\n"
+"POT-Creation-Date: 2017-08-25 14:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,9 +20,25 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin.py:33
+#: admin.py:45
 msgid "ticket_service_venue_binder_if_scheme_exists"
 msgstr "Схема зала"
+
+#: admin.py:92
+msgid "ticket_service_admin_batch_set_cache"
+msgstr "Пересоздать кэш выбранных сервисов продажи билетов"
+
+#: admin.py:102
+msgid "event_admin_activate_or_deactivate_items"
+msgstr "Включить или отключить сервисы продажи билетов"
+
+#: admin.py:107
+msgid "ticket_service_admin_ticket_service_venue_binder_count"
+msgstr "Связанных залов"
+
+#: admin.py:113
+msgid "ticket_service_admin_is_payment_service_added"
+msgstr "Оплата"
 
 #: models/ticket_service.py:24
 msgid "ticketservice_id"

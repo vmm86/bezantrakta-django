@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-26 11:23+0000\n"
+"POT-Creation-Date: 2017-08-17 15:06+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,23 +20,27 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/event.py:103
+#: admin/event.py:124
 msgid "event_admin_delete_non_ticket_service_items"
 msgstr "Удалить группы/события, добавленные вручную"
 
-#: admin/event.py:113
+#: admin/event.py:134
 msgid "event_admin_publish_or_unpublish_items"
 msgstr "Опубликовать или снять с публикации"
 
-#: admin/event.py:118
+#: admin/event.py:154
+msgid "event_admin_batch_set_cache"
+msgstr "Пересоздать кэш выбранных событий или групп"
+
+#: admin/event.py:159
 msgid "event_group_count"
 msgstr "событий"
 
-#: admin/event.py:123
+#: admin/event.py:164
 msgid "event_link_count"
 msgstr "Ссылок"
 
-#: admin/event.py:128
+#: admin/event.py:169
 msgid "event_container_count"
 msgstr "Контейнеров"
 
@@ -176,7 +180,7 @@ msgstr "Группа событий"
 msgid "event_is_group_event"
 msgstr "Группа событий"
 
-#: models/container_binder.py:129 models/event.py:108
+#: models/container_binder.py:129 models/event.py:110
 msgid "event_is_group"
 msgstr "Группа"
 
@@ -244,47 +248,47 @@ msgstr "Дата и время"
 msgid "event_event_category"
 msgstr "Категория"
 
-#: models/event.py:98
+#: models/event.py:100
 msgid "event_event_venue"
 msgstr "Зал"
 
-#: models/event.py:104
+#: models/event.py:106
 msgid "event_domain"
 msgstr "Сайт"
 
-#: models/event.py:117
+#: models/event.py:119
 msgid "event_event_group"
 msgstr "Группа, содержащая другие события"
 
-#: models/event.py:124
+#: models/event.py:126
 msgid "event_event_container"
 msgstr "Контейнеры, в которых отображается событие"
 
-#: models/event.py:131
+#: models/event.py:133
 msgid "event_event_link"
 msgstr "Ссылки, добавленные к событию"
 
-#: models/event.py:139
+#: models/event.py:141
 msgid "event_ticket_service"
 msgstr "Сервис продажи билетов"
 
-#: models/event.py:145
+#: models/event.py:147
 msgid "event_ticket_service_event"
 msgstr "ID в сервисе продажи билетов"
 
-#: models/event.py:151
+#: models/event.py:153
 msgid "event_ticket_service_prices"
 msgstr "Цены в сервисе продажи билетов"
 
-#: models/event.py:157
+#: models/event.py:159
 msgid "event_ticket_service_venue"
 msgstr "ID зала в сервисе продажи билетов"
 
-#: models/event.py:163
+#: models/event.py:165
 msgid "event"
 msgstr "событие или группа"
 
-#: models/event.py:164
+#: models/event.py:166
 msgid "events"
 msgstr "события или группы"
 

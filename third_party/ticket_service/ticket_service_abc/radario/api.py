@@ -1,20 +1,24 @@
+import dateutil.parser
 import requests
 from datetime import datetime
 from decimal import Decimal
 from operator import itemgetter
 
 from ..abc import TicketService
-from .shortcuts import prettify_json_response
 
 
 class Radario(TicketService):
-    """
-    Класс для работы с API Радарио.
+    """Класс для работы с API Радарио.
+
+    Любой метод, делающий запросы к API, вызывает для этого конструктор запросов request.
 
     Документация: https://radario.github.io/slate/radario.api/
 
     The only one accepted Content-Type is `application/json`.
     Messages charset is set to UTF-8.
+
+    Class attributes:
+        slug (str): Псевдоним для инстанцирования класса (`radario`).
 
     Attributes:
         api_version
@@ -26,6 +30,11 @@ class Radario(TicketService):
     slug = 'radario'
 
     def __init__(self, init):
+        """Конструктор класса.
+
+        Args:
+            init (dict): Словарь с параметрами для инстанцирования класса.
+        """
         super().__init__()
 
         # Параметры подключения
@@ -50,20 +59,20 @@ class Radario(TicketService):
         )
 
     def request(self, method, url, data, output_mapping, test=False):
-        """Общий конструктор запросов к API.
+        """Конструктор запросов к API.
 
         Args:
-            method (str): HTTP-метод в верхнем регистре (GET, POST).
+            method (str): HTTP-метод (GET или POST).
             url (str): Относительный URL конкретного метода API.
-            data (dict): Query-параметры для GET или тело запроса для POST.
-            output_mapping (dict): Словарь для замены.
-            test (bool, optional): Тестируется ли работа метода (при тестировании постобработка не происходит).
+            data (dict): Параметры запроса для GET или тело запроса для POST.
+            output_mapping (dict): Сопоставление выходных параметров.
+            test (bool, optional): Опциональный параметр для тестирования работы.
 
         Returns:
             list, dict: Обработанный ответ конкретного метода API.
         """
         url_path = self.api_base_url + url
-        print('request url: ', url_path)
+        # print('request url: ', url_path)
 
         headers = {
             'api-id':  self.__api_id,
@@ -77,16 +86,109 @@ class Radario(TicketService):
         else:
             pass
 
-        # print('response: ', response.json())
+        print('response: ', response.json(), '\n')
 
-        if response.status_code == 200:
-            # Если тестируем работу метода - получаем JSON-ответ без обработки
-            if test:
-                return response.json()
-            else:
-                return prettify_json_response(response.json(), output_mapping)
+        # Если тестируем работу метода - получаем JSON-ответ без обработки
+        if test:
+            return response.json()
         else:
-            return {'code': response.status_code, 'message': 'response error', }
+            return self.prettify_response(response.json(), output_mapping)
+
+    def prettify_response(self, response, output_mapping):
+        """Конвертация ответа в структуру данных Python и последующая обработка.
+
+        Args:
+            response (dict): Ответ конкретного метода API.
+            output_mapping (dict): Словарь для замены.
+
+        Returns:
+            list, dict: Обработанный ответ конкретного метода API.
+        """
+        response_success = True if response['success'] else False
+        response_code = response['error']['errorCode'] if not response_success else 0
+        response_message = response['error']['message'] if not response_success else 'OK'
+
+        # Если ответ успешен
+        if response_success:
+            # Тело ответа с необходимыми данными, либо сообщение об успешном или НЕуспешном ответе
+            if 'data' in response:
+                if 'items' in response['data']:
+                    iterable = response['data']['items']
+                elif 'order' in response['data']:
+                    iterable = response['data']['order']
+                else:
+                    iterable = response['data']
+            else:
+                if response['success']:
+                    return {'success': True, 'code': 0, 'message': 'OK', }
+                else:
+                    return {'success': False, 'code': response_code, 'message': response_message, }
+
+            # Если в ответе - множество записей
+            if type(iterable) is list:
+                # Конвертация ключей в человекопонятные значения
+                for d in iterable:
+                    self.humanize_with_type_casting(d, output_mapping)
+                    d['success'] = True
+            # Если в ответе - одна запись
+            elif type(iterable) is dict:
+                # Конвертация ключей в человекопонятные значения
+                self.humanize_with_type_casting(iterable, output_mapping)
+                iterable['success'] = True
+            return iterable
+        # Если ответ НЕуспешен
+        else:
+            return {'success': False, 'code': response_code, 'message': response_message, }
+
+    def humanize_with_type_casting(self, iterable, output_mapping):
+        """Конвертация ключей в необходимые значения и приведение типов данных.
+
+        Args:
+            iterable (dict): Ответ метода.
+            output_mapping (dict): Словарь для замены.
+        """
+        for external, internal in output_mapping.items():
+            if external in iterable:
+                # НЕнужные на выходе записи удаляются из ответа
+                if internal is None:
+                    iterable.pop(external)
+                # Нужные на выходе записи пересохраняются в требуемые ключи из output_mapping
+                else:
+                    iterable[internal.key] = iterable.pop(external)
+
+                    # Если получено пустое значение - поиск значения по умолчанию
+                    if iterable[internal.key] is None:
+                        if internal.default_value is not None:
+                            iterable[internal.key] = internal.default_value
+                    # Если получено НЕпустое значение - приведение типов данных
+                    else:
+                        if internal.type is str and type(iterable[internal.key]) is not str:
+                            iterable[internal.key] = str(internal.default_value)
+                            # Если получена пустая строка - поиск значения по умолчанию
+                            iterable[internal.key] == (
+                                internal.default_value if
+                                iterable[internal.key] == '' and internal.default_value is not None else
+                                iterable[internal.key]
+                            )
+                        elif internal.type is int and type(iterable[internal.key]) is not int:
+                            iterable[internal.key] = int(iterable[internal.key])
+                        elif internal.type is bool and type(iterable[internal.key]) is not bool:
+                            iterable[internal.key] = True if iterable[internal.key] in self.BOOLEAN_VALUES else False
+                        elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
+                            iterable[internal.key] = self.decimal_price(iterable[internal.key])
+                        elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
+                            # '2017-09-29T16:00:00.000+00:00'
+                            iterable[internal.key] = dateutil.parser.parse(iterable[internal.key])
+                        # Приведение ключей списка из словарей к нижнему регистру
+                        elif internal.type is list and type(iterable[internal.key][0]) is dict:
+                            iterable[internal.key] = [
+                                {k.lower(): v for k, v in i.items()} for i in iterable[internal.key]
+                            ]
+                        # Приведение ключей словаря к нижнему регистру
+                        elif internal.type is dict:
+                            iterable[internal.key] = {k.lower(): v for k, v in iterable[internal.key].items()}
+                        else:
+                            pass
 
     def version(self):
         """Версия API Радарио.
@@ -97,10 +199,10 @@ class Radario(TicketService):
         return self.api_version
 
     def places(self):
-        """Места проведения событий в конкретном городе.
+        """Места проведения событий (в конкретном городе).
 
         Returns:
-            list: Список словарей с информацией о местах проведения событий.
+            method: Вызов конструктора запросов request.
         """
         method = 'GET'
         url = '/places'
@@ -110,47 +212,73 @@ class Radario(TicketService):
             'limit': self.limit,
         }
         output_mapping = {
+            # Идентификатор места
+            'id':    self.internal('place_id', int,),
+            # Название места
+            'title': self.internal('place_title', str,),
+
             'address':   None,
             'cityId':    None,
             'cityName':  None,
-            'id':        ('place_id', int,),
             'latitude':  None,
             'longitude': None,
-            'title':     ('place_title', str,),
         }
-        return self.request(method, url, data, output_mapping)
+        places = self.request(method, url, data, output_mapping)
+
+        places = sorted(places, key=itemgetter('place_id'))
+
+        return places
 
     def venue(self, **kwargs):
-        """
-        Залы (схемы залов) в местах проведения событий.
+        """Информация о зале (схеме зала) в месте проведения событий.
+
+        Ответ в том числе содержит информацию о секторах (зонах) и их местах.
 
         Args:
-            **kwargs: Параметры.
+            venue_id (int): Идентификатор зала (схемы зала).
+            raw (bool, optional): опциональная возможность получения schema raw descriptor.
 
         Returns:
-            dict: Словарь с информацией о зале, в том числе о секторах (зонах) и их местах.
+            dict: Инфыормация о конкретном зале (схеме зала).
         """
         method = 'GET'
         url = '/schemes/{scheme_id}'.format(scheme_id=kwargs['venue_id'])
-        # Возможность получения schema raw descriptor
         if 'raw' in kwargs and kwargs['raw']:
             url += '/raw'
         data = None
         output_mapping = {
-            'id': ('venue_id', int,),
-            'name': ('venue_title', str,),
+            # Идентификатор зала
+            'id':      self.internal('venue_id', int,),
+            # Название зала
+            'name':    self.internal('venue_title', str,),
+            # Версия схемы зала
+            'version': self.internal('venue_version', int,),
+            # Секторы (зоны) зала
+            'zones':   self.internal('venue_zones', list,),
+            # Атрибуты zones
+            # 'colcount' (int): (?)
+            # 'id' (int): Идентификатор сектора
+            # 'name' (str): Название сектора
+            # 'withseats' (bool): Сектор с местами для сидения или нет
+            # 'rowcount' (int): (?)
+            # 'seats':   self.internal('venue_seats', list,),
+            # Атрибуты seats
+            # 'number' (int): Идентификатор места
+            # 'seatname' (str): Название места
+            # 'rowname' (str->int): Идентификатор ряда
+            # 'exists' (bool): Существует место или нет (?)
             'seatCount': None,
-            'zones': ('venue_zones', list,),
-            'image': None,
-            'version': ('venue_version', int,)
+            'image':     None,
         }
-        return self.request(method, url, data, output_mapping)
+        venue = self.request(method, url, data, output_mapping)
+
+        return venue
 
     def discover_venues(self):
-        """
-        Получение списка залов для записи в БД.
+        """Получение списка залов для записи в БД.
+
         Отдельными залами в API Радарио фактически является сущность `scheme`.
-        Сущность `place` - отдельные здания, не связанные напрямую со схемами залов.
+        Сущность `place` - места событий как отдельные здания (не связанные напрямую со схемами залов).
 
         Returns:
             list: Список словарей с информацией о зале.
@@ -158,7 +286,7 @@ class Radario(TicketService):
         from collections import defaultdict
 
         events = self.events()
-        schemes = []
+        discovered_venues = []
 
         events_by_schemes = defaultdict(list)
         for e in events:
@@ -179,30 +307,17 @@ class Radario(TicketService):
                 scheme['venue_title'] = '{place_title} (билеты без мест)'.format(
                     place_title=self.company_title
                 )
-            schemes.append(scheme)
+            discovered_venues.append(scheme)
 
-        return schemes
+        discovered_venues = sorted(discovered_venues, key=itemgetter('venue_id'))
 
-    def sectors(self, **kwargs):
-        """
-        Секторы в конкретном событии.
-
-        Args:
-            **kwargs: Параметры.
-
-        Returns:
-            dict: Словарь, где ключи - идентификаторы сектров, значения - названия секторов.
-        """
-        venue = self.venue(venue_id=kwargs['venue_id'])
-
-        return {v['id']: v['name'].lower() for v in venue['venue_zones']}
+        return discovered_venues
 
     def groups(self):
-        """
-        Список групп.
+        """Группы событий для конкретного организатора.
 
         Returns:
-            list: Список словарей с информацией о группах.
+            list: Список словарей с информацией о группах событий.
         """
         method = 'GET'
         url = '/hosts/{host_id}/groups'.format(host_id=self.company_id)
@@ -210,19 +325,25 @@ class Radario(TicketService):
             'limit': self.limit,
         }
         output_mapping = {
+            # Идентификатор группы событий
+            'id':   self.internal('group_id', int,),
+            # Название группы событий
+            'name': self.internal('group_title', str),
+
             'hostId': None,
-            'id': ('group_id', int,),
-            'name': ('group_title', str),
             'ticketCount': None,
         }
-        return self.request(method, url, data, output_mapping)
+        groups = self.request(method, url, data, output_mapping)
+
+        groups = sorted(groups, key=itemgetter('group_id'))
+
+        return groups
 
     def discover_groups(self):
-        """
-        Получение списка событий с включением недостающей информации из групп событий для записи в БД.
+        """Получение списка групп событий для записи в БД (с включением недостающей информации из событий).
 
         Returns:
-            list: Список словарей с информацией о группах.
+            list: Список словарей с информацией о группах событий.
         """
         from collections import defaultdict
 
@@ -258,23 +379,24 @@ class Radario(TicketService):
         return groups
 
     def events(self, **kwargs):
-        """
-        Список событий для конкретного организатора.
+        """Список событий конкретного организатора.
+
+        Выводятся только те события, продажа билетов в которых НЕ приостановлена.
 
         Args:
-            group_id (int, optional): Идентификатор группы событий.
+            group_id (int, optional): Идентификатор группы событий, если требуются события в конкретной группе.
 
-        Query params:
-            onlyActual (bool)
-            cityId (int)
-            placeId (int)
-            companyId (int)
-            superTagId (int)    Event type id (e.g concert, perfomance, party, etc.)
-            groupId  (int)    event group id
-            endDate (str)    ISO 8601 format.
-            onlyWithOrderCreationAvailableViaApi (bool)    Return events with permission to create.
-            limit (int)    (default 20)
-            offset (int)
+        Query parameters:
+            onlyActual (bool): Вывод только актуальных событий.
+            cityId (int): Идентификатор города.
+            placeId (int): Идентификатор места проведения события.
+            companyId (int): Идентификатор организатора.
+            superTagId (int): Тип события (e.g concert, perfomance, party, etc.).
+            groupId  (int): Идентификатор группы событий.
+            endDate (str): Конечная дата (ISO 8601).
+            onlyWithOrderCreationAvailableViaApi (bool): Только события, доступные для запроса по API.
+            limit (int): Лимит числа событий в ответе (по умолчанию 20).
+            offset (int): С какого по счёту события начинать вывод (отброс событий в начале списка).
 
         Returns:
             list: Список словарей с информацией о событиях.
@@ -290,62 +412,69 @@ class Radario(TicketService):
         if 'group_id' in kwargs and kwargs['group_id']:
             data['groupId'] = kwargs['group_id']
         output_mapping = {
-            'age': ('event_min_age', int, 0,),
-            'beginDate': ('event_datetime', datetime,),  # '2017-09-29T16:00:00.000+00:00'
+            # Идентификатор события
+            'id':            self.internal('event_id', int,),
+            # Название события
+            'title':         self.internal('event_title', str,),
+            # Дата и время события (в UTC) '2017-09-29T16:00:00.000+00:00'
+            'beginDate':     self.internal('event_datetime', datetime,),
+            # Описание события
+            'description':   self.internal('event_text', str, '',),
+            # Минимальная цена билета в событии
+            'minPrice':      self.internal('event_min_price', Decimal,),
+            # Ограничение по возрасту в событии
+            'age':           self.internal('event_min_age', int, 0,),
+            # Идентификатор группы
+            'groupId':       self.internal('group_id', int, 0,),
+            # Название места проведения событий
+            'placeTitle':    self.internal('place_title', str,),
+            # Идентификатор зала
+            'placeSchemeId': self.internal('venue_id', int, 0,),
+            # Отключены ли продажи в событии или нет
+            'salesStopped':  self.internal('is_disabled', bool,),
+
             'category': None,
             'cityId': None,
             'cityName': None,
             'companyId': None,
             'companyTitle': None,
             'currency': None,
-            'description': ('event_text', str, '',),
             'discountPercent': None,
             'endDate': None,
             'eventProviderId': None,
             'eventProviderName': None,
             'gmtOffset': None,
-            'groupId': ('group_id', int, 0,),
-            'id': ('event_id', int,),
             'images': None,
             'maxPrice': None,
             'maxTicketCountPerOrder': None,
-            'minPrice': ('event_min_price', Decimal,),
+            'placeId': None,
             'placeAddress': None,
-            'placeId': ('place_id', int,),
-            'placeSchemeId': ('venue_id', int, 0,),
             'placeSchemeImage': None,
-            'placeTitle': ('place_title', str,),
-            'salesStopped': ('is_disabled', bool,),
             'superTagId': None,
             'ticketCount': None,
-            'title': ('event_title', str,),
             'videoUrl': None,
         }
         events = self.request(method, url, data, output_mapping)
 
+        for e in events:
+            if e['is_disabled'] is False:
+                del e['is_disabled']
+            else:
+                del events[e]
+
         # Получение только актуальных событий
-        return [e for e in events if e['is_disabled'] is False]
-
-    def discover_events(self):
-        """
-        Получение списка актуальных событий для записи в БД.
-        Отфильтровываются только те события, продажа билетов в которых НЕ приостановлена.
-
-        Returns:
-            list: Список словарей с информацией о событиях.
-        """
-        return self.events()
+        return events
 
     def event(self, **kwargs):
-        """
-        Информация о конкретном событии.
-
-        * onlyWithOrderCreationAvailableViaApi    bool    Return events with permission to create.
-        * limit         int    (default 20)
-        * offset        int
+        """Информация о конкретном событии.
 
         Args:
-            **kwargs: Параметры.
+            event_id (int): Идентификатор события.
+
+        Query parameters:
+            onlyWithOrderCreationAvailableViaApi
+            limit
+            offset
 
         Returns:
             dict: Словарь с информацией о событии.
@@ -354,52 +483,82 @@ class Radario(TicketService):
         url = '/events/{event_id}'.format(event_id=kwargs['event_id'])
         data = None
         output_mapping = {
-            'age': ('event_min_age', int,),
-            'beginDate': ('event_datetime', datetime,),  # '2017-09-29T16:00:00.000+00:00'
+            # Идентификатор события
+            'id':            self.internal('event_id', int,),
+            # Название события
+            'title':         self.internal('event_title', str,),
+            # Дата и время события (в UTC) '2017-09-29T16:00:00.000+00:00'
+            'beginDate':     self.internal('event_datetime', datetime,),
+            # Описание события
+            'description':   self.internal('event_text', str, '',),
+            # Минимальная цена билета в событии
+            'minPrice':      self.internal('event_min_price', Decimal,),
+            # Ограничение по возрасту в событии
+            'age':           self.internal('event_min_age', int, 0,),
+            # Идентификатор группы
+            'groupId':       self.internal('group_id', int, 0,),
+            # Идентификатор зала
+            'placeSchemeId': self.internal('venue_id', int, 0,),
+            # Отключены ли продажи в событии или нет
+            'salesStopped':  self.internal('is_disabled', bool,),
+
             'category': None,
             'cityId': None,
-            'cityName': ('city_title', str,),
+            'cityName': None,
             'companyId': None,
             'companyTitle': None,
             'currency': None,
-            'description': ('event_text', str,),
             'discountPercent': None,
             'endDate': None,
             'eventProviderId': None,
             'eventProviderName': None,
             'gmtOffset': None,
-            'groupId': ('group_id', int,),
-            'id': ('event_id', int,),
             'images': None,
             'maxPrice': None,
             'maxTicketCountPerOrder': None,
-            'minPrice': ('event_min_price', Decimal,),
+            'placeId': None,
             'placeAddress': None,
-            'placeId': ('place_id', int,),
-            'placeSchemeId': ('venue_id', int,),
             'placeSchemeImage': None,
-            'placeTitle': ('place_title', int,),
-            'salesStopped': ('is_disabled', bool),
-            'superTagId': None,  # Event type id (concert, perfomance, party, etc.)
-            'ticketCount': ('ticket_count', int,),
-            'title': ('title', str,),
+            'placeTitle': None,
+            'superTagId': None,
+            'ticketCount': None,
             'videoUrl': None,
         }
         event = self.request(method, url, data, output_mapping)
 
-        event['event_text'] = event['event_text'] if event['event_text'] is not None else ''
-
         return event
 
-    def price_groups(self, **kwargs):
-        """
-        Группы цен в конкретном событии с дочерними списками мест для каждой группы цен.
-
-        Args:
-            **kwargs: Description
+    def discover_events(self):
+        """Получение списка событий для записи в БД.
 
         Returns:
-            TYPE: Description
+            list: Список словарей с информацией о событиях.
+        """
+        events = self.events()
+
+        return events
+
+    def sectors(self, **kwargs):
+        """Список секторов в конкретном зале.
+
+        Args:
+            venue_id (int): Идентификатор зала.
+
+        Returns:
+            dict: Словарь, где ключи - идентификаторы секторов, значения - названия секторов.
+        """
+        venue = self.venue(venue_id=kwargs['venue_id'])
+
+        return {v['id']: v['name'].lower() for v in venue['venue_zones']}
+
+    def price_groups(self, **kwargs):
+        """Группы цен в конкретном событии (с дочерними списками мест для каждой группы цен).
+
+        Args:
+            event_id (int): Идентификатор события.
+
+        Returns:
+            list: Список словарей с информацией о группах цен.
         """
         method = 'GET'
         url = '/events/{event_id}/ticket_types'.format(event_id=kwargs['event_id'])
@@ -408,29 +567,111 @@ class Radario(TicketService):
             'limit': self.limit,
         }
         output_mapping = {
-            'id': ('price_group_id', int,),
-            'title': ('price_group_title', str,),
-            'price': ('price', Decimal,),
+            # Идентификатор группы цен
+            'id':              self.internal('price_group_id', int,),
+            # Название группы цен
+            'title':           self.internal('price_group_title', str,),
+            # Цена
+            'price':           self.internal('price', Decimal,),
+            # Группа цен с местами для сидения или нет
+            'withSeats':       self.internal('is_price_group_with_seats', bool,),
+            # Список словарей с информацией о местах
+            'seats':           self.internal('seats', list,),
+            # Атрибуты seats
+            # 'number' (int): Идентификатор места
+            # 'seatname' (str): Название места
+            # 'rowname' (str->int): Идентификатор ряда
+            # 'exists' (bool): Существует место или нет (?)
+            # 'isoccupied' (bool): Занято место или нет (?)
+            # Общее число мест
+            'ticketCount':     self.internal('seats_all_count', int,),
+            # Число проданных мест
+            'soldTicketCount': self.internal('seats_sold_count', int,),
             'baseTicketTypeId': None,
-            'seats': ('seats', list,),
             'seatBeginNumber': None,
             'seatEndNumber': None,
-            'soldTicketCount': ('seats_sold_count', int,),
-            'ticketCount': ('seats_all_count', int,),
-            'withSeats': ('is_price_group_with_seats', bool,),
             'series': None,
             'zoneId': None,
         }
         price_groups = self.request(method, url, data, output_mapping)
 
         for pg in price_groups:
+            # Число свободных мест
             pg['seats_free_count'] = pg['seats_all_count'] - pg['seats_sold_count']
 
         return price_groups
 
-    def prices(self, **kwargs):
+    def seats(self, **kwargs):
+        """Доступные для продажи места в конкретном событии.
+
+        Args:
+            event_id (int): Идентификатор события.
+            venue_id (int): Идентификатор зала.
+
+        Returns:
+            list: Список словарей с информацией о доступных к заказу местах.
         """
-        Список цен на билеты по возрастанию для легенды схемы зала.
+        price_groups = self.price_groups(event_id=kwargs['event_id'])
+        print('price_groups: ', price_groups, '\n')
+        seats = []
+        prices = sorted([pg['price'] for pg in price_groups])
+
+        venue = self.venue(venue_id=kwargs['venue_id'])
+        print('venue: ', venue, '\n')
+        if kwargs['venue_id'] != 0:
+            sectors = {v['name'].lower(): v['id'] for v in venue['venue_zones']}
+        else:
+            sectors = {pg['price_group_title'].lower(): pg['price_group_id'] for pg in price_groups}
+        print('sectors: ', sectors, '\n')
+
+        for pg in price_groups:
+            # Билеты с местами
+            if pg['seats'] is not None:
+                for s in pg['seats']:
+                    # Возвращаются только существующие и ещё не проданные места
+                    if s['exists'] and not s['isoccupied']:
+                        s['sector_id'] = sectors[pg['price_group_title']]
+                        # Названия секторов
+                        s['sector_title'] = pg['price_group_title'].lower()
+                        s['row_id'] = int(s.pop('rowname'))
+                        s['seat_id'] = int(s.pop('number'))
+                        s['seat_title'] = s.pop('seatname')
+                        s['price_group_id'] = pg['price_group_id']
+                        s['price'] = pg['price']
+                        # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
+                        s['price_order'] = prices.index(pg['price']) + 1
+                        del s['exists']
+                        del s['isoccupied']
+                        seats.append(s)
+            # Билеты без мест
+            else:
+                # Возвращаются все свободные билеты без мест
+                for s in range(pg['seats_free_count']):
+                    seat = {}
+                    seat['sector_id'] = sectors[pg['price_group_title']]
+                    # Названия секторов
+                    seat['sector_title'] = pg['price_group_title'].lower()
+                    seat['row_id'] = 0
+                    seat['seat_id'] = 0
+                    seat['seat_title'] = ''
+                    seat['price_group_id'] = pg['price_group_id']
+                    seat['price'] = pg['price']
+                    # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
+                    seat['price_order'] = prices.index(pg['price']) + 1
+                    seats.append(seat)
+
+        seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
+
+        return seats
+
+    def prices(self, **kwargs):
+        """Список цен на билеты по возрастанию для легенды схемы зала.
+
+        Args:
+            event_id (int): Идентификатор события.
+
+        Returns:
+            list: Список цен по возрастанию.
         """
         price_groups = self.price_groups(event_id=kwargs['event_id'])
 
@@ -438,43 +679,20 @@ class Radario(TicketService):
 
         return prices
 
-    def seats(self, **kwargs):
-        """
-        Доступные для продажи места в конкретном событии.
-        """
-        price_groups = self.price_groups(event_id=kwargs['event_id'])
-        seats = []
-        prices = sorted([pg['price'] for pg in price_groups])
-
-        venues = self.venue(venue_id=kwargs['venue_id'])
-        sectors = {v['name'].lower(): v['id'] for v in venues['venue_zones']}
-        # print(sectors)
-
-        for pg in price_groups:
-            for s in pg['seats']:
-                # Возвращаются только существующие и ещё не проданные места
-                if s['exists'] and not s['isOccupied']:
-                    # del s['exists']
-                    # del s['isOccupied']
-                    s['sector_id'] = sectors[pg['price_group_title']]
-                    # Названия секторов
-                    s['sector_title'] = pg['price_group_title'].lower()
-                    s['row_id'] = int(s.pop('rowName'))
-                    s['seat_id'] = int(s.pop('number'))
-                    s['seat_title'] = int(s.pop('seatName'))
-                    s['price_group_id'] = pg['price_group_id']
-                    s['price'] = pg['price']
-                    # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
-                    s['price_order'] = prices.index(pg['price']) + 1
-                    seats.append(s)
-
-        seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
-
-        return seats
-
     def reserve(self, **kwargs):
-        """
-        Добавление или удаление места в предварительном резерве мест (корзина заказа).
+        """Добавление или удаление места в предварительном резерве мест (корзина заказа).
+
+        Можно не использовать для резерва метод API Радарио и хранить резерв в cookie.
+        Метод будет возвращать обратно передаваемые ему атрибуты места с подтверждением успешного/НЕуспешного резерва.
+
+        Args:
+            action (str): Действие (`add` - добавить в резерв, `remove` - удалить из резерва).
+            event_id (int): Идентификатор события.
+            price_group_id (int): Идентификатор группы цен.
+            seat_id (int): Идентификатор места.
+
+        Returns:
+            dict: Атрибуты места с подтверждением успешного или НЕуспешного резерва.
         """
         # method = 'POST'
         # data = {
@@ -497,17 +715,51 @@ class Radario(TicketService):
             reserve[kw] = kwargs[kw]
         return reserve
 
-    def order_create(self, **kwargs):
+    def ticket_status(self, **kwargs):
+        """Проверка состояния места (перед созданием заказа или перед онлайн-оплатой).
+
+        В API Радарио такой функционал не предусмотрен, метод оставлен для обратной совместимости.
+        Применяется для проверки предварительного резерва перед созданием заказа.
+
+        Args:
+            event_id (int): Идентификатор события.
+            ticket_uuid (str): Уникальный UUID билета.
+            sector_id (int): Идентификатор сектора.
+            row_id (int): Идентификатор ряда.
+            seat_id (int): Идентификатор места.
+
+        Returns:
+            dict: Информация о состоянии места.
+                order_id (int): Идентификатор заказа, если он был создан, иначе None.
+                ticket_uuid (str): Уникальный UUID билета.
+                seat_status (str): Статус места.
         """
-        Создание резерва мест и заказа.
+        response = {}
+
+        response['order_id'] = None
+        response['ticket_uuid'] = kwargs['ticket_uuid']
+        response['seat_status'] = 'reserved'
+
+        return response
+
+    def order_create(self, **kwargs):
+        """Создание заказа из предварительно зарезервированных мест.
 
         Args:
             event_id (int): Идентификатор события.
             customer (dict): Информация о покупателе.
-            tickets (list): Информация о заказываемых билетах.
+                name (str): ФИО покупателя.
+                email (str): Электронная почта покупателя.
+            tickets (list): Информация о зарезервированных билетах.
+                seat_id (int): Идентификатор места.
+                price_group_id (int): Идентификатор группы цен.
 
         Returns:
-            TYPE: Description
+            dict: Информация о созданном заказе.
+                order_id (int): Идентификатор заказа в сервисе заказа билетов.
+                tickets (list): Информация о заказанных билетах.
+                    ticket_uuid (str): Уникальный UUID билета (на данный момент генерируется на клиенте).
+                    bar_code (str): Штрих-код билета (12 символов).
         """
         method = 'POST'
         url = '/orders/reserve'
@@ -533,12 +785,71 @@ class Radario(TicketService):
                 'ParticipantName': kwargs['customer']['name']
             }
             data['Tickets'].append(ticket_info.copy())
+        output_mapping = {
+            'success': self.internal('success', bool,),
+            'id':      self.internal('order_id', int,),
+            'tickets': self.internal('tickets', list),
+
+            'eventId':      None,
+            'orderNumber':  None,
+            'ticketCount':  None,
+            'amount':       None,
+            'baseAmount':   None,
+            'creationDate': None,
+            'isPaid':       None,
+        }
+
+        order = self.request(method, url, data, output_mapping)
+        print('order: ', order)
+
+        response = {}
+        response['tickets'] = []
+
+        if order['success']:
+            response['order_id'] = order['order_id']
+
+            for o in order['tickets']:
+                ticket = {}
+                for t in kwargs['tickets']:
+                    ticket['ticket_uuid'] = (
+                        t['ticket_uuid'] if
+                        (o['seatnumber'] == t['seat_id'] and
+                         o['tickettypeid'] == t['price_group_id']) else
+                        None
+                    )
+                ticket['bar_code'] = o['barcodekey']  # 12 символов
+                # o['participantName'] == '-' ???
+                response['tickets'].append(ticket.copy())
+        else:
+            return order
+
+        return response
+
+    def order(self, **kwargs):
+        """
+        Информация о конкретном заказе.
+
+        Args:
+            order_id (int): Идентификатор заказа.
+
+        Returns:
+            method: Вызов конструктора запросов request.
+        """
+        method = 'GET'
+        url = '/orders/{order_id}'.format(order_id=kwargs['order_id'])
+        data = None
         output_mapping = {}
-        return self.request(method, url, data, output_mapping, test=True)
+        return self.request(method, url, data, output_mapping)
 
     def order_delete(self, **kwargs):
-        """
-        Удаление резерва мест и заказа.
+        """Удаление заказа.
+
+        Args:
+            order_id (int): Идентификатор заказа.
+
+        Returns:
+            dict: Информация об удалении заказа.
+                success (bool): Успешное или НЕуспешное удаление заказа.
         """
         method = 'POST'
         url = '/orders/cancel'
@@ -546,12 +857,19 @@ class Radario(TicketService):
             'orderId': kwargs['order_id'],
         }
         output_mapping = {}
-        return self.request(method, url, data, output_mapping, test=True)
+
+        delete = self.request(method, url, data, output_mapping)
+
+        return delete
 
     def order_payment(self, **kwargs):
-        """
-        Оплата созданного ранее заказа.
-        tickets - список из словарей.
+        """Отметка об оплате созданного ранее заказа.
+
+        Args:
+            order_id (int): Идентификатор заказа.
+
+        Returns:
+            dict: Информация об успешной или НЕуспешной оплате.
         """
         method = 'POST'
         url = '/orders/approve'
@@ -559,39 +877,36 @@ class Radario(TicketService):
             'orderId': kwargs['order_id'],
         }
         output_mapping = {}
-        return self.request(method, url, data, output_mapping, test=True)
+
+        payment = self.request(method, url, data, output_mapping)
+
+        return payment
 
     def order_refund(self, **kwargs):
-        """
-        Возврат билетов (с удалением заказа и освобождением билетов для продажи).
+        """Возврат стоимости билетов (с удалением заказа и освобождением билетов для продажи).
 
         Args:
-            order_id: int Уникальный номер заказа.
-            reason:   str Причина возврата.
-            comment:  str Комментарий (опционально).
+            order_id (int): Идентификатор заказа.
+            reason (str): Причина возврата.
+
+        Returns:
+            dict: Информация об успешном или НЕуспешном возврате.
         """
         method = 'POST'
         url = '/orders/refund'
         data = {
             # 'Method': 7,
             'UserOrderId': kwargs['order_id'],
-            'TicketNumber': None,
-            'RefundInitiator': 'company',
-            'Comment': kwargs['comment'],
+            'TicketNumber': None,  # ???
+            'RefundInitiator': 'Company',
+            'Comment': '',
             'Reason': kwargs['reason'],
         }
         output_mapping = {}
-        return self.request(method, url, data, output_mapping, test=True)
 
-    def order(self, **kwargs):
-        """
-        Информация о конкретном заказе.
-        """
-        method = 'GET'
-        url = '/orders/{order_id}'.format(order_id=kwargs['order_id'])
-        data = None
-        output_mapping = {}
-        return self.request(method, url, data, output_mapping, test=True)
+        refund = self.request(method, url, data, output_mapping)
+
+        return refund
 
     # def categories(self):
     #     """Список категорий событий."""

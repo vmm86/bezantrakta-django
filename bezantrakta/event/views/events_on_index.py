@@ -2,12 +2,15 @@ from django.db.models import CharField, DateTimeField, DecimalField, IntegerFiel
 from django.db.models import Case, OuterRef, Subquery, F, Q, When
 from django.shortcuts import render
 
-from project.shortcuts import add_small_vertical_poster, today
+from project.shortcuts import timezone_now
 
 from ..models import EventContainerBinder, EventGroupBinder
+from ..shortcuts import add_small_vertical_poster
 
 
 def events_on_index(request):
+    today = timezone_now()
+
     # Поиск опубликованных событий или групп на главной, привязанных к текущему домену
     group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
         group_id=OuterRef('event__id'),

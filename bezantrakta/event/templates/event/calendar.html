@@ -6,13 +6,17 @@
 {% endblock %}
 
 {% block content_body %}
+{% if events_on_date %}
 <div class="poster-small-vertical-body">
-{% for item in events_on_date %}
-{% localtime on %}
-    {% include "event/small_vertical_posters.html" with item=item %}
-{% endlocaltime %}
-{% endfor %}
+    {% for item in events_on_date %}
+    {% localtime on %}
+        {% include "event/small_vertical_posters.html" with item=item %}
+    {% endlocaltime %}
+    {% endfor %}
 </div>
+{% else %}
+    <p>К сожалению, на этот день нет событий в продаже 😞.</p>
+{% endif %}
 
 {% if debug %}
 <br><br>

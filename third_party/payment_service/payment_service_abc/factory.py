@@ -1,8 +1,8 @@
 from .sberbank.api import Sberbank
-from .sngb.api import SNGB
+# from .sngb.api import SNGB
 
 
-PAYMENT_SERVICES = [Sberbank, SNGB, ]
+PAYMENT_SERVICES = [Sberbank, ]
 
 
 def payment_service_factory(slug, init):

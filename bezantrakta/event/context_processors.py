@@ -1,8 +1,7 @@
-from django.conf import settings
 from django.db.models import CharField, DateTimeField, DecimalField, IntegerField, SlugField
 from django.db.models import Case, OuterRef, Subquery, F, Q, When
 
-from project.shortcuts import today
+from project.shortcuts import base_template_context_processor, timezone_now
 
 from .models import EventCategory, EventContainerBinder, EventGroupBinder
 
@@ -11,8 +10,9 @@ def big_containers(request):
     """
     Получение событий и их добавление в template context.
     """
-    # Только если домен опубликован
-    if request.domain_is_published and settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
+    if base_template_context_processor(request):
+        today = timezone_now()
+
         # Поиск опубликованных событий на главной, привязанных к текущему домену
         group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
             group_id=OuterRef('event__id'),
@@ -120,10 +120,10 @@ def categories(request):
     """
     Получение категорий событий и их добавление в template context.
     """
-    # Только если домен опубликован
-    if request.domain_is_published:
+    if base_template_context_processor(request):
+        today = timezone_now()
+
         # Получение опубликованных категорий, у которых есть связанные предстоящие события
-        # .annotate(event_count=Count('event'))
         categories = EventCategory.objects.filter(
             is_published=True,
             event__is_published=True,
@@ -138,11 +138,6 @@ def categories(request):
         category_all = {}
         category_all['title'] = 'Все события'
         category_all['slug'] = 'vse'
-        # category_all['event_count'] = Event.objects.filter(
-        #     is_published=True,
-        #     datetime__gt=today,
-        #     domain_id=request.domain_id,
-        # ).count()
         cat_all = []
         cat_all.append(category_all)
 

@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django.core.cache import cache
 from django.utils.translation import ugettext as _
 
 from project.decorators import queryset_filter
-from third_party.ticket_service.models import TicketService
+from ..cache import get_or_set_cache
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
@@ -44,7 +45,7 @@ class EventContainerBinderInline(admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    actions = ('publish_or_unpublish_items', 'delete_non_ticket_service_items')
+    actions = ('publish_or_unpublish_items', 'batch_set_cache', 'delete_non_ticket_service_items')
     fieldsets = (
         (
             None,
@@ -131,6 +132,22 @@ class EventAdmin(admin.ModelAdmin):
                 item.is_published = True
             item.save(update_fields=['is_published'])
     publish_or_unpublish_items.short_description = _('event_admin_publish_or_unpublish_items')
+
+    def save_model(self, request, obj, form, change):
+        """Пересоздать кэш:
+        * при сохранении созданной ранее записи,
+        * если созданная ранее запись не пересохраняется в новую запись с новым первичным ключом.
+        """
+        super(EventAdmin, self).save_model(request, obj, form, change)
+
+        if change and obj._meta.pk.name not in form.changed_data:
+            get_or_set_cache(obj.id, reset=True)
+
+    def batch_set_cache(self, request, queryset):
+        """Пакетное пересохранение кэша."""
+        for item in queryset:
+            get_or_set_cache(item.id, reset=True)
+    batch_set_cache.short_description = _('event_admin_batch_set_cache')
 
     def group_count(self, obj):
         """Число событий в группе"""
