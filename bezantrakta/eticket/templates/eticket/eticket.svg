@@ -147,7 +147,7 @@
             id="_2_age-text"
             x="15437"
             y="17319"
-            style="font-size:500px;font-weight:normal;fill:#000000;font-family:Roboto">{% if event_min_age %}{{ event_min_age }}+{% endif %}</text>
+            style="font-size:500px;font-weight:normal;fill:#000000;font-family:Roboto">{% if event_min_age %}{{ event_min_age }}+{% else %}0+{% endif %}</text>
     </g>
     <g id="_2_price">
         <path

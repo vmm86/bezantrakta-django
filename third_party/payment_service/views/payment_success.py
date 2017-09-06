@@ -161,7 +161,7 @@ def payment_success(request):
 
             # Подтверждение оплаты заказа в БД
             order['status'] = 'approved'
-            logger.info('Статус заказа: {status}'.format(
+            logger.info('Статус заказа: {status}\n'.format(
                 status=ORDER_STATUS[order['status']]['description'])
             )
 
@@ -213,8 +213,8 @@ def payment_success(request):
             if customer['delivery'] == 'email':
                 for t in order['tickets']:
                     t.update(event['info'])
-                    logger.info('Контекст билета')
-                    logger.info(t)
+                    # logger.info('\nКонтекст билета')
+                    # logger.info(t)
                     pdf_ticket_file = render_ticket(t)
                     customer_email.attach_file(pdf_ticket_file, mimetype='application/pdf')
 

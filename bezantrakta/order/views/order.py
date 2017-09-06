@@ -52,6 +52,13 @@ def order(request):
 
         ts = ticket_service_instance(ticket_service['id'])
 
+        # Экземпляр сервиса онлайн-оплаты (с указанием URL завершения удачной или НЕудачной оплаты)
+        payment_service = {}
+        payment_service['id'] = event['info']['payment_service_id']
+        payment_service['info'] = get_or_set_payment_service_cache(payment_service['id'])
+
+        ps = payment_service_instance(payment_service['id'], url_domain=request.url_domain)
+
         # Получение реквизитов покупателя
         customer = {}
         # customer['order_type'] = request.POST.get('customer_order_type')
@@ -84,6 +91,13 @@ def order(request):
             order['tickets'] = json.loads(request.COOKIES.get('bezantrakta_order_tickets', []))
             order['count'] = int(request.COOKIES.get('bezantrakta_order_count', 0))
             order['total'] = ts.decimal_price(request.COOKIES.get('bezantrakta_order_total', 0))
+
+            # При доставке курьером - общая сумма заказа плюс стоимость доставки курьером
+            if customer['delivery'] == 'courier':
+                order['total'] += ps.decimal_price(ticket_service['settings']['courier_price'])
+            # При онлайн-оплате - общая сумма заказа с комиссией сервиса онлайн-оплаты
+            if customer['payment'] == 'online':
+                order['total'] = ps.total_plus_commission(order['total'])
 
             # Получение параметров сайта
             domain = {}
@@ -170,15 +184,24 @@ def order(request):
                 order['order_id'] = order_create['order_id']
                 logger.info('Идентификатор заказа: {order_id}'.format(order_id=order['order_id']))
 
-                # Получение штрих-кодов для билетов в заказе из сервиса продажи билетов
+                # Получение штрих-кодов для билетов в заказе из ответа сервиса продажи билетов
                 # Если по каким-то причинам штрих-код не получен - он генерируется автоматически
                 for o in order_create['tickets']:
                     for t in order['tickets']:
-                        t['bar_code'] = (
-                            o['bar_code'] if
-                            o['ticket_uuid'] == t['ticket_uuid'] else
-                            ''.join([str(randint(0, 9)) for x in range(20)])
-                        )
+                        if uuid.UUID(o['ticket_uuid']) == uuid.UUID(t['ticket_uuid']):
+                            logger.info('\n{o_uuid} == {t_uuid}: {cond}'.format(
+                                o_uuid=uuid.UUID(o['ticket_uuid']),
+                                t_uuid=uuid.UUID(t['ticket_uuid']),
+                                cond=uuid.UUID(o['ticket_uuid']) == uuid.UUID(t['ticket_uuid']))
+                            )
+                            t['bar_code'] = (
+                                o['bar_code'] if
+                                'bar_code' in o and o['bar_code'] is not None else
+                                ''.join([str(randint(0, 9)) for x in range(20)])
+                            )
+                            logger.info('t[bar_code]: ', t['bar_code'])
+                        else:
+                            continue
 
                 # Проверка состояния билетов в созданном заказе
                 logger.info('\nПроверка состояния билетов в созданном заказе')
@@ -189,7 +212,7 @@ def order(request):
                 order['tickets'][:] = [t for t in order['tickets'] if t.get('seat_status') == 'ordered']
 
                 now = timezone_now()
-                logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
+                # logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
                 # Сохранение предварительного заказа
                 try:
                     Order.objects.create(
@@ -281,6 +304,7 @@ def order(request):
                             'domain': domain,
                             'event': event['info'],
                             'ticket_service': ticket_service['info'],
+                            'payment_service': payment_service['info'],
                             'order': order,
                             'customer': customer
                         }
@@ -305,13 +329,6 @@ def order(request):
                         return redirect('order:confirmation', order_uuid=order['order_uuid'])
                     # Если онлайн-оплата - запрос новой оплаты и редирект на URL платёжной формы
                     elif customer['payment'] == 'online':
-                        payment_service = {}
-                        payment_service['id'] = event['info']['payment_service_id']
-                        payment_service['info'] = get_or_set_payment_service_cache(payment_service['id'])
-
-                        # Экземпляр сервиса онлайн-оплаты (с указанием URL завершения удачной или НЕудачной оплаты)
-                        ps = payment_service_instance(payment_service['id'], url_domain=request.url_domain)
-
                         # Создание новой онлайн-оплаты
                         payment_create = ps.payment_create(
                             event_uuid=event['uuid'],
@@ -326,7 +343,7 @@ def order(request):
                             payment_url = payment_create['payment_url']
 
                             now = timezone_now()
-                            logger.info('{:%Y-%m-%d %H:%M:%S}'.format((now)))
+                            # logger.info('{:%Y-%m-%d %H:%M:%S}'.format((now)))
                             # Сохранение идентификатора оплаты в БД
                             Order.objects.filter(id=order['order_uuid']).update(
                                 datetime=now,

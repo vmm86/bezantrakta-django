@@ -93,10 +93,20 @@ td, th {
     outline: none;
 }
 
-input,
-select {
+input, textarea, select, .form-row p, form .button {
+    font-family: 'Roboto', 'Lucida Grande', 'Verdana', 'Arial', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+
+    margin: 2px 0;
+    padding: 2px 4px;
+
     height: auto;
     vertical-align: middle;
+}
+
+li, dt, dd {
+    font-size: 14px;
 }
 
 /* Контейнер */
@@ -611,6 +621,7 @@ input[type=number]:focus,
 textarea:focus,
 .vTextField:focus {
     border: 2px solid #fc0;
+    font-weight: bold;
 }
 
 .submit-row input,
@@ -718,6 +729,11 @@ div.help,
 form div.help,
 div.help li {
     color: #111;
+    font-size: 14px;
+}
+
+form div.help ul {
+    padding-left: 14px;
 }
 
 form ul.radiolist input[type="radio"] {
@@ -787,9 +803,13 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     line-height: initial;
 }
 
-/* Порядок оформления настроек сайтов */
+/* Порядок отображения настроек в JSON */
 
-fieldset.domain_settings {
+fieldset.module {
+    margin-bottom: 0;
+}
+
+fieldset.json_settings {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -797,22 +817,22 @@ fieldset.domain_settings {
     align-items: flex-start;
 }
 
-fieldset.domain_settings h2 {
+fieldset.json_settings h2 {
     order: 1;
 }
 
-fieldset.domain_settings .form-row.field-settings {
+fieldset.json_settings .form-row.field-settings {
     padding: 0;
     width: 100%;
     order: 2;
 }
 
-fieldset.domain_settings .description {
+fieldset.json_settings .description {
     padding: 0;
     order: 3;
 }
 
-fieldset.domain_settings .description ul {
+fieldset.json_settings .description ul {
     margin-left: 0;
 }
 

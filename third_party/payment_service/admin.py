@@ -15,7 +15,24 @@ class PaymentServiceAdmin(admin.ModelAdmin):
     formfield_overrides = {
         TextField: {'widget': JSONEditor},
     }
-    list_display = ('title', 'id', 'is_active', 'is_production', )
+    list_display = ('title', 'id', 'is_active', 'is_production',)
+
+    fieldsets = (
+        (
+            None,
+            {
+                'fields': ('id', 'title', 'slug', 'is_active', 'is_production',),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('settings',),
+                'classes': ('json_settings',),
+                'description': _('payment_service_help_text'),
+            }
+        ),
+    )
 
     def save_model(self, request, obj, form, change):
         """Пересоздать кэш:

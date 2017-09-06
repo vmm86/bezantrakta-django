@@ -6,7 +6,16 @@
 
 {% block html %}
 {% spaceless %}
-<meta name="format-detection" contant="telephone=no">
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" contant="telephone=no">
+</head>
+<body bgcolor="ffffff" topmargin="10" leftmargin="10" marginwidth="10" marginheight="10" offset="0">
+
     <h2>{% if order.order_id %}Заказ № &#8203;{{ order.order_id }}{% else %}Заказ{% endif %}</h2>
 
     <h3>{{ event.event_date }} {{ event.event_title }}</h3>
@@ -58,5 +67,7 @@
     </p>
 
     <p><strong>Статус заказа</strong>: <strong style="color: {{ customer.status_color }}">{{ customer.status_description }}</strong>.</p>
+
+</body>
 {% endspaceless %}
 {% endblock %}

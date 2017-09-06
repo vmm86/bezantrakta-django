@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 11:55+0000\n"
+"POT-Creation-Date: 2017-09-06 12:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,11 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin.py:38
+#: admin.py:32
+msgid "payment_service_help_text"
+msgstr "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от конкретного сервиса онлайн-оплаты):<ul><li><strong>Сбербанк</strong><ul><li>string <strong>user</strong> - имя пользователя API,</li><li>string <strong>test_pswd</strong> - пароль для тестовой оплаты НЕнастоящими деньгами,</li><li>string <strong>prod_pswd</strong> - пароль для production-оплаты настоящими деньгами.</li></ul></li><li><strong>СНГБ</strong></li></ul></li><li>number <strong>commission</strong> - комиссия сервиса онлайн-оплаты,</li><li>boolean <strong>commission_included</strong> - включена ли комиссия в сумму заказа (true - включена, false - НЕ включена),</li><li>number <strong>timeout</strong> - время на оплату заказа в минутах (по умолчанию - 15 минут).</li></ul>"
+
+#: admin.py:51
 msgid "payment_service_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных сервисов онлайн-оплаты"
 

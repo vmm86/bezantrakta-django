@@ -16,9 +16,9 @@ class TicketServiceVenueBinderAdmin(admin.ModelAdmin):
         (
             None,
             {
-                'fields': ('ticket_service_event_venue_title', 'scheme',
-                           'event_venue',
-                           'ticket_service', 'ticket_service_event_venue_id',)
+                'fields': ('ticket_service_event_venue_title',
+                           'ticket_service', 'ticket_service_event_venue_id',
+                           'event_venue', 'scheme')
             }
         ),
     )
@@ -67,6 +67,23 @@ class TicketServiceAdmin(admin.ModelAdmin):
     }
     list_display = ('title', 'id', 'is_active', 'is_payment', 'ticket_service_venue_binder_count')
     list_per_page = 10
+
+    fieldsets = (
+        (
+            None,
+            {
+                'fields': ('id', 'title', 'slug', 'is_active', 'domain', 'payment_service'),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('settings',),
+                'classes': ('json_settings',),
+                'description': _('ticket_service_help_text'),
+            }
+        ),
+    )
 
     def get_queryset(self, request):
         return super(TicketServiceAdmin, self).get_queryset(request)
