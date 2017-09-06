@@ -74,21 +74,21 @@ def confirmation(request, order_uuid):
             # Информация о событии из кэша
             event = get_or_set_event_cache(order['event_uuid'])
 
-            # Информация о сервисе продажи билетов
-            ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+            # # Информация о сервисе продажи билетов
+            # ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
 
-            # Экземпляр класса сервиса онлайн-оплаты
-            ps = payment_service_instance(event['payment_service_id'])
+            # # Экземпляр класса сервиса онлайн-оплаты
+            # ps = payment_service_instance(event['payment_service_id'])
 
-            if order['delivery'] == 'courier':
-                # Стоимость доставки курьером
-                courier_price = ps.decimal_price(ticket_service['settings']['courier_price'])
-                # Общая сумма заказа со стоимостью доставки курьером
-                order['total'] += courier_price
+            # if order['delivery'] == 'courier':
+            #     # Стоимость доставки курьером
+            #     courier_price = ps.decimal_price(ticket_service['settings']['courier_price'])
+            #     # Общая сумма заказа со стоимостью доставки курьером
+            #     order['total'] += courier_price
 
-            if order['payment'] == 'online':
-                # Общая сумма заказа с комиссией сервиса онлайн-оплаты
-                order['total'] = ps.total_plus_commission(order['total'])
+            # if order['payment'] == 'online':
+            #     # Общая сумма заказа с комиссией сервиса онлайн-оплаты
+            #     order['total'] = ps.total_plus_commission(order['total'])
 
             # Вывод основной информации о заказе
             order_info = []

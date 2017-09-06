@@ -1,5 +1,6 @@
 import dateutil.parser
 import logging
+import uuid
 import xmltodict
 import xml
 import zeep
@@ -974,7 +975,7 @@ class SuperBilet(TicketService):
         logger = logging.getLogger('bezantrakta.order')
 
         order = self.request(method, input_mapping, data, output_mapping)
-        logger.info('order response: ', order)
+        logger.info('\norder response: {}'.format(order))
 
         # order []:
         # 'order_uuid': '1fa590a2-21e4-453a-ab5a-945e422ac42c',
@@ -994,19 +995,32 @@ class SuperBilet(TicketService):
                     response['order_id'] = o['order_id']
                     ticket = {}
                     for t in kwargs['tickets']:
-                        logger.info('o[sector_id] == t[sector_id]: ', o['sector_id'] == t['sector_id'])
-                        logger.info('o[row_id] == t[row_id]: ', o['row_id'] == t['row_id'])
-                        logger.info('o[seat_id] == t[seat_id]: ', o['seat_id'] == t['seat_id'])
+                        if (
+                            o['sector_id'] == t['sector_id'] and
+                            o['row_id'] == t['row_id'] and
+                            o['seat_id'] == t['seat_id']
+                        ):
+                            # logger.info('\n{o_sector} == {t_sector}: {cond}'.format(
+                            #     o_sector=o['sector_id'],
+                            #     t_sector=t['sector_id'],
+                            #     cond=o['sector_id'] == t['sector_id'])
+                            # )
+                            # logger.info('{o_row} == {t_row}: {cond}'.format(
+                            #     o_row=o['row_id'],
+                            #     t_row=t['row_id'],
+                            #     cond=o['row_id'] == t['row_id'])
+                            # )
+                            # logger.info('{o_seat} == {t_seat}: {cond}\n'.format(
+                            #     o_seat=o['seat_id'],
+                            #     t_seat=t['seat_id'],
+                            #     cond=o['seat_id'] == t['seat_id'])
+                            # )
 
-                        ticket['ticket_uuid'] = (
-                            t['ticket_uuid'] if
-                            (o['sector_id'] == t['sector_id'] and
-                             o['row_id'] == t['row_id'] and
-                             o['seat_id'] == t['seat_id']) else
-                            None
-                        )
-                    ticket['bar_code'] = o['bar_code']  # 20 символов
-                    response['tickets'].append(ticket.copy())
+                            ticket['ticket_uuid'] = t['ticket_uuid']
+                            ticket['bar_code'] = o['bar_code']  # 20 символов
+                            response['tickets'].append(ticket.copy())
+                        else:
+                            continue
                 else:
                     response['code'] = o['result_code']
                     response['message'] = self.RESPONSE_CODES[response['code']]

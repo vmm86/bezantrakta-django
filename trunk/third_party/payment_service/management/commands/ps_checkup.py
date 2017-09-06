@@ -27,7 +27,7 @@ class Command(BaseCommand):
 Если оплата завершилась НЕуспешно - отменятся заказ в сервисе продажи билетов.
 ______________________________________________________________________________
 Задание должно запускаться в cron с определённой периодичностью:______________
-***** source {venv/biv/activate} && python {корень проекта}/manage.py discover
+***** source {venv/biv/activate} && python {корень проекта}/manage.py command
     """
     logger = logging.getLogger('payment_service.checkup')
 
@@ -97,8 +97,6 @@ ______________________________________________________________________________
                     )
                     continue
 
-                self.log('\nНезавершённая оплата: {order}'.format(order=order))
-
                 # Экземпляр класса сервиса онлайн-оплаты
                 payment_service = {}
                 payment_service['info'] = get_or_set_payment_service_cache(order['payment_service_id'])
@@ -106,18 +104,21 @@ ______________________________________________________________________________
 
                 # Получение таймаута на оплату в минутах
                 timeout = ps.timeout
-                self.log('\nТаймаут на оплату: {timeout}'.format(timeout=timeout))
 
                 # Дата запроса оплаты плюс таймаут на оплату
                 now = timezone_now()
                 now_minus_order_datetime = now - order['datetime']
 
-                self.log('\nДата заказа: {:%Y-%m-%d %H:%M:%S}'.format(order['datetime']))
-                self.log('Текущее время: {:%Y-%m-%d %H:%M:%S}'.format(now))
-                self.log('Разница во времени: {}'.format(now_minus_order_datetime))
-
                 # Если таймаут на оплату уже прошёл
                 if now_minus_order_datetime > timedelta(minutes=timeout):
+                    self.log('\nНезавершённая оплата: {order}'.format(order=order))
+
+                    self.log('\nТаймаут на оплату: {timeout}'.format(timeout=timeout))
+
+                    self.log('\nДата заказа: {:%Y-%m-%d %H:%M:%S}'.format(order['datetime']))
+                    self.log('Текущее время: {:%Y-%m-%d %H:%M:%S}'.format(now))
+                    self.log('Разница во времени: {}'.format(now_minus_order_datetime))
+
                     self.log('\nПроверка статуса оплаты...')
 
                     # Экземпляр класса сервиса продажи билетов
@@ -158,53 +159,11 @@ ______________________________________________________________________________
                         # Отмена заказа в БД
                         order['status'] = 'cancelled'
                         self.log('Статус заказа: {status}'.format(
-                            status=ORDER_STATUS[order['status']]['description'])
+                            status=ORDER_STATUS[order['status']]['description']),
+                            level='NOTICE'
                         )
 
                         Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
-
-                    # Если оплата прошла успешно
-                    else:
-                        self.log('\nОплата {payment_id} завершилась успешно'.format(payment_id=order['payment_id']))
-
-                        # Человекопонятный текст для email-уведомлений
-                        order['delivery_description'] = ORDER_DELIVERY[order['delivery']]
-                        order['payment_description'] = ORDER_PAYMENT[order['payment']]
-                        order['status_color'] = ORDER_STATUS[order['status']]['color']
-                        order['status_description'] = ORDER_STATUS[order['status']]['description']
-
-                        # Отправка email администратору и покупателю
-                        from_email = {}
-                        from_email['user'] = ticket_service['info']['settings']['order_email']['user']
-                        from_email['pswd'] = ticket_service['info']['settings']['order_email']['pswd']
-                        from_email['connection'] = EmailBackend(
-                            host='mail.rterm.ru',
-                            port=587,
-                            username=from_email['user'],
-                            password=from_email['pswd'],
-                            use_tls=True,
-                        )
-
-                        email_context = {
-                            'event': event['info'],
-                            'ticket_service': ticket_service['info'],
-                            'payment_service': payment_service['info'],
-                            'order': order,
-                            'customer': customer
-                        }
-                        admin_email = EmailMessage(
-                            'order/email_admin.tpl',
-                            email_context,
-                            from_email['user'],
-                            (from_email['user'],),
-                            connection=from_email['connection']
-                        )
-                        admin_email.send()
-                        self.log('Email-уведомление администратору отправлено')
-
-                # Если таймаут на оплату ещё НЕ прошёл
-                else:
-                    self.log('Проверять ещё рано')
 
         # Если в БД нет незавершённых оплат
         else:

@@ -5,6 +5,7 @@ from django.core.cache import cache
 
 from third_party.payment_service.models import PaymentService
 from third_party.payment_service.payment_service_abc import payment_service_factory
+from third_party.payment_service.payment_service_abc.abc import PaymentService as PaymentServiceABC
 
 
 def get_or_set_cache(payment_service_id, reset=False):
@@ -40,16 +41,19 @@ def get_or_set_cache(payment_service_id, reset=False):
             json.loads(ps['settings']) if ps['settings'] is not None else None
         )
 
-        # Тип оплаты кладётся в `init` в виде строки `test` или `prod`,
-        # чтобы затем использоваться при инстацировании класса
+        # Тип оплаты помещается в init в виде строки `test` или `prod`,
+        # чтобы затем использоваться при инстанцировании класса
         ps['settings']['init']['mode'] = 'prod' if ps['is_production'] else 'test'
+
+        # Общие параметры, лежащие вне init, помещаются в него,
+        # чтобы затем использоваться при инстанцировании класса
+        for gp in PaymentServiceABC.GENERAL_PARAMS:
+            ps['settings']['init'][gp] = ps['settings'][gp]
 
         cache_value = {k: v for k, v in ps.items()}
         cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
     else:
         cache_value = json.loads(cache.get(cache_key))
-
-    # print(cache_key, ':\n', cache_value, '\n')
 
     return cache_value
 
@@ -67,9 +71,8 @@ def payment_service_instance(payment_service_id, url_domain=None):
     cache_key = 'payment_service.{payment_service_id}'.format(payment_service_id=payment_service_id)
     cache_value = json.loads(cache.get(cache_key))
 
-    url_domain = url_domain if url_domain is not None else settings.BEZANTRAKTA_ROOT_DOMAIN
-
     # URL для завершения заказа после удачной или НЕудачной оплаты
+    url_domain = url_domain if url_domain is not None else settings.BEZANTRAKTA_ROOT_DOMAIN
     cache_value['settings']['init']['success_url'] = 'http://{url_domain}/api/ps/success/'.format(url_domain=url_domain)
     cache_value['settings']['init']['error_url'] = 'http://{url_domain}/api/ps/error/'.format(url_domain=url_domain)
 

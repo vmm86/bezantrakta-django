@@ -11,7 +11,10 @@ class PaymentService(ABC):
     * возвращать одинаковые структуры данных (в том числе с одинаковыми ключами, содержащими одинаковые типы данных).
     """
     # Значения, которые можно приводить к булеву типу данных (например, в ответе запроса к API)
-    BOOLEAN_VALUES = ['True', 'true', 1, '1', 'y', 'yes', 'д', 'да', ]
+    BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
+
+    # Общие параметры, лежащие вне init и помещающиеся в него для инстацирования класса
+    GENERAL_PARAMS = ('commission', 'commission_included', 'timeout',)
 
     # Фабрика для создания выходных параметров в ответах методов API
     internal = namedtuple('InternalParameter', 'key type default')

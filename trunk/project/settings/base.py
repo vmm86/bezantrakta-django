@@ -183,7 +183,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
-            {'model': 'ticket_service.TicketServiceVenueBinder', 'label': 'Связки с залами 🔗'},
+            {'model': 'ticket_service.TicketServiceVenueBinder', 'label': 'Схемы залов 🔗'},
         )
 
     },

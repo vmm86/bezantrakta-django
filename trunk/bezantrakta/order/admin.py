@@ -37,6 +37,7 @@ class OrderAdmin(admin.ModelAdmin):
                     'status',
                     'ticket_service',)
     list_filter = (
+        'status', 'delivery', 'payment',
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_per_page = 20

@@ -67,9 +67,9 @@ def render_ticket(context):
     # QR-код в base64
     context['qr_code_base64'] = qr_code_to_base64(context['url'])
     # Горизонтальный штрих-код в base64
-    context['bar_code_h_base64'] = bar_code_to_base64('code128', context['bar_code'], 4000, 1400)
+    context['bar_code_h_base64'] = bar_code_to_base64('code128', context['bar_code'], 500, 175)
     # Вертикальный штрих-код в base64
-    context['bar_code_v_base64'] = bar_code_to_base64('code128', context['bar_code'], 4700, 1000)
+    context['bar_code_v_base64'] = bar_code_to_base64('code128', context['bar_code'], 588, 125)
 
     # Генерация и сохранение файла билета
     output_name = '{order_id}_{ticket_id}.pdf'.format(order_id=context['ticket_service_order'], ticket_id=context['id'])
@@ -83,8 +83,7 @@ def render_ticket(context):
         os.makedirs(os.path.dirname(full_output_path), mode=0o755, exist_ok=True)
 
     template = get_template('eticket/eticket.svg')
-    # Минификация кода
-    ticket = re.sub(r'\n', r'', template.render(context))
+    ticket = re.sub(r'\n', r'', template.render(context))  # Минификация кода
     svg2pdf(bytestring=str.encode(ticket), write_to=full_output_path)
     logger.info('Электронный билет {output_name} успешно сгенерирован'.format(output_name=output_name))
 
@@ -153,7 +152,7 @@ def qr_code_to_base64(url):
     qrcode = pyqrcode.create(url)
 
     qr = BytesIO()
-    qrcode.png(qr, scale=100, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=0)
+    qrcode.png(qr, scale=10, module_color=(0, 0, 0, 255), background=(255, 255, 255, 255), quiet_zone=0)
 
     qr_base64 = b64encode(qr.getvalue()).decode('ascii')
     return 'data:image/png;base64,{b64}'.format(b64=qr_base64)
