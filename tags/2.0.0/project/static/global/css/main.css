@@ -1,0 +1,545 @@
+@charset "utf-8";
+
+/* Roboto */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic');
+/* Roboto Condensed */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&subset=latin,cyrillic');
+
+/* Основные элементы */
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing:    border-box;
+    -o-box-sizing:      border-box;
+    -ms-box-sizing:     border-box;
+    box-sizing:         border-box;
+
+    margin: 0;
+}
+
+*:focus {outline: none;}
+
+html {
+    color:#000;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: normal;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+
+    padding:0;
+    margin:0;
+
+    width:100%;
+    height:100%;
+}
+
+body {
+    background:#999;
+
+    padding:0;
+    margin:0;
+
+    width:100%;
+/*  min-height:100%;
+    height:auto !important;*/
+    height:100%;
+
+    position:relative;
+
+    z-index: 1;
+}
+
+h1, h2, h3, h4, h5, h6,
+.componentheading {
+    display: inline-block;
+
+    background: url(/static/global/svg/background-gold.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    color: #000;
+    text-transform: uppercase;
+
+    padding: 1% 2%;
+}
+
+h1,
+.componentheading {
+    font-size: 1.5rem;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+}
+
+img {
+    border:none;
+}
+
+form {
+    padding:0;
+    margin:0;
+}
+
+a {
+    color:#000;
+    font-weight: bold;
+    text-decoration: underline;
+}
+a:hover {
+    text-decoration:none;
+}
+
+iframe {
+    border: none;
+    margin: 0.5rem;
+}
+
+label {
+    display: inline-block;
+
+    background: url(/static/global/svg/background-grey.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: normal;
+    letter-spacing: 0.05rem;
+
+    padding: 0.4rem 1rem;
+}
+
+input {
+    display: inline-block;
+
+    background: url(/static/global/svg/background-yellow.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    border: none;
+
+    font-weight: bold;
+
+    padding: 0.1rem 0.5rem;
+
+    height: 2rem;
+}
+
+input:focus,
+input::focus {
+    outline:none;
+}
+
+textarea {
+    background: url(/static/global/svg/background-yellow.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    border: none;
+
+    font-weight: bold;
+
+    padding: 1.5rem 1rem 2rem 1rem;
+}
+
+button {
+    background: url(/static/global/svg/background-grey.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    border: none;
+
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    font-weight: normal;
+    letter-spacing: 0.05rem;
+    text-shadow: 0.06rem 0.09rem 0 #000;
+    text-transform: uppercase;
+
+    padding: 0.6rem 1.2rem;
+}
+
+/* Форма обратной связи */
+
+.contact_email table tr td {
+    padding: 0.15rem 0;
+}
+.contact_email label {
+    position: relative;
+    left: 0;
+
+    z-index: 2;
+}
+.contact_email label[for="contact_name"],
+.contact_email label[for="contact_email"],
+.contact_email label[for="contact_subject"] {
+    width: 14rem;
+}
+.contact_email label#contact_textmsg {
+    width: 24rem;
+}
+.contact_email label[for="contact_email_copy"] {
+    background: none;
+
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: none;
+
+    color: #000;
+}
+.contact_email #contact_email_copy {
+    vertical-align: -4px;
+
+    width: 1.25rem;
+    height: 1.25rem;
+}
+.contact_email input.inputbox {
+    padding: 0.2rem 1.5rem;
+
+    width: 50%;
+
+    position: relative;
+    left: -1rem;
+
+    z-index: 1;
+}
+.contact_email #ck_captcha_code {
+    left: 0;
+}
+.contact_email textarea {
+    width: 57%;
+    min-width: 42rem;
+}
+
+/* */
+
+.body {
+    display: table;
+}
+
+.footer {
+    text-align: center;
+
+    width: 100%;
+}
+
+/* Вывод диагностических сообщений */
+
+#system-message {
+    padding: 1rem;
+}
+
+#system-message dt.message {
+    display: none;
+}
+
+#system-message dd.message ul {
+    list-style: none;
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+/* Стили в блоке контента */
+
+.contentpaneopen {
+    width: 100%;
+}
+
+.contentpaneopen ol {
+    padding: 0;
+    margin-left: 2%;
+}
+
+.contentpaneopen ul {
+    margin-left: 1%;
+}
+
+.ticket-offices-maps {
+    text-align: left;
+    padding: 0.25rem 0px;
+    width: 15%;
+}
+
+.ticket-offices-contacts {
+    width: 85%;
+}
+
+.row {
+    margin: 0.5rem 0;
+}
+
+.label {
+    display: inline-block;
+
+    font-weight: bold;
+    vertical-align: middle;
+
+    padding: 1rem 2rem;
+
+    width: 40%;
+
+    position: relative;
+
+    z-index: 2;
+}
+.input {
+    display: inline-block;
+
+    font-weight: bold;
+    vertical-align: middle;
+
+    padding: 1rem 2rem 1rem 3rem;
+
+    width: 58%;
+
+    position: relative;
+    left: -1.5rem;
+
+    z-index: 1;
+}
+
+.label.grey + .input.yellow {
+}
+.label.yellow + .input.grey {
+    z-index: 3;
+}
+
+.grey {
+    background: url(/static/global/svg/background-grey.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+}
+.yellow {
+    background: url(/static/global/svg/background-yellow.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #000;
+}
+.gold {
+    background: url(/static/global/svg/background-gold.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #000;
+}
+
+.help {
+    background: url(/static/global/svg/background-grey.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    padding: 1rem 1.3rem;
+
+    position: relative;
+
+    z-index: 2;
+}
+.bzlogo-mask {
+    display: inline-block;
+
+    background: url(/static/global/svg/bzlogo-mask.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    vertical-align: middle;
+
+    width: 4.75rem;
+    height: 5.5rem;
+
+    position: relative;
+    top: 0;
+    left: -1.5rem;
+
+    z-index: 3;
+}
+
+.help-contact {
+    background: url(/static/global/svg/background-yellow.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.875rem;
+    font-weight: normal;
+
+    padding: 1rem 2rem;
+
+    position: relative;
+    left: -3rem;
+
+    z-index: 1;
+}
+
+.contentpaneopen .ticket-offices-contacts {
+    font-size: 1rem;
+
+    padding-left: 1rem;
+}
+
+#goodluck,
+.ticket-office-address {
+    display: block;
+
+    font-family: 'Roboto', sans-serif;
+}
+
+/*
+.debug {
+    color: #999;
+}
+.success {
+    color: green;
+}
+.error {
+    color: #c40000;
+}
+.info {
+    color: #000;
+}
+.warning {
+    color: #c40000;
+}
+*/
+
+.fleft {
+    float:left;
+}
+.fright {
+    float:right;
+}
+
+.width100 {
+    width: 100%;
+    height: auto;
+}
+
+/* Галерея sigplus */
+
+.sigplus-gallery {
+    display: inline-block;
+}
+
+/*.sigplus-gallery ul > li > a {
+    background: url('/static/global/svg/order-map-body.svg') no-repeat 100% 100%;
+    padding: 1.25rem;
+}*/
+
+.boxplus-controls {
+    text-align: right;
+}
+
+.vdh-mask {
+    display: none;
+}
+
+/* Счётчики */
+
+.counters {
+    width:100%;
+    text-align:center;
+    margin: 0 auto;
+    margin-bottom: 1rem;
+}
+
+.counters div {
+    display: inline-block;
+}
+
+#yandex-metrika-counter, 
+#mailru-rating-counter, 
+#rambler-top100-counter, 
+#superbilet-banner {
+    display: none;
+}
+
+/* Всплывающий лайтбокс для прелодеров и т.п. */
+
+.modal {
+    display: block;
+    background: #000;
+    background: rgba(153,153,153,0.75);
+    text-align:center;
+    vertical-align:middle;
+    height: 100%;
+    width:  100%;
+    position: fixed;
+    top:    0;
+    left:   0;
+    right:  0;
+    bottom: 0;
+    z-index: 10000;
+}
+.modal > div {
+    text-align: center;
+    height: 100%;
+    width:  100%;
+}
+.modal .modal-body {
+    display: block;
+    background: #FFF;
+    font-size: 1rem;
+    text-align: center;
+    padding: 0;
+    margin: 0 auto;
+    width:100%;
+    height:100%;
+    position: relative;
+    top: 0;
+    left: 0;
+    overflow: auto;
+}
+.modal .modal-body > div {
+    background: #FFF;
+    padding: 1.5rem;
+}
+.modal .modal-body h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+.modal .modal-body .bzlogo {
+    margin-left: 3vw;
+    width: 50%;
+    max-width: 400px;
+}
+.modal .close {
+    background: #FC0;
+    border-radius: 0 0 0 1.4rem;
+    color: #000;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    padding: 0 1rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 10000;
+}
+.modal .close:hover {
+    cursor: pointer;
+}
