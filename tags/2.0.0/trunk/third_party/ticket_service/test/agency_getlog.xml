@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GateReq>
+    <ReqLogin>
+        <UserPass>qwaz56ty</UserPass>
+        <UserName>sbgs2</UserName>
+    </ReqLogin>
+    <ReqBody>
+        <InputRow TimeTo="15:30" Seat="5" NomBilKn="1875" DateFrom="18.07.2017" Row="1" cod_sec="527" TimeFrom="15:20" DateTo="18.07.2017"></InputRow>
+    </ReqBody>
+</GateReq> 
+
+<?xml version="1.0" encoding="utf-8"?>
+<GateAnswer>
+    <AnswerResult>
+        <ResultCode>0</ResultCode>
+        <RecordCount>3</RecordCount>
+    </AnswerResult>
+    <AnswerBody>
+        <Row ActionDate="18.07.2017" ActionTime="15:20:44" ActionDone="PreRes" NomBilKn="1875" Cod_sec="527" Row="1" Seat="5" price="10.00" priceSell="10.00" priceDiscount="10.00" ReservID="" ReservDate="30.12.1899 00:00" result_code="0"/>
+        <Row ActionDate="18.07.2017" ActionTime="15:22:36" ActionDone="SetRes" NomBilKn="1875" Cod_sec="527" Row="1" Seat="5" price="10.00" priceSell="10.00" priceDiscount="10.00" ReservID="37941" ReservDate="18.07.2017 15:23" result_code="0"/>
+        <Row ActionDate="18.07.2017" ActionTime="15:29:59" ActionDone="SetSold" NomBilKn="1875" Cod_sec="527" Row="1" Seat="5" price="10.00" priceSell="10.00" priceDiscount="10.00" ReservID="37941" ReservDate="18.07.2017 15:23" result_code="0"/>
+    </AnswerBody>
+</GateAnswer>
