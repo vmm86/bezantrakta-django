@@ -8,13 +8,24 @@ from ckeditor.fields import RichTextField
 
 
 class ArticleManager(models.Manager):
+    """Менеджер модели Article."""
     def get_queryset(self):
         return super(ArticleManager, self).get_queryset().select_related('domain')
 
 
 class Article(models.Model):
-    """
-    Простые HTML-страницы.
+    """Статические HTML-страницы.
+
+    Attributes:
+        objects (ArticleManager): Менеджер модели Article.
+        id (UUIDField): Description
+        title (CharField): Название (всего не более 60-65 символов).
+        slug (SlugField): Псевдоним.
+        description (TextField): Метатег `description` (краткое описание страницы, не более 150-200 символов).
+        keywords (TextField): Метатег `keywords` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
+        text (RichTextField): Содержимое страницы.
+        is_published (BooleanField): Опубликована ли страница на сайте или нет.
+        domain (ForeignKey): Сайт.
     """
     objects = ArticleManager()
 

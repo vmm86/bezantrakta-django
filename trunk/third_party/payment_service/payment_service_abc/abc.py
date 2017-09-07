@@ -121,7 +121,9 @@ class PaymentService(ABC):
         Args:
             payment_id (str): Идентификатор оплаты.
 
-        Содержимое словарей в ответе метода:
+        Returns:
+            dict: Информация о статусе оплаты.
+
             success (bool): Запрос успешный (True).
             code (str): Код ошибки (0).
             message (str): Сообщение об ошибке ('OK').

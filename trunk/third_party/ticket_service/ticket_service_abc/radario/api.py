@@ -748,18 +748,18 @@ class Radario(TicketService):
         Args:
             event_id (int): Идентификатор события.
             customer (dict): Информация о покупателе.
-                name (str): ФИО покупателя.
-                email (str): Электронная почта покупателя.
+            customer[name] (str): ФИО покупателя.
+            customer[email] (str): Электронная почта покупателя.
             tickets (list): Информация о зарезервированных билетах.
-                seat_id (int): Идентификатор места.
-                price_group_id (int): Идентификатор группы цен.
+            tickets[seat_id] (int): Идентификатор места.
+            tickets[price_group_id] (int): Идентификатор группы цен.
 
         Returns:
             dict: Информация о созданном заказе.
-                order_id (int): Идентификатор заказа в сервисе заказа билетов.
-                tickets (list): Информация о заказанных билетах.
-                    ticket_uuid (str): Уникальный UUID билета (на данный момент генерируется на клиенте).
-                    bar_code (str): Штрих-код билета (12 символов).
+            order_id (int): Идентификатор заказа в сервисе заказа билетов.
+            tickets (list): Информация о заказанных билетах.
+            tickets[ticket_uuid] (str): Уникальный UUID билета (на данный момент генерируется на клиенте).
+            tickets[bar_code] (str): Штрих-код билета (12 символов).
         """
         method = 'POST'
         url = '/orders/reserve'
