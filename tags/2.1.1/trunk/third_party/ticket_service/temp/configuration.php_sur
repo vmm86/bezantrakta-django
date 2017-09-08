@@ -1,0 +1,147 @@
+<?php
+class JConfig {
+// Общие параметры Joomla
+	var $dostavka = '200';
+	var $offline = '0';
+	var $editor = 'jce';
+	var $list_limit = '20';
+	var $helpurl = 'http://help.joomla.org';
+	var $debug = '0';
+	var $debug_lang = '0';
+	var $sef = '1';
+	var $sef_rewrite = '1';
+	var $sef_suffix = '0';
+	var $feed_limit = '10';
+	var $feed_email = 'author';
+	var $secret = 'jutierout90e48';
+	var $gzip = '0';
+	var $error_reporting = '-1';
+	var $xmlrpc_server = '0';
+	var $log_path = '/home/belcanto/sur.bezantrakta.ru_v3.0/log';
+	var $tmp_path = '/home/belcanto/sur.bezantrakta.ru_v3.0/tmp';
+	var $live_site = '';
+	var $force_ssl = '0';
+	var $offset = '0';
+	var $caching = '0';
+	var $cachetime = '15';
+	var $cache_handler = 'file';
+	var $memcache_settings = array();
+	var $ftp_enable = '0';
+	var $ftp_host = '127.0.0.1';
+	var $ftp_port = '21';
+	var $ftp_user = 'admin';
+	var $ftp_pass = 'E2E4seven7';
+	var $ftp_root = '';
+	var $dbtype = 'mysqli';
+	var $host = 'localhost';
+	var $user = 'belcanto';
+	var $db = 'bezantrakta_sur';
+	var $dbprefix = 'jos_';
+	var $mailer = 'smtp';
+	var $mailfrom = 'zakaz_sur@bezantrakta.ru';
+	var $fromname = 'Безантракта.ru';
+	var $sendmail = '/usr/sbin/sendmail';
+	var $smtpauth = '1';
+	var $smtpsecure = 'none';
+	var $smtpport = '587';
+	var $smtpuser = 'zakaz_sur@bezantrakta.ru';
+	var $smtppass = 'N9L3NT';
+	var $smtphost = 'mail.rterm.ru';
+	var $MetaAuthor = '1';
+	var $MetaTitle = '1';
+	var $lifetime = '120';
+	var $session_handler = 'none';
+	var $password = 'wrtwefsf352';
+	var $sitename = 'Афиша Сургута bezantrakta.ru заказ билетов в театр и на концерт в Сургуте';
+	var $MetaDesc = 'bezantrakta.ru Афиша Сургута, первая интернет касса Сургута, заказ билетов в театр и на концерт в Сургуте. Удобные варианты заказа и оформления билетов: забронировать и выкупить в кассе';
+	var $MetaKeys = 'билеты сургут, гастроли в сургуте, гастроли, афиша, афиша сургута, афиша театров, афиша театров сургута, афиша концертов, афиша сургутских театров, репертуар театров, репертуар театров спектакли, артисты, артисты в сургуте, представляет, гастрольные агентства, гастрольные агентства сургута, концерты, концерты в сургуте, концертные агентства сургута, афиша найти, гастроли найти, сургутские артисты, артисты сургута, сургутские артисты найти, артисты сургута найти, билеты, театральные билеты, билеты в сургуте, билет в театр, билеты в театр онлайн, заказ билетов, купить билеты в театр, купите билеты на концерт, купите билеты в театр, купите билеты на концерт, билеты на концерты, билеты на концерт, билеты в театры, билеты спектакль, билеты в сургуте купить, купить билеты в театр, купить билеты в сургуте, купить билеты на концерт, продажа театральных билетов, театральные билеты, театральные билеты в сургуте, театральные билеты в сургуте купить, купить театральные билеты в сургуте, билеты в кино, билеты в кино в сургуте, купить билеты в кино в сургуте, сеансы сургутских кинотеатров, спектакль, спектакли, спектакли сургута, театральная афиша, афиша сургута, афиша сургута. театры для детей, афиша оперного театра. сургут, театральная афиша, театральная афиша сургута, анонс, анонсы, анонсы сургута, сургутские анонсы, театральные кассы, отдых в сургуте, вечер в сургуте, цены на билеты в театр, заказ билетов, заказ билетов в театр, заказ билетов в театр, заказ билетов в кино, заказ билетов в сургуте, заказ билетов в театры сургута, заказ билетов в кинотеатры сургута, кинотеатры сургута, куда сходить, куда сходить в сургуте, антракт, без антракта, без антракта сургут, без антракта ру, bezantrakta, без антракта, безантракта, театр, театр начинается, театр начинается с вешалки, концертная деятельность, звезды в сургуте, корпоративы, корпоративы в сургуте, бельканто, агентство бельканто, гастрольное агентство бельканто, балет в сургуте, опера в сургуте, драматический театр, театр балета, театр драмы, театр оперы';
+	var $offline_message = 'Сайт сейчас закрыт на техническое обслуживание. Пожалуйста, зайдите позже.';
+// Отключен ли сайт
+    var $off = '0';
+// Нужно ли выводить отладочную информацию в процессе разработки
+    var $test = '0';
+// Email для технических уведомлений
+    var $admin_email = 'web@rterm.ru';
+// Город и поддомен сайта
+    var $city = 'sur';
+// Подтверждение доступа к сайту в средствах для вебмастеров Яндекс и Google
+    var $yandex_webmaster = '65a50363fcabf9af';
+    var $google_webmaster = '-udRklmWJAa16hRenZ46rprg-YGgwb-fv70KXihql0c';
+// Идентификаторы счётчиков Яндекс.Метрика, Google.Analytics, UpToLike (кнопки соцсетей), пиксель вКонтакте
+    var $yandex_counter   = '38393285';
+    var $google_counter   = 'UA-59614371-5';
+    var $uptolike_counter = '1544890';
+    var $vkontakte_pixel  = 'VK-RTRG-117927-aOJPg';
+// Общий телефон для справок и бронирования
+    var $help_telephones = array(
+        'tel:73462700277'=>'+7 (3462) 700-277',
+        'tel:73462700278'=>'+7 (3462) 700-278'
+    );
+// Подтверждение согласия на обработку персональных данных и м.б. работает ли почтовая рассылка
+    var $emailing = 1;
+    var $emailingText = 'Оформляя заказ, Вы подтверждаете своё согласие на обработку Ваших персональных данных согласно <a href="/oferta" target="_blank">договору оферты</a>. В свою очередь мы гарантируем, что Ваши персональные данные будут использоваться исключительно при оформлении заказа и не будут переданы третьим лицам.';
+// Сссылки на аккаунты в соцсетях
+    var $social_accounts = array(
+        array(
+            'alias'=>'vkontakte',
+            'title'=>'ВКонтакте',
+            'link' =>'https://vk.com/bezantrakta_ru'
+        ),
+        array(
+            'alias'=>'facebook',
+            'title'=>'Facebook',
+            'link' =>'https://www.facebook.com/bezantrakta'
+        ),
+        array(
+            'alias'=>'twitter',
+            'title'=>'Twitter',
+            'link' =>'https://twitter.com/bezantrakta'
+        ),
+        array(
+            'alias'=>'instagram',
+            'title'=>'Instagram',
+            'link' =>'https://www.instagram.com/bezantrakta.ru'
+        )
+    );
+// СуперБилет: параметры подключения
+    var $SBGS_host = 'http://sbgs.gastroli.net/cgi-bin/agency-belcanto-pojidaev/STicketGate.exe/wsdl/ISTicket';
+    var $SBGS_user = 'sbgs_sur';
+    var $SBGS_pass = 'SuR2aD4i7e';
+    var $SBGS_mode = 'agencyext';
+    var $sb_max_places_per_order = 7;
+    var $sb_courier_price = 200;
+    var $sb_active_payment         = 'sngb';
+    var $superbilet_active_payment = 'sngb';
+//// СуперБилет: глобальное включение/отключение способов получения/оплаты билетов
+    var $sb_delivery_self    = 1;
+    var $sb_delivery_courier = 0;
+    var $sb_delivery_payment = 1;
+    var $sb_delivery_eticket = 0;
+//// СуперБилет: описание способов получения/оплаты билетов на шаге 2
+    var $sb_self_description = "";
+    var $sb_courier_description = "<p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>\n<p>Стоимость доставки %d рублей.</p>\n";
+    var $sb_payment_description = "<p>Билеты, оплаченные банковской картой, можно получить не ранее 24-х часов после оплаты заказа и не позднее 24-х часов до начала мероприятия в любой из наших касс по номеру заказа, предъявив документ, удостоверяющий личность владельца карты (паспорт или водительское удостоверение).</p>\n";
+    var $sb_eticket_description = "<p>После успешного подтверждения оплаты PDF-файлы с билетами будут отправлены на указанную Вами электронную почту. Их нужно будет <strong>распечатать на листе формата А4</strong> и предъявить при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно!</strong> Для удобства его можно сложить по пунктирным линиям сгиба.</p>\n<br><p>Возврат билетов осуществляется только в случае переноса или отмены меропиятия, а также по согласованию с организатором.</p>\n<br><p><strong>В целях Вашей безопасности не сообщайте номер оплаченного заказа посторонним лицам и не выкладывайте изображения билетов в социальные сети – по ним могут пройти посторонние люди!</strong></p>\n";
+//// СуперБилет: описание способов получения/оплаты билетов в email-уведомлениях
+    var $sb_self_email_description = "<p>Бронь на билеты действует в течение 2-х дней после оформления заказа!</p>\n<p>Вы сможете выкупить билеты в любой из наших касс.</p>\n<p>Список касс и схемы проезда вы можете увидеть <a href=\"%s/kontakty\" target=\"_blank\">на странице \"Контакты\"</a>.</p>\n";
+    var $sb_courier_email_description = "<p>Бронь на билеты действует в течение 2-х дней после оформления заказа!</p>\n<p>В течение 24-х часов с Вами по телефону свяжется наш курьер и доставит билеты по указанному адресу в удобное для Вас время.</p>\n";
+    var $sb_payment_email_description = "<p>Перед посещением мероприятия, пожалуйста, получите свои билеты в любой кассе Безантракта.</p>\n<p>Список касс и схемы проезда вы можете увидеть <a href=\"%s/kontakty\" target=\"_blank\">на странице \"Контакты\"</a>.</p>\n<p>В кассах билеты можно получить не ранее, чем через 24 часа после подтверждения заказа и не позже, чем за 24 часа до начала мероприятия.</p>\n";
+    var $sb_eticket_email_description = "<p>PDF-файлы с билетами вложены в это письмо. Для того, чтобы их открыть, потребуется программа <a href=\"https://get.adobe.com/ru/reader/\" target=\"_blank\">Adobe Reader</a> или любая другая программа, открывающая файлы формата PDF.</p>\n<p>Вам необходимо распечатать каждый билет на отдельном листе формата A4 и предъявить его при входе на мероприятие.<br>\n<p>Билет на листе A4 обрезать не нужно! Для удобства его можно сложить по пунктирным линиям сгиба.</p>\n";
+// СургутНефтеГазБанк: параметры подключения
+//// `ECommerce` - тестовая оплата, `Gateway` - боевая оплата
+    var $sngb_payment_type = 'Gateway';
+    var $sngb_test_merchant_id    = '2009';
+    var $sngb_test_terminal_alias = '2009-BEZANTRAKTA';
+    var $sngb_test_url            = 'https://ecm.sngb.ru:443/ECommerce/';
+    var $sngb_test_psk            = '338b23a05f875f8eef4a0095cc2e964796449142';
+    var $sngb_test_token          = '12bcaf02b8da1c442d3c0df04c7ca615068acde18aaf6affbeced0d2a15e8e3e';
+    var $sngb_production_merchant_id    = '1568';
+    var $sngb_production_terminal_alias = '1568-alias';
+    var $sngb_production_url            = 'https://ecm.sngb.ru:443/Gateway/';
+    var $sngb_production_psk            = 'fae9fa2ddff2d3c231134f4a8ffa3ed768152e78';
+    var $sngb_production_token          = 'c17cd3d987bb332e9c7b1ee62fd6b8e16b4172eddbf8364c48caa0f239ecb668';
+    var $sngb_commission = 1.8;
+    var $sngb_timeout = 15;
+    var $sngb_description = "<p><strong>В сумму заказа включена комиссия платёжной системы</strong>.</p>\n<br><p>Оплата проводится с использованием услуг Интернет-эквайринга <strong>Акционерного общества «Сургутнефтегазбанк» (АО БАНК «СНГБ»)</strong> <img src=\"/images/banners/sngb-small.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"> с использованием банковских карт платёжных систем:\n<ul>\n<li><p><strong>VISA International</strong> <img src=\"/images/banners/visa.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"></p></li>\n<li><p><strong>MasterCard World Wide</strong> <img src=\"/images/banners/mastercard.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"></p></li>\n<li><p><strong>МИР</strong> <img src=\"/images/banners/mir.png\" width=\"32\" height=\"20\" style=\"vertical-align: middle;\"></p></li>\n</ul></p>\n";
+}
+?>
