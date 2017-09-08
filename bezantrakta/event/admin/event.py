@@ -53,7 +53,7 @@ class EventAdmin(admin.ModelAdmin):
                 'fields': ('title', 'slug', 'description', 'keywords', 'text',
                            'is_published', 'is_on_index', 'min_price', 'min_age',
                            'datetime', 'event_category', 'event_venue', 'domain', 'is_group',
-                           'ticket_service', 'ticket_service_event', 'ticket_service_venue', 'ticket_service_prices',),
+                           'ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',),
             }
         ),
     )
@@ -75,7 +75,7 @@ class EventAdmin(admin.ModelAdmin):
         'event_category': admin.VERTICAL,
         'min_age': admin.HORIZONTAL,
     }
-    readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_venue', 'ticket_service_prices',)
+    readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',)
     search_fields = ('title',)
 
     @queryset_filter('Domain', 'domain__slug')

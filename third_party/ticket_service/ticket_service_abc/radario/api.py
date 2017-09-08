@@ -229,39 +229,39 @@ class Radario(TicketService):
 
         return places
 
-    def venue(self, **kwargs):
-        """Информация о зале (схеме зала) в месте проведения событий.
+    def scheme(self, **kwargs):
+        """Информация о схеме зала в месте проведения событий.
 
         Ответ в том числе содержит информацию о секторах (зонах) и их местах.
 
         Args:
-            venue_id (int): Идентификатор зала (схемы зала).
-            raw (bool, optional): опциональная возможность получения schema raw descriptor.
+            scheme_id (int): Идентификатор схемы зала.
+            raw (bool, optional): Опциональная возможность получения schema raw descriptor.
 
         Returns:
-            dict: Инфыормация о конкретном зале (схеме зала).
+            dict: Информация о конкретной схеме зала.
         """
         method = 'GET'
-        url = '/schemes/{scheme_id}'.format(scheme_id=kwargs['venue_id'])
+        url = '/schemes/{scheme_id}'.format(scheme_id=kwargs['scheme_id'])
         if 'raw' in kwargs and kwargs['raw']:
             url += '/raw'
         data = None
         output_mapping = {
             # Идентификатор зала
-            'id':      self.internal('venue_id', int,),
+            'id':      self.internal('scheme_id', int,),
             # Название зала
-            'name':    self.internal('venue_title', str,),
+            'name':    self.internal('scheme_title', str,),
             # Версия схемы зала
-            'version': self.internal('venue_version', int,),
+            'version': self.internal('scheme_version', int,),
             # Секторы (зоны) зала
-            'zones':   self.internal('venue_zones', list,),
+            'zones':   self.internal('scheme_zones', list,),
             # Атрибуты zones
             # 'colcount' (int): (?)
             # 'id' (int): Идентификатор сектора
             # 'name' (str): Название сектора
             # 'withseats' (bool): Сектор с местами для сидения или нет
             # 'rowcount' (int): (?)
-            # 'seats':   self.internal('venue_seats', list,),
+            # 'seats':   self.internal('scheme_seats', list,),
             # Атрибуты seats
             # 'number' (int): Идентификатор места
             # 'seatname' (str): Название места
@@ -270,15 +270,15 @@ class Radario(TicketService):
             'seatCount': None,
             'image':     None,
         }
-        venue = self.request(method, url, data, output_mapping)
+        scheme = self.request(method, url, data, output_mapping)
 
-        return venue
+        return scheme
 
-    def discover_venues(self):
+    def discover_schemes(self):
         """Получение списка залов для записи в БД.
 
-        Отдельными залами в API Радарио фактически является сущность `scheme`.
-        Сущность `place` - места событий как отдельные здания (не связанные напрямую со схемами залов).
+        Отдельными схемами залами в API Радарио является сущность ``scheme``.
+        Сущность ``place`` - места событий как отдельные здания (не связанные напрямую со схемами залов).
 
         Returns:
             list: Список словарей с информацией о зале.
@@ -286,32 +286,32 @@ class Radario(TicketService):
         from collections import defaultdict
 
         events = self.events()
-        discovered_venues = []
+        discovered_schemes = []
 
         events_by_schemes = defaultdict(list)
         for e in events:
-            events_by_schemes[(e['venue_id'])].append(e)
+            events_by_schemes[(e['scheme_id'])].append(e)
 
-        for v in events_by_schemes:
+        for s in events_by_schemes:
             scheme = {}
-            if v != 0:
-                scheme_info = self.venue(venue_id=v)
-                scheme['venue_id'] = v
-                scheme['venue_title'] = '{place_title} ({venue_title}) v{venue_version}'.format(
-                    place_title=events_by_schemes[v][0]['place_title'],
-                    venue_title=scheme_info['venue_title'],
-                    venue_version=scheme_info['venue_version']
+            if s != 0:
+                scheme_info = self.scheme(scheme_id=s)
+                scheme['scheme_id'] = s
+                scheme['scheme_title'] = '{place_title} ({scheme_title}) v{scheme_version}'.format(
+                    place_title=events_by_schemes[s][0]['place_title'],
+                    scheme_title=scheme_info['scheme_title'],
+                    scheme_version=scheme_info['scheme_version']
                 )
             else:
-                scheme['venue_id'] = 0
-                scheme['venue_title'] = '{place_title} (билеты без мест)'.format(
+                scheme['scheme_id'] = 0
+                scheme['scheme_title'] = '{place_title} (билеты без мест)'.format(
                     place_title=self.company_title
                 )
-            discovered_venues.append(scheme)
+            discovered_schemes.append(scheme)
 
-        discovered_venues = sorted(discovered_venues, key=itemgetter('venue_id'))
+        discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
 
-        return discovered_venues
+        return discovered_schemes
 
     def groups(self):
         """Группы событий для конкретного организатора.
@@ -367,9 +367,9 @@ class Radario(TicketService):
                     g['group_datetime'] = events_by_groups[(e['group_id'])][0]['event_datetime']
                     g['group_min_price'] = events_by_groups[(e['group_id'])][0]['event_min_price']
                     g['group_text'] = events_by_groups[(e['group_id'])][0]['event_text']
-                    g['venue_id'] = (
-                        events_by_groups[(e['group_id'])][0]['venue_id'] if
-                        events_by_groups[(e['group_id'])][0]['venue_id'] is not None else
+                    g['scheme_id'] = (
+                        events_by_groups[(e['group_id'])][0]['scheme_id'] if
+                        events_by_groups[(e['group_id'])][0]['scheme_id'] is not None else
                         0
                     )
 
@@ -429,7 +429,7 @@ class Radario(TicketService):
             # Название места проведения событий
             'placeTitle':    self.internal('place_title', str,),
             # Идентификатор зала
-            'placeSchemeId': self.internal('venue_id', int, 0,),
+            'placeSchemeId': self.internal('scheme_id', int, 0,),
             # Отключены ли продажи в событии или нет
             'salesStopped':  self.internal('is_disabled', bool,),
 
@@ -498,7 +498,7 @@ class Radario(TicketService):
             # Идентификатор группы
             'groupId':       self.internal('group_id', int, 0,),
             # Идентификатор зала
-            'placeSchemeId': self.internal('venue_id', int, 0,),
+            'placeSchemeId': self.internal('scheme_id', int, 0,),
             # Отключены ли продажи в событии или нет
             'salesStopped':  self.internal('is_disabled', bool,),
 
@@ -542,14 +542,14 @@ class Radario(TicketService):
         """Список секторов в конкретном зале.
 
         Args:
-            venue_id (int): Идентификатор зала.
+            scheme_id (int): Идентификатор зала.
 
         Returns:
             dict: Словарь, где ключи - идентификаторы секторов, значения - названия секторов.
         """
-        venue = self.venue(venue_id=kwargs['venue_id'])
+        scheme = self.scheme(scheme_id=kwargs['scheme_id'])
 
-        return {v['id']: v['name'].lower() for v in venue['venue_zones']}
+        return {s['id']: s['name'].lower() for s in scheme['scheme_zones']}
 
     def price_groups(self, **kwargs):
         """Группы цен в конкретном событии (с дочерними списками мест для каждой группы цен).
@@ -606,7 +606,7 @@ class Radario(TicketService):
 
         Args:
             event_id (int): Идентификатор события.
-            venue_id (int): Идентификатор зала.
+            scheme_id (int): Идентификатор зала.
 
         Returns:
             list: Список словарей с информацией о доступных к заказу местах.
@@ -616,10 +616,10 @@ class Radario(TicketService):
         seats = []
         prices = sorted([pg['price'] for pg in price_groups])
 
-        venue = self.venue(venue_id=kwargs['venue_id'])
-        print('venue: ', venue, '\n')
-        if kwargs['venue_id'] != 0:
-            sectors = {v['name'].lower(): v['id'] for v in venue['venue_zones']}
+        scheme = self.scheme(scheme_id=kwargs['scheme_id'])
+        print('scheme: ', scheme, '\n')
+        if kwargs['scheme_id'] != 0:
+            sectors = {s['name'].lower(): s['id'] for s in scheme['scheme_zones']}
         else:
             sectors = {pg['price_group_title'].lower(): pg['price_group_id'] for pg in price_groups}
         print('sectors: ', sectors, '\n')

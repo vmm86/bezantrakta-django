@@ -56,7 +56,7 @@ ts = ticket_service_factory(slug, init)
 
 # AGENCY_VRN
 place_id = 14
-venue_id = 20
+scheme_id = 20
 group_id = 214
 # event_id = 1875  # Test
 # event_id = 1887  # Billy's Band
@@ -67,7 +67,7 @@ event_id = 1916  # nsk test
 sector_id = 509
 
 # THEATRE_VRN_TEST
-# venue_id = 1
+# scheme_id = 1
 # place_id = 1
 # group_id = 1
 # event_id = 615
@@ -78,10 +78,10 @@ sector_id = 509
 
 # PLACES
 # py_result = ts.places()
-# VENUES
-# py_result = ts.venues(place_id=place_id)
-# DISCOVER_VENUES
-# py_result = ts.discover_venues()
+# SCHEMES
+# py_result = ts.schemes(place_id=place_id)
+# DISCOVER_SCHEMES
+# py_result = ts.discover_schemes()
 
 # GROUPS
 # py_result = ts.groups()
@@ -91,7 +91,7 @@ sector_id = 509
 # EVENTS
 # py_result = ts.events()
 # py_result = ts.events(place_id=place_id)
-# py_result = ts.events(venue_id=venue_id)
+# py_result = ts.events(scheme_id=scheme_id)
 # DISCOVER_EVENTS
 py_result = ts.discover_events()
 

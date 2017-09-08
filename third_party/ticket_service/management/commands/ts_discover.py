@@ -14,7 +14,7 @@ from bezantrakta.event.models import Event, EventGroupBinder
 
 from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
 from third_party.ticket_service.cache import ticket_service_instance
-from third_party.ticket_service.models import TicketService, TicketServiceVenueBinder
+from third_party.ticket_service.models import TicketService, TicketServiceSchemeVenueBinder
 
 
 class Command(BaseCommand):
@@ -28,13 +28,13 @@ class Command(BaseCommand):
 
     1) Инстанцирование класса СПБ, используя параметры из его настроеки.
 
-    2) Получение и запись в БД списка залов СПБ с помощью `discover_venues`.
+    2) Получение и запись в БД списка залов СПБ с помощью ``discover_schemes``.
 
-    3) В модель `TicketServiceVenueBinder` записываются:
+    3) В модель ``TicketServiceSchemeVenueBinder`` записываются:
     * либо все залы СПБ,
-    * либо только залы, ID которых указаны в настройках СПБ в параметре `venues`.
+    * либо только залы, ID которых указаны в настройках СПБ в параметре ``schemes``.
 
-    4) Получение групп/событий СПБ с помощью `discover_groups`/`discover_events`
+    4) Получение групп/событий СПБ с помощью ``discover_groups``/``discover_events``
     происходит только для тех залов СПБ, которые предварительно в админ-панели
     были связаны с уникальными добавленными вручную залами в модели `EventVenue`.
 
@@ -45,11 +45,11 @@ class Command(BaseCommand):
     У уже имеющихся обновляется дата/время.
 
     7) Если событие входит в группу, добавленную или уже имеющуюся,
-    событие привязывается к этой группе в self-M2M-модели `EventGroupBinder`.
+    событие привязывается к этой группе в self-M2M-модели ``EventGroupBinder``.
 
     Задание должно запускаться в cron с определённой периодичностью:
 
-    ***** source {venv/biv/activate} && python {корень проекта}/manage.py ts_discover
+    ``***** source {venv/biv/activate} && python {корень проекта}/manage.py ts_discover``
     """
     help = """
 Поиск залов, групп и событий в подключенных к сайтам билетных сервисах._______
@@ -57,10 +57,10 @@ class Command(BaseCommand):
 Получаем из БД список сервисов продажи билетов, привязанных к разным сайтам.__
 Для каждого из активных сервисов продажи билетов (СПБ) проводится следующее:__
 1) Инстанцирование класса СПБ, используя параметры из его настроеки.__________
-2) Получение и запись в БД списка залов СПБ с помощью `discover_venues`.______
-3) В модель `TicketServiceVenueBinder` записываются:__________________________
+2) Получение и запись в БД списка залов СПБ с помощью `discover_schemes`._____
+3) В модель `TicketServiceSchemeVenueBinder` записываются:__________________________
 __ либо все залы СПБ,_________________________________________________________
-__ либо только залы, ID которых указаны в настройках СПБ в параметре `venues`.
+__ либо только залы, ID которых указаны в настройках СПБ в свойстве `schemes`.
 4) Получение групп/событий СПБ с помощью `discover_groups`/`discover_events`__
 происходит только для тех залов СПБ, которые предварительно в админ-панели____
 были связаны с уникальными добавленными вручную залами в модели `EventVenue`._
@@ -135,66 +135,66 @@ ______________________________________________________________________________
 
                 # Залы конкретного сервиса продажи билетов
                 self.stdout.write('Поиск залов сервиса продажи билетов...')
-                venues = ts.discover_venues()
-                self.stdout.write('Найдено {n} залов сервиса продажи билетов'.format(n=len(venues[0])))
+                schemes = ts.discover_schemes()
+                self.stdout.write('Найдено {n} схем залов сервиса продажи билетов'.format(n=len(schemes[0])))
 
                 # Возможность добавлять из сервиса продажи билетов только те его залы,
                 # которые явно принадлежат именно к этому сайту в этом городе
                 # (для shared-билетных сервисов между несколькими сайтами).
-                venues_inclusion_list = (
-                    ticket_service['settings']['venues'] if
-                    'venues' in ticket_service['settings'] and
-                    type(ticket_service['settings']['venues']) is list and
-                    len(ticket_service['settings']['venues']) > 0 else
+                schemes_inclusion_list = (
+                    ticket_service['settings']['schemes'] if
+                    'schemes' in ticket_service['settings'] and
+                    type(ticket_service['settings']['schemes']) is list and
+                    len(ticket_service['settings']['schemes']) > 0 else
                     None
                 )
-                if venues_inclusion_list is None:
+                if schemes_inclusion_list is None:
                     self.stdout.write('Из сервиса продажи билетов импортируются ВСЕ залы')
                 else:
                     self.stdout.write('Из сервиса продажи билетов импортируются только залы {vil}'.format(
-                        vil=venues_inclusion_list)
+                        vil=schemes_inclusion_list)
                     )
 
-                # Содержимое параметра `venues` добавляется администратором по необходимости
+                # Содержимое параметра `schemes` добавляется администратором по необходимости
                 # и используется, только если этот список - непустой.
                 # В противном случае в БД сайта добавляются все залы из сервиса продажи билетов.
-                for v in venues:
+                for s in schemes:
                     if (
-                        venues_inclusion_list is None or
+                        schemes_inclusion_list is None or
                         (
-                            venues_inclusion_list is not None and
-                            v['venue_id'] in venues_inclusion_list
+                            schemes_inclusion_list is not None and
+                            s['scheme_id'] in schemes_inclusion_list
                         )
                     ):
                         try:
-                            TicketServiceVenueBinder.objects.create(
+                            TicketServiceSchemeVenueBinder.objects.create(
                                 ticket_service_id=ticket_service['id'],
-                                ticket_service_event_venue_id=v['venue_id'],
-                                ticket_service_event_venue_title=v['venue_title'],
+                                ticket_service_scheme_id=s['scheme_id'],
+                                ticket_service_scheme_title=s['scheme_title'],
                             )
                         except IntegrityError:
                             pass
                         else:
                             self.log(
-                                'Добавлена связка с залом сервиса продажи билетов {id}: {title}'.format(
-                                    id=v['venue_id'],
-                                    title=v['venue_title']
+                                'Добавлена связка со схемой зала сервиса продажи билетов {id}: {title}'.format(
+                                    id=s['scheme_id'],
+                                    title=s['scheme_title']
                                 ), level='SUCCESS'
                             )
 
-                # Залы из сервиса продажи билетов, связанные с залами в модели EventVenue
-                ts_venue_binder = dict(TicketServiceVenueBinder.objects.filter(
+                # Схемы залов из сервиса продажи билетов, связанные ранее с залами в модели ``event.EventVenue``
+                ts_scheme_venue_binder = dict(TicketServiceSchemeVenueBinder.objects.filter(
                     ticket_service_id=ticket_service['id'],
                     ticket_service__domain_id=ticket_service['domain_id'],
                     event_venue__isnull=False,
                 ).values_list(
-                    'ticket_service_event_venue_id',
+                    'ticket_service_scheme_id',
                     'event_venue_id',
                 ))
 
                 # Группы и события из сервиса продажи билетов зарашиваются,
                 # только если их залы в сервисе продажи билетов связаны с залами в БД
-                if len(ts_venue_binder) > 0:
+                if len(ts_scheme_venue_binder) > 0:
                     # Сохранение групп в БД
                     self.stdout.write('Имеются связки залов с сервисами продажи билетов.')
 
@@ -234,7 +234,7 @@ ______________________________________________________________________________
                         # В БД сохраняются только те группы,
                         # залы в сервисе продажи билетов у которых связаны с залами в БД.
                         for g in groups:
-                            if g['venue_id'] in ts_venue_binder.keys():
+                            if g['scheme_id'] in ts_scheme_venue_binder.keys():
                                 # Получение даты/времени в текущем часовом поясе (с сохранением в БД в UTC)
                                 g['group_datetime'] = datetime_localize_or_utc(g['group_datetime'], current_timezone)
                                 group_uuid = uuid.uuid4()
@@ -269,13 +269,13 @@ ______________________________________________________________________________
                                             is_on_index=False,
                                             min_price=g['group_min_price'],
                                             datetime=g['group_datetime'],
-                                            event_venue_id=ts_venue_binder[g['venue_id']],
+                                            event_venue_id=ts_scheme_venue_binder[g['scheme_id']],
                                             domain_id=ticket_service['domain_id'],
                                             is_group=True,
                                             ticket_service_id=ticket_service['id'],
                                             ticket_service_event=g['group_id'],
                                             ticket_service_prices=None,
-                                            ticket_service_venue=None,
+                                            ticket_service_scheme=None,
                                         )
                                     except IntegrityError:
                                         pass
@@ -295,7 +295,7 @@ ______________________________________________________________________________
                             for e in events:
                                 # В БД сохраняются только те события,
                                 # залы в сервисе продажи билетов у которых связаны с залами в БД.
-                                if e['venue_id'] in ts_venue_binder.keys():
+                                if e['scheme_id'] in ts_scheme_venue_binder.keys():
                                     # Получение даты/времени в текущем часовом поясе (с сохранением в БД в UTC)
                                     e['event_datetime'] = datetime_localize_or_utc(
                                         e['event_datetime'], current_timezone
@@ -336,13 +336,13 @@ ______________________________________________________________________________
                                                 min_price=e['event_min_price'],
                                                 min_age=e['event_min_age'],
                                                 datetime=e['event_datetime'],
-                                                event_venue_id=ts_venue_binder[e['venue_id']],
+                                                event_venue_id=ts_scheme_venue_binder[e['scheme_id']],
                                                 domain_id=ticket_service['domain_id'],
                                                 is_group=False,
                                                 ticket_service_id=ticket_service['id'],
                                                 ticket_service_event=e['event_id'],
                                                 ticket_service_prices=prices,
-                                                ticket_service_venue=e['venue_id'],
+                                                ticket_service_scheme=e['scheme_id'],
                                             )
                                         except IntegrityError:
                                             pass
@@ -388,7 +388,7 @@ ______________________________________________________________________________
                             for e in events:
                                 # В БД сохраняются только те события,
                                 # залы в сервисе продажи билетов у которых связаны с залами в БД.
-                                if e['venue_id'] in ts_venue_binder.keys():
+                                if e['scheme_id'] in ts_scheme_venue_binder.keys():
                                     # Получение даты/времени в текущем часовом поясе (с сохранением в БД в UTC)
                                     e['event_datetime'] = datetime_localize_or_utc(
                                         e['event_datetime'], current_timezone
@@ -429,13 +429,13 @@ ______________________________________________________________________________
                                                 min_price=e['event_min_price'],
                                                 min_age=e['event_min_age'],
                                                 datetime=e['event_datetime'],
-                                                event_venue_id=ts_venue_binder[e['venue_id']],
+                                                event_venue_id=ts_scheme_venue_binder[e['scheme_id']],
                                                 domain_id=ticket_service['domain_id'],
                                                 is_group=False,
                                                 ticket_service_id=ticket_service['id'],
                                                 ticket_service_event=e['event_id'],
                                                 ticket_service_prices=prices,
-                                                ticket_service_venue=e['venue_id'],
+                                                ticket_service_scheme=e['scheme_id'],
                                             )
                                         except IntegrityError:
                                             pass

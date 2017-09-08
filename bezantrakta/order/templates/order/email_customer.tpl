@@ -31,13 +31,13 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
 
     <p><strong>Общая сумма заказа</strong>: {{ order.total }} р.
     {% if customer.delivery == "courier" %}
-        {% if ticket_service.courier_price > 0 %}
+        {% if ticket_service.settings.courier_price > 0 %}
             <br>В сумму заказа включена стоимость доставки курьером.
         {% else %}
             <br>Доставка курьером осуществляется бесплатно.
         {% endif %}
     {% endif %}
-    {% if customer.payment == "online" and not payment_service.commission_included %}
+    {% if customer.payment == "online" and not payment_service.settings.commission_included %}
             <br>В сумму заказа включена комиссия сервиса онлайн-оплаты.
     {% endif %}
     </p>

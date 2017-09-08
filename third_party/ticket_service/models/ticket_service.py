@@ -7,7 +7,7 @@ class TicketServiceManager(models.Manager):
         return super(TicketServiceManager, self).get_queryset().select_related(
             'domain', 'payment_service'
         ).prefetch_related(
-            'event_venue'
+            'schemes'
         )
 
 
@@ -46,12 +46,12 @@ class TicketService(models.Model):
         db_column='domain_id',
         verbose_name=_('ticketservice_domain'),
     )
-    event_venue = models.ManyToManyField(
+    schemes = models.ManyToManyField(
         'event.EventVenue',
-        through='ticket_service.TicketServiceVenueBinder',
-        related_name='ticket_service_venues',
+        through='ticket_service.TicketServiceSchemeVenueBinder',
+        related_name='schemes',
         blank=True,
-        verbose_name=_('ticketservice_event_venue'),
+        verbose_name=_('ticketservice_schemes'),
     )
     payment_service = models.ForeignKey(
         'payment_service.PaymentService',
@@ -64,7 +64,7 @@ class TicketService(models.Model):
 
     class Meta:
         app_label = 'ticket_service'
-        db_table = 'bezantrakta_ticket_service'
+        db_table = 'third_party_ticket_service'
         verbose_name = _('ticketservice')
         verbose_name_plural = _('ticketservices')
         ordering = ('slug', 'title',)

@@ -78,7 +78,7 @@ msgstr "Получение билетов"
 
 #: models/order.py:92
 msgid "order_mode_cash"
-msgstr "Оплата наличными"
+msgstr "Наличные"
 
 #: models/order.py:93
 msgid "order_mode_online"

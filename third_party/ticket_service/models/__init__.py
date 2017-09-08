@@ -1,3 +1,2 @@
 from .ticket_service import TicketService
-# from .domain_binder import TicketServiceDomainBinder
-from .venue_binder import TicketServiceVenueBinder
+from .ticket_service_scheme_venue_binder import TicketServiceSchemeVenueBinder
