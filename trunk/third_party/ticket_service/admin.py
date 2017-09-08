@@ -7,32 +7,32 @@ from jsoneditor.forms import JSONEditor
 
 from project.decorators import queryset_filter
 from .cache import get_or_set_cache
-from .models import TicketService, TicketServiceVenueBinder
+from .models import TicketService, TicketServiceSchemeVenueBinder
 
 
-@admin.register(TicketServiceVenueBinder)
-class TicketServiceVenueBinderAdmin(admin.ModelAdmin):
+@admin.register(TicketServiceSchemeVenueBinder)
+class TicketServiceSchemeVenueBinderAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             None,
             {
-                'fields': ('ticket_service_event_venue_title',
-                           'ticket_service', 'ticket_service_event_venue_id',
+                'fields': ('ticket_service_scheme_title',
+                           'ticket_service', 'ticket_service_scheme_id',
                            'event_venue', 'scheme')
             }
         ),
     )
-    list_display = ('ticket_service_event_venue_title', 'ticket_service_event_venue_id',
+    list_display = ('ticket_service_scheme_title', 'ticket_service_scheme_id',
                     'if_scheme_exists', 'ticket_service',)
     list_filter = (
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_per_page = 10
-    readonly_fields = ('ticket_service', 'ticket_service_event_venue_id',)
+    readonly_fields = ('ticket_service', 'ticket_service_scheme_id',)
 
     @queryset_filter('Domain', 'ticket_service__domain__slug')
     def get_queryset(self, request):
-        return super(TicketServiceVenueBinderAdmin, self).get_queryset(request)
+        return super(TicketServiceSchemeVenueBinderAdmin, self).get_queryset(request)
 
     def if_scheme_exists(self, obj):
         """Иконка обозначанет, заполнена ли схема зала."""
@@ -45,11 +45,11 @@ class TicketServiceVenueBinderAdmin(admin.ModelAdmin):
     if_scheme_exists.short_description = _('ticket_service_venue_binder_if_scheme_exists')
 
 
-class TicketServiceVenueBinderInline(admin.TabularInline):
-    model = TicketServiceVenueBinder
+class TicketServiceSchemeVenueBinderInline(admin.TabularInline):
+    model = TicketServiceSchemeVenueBinder
     extra = 0
-    fields = ('ticket_service', 'ticket_service_event_venue_id', 'ticket_service_event_venue_title', 'event_venue',)
-    readonly_fields = ('ticket_service', 'ticket_service_event_venue_id', 'ticket_service_event_venue_title',)
+    fields = ('ticket_service', 'ticket_service_scheme_id', 'ticket_service_scheme_title', 'event_venue',)
+    readonly_fields = ('ticket_service', 'ticket_service_scheme_id', 'ticket_service_scheme_title',)
 
     def has_add_permission(self, request):
         return False
@@ -58,14 +58,14 @@ class TicketServiceVenueBinderInline(admin.TabularInline):
 @admin.register(TicketService)
 class TicketServiceAdmin(admin.ModelAdmin):
     actions = ('activate_or_deactivate_items', 'batch_set_cache',)
-    inlines = (TicketServiceVenueBinderInline, )
+    inlines = (TicketServiceSchemeVenueBinderInline, )
     formfield_overrides = {
         TextField: {'widget': JSONEditor},
     }
     prepopulated_fields = {
         'id': ('title',),
     }
-    list_display = ('title', 'id', 'is_active', 'is_payment', 'ticket_service_venue_binder_count')
+    list_display = ('title', 'id', 'is_active', 'is_payment', 'ticket_service_schemes_count')
     list_per_page = 10
 
     fieldsets = (
@@ -114,10 +114,10 @@ class TicketServiceAdmin(admin.ModelAdmin):
             item.save(update_fields=['is_active'])
     activate_or_deactivate_items.short_description = _('event_admin_activate_or_deactivate_items')
 
-    def ticket_service_venue_binder_count(self, obj):
-        """Число связок с залами из сервиса продажи билетов."""
-        return obj.event_venue.count()
-    ticket_service_venue_binder_count.short_description = _('ticket_service_admin_ticket_service_venue_binder_count')
+    def ticket_service_schemes_count(self, obj):
+        """Число связок со схемами залов из сервиса продажи билетов."""
+        return obj.schemes.count()
+    ticket_service_schemes_count.short_description = _('ticket_service_admin_ticket_service_schemes_count')
 
     def is_payment(self, obj):
         """Добавлен ли к сервису продажи билетов сервис онлайн-оплаты."""

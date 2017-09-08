@@ -183,7 +183,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
-            {'model': 'ticket_service.TicketServiceVenueBinder', 'label': 'Схемы залов 🔗'},
+            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗'},
         )
 
     },
@@ -247,7 +247,7 @@ ADMIN_REORDER = (
 DATABASES = {
     'default': {
         'ENGINE':    'django.db.backends.mysql',
-        'NAME':      'belcanto_bezantrakta_django',
+        'NAME':      'belcanto_bezantrakta_django_2',
         'USER':      'belcanto',
         'PASSWORD':  'wrtwefsf352',
         'HOST':      'localhost',
@@ -300,7 +300,7 @@ LANGUAGES = [
     ('ru', 'Русский'),
 ]
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'UTC'
 

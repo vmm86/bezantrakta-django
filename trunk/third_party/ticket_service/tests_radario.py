@@ -16,7 +16,7 @@ ts = ticket_service_factory(slug, init)
 
 # RADARIO_VRN
 place_id = 1224
-venue_id = 7528  # Камерный театр
+scheme_id = 7528  # Камерный театр
 # event_id = 52238  # Тест (сектор без мест)
 event_id = 73811  # Тест (зал)
 # event_id = 130324
@@ -28,10 +28,10 @@ price_group_id = 341031
 
 # PLACES
 py_result = ts.places()
-# VENUE (SCHEME)
-# py_result = ts.venue(venue_id=venue_id)
-# DISCOVER_VENUES
-# py_result = ts.discover_venues()
+# SCHEME
+# py_result = ts.scheme(scheme_id=scheme_id)
+# DISCOVER_SCHEMES
+# py_result = ts.discover_schemes()
 
 # GROUPS
 # py_result = ts.groups()
@@ -48,9 +48,9 @@ py_result = ts.places()
 # py_result = ts.event(event_id=event_id)
 
 # SECTORS
-# py_result = ts.sectors(venue_id=venue_id)
+# py_result = ts.sectors(scheme_id=scheme_id)
 # SEATS
-# py_result = ts.seats(event_id=event_id, venue_id=venue_id)
+# py_result = ts.seats(event_id=event_id, scheme_id=scheme_id)
 # PRICE_GROUPS
 # py_result = ts.price_groups(event_id=event_id)
 # PRICES

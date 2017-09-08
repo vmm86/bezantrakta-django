@@ -328,7 +328,7 @@ class SuperBilet(TicketService):
         """Места проведения событий.
 
         Returns:
-            list: Список словарей с ифнормацией о месте проведения событий.
+            list: Список словарей с информацией о месте проведения событий.
         """
         method = 'GetLocationList'
         input_mapping = None
@@ -351,14 +351,14 @@ class SuperBilet(TicketService):
 
         return places
 
-    def venues(self, **kwargs):
-        """Залы в конкретном месте проведения событий.
+    def schemes(self, **kwargs):
+        """Схемы залов в конкретном месте проведения событий.
 
         Args:
             place_id (int): Идентификатор места проведения событий.
 
         Returns:
-            list: Список словарей с ифнормацией о залах места проведения событий.
+            list: Список словарей с информацией о схеме залах.
         """
         method = 'GetHallList'
         input_mapping = {
@@ -367,9 +367,9 @@ class SuperBilet(TicketService):
         data = kwargs
         output_mapping = {
             # Идентификатор зала
-            'cod_th':      self.internal('venue_id', int, 0,),
+            'cod_th':      self.internal('scheme_id', int, 0,),
             # Название зала
-            'name_h':      self.internal('venue_title', str,),
+            'name_h':      self.internal('scheme_title', str,),
             # Код возврата
             'result_code': self.internal('result_code', int,),
 
@@ -377,35 +377,35 @@ class SuperBilet(TicketService):
             'tel_h':     None,
             'address_h': None,
         }
-        venues = self.request(method, input_mapping, data, output_mapping)
+        schemes = self.request(method, input_mapping, data, output_mapping)
 
-        venues = sorted(venues, key=itemgetter('venue_id'))
+        schemes = sorted(schemes, key=itemgetter('scheme_id'))
 
-        return venues
+        return schemes
 
-    def discover_venues(self):
-        """Получение списка залов для записи в БД (с включением недостающей информации из мест проведения событий).
+    def discover_schemes(self):
+        """Получение списка схем залов для записи в БД (с включением недостающей информации из мест проведения событий).
 
         Returns:
-            list: Список словарей с информацией о залах.
+            list: Список словарей с информацией о схемах залов.
         """
-        discovered_venues = []
+        discovered_schemes = []
         places = self.places()
         for p in places:
             if p['result_code'] == 0:
-                venues = self.venues(place_id=p['place_id'])
-                for v in venues:
-                    # Формирование названия зала
-                    v['venue_title'] = '{place_title} ({venue_title})'.format(
+                schemes = self.schemes(place_id=p['place_id'])
+                for s in schemes:
+                    # Формирование названия схемы зала
+                    s['scheme_title'] = '{place_title} ({scheme_title})'.format(
                         place_title=p['place_title'],
-                        venue_title=v['venue_title'].lower()
+                        scheme_title=s['scheme_title'].lower()
                     )
-                    del v['result_code']
-                    discovered_venues.append(v)
+                    del s['result_code']
+                    discovered_schemes.append(s)
 
-        discovered_venues = sorted(discovered_venues, key=itemgetter('venue_id'))
+        discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
 
-        return discovered_venues
+        return discovered_schemes
 
     def groups(self):
         """Группы событий ("шоу").
@@ -483,7 +483,7 @@ class SuperBilet(TicketService):
                     )
                     g['group_datetime'] = events_by_groups[(e['group_id'])][0]['event_datetime']
                     g['group_min_price'] = events_by_groups[(e['group_id'])][0]['event_min_price']
-                    g['venue_id'] = events_by_groups[(e['group_id'])][0]['venue_id']
+                    g['scheme_id'] = events_by_groups[(e['group_id'])][0]['scheme_id']
 
         # Сортировка групп по дате/времени
         groups = sorted(groups, key=itemgetter('group_datetime'))
@@ -495,7 +495,7 @@ class SuperBilet(TicketService):
 
         Args:
             place_id (int): Идентификатор места проведения событий.
-            venue_id (int): Идентификатор зала.
+            scheme_id (int): Идентификатор схемы зала.
 
         Returns:
             method: Вызов конструктора запросов request.
@@ -503,7 +503,7 @@ class SuperBilet(TicketService):
         method = 'GetEventList'
         input_mapping = {
             'cod_t':  'place_id',
-            'cod_th': 'venue_id',
+            'cod_th': 'scheme_id',
         }
         data = kwargs
         output_mapping = {
@@ -523,8 +523,8 @@ class SuperBilet(TicketService):
             'cod_show':    self.internal('group_id', int,),
             # Идентификатор места
             'cod_t':       self.internal('place_id', int),
-            # Идентификатор зала
-            'cod_h':       self.internal('venue_id', int,),
+            # Идентификатор схемы зала
+            'cod_h':       self.internal('scheme_id', int,),
             # Код возврата
             'result_code': self.internal('result_code', int,),
 

@@ -11,7 +11,7 @@ from project.shortcuts import message, render_messages, timezone_now
 from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
 
 from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.models import TicketServiceVenueBinder
+from third_party.ticket_service.models import TicketServiceSchemeVenueBinder
 
 from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
@@ -168,11 +168,11 @@ def event(request, year, month, day, hour, minute, slug):
 
                 # Схема зала из БД
                 try:
-                    venue_scheme = TicketServiceVenueBinder.objects.values_list('scheme', flat=True).get(
+                    venue_scheme = TicketServiceSchemeVenueBinder.objects.values_list('scheme', flat=True).get(
                         ticket_service__domain_id=request.domain_id,
-                        ticket_service_event_venue_id=event['ticket_service_venue'],
+                        ticket_service_scheme_id=event['ticket_service_scheme'],
                     )
-                except TicketServiceVenueBinder.DoesNotExist:
+                except TicketServiceSchemeVenueBinder.DoesNotExist:
                     pass
                 else:
                     context['venue_scheme'] = venue_scheme

@@ -152,11 +152,11 @@ class Event(models.Model):
         null=True,
         verbose_name=_('event_ticket_service_prices'),
     )
-    ticket_service_venue = models.PositiveIntegerField(
+    ticket_service_scheme = models.PositiveIntegerField(
         blank=True,
         null=True,
-        db_column='ticket_service_venue_id',
-        verbose_name=_('event_ticket_service_venue'),
+        db_column='ticket_service_scheme_id',
+        verbose_name=_('event_ticket_service_scheme'),
     )
 
     class Meta:

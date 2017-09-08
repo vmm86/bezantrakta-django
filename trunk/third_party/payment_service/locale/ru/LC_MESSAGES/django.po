@@ -60,8 +60,8 @@ msgstr "Настройки"
 
 #: models.py:40
 msgid "paymentservice"
-msgstr "Сервис онлайн-оплаты"
+msgstr "сервис онлайн-оплаты"
 
 #: models.py:41
 msgid "paymentservices"
-msgstr "Сервисы онлайн-оплаты"
+msgstr "сервисы онлайн-оплаты"

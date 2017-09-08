@@ -78,7 +78,7 @@ def get_or_set_cache(event_uuid, reset=False):
 
             'ticket_service_id',
             'ticket_service_event',
-            'ticket_service_venue',
+            'ticket_service_scheme',
             'ticket_service_prices',
 
             'payment_service_id',

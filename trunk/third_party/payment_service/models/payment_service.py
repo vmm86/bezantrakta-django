@@ -36,7 +36,7 @@ class PaymentService(models.Model):
 
     class Meta:
         app_label = 'payment_service'
-        db_table = 'bezantrakta_payment_service'
+        db_table = 'third_party_payment_service'
         verbose_name = _('paymentservice')
         verbose_name_plural = _('paymentservices')
         ordering = ('id', 'title',)

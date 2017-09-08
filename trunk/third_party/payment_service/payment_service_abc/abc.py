@@ -128,18 +128,12 @@ class PaymentService(ABC):
             code (str): Код ошибки (0).
             message (str): Сообщение об ошибке ('OK').
             order_id (int): Идентификатор заказа.
-            order_params (list): Параметры заказа, отправленные при создании оплаты.
+            order_params (list): Параметры заказа, отправленные при создании оплаты [{'name': 'name', 'value': 'Test Client'}, {'name': 'email', 'value': 'test@rterm.ru'}], {'name': 'phone', 'value': '+74739876543'}].
+            order_params[name]: Название параметра.
+            order_params[value]: Значение параметра.
             payment_id (str): Идентификатор оплаты.
             total_with_commission (Decimal): Сумма оплаты с комиссией.
             is_refunded (bool): Был ли проведён возврат суммы оплаты.
-
-            'order_params': [   {'name': 'domain_slug', 'value': 'vluki'},
-                                {'name': 'phone', 'value': '+74739876543'},
-                                {'name': 'domain_title', 'value': 'Великие Луки'},
-                                {'name': 'name', 'value': 'Test Client'},
-                                {'name': 'email', 'value': 'test@rterm.ru'}],
-            'order_status': 2,
-            'payment_status': 'DEPOSITED',
 
             success (bool): Запрос НЕуспешный (False).
             code (str): Код ошибки.

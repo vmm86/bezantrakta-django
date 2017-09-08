@@ -5,7 +5,7 @@ ORDER_DELIVERY = {
 }
 
 ORDER_PAYMENT = {
-    'cash':   'наличными',
+    'cash':   'наличные',
     'online': 'онлайн-оплата',
 }
 

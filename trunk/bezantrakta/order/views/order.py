@@ -94,7 +94,7 @@ def order(request):
 
             # При доставке курьером - общая сумма заказа плюс стоимость доставки курьером
             if customer['delivery'] == 'courier':
-                order['total'] += ps.decimal_price(ticket_service['settings']['courier_price'])
+                order['total'] += ps.decimal_price(ticket_service['info']['settings']['courier_price'])
             # При онлайн-оплате - общая сумма заказа с комиссией сервиса онлайн-оплаты
             if customer['payment'] == 'online':
                 order['total'] = ps.total_plus_commission(order['total'])
@@ -310,16 +310,18 @@ def order(request):
                         }
 
                         admin_email = EmailMessage(
-                            'order/email_customer.tpl',
+                            'order/email_admin.tpl',
                             email_context,
-                            ticket_service['info']['settings']['order_email'],
-                            (ticket_service['info']['settings']['order_email'],)
+                            from_email['user'],
+                            (from_email['user'],),
+                            connection=from_email['connection']
                         )
                         customer_email = EmailMessage(
                             'order/email_customer.tpl',
                             email_context,
-                            ticket_service['info']['settings']['order_email'],
-                            (customer['email'],)
+                            from_email['user'],
+                            (customer['email'],),
+                            connection=from_email['connection']
                         )
                         admin_email.send()
                         logger.info('Email-уведомление администратору отправлено')
