@@ -1,0 +1,126 @@
+<form id="checkout-form" action="http://{{ request.url_domain }}/afisha/order/" method="POST">
+    {% csrf_token %}
+
+    {#<div id="error-message" style="display: hidden; font-size: 100%; border-color: red; border-width: 2px;"></div>#}
+
+    <p class="input-body step2">
+        <label id="customer-name-label" class="label yellow step2" for="customer-name">Фамилия Имя</label>
+        <input id="customer-name" class="input grey step2" type="text" name="customer_name" required="required" placeholder="Образцов Иван Иванович" value="{{ customer.name }}">
+    </p>
+
+    <p class="input-body step2">
+        <label id="customer-email-label" class="label yellow step2" for="customer-email">Электронная почта</label>
+        <input id="customer-email" class="input grey step2" type="email" name="customer_email" required="required" placeholder="primer@mail.ru" value="{{ customer.email }}">
+    </p>
+
+    <p class="input-body step2">
+        <label id="customer-phone-label" class="label yellow step2" for="customer-phone">Контактный телефон</label>
+        <input id="customer-phone" class="input grey step2" type="tel" name="customer_phone" required="required" placeholder="89201112233" pattern="[0-9]{7,}" min="7" max="20" maxlength="20" value="{{ customer.phone }}">
+    </p>
+
+    <div class="input-body">
+        <div class="input-body-left" style="margin-left: 0; display: inline-block; width: unset; max-width: 45rem;">
+            <br>
+            <div style="display: inline-block;">
+                <input id="agree" type="checkbox" name="customer_agree" checked="checked">
+                <img border="0" style="border: 0; border-style: none">
+                <div style="position: relative; left: 4rem; top: -3rem;">
+                    Оформляя заказ, Вы подтверждаете своё согласие на обработку Ваших персональных данных согласно <a href="/oferta" target="_blank">договору оферты</a>{% if request.domain_settings.emailing.is_working %}, а также получение почтовой рассылки о новых мероприятиях bezantrakta.ru{% endif %}. В свою очередь мы гарантируем, что Ваши персональные данные будут использоваться исключительно при оформлении заказа и не будут переданы третьим лицам.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Способы заказа билетов #}
+    <div class="input-body">
+        <div class="input-body-left" style="display: table-cell; padding: 0; vertical-align: top; width: 28rem;">
+
+        {% if ticket_service.settings.order.self_cash %}
+            <input id="customer-delivery-self" class="self_cash" type="radio" name="customer_order_type" value="self_cash">
+            <img border="0" style="border: 0; border-style: none">
+            <label for="customer-delivery-self" class="customer-delivery step2"> Забронировать и выкупить в кассе</label>
+            <br>
+        {% endif %}
+
+        {% if ticket_service.settings.order.courier_cash %}
+            <br>
+            <input id="customer-delivery-courier" class="courier_cash" type="radio" name="customer_order_type" value="courier_cash">
+            <img border="0" style="border: 0; border-style: none">
+            <label for="customer-delivery-courier" class="customer-delivery step2"> Доставка курьером</label>
+            <br>
+        {% endif %}
+
+        {% if ticket_service.settings.order.self_online %}
+            <br>
+            <input id="customer-delivery-payment" class="self_online" type="radio" name="customer_order_type" value="self_online">
+            <img border="0" style="border: 0; border-style: none">
+            <label for="customer-delivery-payment" class="customer-delivery step2"> Онлайн-оплата с выкупом в кассе</label>
+            <br>
+        {% endif %}
+
+        {% if ticket_service.settings.order.email_online %}
+            <br>
+            <input id="customer-delivery-eticket" class="email_online" type="radio" name="customer_order_type" value="email_online">
+            <img border="0" style="border: 0; border-style: none">
+            <label for="customer-delivery-eticket" class="customer-delivery step2"> Электронный билет</label>
+        {% endif %}
+        </div>
+
+        <div class="order-buttons step2">
+            <div class="button-prev" style="width: 50%;">
+                <a id="back" class="step2" href="javascript: history.go(-1)">Назад</a>
+            </div>
+
+            <div class="button-next" style="width: 50%;">
+                <input id="isubmit" type="submit" value="Подтвердить">
+            </div>
+        </div>
+
+        <div class="input-body" style="position: relative; top: -0.5rem;">
+
+        {% if ticket_service.settings.order.self_cash %}
+            <div class="ticket-offices-contacts step2">
+                {{ ticket_service.settings.order_description.self_cash|safe }}
+            </div>
+        {% endif %}
+
+        {% if ticket_service.settings.order.courier_cash %}
+            <div class="customer-address step2">
+                <br>
+                <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
+                <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ request.city_title }}" value="{{ address }}"></input>
+                <br>
+                {{ ticket_service.settings.order_description.courier_cash|safe }}
+                {% if ticket_service.settings.courier_price > 0 %}
+                    <p>Стоимость доставки {{ ticket_service.settings.courier_price }} р.</p>
+                {% else %}
+                    <p>Доставка осуществляется бесплатно.</p>
+                {% endif %}
+           </div>
+        {% endif %}
+
+        {% if ticket_service.settings.order.self_online %}
+            <div class="online-info payment-info step2" style="text-align: justify; width: 45rem;">
+                <br>
+                {{ payment_service_settings.description|safe }}
+                <br>
+                {{ ticket_service.settings.order_description.self_online|safe }}
+            </div>
+        {% endif %}
+
+        {% if ticket_service.settings.order.email_online %}
+            <div class="online-info eticket-info step2" style="text-align: justify; width: 45rem;">
+                <br>
+                {{ payment_service_settings.description|safe }}
+                <br>
+                {{ ticket_service.settings.order_description.email_online|safe }}
+            </div>
+        {% endif %}
+
+        </div>
+    </div>
+
+    <input id="delivery" type="hidden" name="customer_delivery" value="{{ delivery }}">
+    <input id="payment"  type="hidden" name="customer_payment"  value="{{ payment }}">
+    {# <input id="event_id" type="hidden" name="event_id"          value="{{ event_id }}"> #}
+</form>
