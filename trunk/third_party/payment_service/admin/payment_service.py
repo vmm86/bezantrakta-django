@@ -5,8 +5,8 @@ from django.utils.translation import ugettext as _
 
 from jsoneditor.forms import JSONEditor
 
-from .cache import get_or_set_cache
-from .models import PaymentService
+from ..cache import get_or_set_cache
+from ..models import PaymentService
 
 
 @admin.register(PaymentService)

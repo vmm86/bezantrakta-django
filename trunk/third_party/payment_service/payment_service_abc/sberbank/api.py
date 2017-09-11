@@ -10,14 +10,14 @@ from ..abc import PaymentService
 class Sberbank(PaymentService):
     """Класс для работы с API Сбербанка.
 
-    Любой метод, делающий запросы к API, вызывает для этого конструктор запросов request.
+    Любой метод, делающий запросы к API, вызывает для этого конструктор запросов ``request``.
 
-    Class attributes:
-        slug (str): Псевдоним для инстанцирования класса (`sberbank`).
+    Атрибуты класса:
+        **slug** (str): Псевдоним для инстанцирования класса (``sberbank``).
 
     Attributes:
         commission (Decimal): Процент комиссии.
-        timeout (int): Таймаут до завершения оплаты в минутах (по умолчанию - 15 минут).
+        timeout (int): Таймаут до завершения оплаты в минутах (по умолчанию - **15 минут**).
     """
     slug = 'sberbank'
 
@@ -51,13 +51,16 @@ class Sberbank(PaymentService):
 
         Args:
             init (dict): Словарь с параметрами для инстанцирования класса.
-                mode (str): Тестовая или настоящая оплата
-                user (str): Пользователь для доступа к API.
-                test_pswd|prod_pswd (str): Пароль для доступа к API.
-                success_url (str): URL для обработки удачной оплаты.
-                error_url (str): URL для обработки НЕудачной оплаты.
-                commission (float): Комиссия (преобразуется в Decimal).
-                timeout (int): Время сессии на оплату в минутах (по умолчанию - 15 минут).
+
+                Содержимое ``init``:
+                    * **mode** (str): Тестовая или настоящая оплата
+                    * **user** (str): Пользователь для доступа к API.
+                    * **test_pswd** (str): Пароль для тестового доступа к API.
+                    * **prod_pswd** (str): Пароль для production-доступа к API.
+                    * **success_url** (str): URL для обработки удачной оплаты.
+                    * **error_url** (str): URL для обработки НЕудачной оплаты.
+                    * **commission** (float): Комиссия (преобразуется в ``Decimal``).
+                    * **timeout** (int): Время сессии на оплату в минутах (по умолчанию - **15 минут**).
         """
         super().__init__()
 
@@ -85,7 +88,19 @@ class Sberbank(PaymentService):
         )
         self.commission_included = True if 'commission_included' in init and init['commission_included'] else False
         self.timeout = init['timeout'] if 'timeout' in init and init['timeout'] > 0 else 15
-        self.description = """<p><strong>В окончательную сумму заказа включена комиссия платёжной системы</strong>.</p>\n<br><p>Оплата происходит через авторизационный сервер Процессингового центра Банка с использованием банковских кредитных карт платёжных систем <img src="/images/banners/visa.png" width="32" height="20" style="vertical-align: middle;"> <strong>VISA International</strong> и <img src="/images/banners/mastercard.png" width="32" height="20" style="vertical-align: middle;"> <strong>MasterCard World Wide</strong>.</p><br><p>Для оплаты покупки Вы будете перенаправлены на платежный шлюз ПАО "<strong>Сбербанк России</strong>" для ввода реквизитов Вашей карты. Соединение с платежным шлюзом и передача информации осуществляется в защищенном режиме с использованием протокола шифрования <strong>SSL</strong>.</p><p>В случае если Ваш банк поддерживает технологию безопасного проведения Интернет-платежей Verified By Visa или MasterCard Secure Code, для проведения платежа также <strong>может потребоваться ввод специального пароля</strong>. Способы и возможность получения паролей для совершения Интернет-платежей Вы можете уточнить в банке, выпустившем карту.</p><p>Настоящий сайт поддерживает 256-битное шифрование. Конфиденциальность сообщаемой персональной информации обеспечивается ПАО "<strong>Сбербанк России</strong>". Введённая информация не будет предоставлена третьим лицам за исключением случаев, предусмотренных законодательством РФ. Проведение платежей по банковским картам осуществляется в строгом соответствии с требованиями платежных систем <strong>Visa Int.</strong> и <strong>MasterCard Europe Sprl</strong>.</p>"""
+        self.description = """
+        <p>Оплата происходит через авторизационный сервер Процессингового центра Банка с использованием банковских кредитных карт следующих платёжных систем:</p>
+        <p>
+        <ul>
+            <li><img src="/media/global/banner/banner_payment/type-mir.png" width="43" height="25" style="vertical-align: middle;"> <strong>МИР</strong>,</li>
+            <li><img src="/media/global/banner/banner_payment/type-visa.png" width="43" height="25" style="vertical-align: middle;"> <strong>VISA International</strong>,</li>
+            <li><img src="/media/global/banner/banner_payment/type-mc.png" width="43" height="25" style="vertical-align: middle;"> <strong>MasterCard World Wide</strong>.</li>
+        </ul>
+        </p>
+        <p>Для оплаты покупки Вы будете перенаправлены на платежный шлюз ПАО "<strong>Сбербанк России</strong>" для ввода реквизитов Вашей карты. Соединение с платежным шлюзом и передача информации осуществляется в защищенном режиме с использованием протокола шифрования <strong>SSL</strong>.</p>
+        <p>В случае если Ваш банк поддерживает технологию безопасного проведения Интернет-платежей Verified By Visa или MasterCard Secure Code, для проведения платежа также <strong>может потребоваться ввод специального пароля</strong>. Способы и возможность получения паролей для совершения Интернет-платежей Вы можете уточнить в банке, выпустившем карту.</p>
+        <p>Настоящий сайт поддерживает 256-битное шифрование. Конфиденциальность сообщаемой персональной информации обеспечивается ПАО "<strong>Сбербанк России</strong>". Введённая информация не будет предоставлена третьим лицам за исключением случаев, предусмотренных законодательством РФ. Проведение платежей по банковским картам осуществляется в строгом соответствии с требованиями платежных систем <strong>МИР</strong>, <strong>Visa Int.</strong> и <strong>MasterCard Europe Sprl</strong>.</p>
+        """
 
     def __str__(self):
         return '{cls}({user}: {mode})'.format(
@@ -98,7 +113,7 @@ class Sberbank(PaymentService):
         """Конструктор запросов к API.
 
         Args:
-            method (str): HTTP-метод (GET или POST).
+            method (str): HTTP-метод (``GET`` или ``POST``).
             url (str): Относительный URL конкретного метода API.
             data (dict): Параметры запроса для GET или тело запроса для POST.
             output_mapping (dict): Сопоставление выходных параметров.
@@ -234,28 +249,37 @@ class Sberbank(PaymentService):
         """Создание новой онлайн-оплаты.
 
         Полный URL возврата после оплаты:
-            {return_url with optional get params}&orderId={payment_id}
+            ``{return_url with optional get params}&orderId={payment_id}``
 
         Args:
             event_uuid (int): Идентификатор события.
+
             customer (dict): Реквизиты покупателя.
-                name (str): ФИО.
-                email (str): Электронная почта.
-                phone (str): Телефон.
+
+                Содержимое ``customer``:
+                    * **name** (str): ФИО.
+                    * **email** (str): Электронная почта.
+                    * **phone** (str): Телефон.
+
             order (dict): Параметры заказа.
-                order_uuid (str): Уникальный UUID заказа.
-                order_id (int): Идентификатор заказа.
-                total (Decimal): Сумма заказа в рублях (БЕЗ комиссии).
+
+                Содержимое ``order``:
+                    * **order_uuid** (str): Уникальный UUID заказа.
+                    * **order_id** (int): Идентификатор заказа.
+                    * **total** (Decimal): Общая сумма заказа в рублях (**С комиссией**).
 
         Returns:
             dict: Параметры новой оплаты.
-                success (bool): Запрос успешный (True).
-                payment_id (str): Идентификатор оплаты.
-                payment_url (str): URL платёжной формы.
 
-                success (bool): Запрос НЕуспешный (False).
-                code (str): Код ошибки.
-                message (str): Сообщение об ошибке.
+            Успешный ответ:
+                * **success** (bool): Запрос успешный (``True``).
+                * **payment_id** (str): Идентификатор оплаты.
+                * **payment_url** (str): URL платёжной формы.
+
+            НЕуспешный ответ:
+                * **success** (bool): Запрос НЕуспешный (``False``).
+                * **code** (str): Код ошибки.
+                * **message** (str): Сообщение об ошибке.
         """
         method = 'POST'
         url = 'register.do'
@@ -264,7 +288,7 @@ class Sberbank(PaymentService):
         # Идентификатор заказа
         data['orderNumber'] = kwargs['order']['order_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(self.total_plus_commission(kwargs['order']['total']) * 100)
+        data['amount'] = int(kwargs['order']['total'] * 100)
         # URL возврата после успешной оплаты
         print('self.__success_url: ', self.__success_url, '\n')
         data['returnUrl'] = '{url}?event_uuid={event_uuid}&order_uuid={order_uuid}'.format(
@@ -297,6 +321,10 @@ class Sberbank(PaymentService):
         create = self.request(method, url, data, output_mapping)
 
         create['success'] = True if 'payment_url' in create else False
+
+        if not create['success']:
+            create['code'] = create.pop('errorcode')
+            create['message'] = create.pop('errormessage')
 
         return create
 
@@ -345,8 +373,8 @@ class Sberbank(PaymentService):
             status['payment_id'] = status['payment_attributes'][0]['value']
             del status['payment_attributes']
 
-            # Сумма оплаты с комиссией в рублях
-            status['total_with_commission'] = self.decimal_price(status['payment_info']['approvedamount'] / 100)
+            # Общая сумма заказа в рублях (С комиссией)
+            status['total'] = self.decimal_price(status['payment_info']['approvedamount'] / 100)
             # Сообщение о статусе оплаты
             status['payment_message'] = status['payment_info']['paymentstate']
             del status['payment_info']
@@ -361,7 +389,7 @@ class Sberbank(PaymentService):
                 # Код успешного завершения оплаты
                 status['payment_code'] == 2 and
                 # Ненулевая сумма оплаты
-                status['total_with_commission'] > 0
+                status['total'] > 0
             ):
                 status['success'] = True
             else:
@@ -380,7 +408,7 @@ class Sberbank(PaymentService):
 
         Args:
             payment_id (str): Идентификатор оплаты.
-            total (Decimal): Сумма заказа в рублях (БЕЗ комиссии).
+            total (Decimal): Общая сумма заказа в рублях (**С комиссией**).
 
         Returns:
             dict: Информация о возврате.
@@ -392,7 +420,7 @@ class Sberbank(PaymentService):
         # Идентификатор оплаты
         data['orderId'] = kwargs['payment_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(self.total_plus_commission(kwargs['total']) * 100)
+        data['amount'] = int(kwargs['total'] * 100)
 
         output_mapping = {
             'errorcode':    self.internal('code', int,),

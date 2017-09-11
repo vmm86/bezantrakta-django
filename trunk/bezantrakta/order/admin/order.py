@@ -3,8 +3,8 @@ from django.contrib import admin
 # from django.core.cache import cache
 from django.utils.translation import ugettext as _
 
-# from .cache import get_or_set_cache
-from .models import Order, OrderTicket
+# from ..cache import get_or_set_cache
+from ..models import Order
 
 
 @admin.register(Order)
@@ -71,22 +71,3 @@ class OrderAdmin(admin.ModelAdmin):
         """Вывод нередактируемого уникального UUID заказа."""
         return obj.id
     order_uuid.short_description = _('order_admin_order_uuid')
-
-
-@admin.register(OrderTicket)
-class OrderTicketAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ticket_service_order',
-                    'sector_title', 'row_id', 'seat_title', 'price', 'bar_code',
-                    'ticket_service', 'domain',)
-    list_per_page = 20
-    readonly_fields = ('id', 'order', 'ticket_service', 'ticket_service_order',
-                       'is_punched', 'bar_code',
-                       'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id', 'price',
-                       'domain',)
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        if not settings.DEBUG:
-            return False

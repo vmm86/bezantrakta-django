@@ -14,8 +14,20 @@ class TicketServiceSchemeVenueBinderManager(models.Manager):
 
 
 class TicketServiceSchemeVenueBinder(models.Model):
-    """
-    Связующая таблица схем залов из сервисов продажи билетов и собтвенно залов в БД, привязанных к определённому городу.
+    """Связующая модель схем залов и собственно залов в БД.
+
+    *Схемы залов* испортируются из сторонних сервисов продажи билетов.
+
+    *Залы* (места проведения событий) добавляются в БД администратором и привязываются к городу, в котором они находятся.
+
+    Attributes:
+        objects (TicketServiceSchemeVenueBinderManager): Менеджер модели.
+        id (UUIDField): Идентифкатор.
+        ticket_service (ForeignKey): Сервис продажи билетов, из которого импортируются схемы залов.
+        ticket_service_scheme_id (PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
+        ticket_service_scheme_title (CharField): Название схемы зала в сервисе продажи билетов.
+        event_venue (ForeignKey): Привязка к залу (месту проведения событий).
+        scheme (RichTextField): Схема зала в HTML или SVG для загрузки на шаге 1 заказа билетов.
     """
     objects = TicketServiceSchemeVenueBinderManager()
 

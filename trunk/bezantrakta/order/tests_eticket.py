@@ -1,11 +1,8 @@
 from decimal import Decimal
 from io import BytesIO
-import os
 from xhtml2pdf import pisa
 
-from django.http import HttpResponse
 from django.template.loader import get_template
-from django.template import Context
 
 
 def render_to_pdf(template, context, output_file):

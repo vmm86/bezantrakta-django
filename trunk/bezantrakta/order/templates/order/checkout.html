@@ -113,7 +113,7 @@
 
         <br>
 
-        {% include "order/checkout_form.html" with checkout_form=checkout_form ticket_service_settings=event.ticket_service.settings payment_service_settings=event.payment_service.settings %}
+        {% include "order/checkout_form.html" with ticket_service=ticket_service payment_service=payment_service %}
 
         {% if debug %}
         <br><br>

@@ -1116,13 +1116,14 @@ input[type=checkbox]:disabled + img {
 
 .customer-address p {
     font-size: 1rem;
-    font-weight: bold;
 
     margin-left: 18rem;
 }
 
 .ticket-offices-contacts p,
-.online-info p {
+.ticket-offices-contacts ul li,
+.online-info p,
+.online-info ul li {
     font-size: 0.85rem;
 }
 

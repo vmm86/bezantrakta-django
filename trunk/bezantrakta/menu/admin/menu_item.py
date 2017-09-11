@@ -3,16 +3,8 @@ from django.contrib import admin
 from adminsortable2.admin import SortableAdminMixin
 
 from project.decorators import queryset_filter
-from .models import Menu, MenuItem
 
-
-@admin.register(Menu)
-class MenuAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ('title', 'slug',)
-    list_per_page = 10
-    prepopulated_fields = {
-        'slug': ('title',),
-    }
+from ..models import MenuItem
 
 
 @admin.register(MenuItem)

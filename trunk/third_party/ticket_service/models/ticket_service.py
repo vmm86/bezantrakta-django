@@ -12,8 +12,18 @@ class TicketServiceManager(models.Manager):
 
 
 class TicketService(models.Model):
-    """
-    Сервисы продажи билетов.
+    """Сервисы продажи билетов.
+
+    Attributes:
+        objects (TicketServiceManager): Менеджер модели.
+        id (SlugField): Идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним (должен совпадать с атрибутом ``slug`` класса сервиса-онлайн-оплаты).
+        is_active (BooleanField): Работает (``True``) или НЕ работает (``False``).
+        settings (TextField): Настройки в JSON.
+        domain (ForeignKey): Сайт, к которому привязан сервис продажи билетов.
+        schemes (ManyToManyField): Связь со схемами залов, импорируемыми из стороннего сервиса продажи билетов в БД.
+        payment_service (ForeignKey): Сервис онлайн-оплаты (может отсутствовать).
     """
     objects = TicketServiceManager()
 

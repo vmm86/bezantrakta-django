@@ -38,7 +38,7 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
         {% endif %}
     {% endif %}
     {% if customer.payment == "online" and not payment_service.settings.commission_included %}
-            <br>В сумму заказа включена комиссия сервиса онлайн-оплаты.
+            <br>К сумме заказа добавлена комиссия сервиса онлайн-оплаты.
     {% endif %}
     </p>
 
@@ -62,6 +62,22 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
         <br><strong>Номер оплаты</strong>: {{ order.payment_id }}.
     {% endif %}
     </p>
+
+    {% if customer.delivery == "self" %}
+        {% if customer.payment == "cash" %}
+            {{ ticket_service.settings.order_email_description.self_cash|safe }}
+        {% elif customer.payment == "online" %}
+            <p>Перед посещением мероприятия, пожалуйста, получите свои билеты в любой кассе Безантракта.</p>
+            <p>Список касс и схемы проезда вы можете увидеть <a href="http://{{ domain.url }}/kontakty/" target="_blank">на странице "Контакты"</a>.</p>
+            {{ ticket_service.settings.order_email_description.self_online|safe }}
+        {% endif %}
+    {% elif customer.delivery == "courier" %}
+        <p>В течение 24-х часов с Вами по телефону свяжется наш курьер и доставит билеты по указанному адресу в удобное для Вас время.</p>
+        {{ ticket_service.settings.order_email_description.courier_cash|safe }}
+    {% elif customer.delivery == "email" %}
+        <p>PDF-файлы с билетами вложены в это письмо. Для того, чтобы их открыть, потребуется программа <a href="https://get.adobe.com/ru/reader/" target="_blank">Adobe Reader</a> или любая другая программа, открывающая файлы формата PDF.</p>
+        <p>Вам необходимо распечатать каждый билет на отдельном листе формата A4 и предъявить его при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно</strong>! Для удобства его можно сложить по пунктирным линиям сгиба.</p>
+    {% endif %}
 
     {% if domain.settings.telephone.0 != "" %}
         <p>Тел. для справок

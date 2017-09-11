@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from project.decorators import queryset_filter
-from .models import Article
+from ..models import Article
 
 
 @admin.register(Article)
