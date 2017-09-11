@@ -10,15 +10,15 @@ from ..abc import TicketService
 class Radario(TicketService):
     """Класс для работы с API Радарио.
 
-    Любой метод, делающий запросы к API, вызывает для этого конструктор запросов request.
+    Любой метод, делающий запросы к API, вызывает для этого конструктор запросов ``request``.
 
-    Документация: https://radario.github.io/slate/radario.api/
+    `Документация по API Радарио <https://radario.github.io/slate/radario.api/>`_.
 
-    The only one accepted Content-Type is `application/json`.
+    The only one accepted Content-Type is ``application/json``.
     Messages charset is set to UTF-8.
 
-    Class attributes:
-        slug (str): Псевдоним для инстанцирования класса (`radario`).
+    Атрибуты класса:
+        **slug** (str): Псевдоним для инстанцирования класса (``radario``).
 
     Attributes:
         api_version
@@ -62,9 +62,9 @@ class Radario(TicketService):
         """Конструктор запросов к API.
 
         Args:
-            method (str): HTTP-метод (GET или POST).
+            method (str): HTTP-метод (``GET`` или ``POST``).
             url (str): Относительный URL конкретного метода API.
-            data (dict): Параметры запроса для GET или тело запроса для POST.
+            data (dict): Параметры запроса для ``GET`` или тело запроса для ``POST``.
             output_mapping (dict): Сопоставление выходных параметров.
             test (bool, optional): Опциональный параметр для тестирования работы.
 

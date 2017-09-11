@@ -3,8 +3,15 @@ from django.utils.translation import ugettext as _
 
 
 class PaymentService(models.Model):
-    """
-    Сервисы онлайн-оплаты.
+    """Сервисы онлайн-оплаты.
+
+    Attributes:
+        id (SlugField): Идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним (должен совпадать с атрибутом ``slug`` класса сервиса-онлайн-оплаты).
+        is_active (BooleanField): Работает (``True``) или НЕ работает (``False``).
+        is_production (BooleanField): Оплата настоящими деньгами (``True``) или тестовая оплата (``False``).
+        settings (TextField): Настройки сервиса-онлайн-оплаты в *JSON*.
     """
     id = models.SlugField(
         primary_key=True,

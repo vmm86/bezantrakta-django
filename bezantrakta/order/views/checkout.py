@@ -45,6 +45,9 @@ def checkout(request):
     # Экземпляр класса сервиса онлайн-оплаты
     ps = payment_service_instance(event['payment_service_id'])
 
+    # Описание процесса онлайн-оплаты из атрибута класса онлайн-оплаты
+    payment_service['settings']['description'] = ps.description
+
     # Получение реквизитов покупателя из предыдущего заказа (если он был)
     customer = {}
     customer['name'] = request.COOKIES.get('bezantrakta_customer_name', '')

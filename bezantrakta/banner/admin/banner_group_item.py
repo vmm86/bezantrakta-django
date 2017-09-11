@@ -3,16 +3,8 @@ from django.contrib import admin
 from adminsortable2.admin import SortableAdminMixin
 
 from project.decorators import queryset_filter
-from .models import BannerGroup, BannerGroupItem
 
-
-@admin.register(BannerGroup)
-class BannerGroupAdmin(SortableAdminMixin, admin.ModelAdmin):
-    list_display = ('title', 'slug',)
-    list_per_page = 10
-    prepopulated_fields = {
-        'slug': ('title',),
-    }
+from ..models import BannerGroupItem
 
 
 @admin.register(BannerGroupItem)
