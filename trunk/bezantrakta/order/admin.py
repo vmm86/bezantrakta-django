@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 # from django.core.cache import cache
 from django.utils.translation import ugettext as _
@@ -50,8 +51,9 @@ class OrderAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         return False
 
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    def has_delete_permission(self, request, obj=None):
+        if not settings.DEBUG:
+            return False
 
     # def save_model(self, request, obj, form, change):
     #     """Пересоздать кэш:
@@ -86,4 +88,5 @@ class OrderTicketAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        if not settings.DEBUG:
+            return False
