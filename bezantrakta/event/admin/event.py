@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.core.cache import cache
 from django.utils.translation import ugettext as _
@@ -102,16 +103,16 @@ class EventAdmin(admin.ModelAdmin):
         Импортируемые из сервисов продажи билетов события нельзя удалить,
         поскольку при каждом удалении они будут импортироваться снова.
         """
-        if obj is not None and obj.ticket_service is not None:
+        if obj is not None and obj.ticket_service is not None and not settings.DEBUG:
             return False
         return super(EventAdmin, self).has_delete_permission(request, obj=obj)
 
-    # def get_actions(self, request):
-    #     """Отключение пакетного удаления по умолчанию."""
-    #     actions = super(EventAdmin, self).get_actions(request)
-    #     if 'delete_selected' in actions:
-    #         del actions['delete_selected']
-    #     return actions
+    def get_actions(self, request):
+        """Отключение пакетного удаления по умолчанию."""
+        actions = super(EventAdmin, self).get_actions(request)
+        if 'delete_selected' in actions and not settings.DEBUG:
+            del actions['delete_selected']
+        return actions
 
     def delete_non_ticket_service_items(self, request, queryset):
         """
