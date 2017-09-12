@@ -1,0 +1,28 @@
+{% url 'event:event' year=item.event_datetime|date:"Y" month=item.event_datetime|date:"m" day=item.event_datetime|date:"d" hour=item.event_datetime|date:"H" minute=item.event_datetime|date:"i" slug=item.event_slug as item_url %}
+
+<div class="poster-small-vertical">
+    <div class="poster-small-vertical-image">
+        <a href="{{ item_url }}" title="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
+            {% if debug %}
+                <span class="poster-type" style="font-size: 0.75rem;">
+                    {{ item.is_group|yesno:'group,event' }}
+                {% if not item.is_group and item.is_in_group %}
+                    {{ item.is_in_group|yesno:'in_group,not_in_group' }}
+                {% endif %}
+                    <br>{% if item.order %}order {{ item.order }}{% endif %}
+                    <br>{{ item.event_datetime }}
+                    <br>{% if item.event_category_title %}{{ item.event_category_title }}{% endif %}
+                </span>
+            {% endif %}
+            <img src="{{ item.poster }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
+        </a>
+    </div>
+    <div class="poster-small-vertical-price">
+        <div class="poster-small-vertical-date">
+            <a href="{{ item_url }}">{{ item.event_datetime|date:"j" }} {{ item.event_datetime|date:"E" }}</a>
+        </div>
+        <div class="poster-small-vertical-min_price">
+            <a href="{{ item_url }}">от {{ item.event_min_price|floatformat }}</a>
+        </div>
+    </div>
+</div>
