@@ -9,6 +9,7 @@ from ..shortcuts import add_small_vertical_poster
 
 
 def search(request):
+    """Поиск событий по названию, содержимому метатегов ``description`` и ``keywords`` в позиции ``small_vertical``."""
     text = request.GET['text']
 
     today = timezone_now()

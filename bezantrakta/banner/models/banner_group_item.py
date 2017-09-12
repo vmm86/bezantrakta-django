@@ -34,14 +34,12 @@ def img_path(instance, filename):
 
 
 class BannerGroupItemManager(models.Manager):
-    """Менеджер модели BannerGroupItem."""
     def get_queryset(self):
         return super(BannerGroupItemManager, self).get_queryset().select_related('domain')
 
 
 class BannerGroupItem(models.Model):
-    """
-    Баннеры, входящие в какую-то группу баннеров.
+    """Баннеры, входящие в какую-то группу баннеров.
 
     Attributes:
         objects (BannerGroupItemManager): Менеджер модели.

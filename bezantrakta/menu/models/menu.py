@@ -5,8 +5,13 @@ from django.utils.translation import ugettext as _
 
 
 class Menu(models.Model):
-    """
-    Меню для добавления пунктов меню с произвольными ссылками.
+    """Меню для добавления пунктов меню с произвольными ссылками.
+
+    Attributes:
+        id (UUIDField): Уникальный идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним.
+        order (PositiveSmallIntegerField): Порядок меню в админ-панели.
     """
     id = models.UUIDField(
         primary_key=True,

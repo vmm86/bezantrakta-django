@@ -7,9 +7,7 @@ from .models import Menu, MenuItem
 
 
 def menu_items(request):
-    """
-    Получение информации о меню и её добавление в template context.
-    """
+    """Получение информации о меню и её добавление в контекст шаблона."""
     if base_template_context_processor(request):
         menu_values = Menu.objects.values('id', 'slug', 'title')
 

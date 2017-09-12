@@ -21,8 +21,8 @@ class Article(models.Model):
         id (UUIDField): Уникальный идентификатор.
         title (CharField): Название (всего не более 60-65 символов).
         slug (SlugField): Псевдоним.
-        description (TextField): Метатег `description` (краткое описание страницы, не более 150-200 символов).
-        keywords (TextField): Метатег `keywords` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
+        description (TextField): Метатег ``description`` (краткое описание страницы, не более 150-200 символов).
+        keywords (TextField): Метатег ``keywords`` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
         text (RichTextField): Содержимое страницы.
         is_published (BooleanField): Опубликована ли страница на сайте или нет.
         domain (ForeignKey): Сайт.

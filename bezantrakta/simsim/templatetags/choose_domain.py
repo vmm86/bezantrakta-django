@@ -8,7 +8,7 @@ register = template.Library()
 
 @register.inclusion_tag('admin/choose_domain.html', takes_context=True)
 def choose_domain(context):
-    # Список всех сайтов, город которых либо в процессе подготовки, либо включён
+    """Список всех сайтов, статус города у которых либо "в процессе подготовки", либо "включён"."""
     domains = Domain.objects.select_related(
         'city',
     ).all().annotate(

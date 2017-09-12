@@ -10,8 +10,14 @@ class EventVenueManager(models.Manager):
 
 
 class EventVenue(models.Model):
-    """
-    Залы, в которых проходят события.
+    """Залы (места проведения событий).
+
+    Attributes:
+        objects (EventVenueManager): Менеджер модели.
+        id (UUIDField): Уникальный идентификатор.
+        slug (CharField): Псевдоним.
+        title (SlugField): Название.
+        city (ForeignKey): Привязка к городу, в котором находится зал.
     """
     objects = EventVenueManager()
 

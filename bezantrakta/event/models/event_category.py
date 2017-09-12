@@ -6,8 +6,15 @@ from django.utils.translation import ugettext as _
 
 
 class EventCategory(models.Model):
-    """
-    Категории событий (концерты, спектакли и т.п.).
+    """Категории событий (концерты, спектакли и т.п.).
+
+    Attributes:
+        id (UUIDField): Уникальный идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним.
+        description (TextField): Метатег ``description`` (краткое описание страницы, не более 150-200 символов).
+        keywords (TextField): Метатег ``keywords`` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
+        is_published (BooleanField): Опубликовано (``True``) или НЕ опубликовано (``False``).
     """
     id = models.UUIDField(
         primary_key=True,

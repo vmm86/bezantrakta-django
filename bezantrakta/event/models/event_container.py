@@ -5,8 +5,24 @@ from django.utils.translation import ugettext as _
 
 
 class EventContainer(models.Model):
-    """
-    Контейнеры для отображения событий на сайте.
+    """Контейнеры для отображения событий на сайте в разных позициях в базовом шаблоне.
+
+    Attributes:
+        id (UUIDField): Уникальный идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним.
+        mode (CharField): Тип контейнера, берущийся из ``MODE_CHOICES`` (по умолчанию - ``small_vertical``).
+
+            Содержимое ``MODE_CHOICES`` (кортеж из кортежей "значение" / "подпись").
+                * **MODE_BV** (str): Большие вертикальные афиши (``big_vertical``).
+                * **MODE_BH** (str): Большие горизонтальные афиши (``big_vertical``).
+                * **MODE_SV** (str): Маленькие вертикальные афиши (``small_vertical``).
+                * **MODE_SH** (str): Маленькие горизонтальные афиши (``small_horizontal``).
+
+        order (PositiveSmallIntegerField): Порядок контейнеров в админ-панели.
+        img_width (PositiveSmallIntegerField): Ширина афиши в контейнере (для справки, функционально не используется).
+        img_height (PositiveSmallIntegerField): Высота афиши в контейнере (для справки, функционально не используется).
+        is_published (BooleanField): Опубликовано (``True``) или НЕ опубликовано (``False``).
     """
     id = models.UUIDField(
         primary_key=True,

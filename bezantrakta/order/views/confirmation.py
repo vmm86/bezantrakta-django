@@ -18,7 +18,11 @@ from ..settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
 
 
 def confirmation(request, order_uuid):
-    """Вывод информации об успешном или НЕуспешном заказе."""
+    """Вывод информации об успешном или НЕуспешном заказе.
+
+    Args:
+        order_uuid (str): Уникальный идентификатор заказа.
+    """
     try:
         order_uuid = uuid.UUID(order_uuid)
     except (AttributeError, TypeError, ValueError):

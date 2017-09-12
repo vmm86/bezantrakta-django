@@ -10,8 +10,14 @@ class EventGroupBinderManager(models.Manager):
 
 
 class EventGroupBinder(models.Model):
-    """
-    Связующая таблица событий и групп событий.
+    """Связующая таблица событий и групп событий.
+
+    Attributes:
+        objects (EventGroupBinderManager): Менеджер модели.
+        id (UUIDField): Уникальный идентификатор.
+        group (ForeignKey): Привязка к группе, которая содержит события.
+        event (ForeignKey): Привязка к событиям, которые входят в группу.
+        caption (CharField): Опциональная подпись к событию в группе.
     """
     objects = EventGroupBinderManager()
 

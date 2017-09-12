@@ -7,9 +7,7 @@ from .models import EventCategory, EventContainerBinder, EventGroupBinder
 
 
 def big_containers(request):
-    """
-    Получение событий и их добавление в template context.
-    """
+    """Получение событий и их добавление в контекст шаблона."""
     if base_template_context_processor(request):
         today = timezone_now()
 
@@ -117,9 +115,7 @@ def big_containers(request):
 
 
 def categories(request):
-    """
-    Получение категорий событий и их добавление в template context.
-    """
+    """Получение категорий событий и их добавление в контекст шаблона."""
     if base_template_context_processor(request):
         today = timezone_now()
 

@@ -55,8 +55,15 @@ class EventContainerBinderManager(models.Manager):
 
 
 class EventContainerBinder(models.Model):
-    """
-    Связующая таблица событий и контейнеров событий.
+    """Связующая таблица событий и контейнеров событий.
+
+    Attributes:
+        objects (EventContainerBinderManager): Менеджер модели.
+        id (UUIDField): Уникальный идентификатор.
+        event (ForeignKey): Привязка к событию.
+        event_container (ForeignKey): Привязка к контейнеру.
+        order (PositiveSmallIntegerField): Порядок афиш событий в контейнере.
+        img (ImageField): Путь к файлу с афишей события внутри ``settings.MEDIA_ROOT``.
     """
     objects = EventContainerBinderManager()
 
