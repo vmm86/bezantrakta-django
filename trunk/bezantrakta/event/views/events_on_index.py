@@ -9,6 +9,7 @@ from ..shortcuts import add_small_vertical_poster
 
 
 def events_on_index(request):
+    """Вывод событий в базовом шаблоне в позициях ``small_vertical``."""
     today = timezone_now()
 
     # Поиск опубликованных событий или групп на главной, привязанных к текущему домену

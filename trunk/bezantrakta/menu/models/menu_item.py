@@ -10,8 +10,17 @@ class MenuItemManager(models.Manager):
 
 
 class MenuItem(models.Model):
-    """
-    Пункты меню с произвольными ссылками.
+    """Пункты меню с произвольными ссылками (абсолютными внешними или относительными локальными).
+
+    Attributes:
+        objects (MenuItemManager): Description
+        id (UUIDField): Уникальный идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним.
+        is_published (BooleanField): Опубликовано (``True``) или НЕ опубликовано (``False``).
+        order (PositiveSmallIntegerField): Порядок пунктов меню в меню.
+        menu (ForeignKey): Привязка с меню.
+        domain (ForeignKey): Привязка с сайту.
     """
     objects = MenuItemManager()
 

@@ -16,11 +16,11 @@ def get_or_set_cache(event_uuid, reset=False):
     """Кэширование параметров события для последующего использования без запросов в БД.
 
     Args:
-        event_uuid (UUID): UUID события в БД.
+        event_uuid (UUID): Уникальный идентификатор события.
         reset (bool, optional): В любом случае пересоздать кэш, даже если он имеется.
 
     Returns:
-        cache: Кэш параметров события.
+        dict: Кэш параметров события.
     """
     cache_key = 'event.{event_uuid}'.format(event_uuid=event_uuid)
     cache_value = cache.get(cache_key)

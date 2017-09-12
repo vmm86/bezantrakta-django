@@ -3,23 +3,32 @@ import simplejson as json
 from django.core.cache import cache
 
 
-def get_or_set_cache(order_uuid, ticket_service_id):
-    # Формирование заказа в кэше на стороне сервера
-    order_cache_key = 'order_{order_uuid}'.format(order_uuid=order_uuid)
-    order_cache_value = cache.get(order_cache_key)
+def get_or_set_cache(order_uuid, ticket_service_id, reset=False):
+    """Кэширование информации о заказе (**TODO** - на будущее, пока не работает).
 
-    if not order_cache_value:
-        order_cache_value = {}
-        order_cache_value['ticket_service_id'] = ticket_service_id
-        order_cache_value['order_uuid'] = order_uuid
+    Args:
+        order_uuid (UUID): Уникальный идентификатор заказа.
+        ticket_service_id (str): Идентификатор сервиса продажи билетов.
+        reset (bool, optional): В любом случае пересоздать кэш, даже если он имеется.
+    """
+    cache_key = 'order_{order_uuid}'.format(order_uuid=order_uuid)
+    cache_value = cache.get(cache_key)
 
-        order_cache_value['order_tickets'] = []
-        order_cache_value['order_count'] = 0
-        order_cache_value['order_total'] = 0
+    if reset:
+        cache.delete(cache_key)
+
+    if not cache_value or reset:
+        cache_value = {}
+        cache_value['ticket_service_id'] = ticket_service_id
+        cache_value['order_uuid'] = order_uuid
+
+        cache_value['order_tickets'] = []
+        cache_value['order_count'] = 0
+        cache_value['order_total'] = 0
     else:
         pass
 
-    order_cache_value = json.dumps(order_cache_value, ensure_ascii=False)
-    cache.set(order_cache_key, order_cache_value)
+    cache_value = json.dumps(cache_value, ensure_ascii=False)
+    cache.set(cache_key, cache_value)
 
-    print('\norder ', order_cache_key, ':\n', order_cache_value, '\n')
+    # print('\norder ', cache_key, ':\n', cache_value, '\n')

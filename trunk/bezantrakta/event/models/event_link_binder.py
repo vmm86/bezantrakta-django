@@ -11,8 +11,15 @@ class EventLinkBinderManager(models.Manager):
 
 
 class EventLinkBinder(models.Model):
-    """
-    Связующая таблица событий и ссылок.
+    """Связующая таблица событий и ссылок.
+
+    Attributes:
+        objects (EventLinkBinderManager): Менеджер модели.
+        id (UUIDField): Уникальный идентификатор.
+        event (ForeignKey): Привязка к событию.
+        event_link (ForeignKey): Привязка к внешней ссылке на стороннего продавца билетов.
+        href (URLField): URL внешней ссылки на конкретную стороннюю страницу продажи билетов.
+        order (PositiveSmallIntegerField): Порядок иконок внешних ссылок на странице события.
     """
     objects = EventLinkBinderManager()
 

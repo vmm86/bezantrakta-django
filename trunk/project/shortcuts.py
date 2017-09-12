@@ -12,17 +12,17 @@ def timezone_now():
     """Получение текущей даты и времени в текущем часовом поясе.
 
     Returns:
-        datetime: Текущая дата и время.
+        datetime.datetime: Текущая дата и время.
     """
     return timezone.now()
 
 
 def base_template_context_processor(request):
-    """Запускать context_processor для отображения в базовом шаблоне только в базовом шаблоне.
+    """Запускать процессор контекста для отображения ТОЛЬКО в базовом шаблоне.
     Т.е. на всех страницах, кроме процесса заказа билетов.
 
     Returns:
-        bool: Запускать context_processor или нет.
+        bool: Запускать процессор контекста или нет.
     """
     # Если сайт опубликован
     domain_is_published = request.domain_is_published
@@ -49,16 +49,12 @@ message.__new__.__defaults__ = (None,) * len(message._fields)
 
 
 def render_messages(request, msgs):
-    """Добавление в очередь одного или более сообщений сообщений.
+    """Добавление в очередь на вывод в шаблоне одного или более статусных сообщений.
 
-    msgs - словарь с сообщениями для вывода.
-    Его ключи - уровень уведомления ('debug', 'info', 'success', 'warning', 'error').
-    Его значения - текстовые сообщения для вывода.
-
-    Сообщения кладутся в очередь messages и выводятся шаблоне того вида, в котором вызывается эта функция.
+    Сообщения кладутся в очередь ``messages`` и выводятся шаблоне того вида, в котором вызывается эта функция.
 
     Args:
-        msgs (dict): Сообщения для вывода.
+        msgs (dict): Сообщения для вывода. Ключи ``msgs`` - уровень уведомления (``debug``, ``info``, ``success``, ``warning``, ``error``). Значения ``msgs`` - текстовые сообщения для вывода.
     """
     for msg in msgs:
         if msg.level == 'debug':
@@ -73,29 +69,18 @@ def render_messages(request, msgs):
             messages.error(request, msg.text)
 
 
-def decimal_price(value):
-    """Преобразование входного значения в денежную сумму с 2 знаками после запятой (копейки) типа Decimal.
-
-    Args:
-        value (str): Входное значение (в любом случае строка - для обхода проблем с округлением float).
-
-    Returns:
-        Decimal: Денежная сумма.
-    """
-    return Decimal(str(value)).quantize(Decimal('1.00'))
-
-
 def datetime_localize_or_utc(dt, tz):
-    """
-    Если в дате/времени указан часовой пояс - дате/время остаётся неизменным (должно писаться в БД в UTC!).
-    Если в дате/времени НЕ указан часовой пояс - дате/время локализуется с учётом часового пояса.
+    """Локализация даты/времени или приведение к UTC.
+
+    * Если в дате/времени указан часовой пояс - дате/время остаётся неизменной (должно писаться в БД в UTC!).
+    * Если в дате/времени НЕ указан часовой пояс - дате/время локализуется с учётом часового пояса.
 
     Args:
-        dt (datetime): Дата и время
-        tz (pytz.tzfile): Часовой пояс pytz
+        dt (datetime.datetime): Дата/время.
+        tz (pytz.tzfile): Часовой пояс ``pytz``.
 
     Returns:
-        datetime: Дата/время
+        datetime.datetime: Преобразованная дата/время.
     """
     if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
         dt = tz.localize(dt)
@@ -104,6 +89,11 @@ def datetime_localize_or_utc(dt, tz):
 
 
 def json_serializer(obj):
+    """Сериализация JSON с учётом специфических типов данных (``datetime``, ``UUID``).
+
+    Args:
+        obj (_): Объект на входе.
+    """
     if isinstance(obj, (datetime.datetime, datetime.date)):
         obj = obj.isoformat()
     elif isinstance(obj, uuid.UUID):

@@ -247,7 +247,7 @@ class TicketService(ABC):
             order_uuid (str): Уникальный UUID заказа.
             order_id (int): Идентификатор заказа (только Радарио).
             payment_id (int): Идентификатор оплаты.
-            payment_datetime(datetime): Дата и время оплаты.
+            payment_datetime(datetime.datetime): Дата и время оплаты.
             tickets (list): Список словарей с параметрами заказываемого места.
 
                 Содержимое ``tickets``:

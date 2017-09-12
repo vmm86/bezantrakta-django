@@ -17,8 +17,40 @@ class EventManager(models.Manager):
 
 
 class Event(models.Model):
-    """
-    События, привязанные к какому-то билетному сервису или независимые.
+    """События, привязанные к какому-то билетному сервису или независимые (добавленные вручную).
+
+    Attributes:
+        objects (EventManager): Менеджер модели.
+        id (UUIDField): Уникальный идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним.
+        description (TextField): Метатег ``description`` (краткое описание страницы, не более 150-200 символов).
+        keywords (TextField): Метатег ``keywords`` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
+        text (RichTextField): Текстовое описание события в HTML.
+        is_published (BooleanField): Опубликовано (``True``) или НЕ опубликовано (``False``).
+        is_on_index (BooleanField): Показывать "на главной" в позициях ``small_vertical`` (``True``) или НЕ показывать (``False``).
+        min_price (DecimalField): Минимальная цена на билет.
+        min_age (PositiveSmallIntegerField): Ограничение по возрасту, берущееся из ``MIN_AGE_CHOICES`` (по умолчанию - ``0``).
+
+            Содержимое ``MIN_AGE_CHOICES`` (кортеж из кортежей "значение" / "подпись").
+                * **AGE_00** (int): ``0``.
+                * **AGE_06** (int): ``6``.
+                * **AGE_12** (int): ``12``.
+                * **AGE_16** (int): ``16``.
+                * **AGE_18** (int): ``18``.
+
+        datetime (DateTimeField): Дата/время события.
+        event_category (ForeignKey): Привязка к категории события.
+        event_venue (ForeignKey): Привязка к залу (месту проведения события).
+        domain (ForeignKey): Привязка к сайту.
+        is_group (BooleanField): Является ли запись в БД событием (``False``) или группой (``True``).
+        event_group (ManyToManyField): Привязка событий к группе (если текущая запись в БД - группа).
+        event_container (ManyToManyField): Привязка к категории событий.
+        event_link (ManyToManyField): Привязка к внешним ссылкам с иконками.
+        ticket_service (ForeignKey): Привязка к сервису продажи билетов.
+        ticket_service_event (PositiveIntegerField): Идентификатор события в сервисе продажи билетов.
+        ticket_service_prices (TextField): Список цен на билеты в событии по возрастанию из сервиса продажи билетов.
+        ticket_service_scheme (PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
     """
     objects = EventManager()
 

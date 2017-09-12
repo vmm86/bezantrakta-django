@@ -1109,7 +1109,7 @@ class SuperBilet(TicketService):
             order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             order_id (int): Идентификатор заказа.
             payment_id (int): Идентификатор оплаты.
-            payment_datetime (datetime): Дата и время оплаты.
+            payment_datetime (datetime.datetime): Дата и время оплаты.
             tickets (list): Список словарей с параметрами заказываемого места.
                 sector_id (int): Идентификатор сектора.
                 row_id (int): Идентификатор ряда.
