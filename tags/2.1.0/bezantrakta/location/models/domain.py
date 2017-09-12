@@ -30,7 +30,7 @@ class Domain(models.Model):
         objects (DomainManager): Менеджер модели.
         id (IntegerField): Идентификатор.
         title (CharField): Название.
-        slug (CharField): Псевдоним (**TODO** - изменить на ``SlugField``).
+        slug (SlugField): Псевдоним.
         is_published (BooleanField): Работает (``True``) или не работает ("ведутся технические работы") (``False``).
         city (ForeignKey): Привязка к городу, в котором работает сайт.
         settings (TextField): Настройки в JSON.
@@ -46,9 +46,8 @@ class Domain(models.Model):
         max_length=64,
         verbose_name=_('domain_title'),
     )
-    slug = models.CharField(
-        max_length=32,
-        unique=True,
+    slug = models.SlugField(
+        max_length=8,
         help_text=_('domain_slug_help_text'),
         verbose_name=_('domain_slug'),
     )
