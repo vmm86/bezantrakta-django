@@ -34,6 +34,7 @@ def img_path(instance, filename):
 
 
 class BannerGroupItemManager(models.Manager):
+    """Менеджер модели BannerGroupItem."""
     def get_queryset(self):
         return super(BannerGroupItemManager, self).get_queryset().select_related('domain')
 
@@ -41,6 +42,18 @@ class BannerGroupItemManager(models.Manager):
 class BannerGroupItem(models.Model):
     """
     Баннеры, входящие в какую-то группу баннеров.
+
+    Attributes:
+        objects (BannerGroupItemManager): Менеджер модели.
+        id (UUIDField): Уникальный идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним.
+        img (ImageField): Путь к файлу с иконкой баннера внутри ``settings.MEDIA_ROOT``.
+        href (URLField): Внешняя ссылка, на которую ведёт баннер.
+        is_published (BooleanField): Включен (``True``) или отключен (``False``).
+        order (PositiveSmallIntegerField): Порядок следования в группе баннеров.
+        banner_group (ForeignKey): Принадлежность к группе баннеров.
+        domain (ForeignKey): Принадлежность к сайту.
     """
     objects = BannerGroupItemManager()
 

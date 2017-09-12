@@ -4,9 +4,7 @@ from .models import BannerGroup, BannerGroupItem
 
 
 def banner_group_items(request):
-    """
-    Получение информации о баннерах и её добавление в template context.
-    """
+    """Получение информации о баннерах и её добавление в контекст шаблона."""
     if base_template_context_processor(request):
         banner_group_values = BannerGroup.objects.values('id', 'slug', 'title')
 

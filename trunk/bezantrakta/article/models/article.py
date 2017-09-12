@@ -18,7 +18,7 @@ class Article(models.Model):
 
     Attributes:
         objects (ArticleManager): Менеджер модели Article.
-        id (UUIDField): Description
+        id (UUIDField): Уникальный идентификатор.
         title (CharField): Название (всего не более 60-65 символов).
         slug (SlugField): Псевдоним.
         description (TextField): Метатег `description` (краткое описание страницы, не более 150-200 символов).
