@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 
 
 def get_default_domain_settings():
+    """Получение настроек сайта по умолчанию из файла JSON."""
     domain_settings_file = os.path.join(
         settings.BASE_DIR,
         'bezantrakta',
@@ -23,8 +24,16 @@ class DomainManager(models.Manager):
 
 
 class Domain(models.Model):
-    """
-    Сайты Безантракта, работающие в разных городах России.
+    """Сайты Безантракта, работающие в разных городах России.
+
+    Attributes:
+        objects (DomainManager): Менеджер модели.
+        id (IntegerField): Идентификатор.
+        title (CharField): Название.
+        slug (CharField): Псевдоним (**TODO** - изменить на ``SlugField``).
+        is_published (BooleanField): Работает (``True``) или не работает ("ведутся технические работы") (``False``).
+        city (ForeignKey): Привязка к городу, в котором работает сайт.
+        settings (TextField): Настройки в JSON.
     """
     objects = DomainManager()
 

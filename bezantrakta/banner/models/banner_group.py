@@ -5,8 +5,13 @@ from django.utils.translation import ugettext as _
 
 
 class BannerGroup(models.Model):
-    """
-    Группы баннеров для показа в разных блоках в шаблоне сайта.
+    """Группы баннеров для показа в разных блоках в шаблоне сайта.
+
+    Attributes:
+        id (UUIDField): Уникальный идентификатор.
+        title (CharField): Название.
+        slug (SlugField): Псевдоним.
+        order (PositiveSmallIntegerField): Порядок групп в админ-панели.
     """
     id = models.UUIDField(
         primary_key=True,

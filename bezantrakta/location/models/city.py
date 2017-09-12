@@ -7,6 +7,14 @@ from timezone_field import TimeZoneField
 
 
 def timezone_offset_humanized(timezone):
+    """Вывод человекопонятной разницы часовых поясов с UTC.
+
+    Args:
+        timezone (timezone): Часовой пояс.
+
+    Returns:
+        str: Разница часового пояса с UTC в формате ``±ЧАСОВ:МИНУТ``.
+    """
     offset = datetime.datetime.now(timezone).utcoffset()
     seconds = offset.seconds
     hours, remainder = divmod(seconds, 3600)
@@ -21,8 +29,19 @@ def timezone_offset_humanized(timezone):
 
 
 class City(models.Model):
-    """
-    Города России, в которых могут работать сайты Безантракта.
+    """Города России, в которых могут работать сайты Безантракта.
+
+    Attributes:
+        id (IntegerField): Идентификатор (телефонный код города).
+        title (CharField): Название.
+        slug (SlugField): Псевдоним (не более 5-7 знаков, наиболее употребимое сокращение название города в Интернете).
+        timezone (TimeZoneField): Часовой пояс города.
+        state (NullBooleanField): Состояние города, берущееся из ``STATE_CHOICES``.
+
+            Содержимое ``STATE_CHOICES`` (кортеж из кортежей "значение" / "подпись").
+                    * **STATE_DISABLED** (bool): Выключен (``False``).
+                    * **STATE_PROGRESS** (None): В процессе подготовки ("скоро открытие") (``None``).
+                    * **STATE_ENABLED** (bool):  Включен (``True``).
     """
     id = models.IntegerField(
         primary_key=True,
