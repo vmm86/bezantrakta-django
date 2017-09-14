@@ -595,9 +595,8 @@ $(document).ready(function() {
     }
 
     {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
-    /*
     function eventYandex() {
-        yaCounter<?php echo $config->getValue('config.yandex_counter'); ?>.reachGoal('step1');
+        yaCounter{{ request.domain_settings.counter.yandex }}.reachGoal('step1');
         console.log('eventYandex');
         return true;
     }
@@ -615,7 +614,7 @@ $(document).ready(function() {
             console.log(e);
         }
     }
-    */
 
+    document.getElementById('buy-tickets').addEventListener('click', eventsYandexGoogle);
 });
 {% endspaceless %}

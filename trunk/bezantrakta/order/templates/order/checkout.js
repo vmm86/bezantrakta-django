@@ -449,9 +449,8 @@ $(document).ready(function(){
     }
 
     {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
-    /*
     function eventYandex() {
-        yaCounter<?php echo $config->getValue('yandex_counter'); ?>.reachGoal('step2');
+        yaCounter{{ request.domain_settings.counter.yandex }}.reachGoal('step2');
         console.log('eventYandex');
         return true;
     }
@@ -471,7 +470,5 @@ $(document).ready(function(){
     }
 
     document.getElementById('get-tickets').addEventListener('submit', eventsYandexGoogle);
-    */
-
 });
 {% endspaceless %}

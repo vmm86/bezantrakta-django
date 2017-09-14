@@ -1,168 +1,95 @@
-{% spaceless %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
+{% extends "base.html" %}
 {% load i18n static tz compress %}
-    <title>Контактные данные покупателя и способы заказа билетов</title>
 
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+{% block head_title %}
+    Контактные данные покупателя и способы заказа билетов
+{% endblock %}
 
-    <meta name="description" content="Ввод контактных данных покупателем (ФИО, email, телефон) и выбор способа получения и оплаты билетов">
-    <meta name="keywords" content="оформление заказа, чекаут, контактные данные, фио, email, телефон, способы заказа билетов, способы получения билетов, способы оплаты билетов">
+{% block head_description %}
+    Ввод контактных данных покупателем (ФИО, email, телефон) и выбор способа получения и оплаты билетов
+{% endblock %}
 
+{% block head_keywords %}
+    оформление заказа, чекаут, контактные данные, фио, email, телефон, способы заказа билетов, способы получения билетов, способы оплаты билетов
+{% endblock %}
+
+{% block head_stylesheet %}
     {# Общие CSS-файлы - загружаются в любом случае #}
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/mq-order.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq-order.css" %}">
     {# Общие CSS-файлы - загружаются в любом случае #}
 
-    <link rel="stylesheet" href="{% static "global/js/lightbox2/lightbox.min.css" %}">
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/lightbox.min.css" %}">
+{% endblock %}
 
-    {% if debug %}<link rel="stylesheet" type="text/css" href="{% static "global/css/dev.css" %}">{% endif %}
+{% block body %}
+    <div class="body">
+        <main class="content">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="google-site-verification" content="{# google_webmaster #}">
-    <meta name="yandex-verification" content="{# yandex_webmaster #}">
-    {# Не индексировать тестовую версию сайта #}
-    {% if debug %}<meta name="robots" content="noindex, nofollow">{% endif %}
-    {# Не индексировать тестовую версию сайта #}
-    <meta name="robots" body="NOODP">
 
-    {# Метатеги для выбора городов #}
-    <meta name="city" content="{{ request.city_slug }}">
-    <meta name="domain" content="{{ request.root_domain }}">
-    {# Метатеги для выбора городов #}
+            {% include "order/order_progress.html" with active="step2" %}
 
-    {# `tel:` links NO auto-detection #}
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="x-rim-auto-match" content="none">
-    {# `tel:` links NO auto-detection #}
 
-    {# favicons #}
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon.png" %}">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-57x57.png" %}" sizes="57x57">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-60x60.png" %}" sizes="60x60">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-72x72.png" %}" sizes="72x72">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-76x76.png" %}" sizes="76x76">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-114x114.png" %}" sizes="114x114">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-120x120.png" %}" sizes="120x120">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-144x144.png" %}" sizes="144x144">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-152x152.png" %}" sizes="152x152">
-    <link rel="apple-touch-icon" href="{% static "global/ico/apple-touch-icon-180x180.png" %}" sizes="180x180">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-32x32.png" %}" sizes="32x32">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-36x36.png" %}" sizes="36x36">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-48x48.png" %}" sizes="48x48">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-72x72.png" %}" sizes="72x72">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-96x96.png" %}" sizes="96x96">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-144x144.png" %}" sizes="144x144">
-    <link rel="icon" type="image/png" href="{% static "global/ico/android-chrome-192x192.png" %}" sizes="192x192">
-    <link rel="manifest" href="http://{{ request.url_domain }}/manifest.json">
-    <meta name="msapplication-TileColor" content="#FFCC00">
-    <meta name="msapplication-TileImage" content="{% static "global/ico/mstile-144x144.png" %}">
-    <meta name="theme-color" content="#FFE57F">
-    <link rel="yandex-tableau-widget" href="{% static "global/yandex.manifest.json" %}">
-    <link rel="icon" type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static "global/ico/favicon.ico" %}">
-    {# favicons #}
-</head>
-{% endspaceless %}
-<body>
+            {% include "order/event_title_date_time.html" with active="step2" event=event %}
 
-<div class="body">
-    <main class="content">
-        <div class="order-progress">
-            <div class="order-progress-step1">
-                <div class="order-progress-step1-body"><span>Шаг 1.</span> <span>Выбор билетов</span></div>
+
+            <div class="order-header step2">
+                <div id="basket-container" class="step2">
+                    <h3 id="chosen-tickets-header">Выбранные места</h3>
+                    <p>
+                        <ul id="chosen-tickets">
+                        </ul>
+                    </p>
+                    <h3 id="overall-header">Всего</h3>
+                    <p id="overall">
+                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
+                    </p>
+
+                    {# Описание процесса заказа билетов #}
+                    {% include "order/legend_text.html" with ticket_service=ticket_service %}
+                </div>
             </div>
-            <div class="order-progress-step2">
-                <div class="order-progress-step2-body active"><span>Шаг 2.</span> <span>Оформление билетов</span></div>
-            </div>
-            <div class="order-progress-step3">
-                <div class="order-progress-step3-body"><span>Шаг 3.</span> <span>Подтверждение оформления</span></div>
-            </div>
-        </div>
 
-        <h1 id="event-title-date-time" class="step2">
-            <span id="event-title">{{ event.event_title }}</span>
-            <span id="event-date">{{ event.event_date }}</span>
-            <span id="event-time">{{ event.event_time }}</span>
-        </h1>
+            <br>
 
-        <h2 id="event-venue">
-            <span id="stagehall_name">
-                {{ event.event_venue_title }}{% if event.event_venue_city %} ({{ event.event_venue_city }}){% endif %}
-            </span>
-        </h2>
+            {% include "order/checkout_form.html" with checkout_form_action=checkout_form_action ticket_service=ticket_service payment_service=payment_service %}
 
-        <div class="order-header step2">
-            <div id="basket-container" class="step2">
-                <h3 id="chosen-tickets-header">Выбранные места</h3>
-                <p>
-                    <ul id="chosen-tickets">
-                    </ul>
-                </p>
-                <h3 id="overall-header">Всего</h3>
-                <p id="overall">
-                    <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
-                </p>
-
-                {# Описание процесса заказа билетов #}
-                {% include "order/legend_text.html" with ticket_service=ticket_service %}
-            </div>
-        </div>
-
-        <br>
-
-        {% include "order/checkout_form.html" with ticket_service=ticket_service payment_service=payment_service %}
-
-        {% if debug %}
-        <br><br>
-        order_tickets: <pre>{{ order_tickets|pprint }}</pre>
-        <br><br>
-        order_count: <pre>{{ order_count|pprint }}</pre>
-        <br><br>
-        order_total: <pre>{{ order_total|pprint }}</pre>
-        <br><br>
-        order_total_plus_commission: <pre>{{ order_total_plus_commission|pprint }}</pre>
-        <br><br>
-        event: <pre>{{ event|pprint }}</pre>
-        <br><br>
-        ticket_service: <pre>{{ ticket_service|pprint }}</pre>
-        <br><br>
-        payment_service: <pre>{{ payment_service|pprint }}</pre>
-        <br><br>
-        {% endif %}
-    </main>
-</div>
-
-<footer class="footer">
-    {% if not debug %}
-    {% spaceless %}
-    <div class="counters">
-        {% compress js inline %}
-        {% include "counters.html" %}
-        {% endcompress %}
+            {% if debug %}
+            <br><br>
+            order_tickets: <pre>{{ order_tickets|pprint }}</pre>
+            <br><br>
+            order_count: <pre>{{ order_count|pprint }}</pre>
+            <br><br>
+            order_total: <pre>{{ order_total|pprint }}</pre>
+            <br><br>
+            order_total_plus_commission: <pre>{{ order_total_plus_commission|pprint }}</pre>
+            <br><br>
+            event: <pre>{{ event|pprint }}</pre>
+            <br><br>
+            ticket_service: <pre>{{ ticket_service|pprint }}</pre>
+            <br><br>
+            payment_service: <pre>{{ payment_service|pprint }}</pre>
+            <br><br>
+            {% endif %}
+        </main>
     </div>
-    {% endspaceless %}
-    {% endif %}
-</footer>
+{% endblock %}
 
-<script type="text/javascript" src="{% static "global/js/jquery/jquery-3.2.1.min.js" %}"></script>
-<script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
+{% block scripts %}
+    <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
 
-{# compress js inline #}
-<script type="text/javascript">
-    {% include "order/checkout.js" with order_total_plus_commission=order_total_plus_commission delivery_price=delivery_price customer=customer %}
-</script>
-{# endcompress #}
+    {% compress js inline %}
+    <script type="text/javascript">
+        {% include "order/checkout.js" with order_total_plus_commission=order_total_plus_commission delivery_price=delivery_price customer=customer %}
+    </script>
+    {% endcompress %}
 
-<script type="text/javascript">
-$(document).ready(function() {
-    $('checkout-form').submit(function() {
-      $(this).find('button[type="submit"]').prop('disabled', true);
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('checkout-form').submit(function() {
+          $(this).find('button[type="submit"]').prop('disabled', true);
+        });
     });
-});
-</script>
-
-</body>
-</html>
+    </script>
+{% endblock %}

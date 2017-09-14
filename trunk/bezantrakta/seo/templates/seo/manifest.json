@@ -36,6 +36,6 @@
 		}
 	],
 	"start_url": "/",
-	"background_color": "#999999",
-	"theme_color": "#ffe57f"
+	"background_color": "{{ background_color }}",
+	"theme_color": "{{ theme_color }}"
 }
