@@ -1,28 +1,13 @@
-{% spaceless %}
+{% load static compress %}
 <!DOCTYPE html>
 <html lang="ru">
+{% spaceless %}
 <head>
-{% load i18n static tz compress %}
-    <title>{% if title and title != "" %}{{ request.domain_settings.domain.title }}: {{ title }}{% else %}{{ request.domain_settings.domain.title }}{% endif %}</title>
+    <title>{% spaceless %}{% block head_title %}{% endblock %}{% endspaceless %}</title>
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-
-    <meta name="description" content="{{ request.domain_settings.domain.description }}">
-    <meta name="keywords" content="{{ request.domain_settings.domain.keywords }}">
-
-    <link rel="stylesheet" href="{% static "global/js/fullcalendar/fullcalendar.min.css" %}">
-
-    {# Общие CSS-файлы - загружаются в любом случае #}
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/normalize.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/main.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/bxslider.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/template.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "global/css/mq.css" %}">
-    {# Общие CSS-файлы - загружаются в любом случае #}
-
-    <link rel="stylesheet" href="{% static "global/js/lightbox2/lightbox.min.css" %}">
-
-    {% if debug %}<link rel="stylesheet" type="text/css" href="{% static "global/css/dev.css" %}">{% endif %}
+    <meta name="description" content="{% spaceless %}{% block head_description %}{% endblock %}{% endspaceless %}">
+    <meta name="keywords" content="{% spaceless %}{% block head_keywords %}{% endblock %}{% endspaceless %}">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     {# Не индексировать тестовую версию сайта #}
@@ -36,6 +21,10 @@
 {% if request.domain_settings.webmaster.yandex != "" %}
     <meta name="yandex-verification" content="{{ request.domain_settings.webmaster.yandex }}">
 {% endif %}
+
+    {% block head_stylesheet %}{% endblock %}
+
+    {% if debug %}<link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/dev.css" %}">{% endif %}
 
     {# Метатеги для выбора городов #}
     <meta name="city" content="{{ request.city_slug }}">
@@ -51,8 +40,8 @@
     <meta property="og:site_name" content="{{ request.domain_settings.domain.title }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="http://{{ request.url_full }}">
-    <link rel="image_src" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
-    <meta property="og:image" content="http://{{ request.url_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
+    <link rel="image_src" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
+    <meta property="og:image" content="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="og:image:width"  content="192">
     <meta property="og:image:height" content="192">
     <meta property="og:image:type" content="image/png">
@@ -62,266 +51,42 @@
     <meta property="twitter:site" content="@bezantrakta">
     <meta property="twitter:title" content="{{ request.domain_settings.domain.title }}{{ title }}">
     <meta property="twitter:description" content="{{ request.domain_settings.domain.description }}">
-    <meta property="twitter:image" content="http://{{ request.url_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
+    <meta property="twitter:image" content="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
     <meta property="twitter:image:width"  content="192">
     <meta property="twitter:image:height" content="192">
     {# Метатеги для кнопок "Поделиться" #}
 
     {# favicons #}
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon.png" %}">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-57x57.png" %}" sizes="57x57">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-60x60.png" %}" sizes="60x60">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-72x72.png" %}" sizes="72x72">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-76x76.png" %}" sizes="76x76">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-114x114.png" %}" sizes="114x114">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-120x120.png" %}" sizes="120x120">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-144x144.png" %}" sizes="144x144">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-152x152.png" %}" sizes="152x152">
-    <link rel="apple-touch-icon" href="http://{{ request.url_domain }}{% static "global/ico/apple-touch-icon-180x180.png" %}" sizes="180x180">
-    <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-32x32.png" %}" sizes="32x32">
-    <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-36x36.png" %}" sizes="36x36">
-    <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-48x48.png" %}" sizes="48x48">
-    <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-72x72.png" %}" sizes="72x72">
-    <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-96x96.png" %}" sizes="96x96">
-    <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-144x144.png" %}" sizes="144x144">
-    <link rel="icon" type="image/png" href="http://{{ request.url_domain }}{% static "global/ico/android-chrome-192x192.png" %}" sizes="192x192">
-    <link rel="manifest" href="http://{{ request.url_domain }}/manifest.json">
-    <meta name="msapplication-config" content="http://{{ request.url_domain }}/browserconfig.xml">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon.png" %}">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-57x57.png" %}" sizes="57x57">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-60x60.png" %}" sizes="60x60">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-72x72.png" %}" sizes="72x72">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-76x76.png" %}" sizes="76x76">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-114x114.png" %}" sizes="114x114">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-120x120.png" %}" sizes="120x120">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-144x144.png" %}" sizes="144x144">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-152x152.png" %}" sizes="152x152">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-180x180.png" %}" sizes="180x180">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-32x32.png" %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-36x36.png" %}" sizes="36x36">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-48x48.png" %}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-72x72.png" %}" sizes="72x72">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-96x96.png" %}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-144x144.png" %}" sizes="144x144">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}" sizes="192x192">
+    <link rel="manifest" href="{{ request.url_protocol_domain }}/manifest.json">
+    <meta name="msapplication-config" content="{{ request.url_protocol_domain }}/browserconfig.xml">
     <meta name="msapplication-TileColor" content="#FFCC00">
     <meta name="msapplication-TileImage" content="{% static "global/ico/mstile-144x144.png" %}">
     <meta name="theme-color" content="#FFE57F">
-    <link rel="yandex-tableau-widget" href="yandex.manifest.json">
-    <link rel="icon" type="image/x-icon" href="http://{{ request.url_domain }}{% static "global/ico/favicon.ico" %}">
-    <link rel="shortcut icon" type="image/x-icon" href="http://{{ request.url_domain }}{% static "global/ico/favicon.ico" %}">
+    <link rel="yandex-tableau-widget" href="{{ request.url_protocol_domain }}/yandex.manifest.json">
+    <link rel="icon" type="image/x-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/favicon.ico" %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/favicon.ico" %}">
     {# favicons #}
 </head>
 {% endspaceless %}
 <body>
-
-<div class="top">
-    <div class="top-left">
-        {# Вывод города текущего сайта #}
-        <div id="choose-city-button" class="choose-city-button">
-        {% with city_icon="global/svg/city/"|add:request.city_slug|add:".svg" %}
-            <img class="icon" src="{% static city_icon %}">
-        {% endwith %}
-            <span class="title" title="Выбрать город">{{ request.city_title }}</span>
-        </div>
-        {# Вывод города текущего сайта #}
-    </div>
-    <div class="top-right">&nbsp;</div>
-</div>
-
-<div class="poster-big-vertical-left">
-{% if big_vertical_left %}
-    <div class="bannergroup">
-    {% for item in big_vertical_left %}
-        <div class="banneritem">
-        {% localtime on %}
-            {% include "event/big_posters.html" with item=item %}
-        {% endlocaltime %}
-        </div>
-    {% endfor %}
-    </div>
-{% endif %}
-</div>
-
-<div class="poster-big-vertical-right">
-{% if big_vertical_right %}
-    <div class="bannergroup">
-    {% for item in big_vertical_right %}
-        <div class="banneritem">
-        {% localtime on %}
-            {% include "event/big_posters.html" with item=item %}
-        {% endlocaltime %}
-        </div>
-    {% endfor %}
-    </div>
-{% endif %}
-</div>
-
-<div class="body">
-
-    <header class="header">
-
-        <span class="hamburger"></span>
-
-        <div class="header-left">
-
-            <div class="calendar">
-                {% comment %}
-                {% now "Y" as year %}
-                {% now "n" as month %}
-                {% load calendar %}
-                {% calendar year month %}
-                {% endcomment %}
-            </div>
-
-            <div class="top-menu">
-            {% if menu_items.top_menu %}
-                <ul>
-                {% for item in menu_items.top_menu %}
-                    <li{% if item.url == request.url_path %} class="active"{% endif %}>
-                        <a href="{{ item.url }}" title="{{ item.title }}">{{ item.title }}</a>
-                    </li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-            </div>
-
-            <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
-        </div>
-
-        <div class="header-right">
-
-                <div class="search">
-                    {# Поиск #}
-                    <div class="modul">
-                        <div class="mod_top">
-                            <form action="/search" method="GET">
-                                <input name="text" id="search" alt="Поиск" class="inputbox" type="text" size="20" value="{% if request.GET.text and request.GET.text != "" %}{{ request.GET.text }}{% endif %}">
-                                <input type="submit" value="Поиск" class="button">
-                            </form>
-                        </div>
-                        <div class="mod_bot"></div>
-                    </div>
-                    {# Поиск #}
-                </div>
-
-                <div class="poster-big-horizontal-body" style="height: 0;">
-                {% if big_horizontal %}
-                    <ul class="slider">
-                    {% for item in big_horizontal %}
-                        <li class="slide">
-                        {% localtime on %}
-                            {% include "event/big_posters.html" with item=item %}
-                        {% endlocaltime %}
-                        </li>
-                    {% endfor %}
-                    </ul>
-                {% endif %}
-                </div>
-
-        </div>
-
-    </header>
-
-    {# Категории событий #}
-    <div class="events-menu">
-        {% if categories %}
-            <ul>
-            {% for category in categories %}
-                {% url 'event:category' slug=category.slug as category_url %}
-                <li id="category_{{ category.slug }}" {% if category_url == request.url_path %}class="active"{% endif %}>
-                    <a href="{{ category_url }}">{{ category.title }}</a>
-                </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-    {# Категории событий #}
-
-    <main class="content">
-        {% block content_header %}{% endblock %}
-        {% block content_body %}{% endblock %}
-    {% if debug %}
-        <hr>
-        <br>
-        <p>domain_slug: {{ request.domain_slug }}</p>
-        <p>domain_id: {{ request.domain_id }}</p>
-        <br>
-        <p>city_title: {{ request.city_title }}</p>
-        <p>city_slug: {{ request.city_slug }}</p>
-        <p>city_timezone: {{ request.city_timezone }}</p>
-        <p>TIME_ZONE: {{ TIME_ZONE }}</p>
-        <p>cities: <pre>{{ request.cities|pprint }}</pre></p>
-        <br>
-        <p>url_domain: {{ request.url_domain }}</p>
-        <p>url_path: {{ request.url_path }}</p>
-        <p>url_full: {{ request.url_full }}</p>
-        <br>
-        <hr>
-        <br>
-        <p>settings: <pre>{{ request.domain_settings|pprint }}</pre></p>
-    {% endif %}
-    </main>
-
-    <div class="bottom-menu">
-    {% if menu_items.bottom_menu %}
-        <ul>
-        {% for item in menu_items.bottom_menu %}
-            <li>
-                <a href="{{ item.url|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
-                    {{ item.title }}
-                </a>
-            </li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-    </div>
-
-    <div class="banners-body">
-
-        {% if banner_group_items.banner_social %}
-        <div class="banners banners-left">
-            <div class="bannergroup">
-                <div class="bannerheader">{{ banner_group.banner_social }}</div>
-                {% for banner in banner_group_items.banner_social %}
-                    <div class="banneritem">
-                        {% if banner.href %}
-                            <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-                        {% endif %}
-                                <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
-                        {% if banner.href %}
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if banner_group_items.banner_partners %}
-        <div class="banners banners-center">
-            <div class="bannergroup">
-                <div class="bannerheader">{{ banner_group.banner_partners }}</div>
-                {% for banner in banner_group_items.banner_partners %}
-                    <div class="banneritem">
-                        {% if banner.href %}
-                            <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-                        {% endif %}
-                                <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
-                        {% if banner.href %}
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-        {% if banner_group_items.banner_payment %}
-        <div class="banners banners-right">
-            <div class="bannergroup">
-                <div class="bannerheader">{{ banner_group.banner_payment }}</div>
-                {% for banner in banner_group_items.banner_payment %}
-                    <div class="banneritem">
-                        {% if banner.href %}
-                            <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-                        {% endif %}
-                                <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
-                        {% if banner.href %}
-                            </a>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
-    </div>
-
-</div>
+{% block body %}{% endblock %}
 
 <footer class="footer">
     {% if not debug %}
@@ -335,116 +100,42 @@
     {% endif %}
 </footer>
 
-<script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/jquery/jquery-3.2.1.min.js" %}"></script>
 
-<script type="text/javascript" src="{% static "global/js/bxslider/jquery.bxslider.min.js" %}"></script>
-<script type="text/javascript" src="{% static "global/js/bxslider/carousel.js" %}"></script>
-
-{# Подключение календаря событий #}
-<script type="text/javascript" src="{% static "global/js/fullcalendar/lib/moment.min.js" %}"></script>
-<script type="text/javascript" src="{% static "global/js/fullcalendar/fullcalendar.min.js" %}"></script>
-<script type="text/javascript" src="{% static "global/js/fullcalendar/locale-all.js" %}"></script>
+{# Подключение лайтбоксов для изображений #}
+<script type="text/javascript" src="{% static "global/js/lightbox2/lightbox.min.js" %}"></script>
 <script type="text/javascript">
-$(document).ready(function(e) {
-    calendar_date = '{{ request.calendar_date|date:"Y-m-d" }}';
-    $('.calendar').fullCalendar({
-        now: '{{ request.calendar_date|date:"Y-m-d" }}',
-        locale: 'ru',
-        timezone: '{{ request.city_timezone }}',
-        firstDay: 1,
-        showNonCurrentDates: false,
-        editable: false,
-        header: {
-            left:   'prev',
-            center: 'title',
-            right:  'next'
-        },
-        buttonIcons: {
-            prev: 'left-single-arrow',
-            next: 'right-single-arrow'
-        },
-        dayClick: function() {
-            data_date = $(this).data('date').split('-');
-            day_url = [
-                'http://{{ request.url_domain }}',
-                'afisha',
-                data_date[0],
-                data_date[1],
-                data_date[2],
-                ''
-            ].join('/');
-            window.location.href = day_url;
-        }
-    });
+lightbox.option({
+    'alwaysShowNavOnTouchDevices': true,
+    'albumLabel': '',
+    'fadeDuration': 200,
+    'resizeDuration': 200,
+    'wrapAround': true
 });
 </script>
-{# Подключение календаря событий #}
+{# Подключение лайтбоксов для изображений #}
 
-{# Кастомный лайтбокс для выбора городов #}
-<script type="text/javascript" src="{% static "global/js/cities.js" %}" defer></script>
-<div id="choose-city-modal" class="modal" style="display: none;">
-    <div>
-        <div class="modal-body">
-        {# <span class="close">&times;</span> #}
-            <div>
-                <img class="bzlogo" src="{% static "global/svg/bzlogo.svg" %}">
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-
-            {% comment %}
-            {% if debug%}
-                <p>cities: {{ request.cities }}</p>
-                <br><br>
-                <p>cookies['bezantrakta_city']: {{ request.bezantrakta_city }}</p>
-            {% endif %}
-            {% endcomment %}
-
-                <ul id="choose-city-list" class="choose-city-list">
-                {% for city in request.cities %}
-            {% if city.slug != "adm" %}
-                {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
-                {% if request.bezantrakta_city == city.slug %}
-                    <li class="{{ city.status }} chosen" data-city="{{ city.slug }}">
-                {% else %}
-                    <li class="{{ city.status }}" data-city="{{ city.slug }}">
-                {% endif %}
-                    {% with city_icon="global/svg/city/"|add:city.slug|add:".svg" %}
-                        <img class="city-icon" src="{% static city_icon %}">
-                    {% endwith %}
-                        <span class="city-name">{{ city.title }}</span>
-                    {% if city.state == None %}
-                        <span class="city-status-text">скоро открытие</span>
-                    {% endif %}
-                    </li>
-            {% endif %}
-                {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-{# Кастомный лайтбокс для выбора городов #}
-
+{# Вывод размеров viewport в dev-версии сайта #}
+{% if debug %}
 <script type="text/javascript">
-{# Скрытие меню на небольших экранах #}
-function menuToggle() {
-    if (window.innerWidth <= 480) {
-        $('.top-menu').hide();
-        $('.hamburger').click(function(event) {
-            $('.top-menu').toggle();
-        });
-    } else {
-        $('.top-menu').show();
-    }
+$(document).ready(function(e) {
+    $('body').prepend('<span class="viewport" style="background: #FFF; border: 2px dotted #000; border-radius: 1rem; font-weight: bold; padding: 0.5rem; position: fixed; bottom: 0; right: 0; z-index: 10000;"></span>');
+    showViewportSize();    
+});
+$(window).resize(function(e) {
+    showViewportSize();
+});
+
+function showViewportSize() {
+    var viewport  = ( $(window).width() + 17 ) + ' x ' + $(window).height();                  
+    $('.viewport').text(viewport);
+
 }
-
-$(document).ready(menuToggle());
-$(window).on('orientationchange', menuToggle());
-$(window).on('resize', menuToggle());
 </script>
+{% endif %}
+{# Вывод размеров viewport в dev-версии сайта #}
 
-{% include "bottom_scripts.html" %}
+{% block scripts %}{% endblock %}
 
 </body>
 </html>

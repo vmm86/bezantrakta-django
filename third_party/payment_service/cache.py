@@ -3,6 +3,8 @@ import simplejson as json
 from django.conf import settings
 from django.core.cache import cache
 
+from project.shortcuts import build_absolute_url
+
 from third_party.payment_service.models import PaymentService
 from third_party.payment_service.payment_service_abc import payment_service_factory
 from third_party.payment_service.payment_service_abc.abc import PaymentService as PaymentServiceABC
@@ -73,8 +75,8 @@ def payment_service_instance(payment_service_id, url_domain=None):
 
     # URL для завершения заказа после удачной или НЕудачной оплаты
     url_domain = url_domain if url_domain is not None else settings.BEZANTRAKTA_ROOT_DOMAIN
-    cache_value['settings']['init']['success_url'] = 'http://{url_domain}/api/ps/success/'.format(url_domain=url_domain)
-    cache_value['settings']['init']['error_url'] = 'http://{url_domain}/api/ps/error/'.format(url_domain=url_domain)
+    cache_value['settings']['init']['success_url'] = build_absolute_url(url_domain, '/api/ps/success/')
+    cache_value['settings']['init']['error_url'] = build_absolute_url(url_domain, '/api/ps/error/')
 
     # Экземпляр класса сервиса продажи билетов
     ps = payment_service_factory(

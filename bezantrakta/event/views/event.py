@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db.models import F
 from django.shortcuts import redirect, render
 
-from project.shortcuts import message, render_messages, timezone_now
+from project.shortcuts import build_absolute_url, message, render_messages, timezone_now
 
 from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
 
@@ -193,6 +193,9 @@ def event(request, year, month, day, hour, minute, slug):
             context['event']['is_coming'] = event_is_coming
             context['ticket_service'] = ticket_service
             context['payment_service'] = payment_service
+
+            context['checkout_url'] = build_absolute_url(request.url_domain, '/afisha/checkout/')
+
             return render(request, 'event/event.html', context)
         # Событие НЕ опубликовано
         else:
