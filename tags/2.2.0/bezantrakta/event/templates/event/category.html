@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% load tz %}
+
+{% block content_header %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content_body %}
+<div class="poster-small-vertical-body">
+{% for item in category_events %}
+{% localtime on %}
+    {% include "event/small_vertical_posters.html" with item=item %}
+{% endlocaltime %}
+{% endfor %}
+</div>
+
+{% if debug %}
+<br><br>
+categories: <pre>{{ categories|pprint }}</pre>
+<br>
+category_events: <pre>{{ category_events|pprint }}</pre>
+<br><br>
+{% endif %}
+{% endblock %}
