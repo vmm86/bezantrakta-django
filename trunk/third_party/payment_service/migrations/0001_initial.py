@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Сервис онлайн-оплаты',
                 'verbose_name_plural': 'Сервисы онлайн-оплаты',
                 'db_table': 'third_party_payment_service',
-                'ordering': ('id', 'title'),
+                'ordering': ('slug', 'title'),
             },
         ),
     ]
