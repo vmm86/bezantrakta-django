@@ -4,7 +4,7 @@
     {# Реквизиты покупателя #}
     <p class="input-body step2">
         <label id="customer-name-label" class="label yellow step2" for="customer-name">Фамилия Имя</label>
-        <input id="customer-name" class="input grey step2" type="text" name="customer_name" required="required" placeholder="Образцов Иван Иванович" value="{{ customer.name }}">
+        <input id="customer-name" class="input grey step2" type="text" name="customer_name" required="required" placeholder="Фамилия Имя Отчество" value="{{ customer.name }}">
     </p>
 
     <p class="input-body step2">
@@ -14,7 +14,7 @@
 
     <p class="input-body step2">
         <label id="customer-phone-label" class="label yellow step2" for="customer-phone">Контактный телефон</label>
-        <input id="customer-phone" class="input grey step2" type="tel" name="customer_phone" required="required" placeholder="89201112233" pattern="[0-9]{7,}" min="7" max="20" maxlength="20" value="{{ customer.phone }}">
+        <input id="customer-phone" class="input grey step2" type="tel" name="customer_phone" required="required" placeholder="81234567890" pattern="[0-9]{7,}" min="7" max="20" maxlength="20" value="{{ customer.phone }}">
     </p>
 
     {# Согласие на обработку персональных данных #}
