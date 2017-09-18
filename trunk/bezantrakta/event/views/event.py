@@ -91,24 +91,30 @@ def event(request, year, month, day, hour, minute, slug):
         # Кэширование информации о событии, сервисе продажи билетов и сервисе онлайн-оплаты
         event = get_or_set_event_cache(event['event_uuid'])
 
-        # Настройки сервиса продажи билетов
-        ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+        if event['ticket_service_id']:
+            # Настройки сервиса продажи билетов
+            ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
 
-        # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
-        ticket_service_defaults = {
-            # Максимальное число билетов в заказе
-            'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
-            # Таймаут для повторения запроса списка мест в событии в секундах
-            'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
-            # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
-            'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
-        }
-        for param, value in ticket_service_defaults.items():
-            if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
-                ticket_service['settings'][param] = value
+            # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
+            ticket_service_defaults = {
+                # Максимальное число билетов в заказе
+                'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
+                # Таймаут для повторения запроса списка мест в событии в секундах
+                'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
+                # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
+                'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
+            }
+            for param, value in ticket_service_defaults.items():
+                if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
+                    ticket_service['settings'][param] = value
+        else:
+            ticket_service = None
 
-        # Настройки сервиса онлайн-оплаты
-        payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
+        if event['payment_service_id']:
+            # Настройки сервиса онлайн-оплаты
+            payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
+        else:
+            payment_service = None
 
         today = timezone_now()
         event_is_coming = True if event['event_datetime'] > today else False
