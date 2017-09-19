@@ -9,7 +9,6 @@ SBERBANK_VRN = {
     'prod_pswd': '',
 
     'commission': 2.8,
-    'commission_included': False,
     'timeout': 15,
 }
 
@@ -20,7 +19,6 @@ SBERBANK_VLUKI = {
     'prod_pswd': '',
 
     'commission': 2.8,
-    'commission_included': False,
     'timeout': 15,
 }
 
@@ -31,7 +29,6 @@ SBERBANK_NSK = {
     'prod_pswd': '',
 
     'commission': 2.8,
-    'commission_included': False,
     'timeout': 15,
 }
 

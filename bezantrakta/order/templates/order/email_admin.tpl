@@ -29,19 +29,11 @@
     </ul>
 
     <p><strong>Общая сумма заказа</strong>: {{ order.total }} р.
-    {% if customer.delivery == "courier" %}
-        {% if ticket_service.settings.courier_price > 0 %}
-            <br>В сумму заказа включена стоимость доставки курьером.
-        {% else %}
-            <br>Доставка курьером осуществляется бесплатно.
-        {% endif %}
+    {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
+        <br>В сумму заказа включена стоимость доставки курьером.
     {% endif %}
-    {% if customer.payment == "online" %}
-        {% if payment_service.settings.commission_included %}
-            <br>Комиссия сервиса онлайн-оплаты включена в сумму заказа.
-        {% else %}
-            <br>К сумме заказа добавлена комиссия сервиса онлайн-оплаты.
-        {% endif %}
+    {% if customer.payment == "online" and payment_service.settings.commission > 0 %}
+        <br>К сумме заказа добавлена комиссия сервиса онлайн-оплаты.
     {% endif %}
     </p>
 

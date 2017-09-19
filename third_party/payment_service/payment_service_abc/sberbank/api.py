@@ -86,7 +86,6 @@ class Sberbank(PaymentService):
             'commission' in init and self.decimal_price(init['commission']) > 0 else
             self.decimal_price(0.0)
         )
-        self.commission_included = True if 'commission_included' in init and init['commission_included'] else False
         self.timeout = init['timeout'] if 'timeout' in init and init['timeout'] > 0 else 15
         self.description = """
         <p>Оплата происходит через авторизационный сервер Процессингового центра Банка с использованием банковских кредитных карт следующих платёжных систем:</p>
