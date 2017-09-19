@@ -16,7 +16,7 @@ class PaymentService(ABC):
     BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
 
     # Общие параметры, лежащие вне словаря ``init`` и помещающиеся в него для инстацирования класса
-    GENERAL_PARAMS = ('commission', 'commission_included', 'timeout',)
+    GENERAL_PARAMS = ('commission', 'timeout',)
 
     # Фабрика для создания выходных параметров в ответах методов API
     internal = namedtuple('InternalParameter', 'key type default')
@@ -59,9 +59,8 @@ class PaymentService(ABC):
     def total_plus_commission(self, total):
         """Общая сумма заказа при онлайн-оплате.
 
-        Комиссия сервиса онлайн-оплаты либо добавляется к сумме заказа, либо включается в неё.
-        Если комиссия входит в сумму заказа, мы получаем ту же самую сумму.
-        Если комиссия добавляется к сумме заказа, мы получаем сумму заказа с комиссией.
+        Комиссия сервиса онлайн-оплаты добавляется к сумме заказа, если она не равна 0.
+        Если комиссия равна 0, мы получаем ту же самую сумму.
 
         При оформлении заказа:
 
@@ -77,11 +76,7 @@ class PaymentService(ABC):
         Returns:
             Decimal: Общая сумма заказа.
         """
-        return (
-            self.decimal_price(total) if
-            self.commission_included else
-            self.decimal_price(total + ((total * self.commission) / self.decimal_price(100)))
-        )
+        return self.decimal_price(total + ((total * self.commission) / self.decimal_price(100)))
 
     def description(self):
         """Описание процесса оплаты билетов.

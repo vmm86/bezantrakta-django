@@ -46,13 +46,14 @@ AGENCY_NVAR = {
 }
 
 slug = 'superbilet'
-init = AGENCY_VRN
+# init = AGENCY_VRN
+init = THEATRE_VRN
 # init = THEATRE_VRN_TEST
 # init = AGENCY_SAR
 # init = AGENCY_SUR
 # init = AGENCY_NVAR
 ts = ticket_service_factory(slug, init)
-# print(ts)
+print(ts)
 
 # AGENCY_VRN
 place_id = 14
@@ -107,16 +108,16 @@ py_result = ts.discover_events()
 
 order_uuid = 'cc9525df-a0c1-4214-a525-2b3bffdfe4d7'
 # RESERVE (ADD OR REMOVE)
-# action = 'add'
-action = 'remove'
-py_result = ts.reserve(
-    action=action,
-    event_id=event_id,
-    sector_id=sector_id,
-    row_id=11,
-    seat_id=35,
-    order_uuid=order_uuid
-)
+# # action = 'add'
+# action = 'remove'
+# py_result = ts.reserve(
+#     action=action,
+#     event_id=event_id,
+#     sector_id=sector_id,
+#     row_id=11,
+#     seat_id=35,
+#     order_uuid=order_uuid
+# )
 
 # TICKET_STATUS
 # py_result = ts.ticket_status(

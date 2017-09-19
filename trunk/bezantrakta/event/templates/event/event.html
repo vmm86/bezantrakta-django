@@ -40,11 +40,9 @@
                 {# Корзина заказа билетов и легенда #}
                 {% if event.ticket_service_event %}
                     <h3 id="chosen-tickets-header">Выбранные места</h3>
-                    <p>
-                        <ul id="chosen-tickets">
-                            <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
-                        </ul>
-                    </p>
+                    <ul id="chosen-tickets">
+                        <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
+                    </ul>
 
                     <h3 id="overall-header">Всего</h3>
                     <p id="overall">
@@ -134,6 +132,13 @@
                     {{ venue_scheme|safe }}
                 </div>
                 {% endspaceless %}
+            {% else %}
+                <div id="tickets">
+                    <div class="ticket-message">
+                        <img class="ticket-message-checkbox" border="0" style="border: 0; border-style: none">
+                        <span>Продажа электронных билетов на нашем сайте будет доступна<br>с 25 сентября.</span>
+                    </div>
+                </div>
             {% endif %}
 
             </div>

@@ -24,9 +24,12 @@ $(document).ready(function(){
     {# Стоимость доставки курьером #}
     window.courier_price = Math.round(parseFloat('{{ courier_price }}') * 100) / 100;
     {# Общая сумма заказа со стоимостью доставки курьером #}
-    window.order_total_plus_courier_price = Math.round(parseFloat('{{ order_total_plus_courier_price }}') * 100) / 100;
+    window.order_total_plus_courier_price = Math.round(parseFloat(window.order_total + window.courier_price) * 100) / 100;
+    window.commission = {{ commission }};
     {# Общая сумма заказа с комиссией сервиса онлайн-оплаты #}
-    window.order_total_plus_commission = Math.round(parseFloat('{{ order_total_plus_commission }}') * 100) / 100;
+    window.order_total_plus_commission = Math.round(parseFloat(window.order_total + ((window.order_total * commission) / 100)) * 100) / 100;
+
+// total + ((total * commission) / 100)
 
     {# Модификация работы с cookie, чтобы избежать ненужного urlendoding #}
     cookies = Cookies.withConverter({
@@ -98,7 +101,7 @@ $(document).ready(function(){
     $('#customer-address').val('{{ customer.address }}');
 
     {# При начальной загрузке страницы скрытие всех блоков, появляющихся при выборе чекбоксов #}
-    $('#and-delivery, .ticket-offices-contacts, .customer-address, .payment-info, .eticket-info').hide();
+    $('#overall-courier,  #overall-online, .ticket-offices-contacts, .customer-address, .payment-info, .eticket-info').hide();
 
     is_agree();
     $('#agree').change(function(){
@@ -107,11 +110,8 @@ $(document).ready(function(){
 
     {# Логика переключения чекбоксов выбора способа заказа #}
     $('#customer-delivery-self').change(function(){
-        $('.online-info').hide();
-
+        $('#overall-courier, #overall-online, .customer-address, .online-info').hide();
         $('.ticket-offices-contacts').show();
-        $('#and-delivery, .customer-address').hide();
-        $('#total-sum').html(window.order_total);
 
         $('#delivery').val('self');
         $('#payment').val('cash');
@@ -119,12 +119,10 @@ $(document).ready(function(){
         cookies.set('bezantrakta_customer_order_type', 'self_cash', {expires: window.expires, domain: window.domain});
         console.log('self:', window.order_total);
     });
-    $('#customer-delivery-courier').change(function(){
-        $('.online-info').hide();
 
-        $('.ticket-offices-contacts').hide();
-        $('#and-delivery, .customer-address').show();
-        $('#total-sum').html(window.order_total_plus_courier_price);
+    $('#customer-delivery-courier').change(function(){
+        $(' #overall-online, .ticket-offices-contacts, .online-info').hide();
+        $('#overall-courier, .customer-address').show();
 
         $('#delivery').val('courier');
         $('#payment').val('cash');
@@ -132,12 +130,12 @@ $(document).ready(function(){
         cookies.set('bezantrakta_customer_order_type', 'courier_cash', {expires: window.expires, domain: window.domain});
         console.log('courier:', window.order_total_plus_courier_price);
     });
-    $('#customer-delivery-payment').change(function(){
-        $('.ticket-offices-contacts, #and-delivery, .customer-address').hide();
-        $('#total-sum').html(window.order_total_plus_commission);
 
-        $('.payment-info').show();
+    $('#customer-delivery-payment').change(function(){
+        $('#overall-courier, .ticket-offices-contacts, .customer-address').hide();
+
         $('.eticket-info').hide();
+        $('#overall-online, .payment-info').show();
 
         $('#delivery').val('self');
         $('#payment').val('online');
@@ -145,12 +143,12 @@ $(document).ready(function(){
         cookies.set('bezantrakta_customer_order_type', 'self_online', {expires: window.expires, domain: window.domain});
         console.log('payment:', window.order_total_plus_commission);
     });
+
     $('#customer-delivery-eticket').change(function(){
-        $('.ticket-offices-contacts, #and-delivery, .customer-address').hide();
-        $('#total-sum').html(window.order_total_plus_commission);
+        $('#overall-courier, .ticket-offices-contacts, .customer-address').hide();
 
         $('.payment-info').hide();
-        $('.eticket-info').show();
+        $(' #overall-online, .eticket-info').show();
 
         $('#delivery').val('email');
         $('#payment').val('online');
@@ -215,14 +213,14 @@ $(document).ready(function(){
                 }
 
                 {# Сумма заказа с комиссией по умолчанию #}
-                if ($('#customer-delivery-self').prop('checked') === true) {
-                    $('#total-sum').html(window.order_total);
-                } else if ($('#customer-delivery-courier').prop('checked') === true) {
-                    $('#total-sum').html(window.order_total_plus_courier_price);
-                } else if ($('#customer-delivery-payment').prop('checked') === true ||
-                    $('#customer-delivery-eticket').prop('checked') === true) {
-                    $('#total-sum').html(window.order_total_plus_commission);
-                }
+                // if ($('#customer-delivery-self').prop('checked') === true) {
+                //     $('#total-sum').html(window.order_total);
+                // } else if ($('#customer-delivery-courier').prop('checked') === true) {
+                //     $('#total-sum').html(window.order_total_plus_courier_price);
+                // } else if ($('#customer-delivery-payment').prop('checked') === true ||
+                //     $('#customer-delivery-eticket').prop('checked') === true) {
+                //     $('#total-sum').html(window.order_total_plus_commission);
+                // }
             }
         } else {
             $('#no-tickets, #no-overall, #buy-tickets-inactive').show();
@@ -276,7 +274,7 @@ $(document).ready(function(){
 
             if (window.order_count > 0) {
                 $('#count-chosen').html(window.order_count);
-                $('#total-sum').html(window.order_total);
+                // $('#total-sum').html(window.order_total);
 
                 $('#no-tickets, #no-overall, #buy-tickets-inactive').hide();
                 $('#overall-text, #buy-tickets').show();
@@ -469,6 +467,6 @@ $(document).ready(function(){
         }
     }
 
-    document.getElementById('get-tickets').addEventListener('submit', eventsYandexGoogle);
+    document.getElementById('checkout-form').addEventListener('submit', eventsYandexGoogle);
 });
 {% endspaceless %}
