@@ -578,7 +578,7 @@
     padding: 0;
     margin: 0;
 
-    width: 25%;
+    width: 33%;
 
     position: relative;
 }
@@ -640,7 +640,7 @@
     letter-spacing: 0.1rem;
     text-align: center;
     text-transform: uppercase;
-    margin-left: 1.5vw;
+    margin-left: 1vw;
 
     padding: 0.25rem 0.75rem;
 
@@ -715,7 +715,7 @@
     font-size: 1rem;
     text-align: justify;
     
-    padding: 1% 2%;
+    padding: 0 1% 1% 2%;
 
     position: relative;
 }
@@ -1286,18 +1286,16 @@
     flex: 0 1 30%;
 }
 
-.share .share-text {
+.share .label {
     color: #FFF;
-    font-size: 0.875rem;
+    font-size: 1rem;
     font-weight: bold;
     text-align: center;
     text-transform: uppercase;
     width: auto;
 }
-
-.share .share-icons {
+.share .input {
     padding: 0.5rem 1rem 0.5rem 2rem;
-
     width: auto;
 }
 

@@ -7,8 +7,8 @@
     },
     "webmaster":
     {
-        "yandex": "62b7fc093f95421a",
-        "google": "-udRklmWJAa16hRenZ46rprg-YGgwb-fv70KXihql0c"
+        "yandex": "",
+        "google": ""
     },
     "counter":
     {
@@ -16,6 +16,11 @@
         "google": "",
         "uptolike": "",
         "vkontakte": ""
+    },
+    "email":
+    {
+        "domain": "",
+        "admin": ""
     },
     "telephone":
     [
@@ -43,5 +48,17 @@
             "title": "Instagram",
             "href" : "https://www.instagram.com/bezantrakta.ru"
         }
-    ]
+    ],
+    "emailing":
+    {
+        "is_working": false,
+        "text": "Оформляя заказ, Вы подтверждаете своё согласие на получение почтовой рассылки о новых мероприятиях bezantrakta.ru. В свою очередь мы гарантируем, что Ваши персональные данные будут использоваться исключительно при оформлении заказа и не будут переданы третьим лицам."
+    },
+    "order":
+    {
+        "self": false,
+        "courier": false,
+        "payment": false,
+        "eticket": false
+    }
 }

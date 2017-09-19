@@ -71,10 +71,6 @@ thead th.sorted {
     background: #aaa;
 }
 
-thead th.sorted .text {
-    padding-right: 24px;
-}
-
 table thead th .text a:focus,
 table thead th .text a:hover {
     background: inherit;
@@ -93,20 +89,10 @@ td, th {
     outline: none;
 }
 
-input, textarea, select, .form-row p, form .button {
-    font-family: 'Roboto', 'Lucida Grande', 'Verdana', 'Arial', sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-
-    margin: 2px 0;
-    padding: 2px 4px;
-
+input,
+select {
     height: auto;
     vertical-align: middle;
-}
-
-li, dt, dd {
-    font-size: 14px;
 }
 
 /* Контейнер */
@@ -387,12 +373,6 @@ a.section:visited {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-}
-
-#result_list .field-is_group {
-    max-width: 50px;
-}
-#result_list .field-event_venue {
     max-width: 100px;
 }
 
@@ -609,10 +589,6 @@ textarea,
     border-radius: 0.33rem;
 }
 
-input[type="number"] {
-    padding: 5px 1px 5px 6px;
-}
-
 input[type=text]:focus,
 input[type=password]:focus,
 input[type=email]:focus,
@@ -621,7 +597,6 @@ input[type=number]:focus,
 textarea:focus,
 .vTextField:focus {
     border: 2px solid #fc0;
-    font-weight: bold;
 }
 
 .submit-row input,
@@ -631,16 +606,11 @@ textarea:focus,
     text-shadow: 0 1px 0px #111;
 }
 
-.submit-row a.deletelink{
-    background: #C62828;
-    text-transform: uppercase;
-    height: auto;
-}
-
+.submit-row a.deletelink,
 .submit-row a.deletelink:focus,
 .submit-row a.deletelink:hover,
 .submit-row a.deletelink:active {
-    background: #b71c1c;
+    background: #C62828;
     text-transform: uppercase;
     height: auto;
 }
@@ -669,15 +639,6 @@ input[name=_continue] {
 input[type=submit].default,
 input[name=_save].default {
     background: #2E7D32;
-}
-
-.button.default:active,
-input.default[type="submit"]:active,
-.button.default:focus,
-input.default[type="submit"]:focus,
-.button.default:hover,
-input.default[type="submit"]:hover {
-    background: #1b5e20;
 }
 
 label,
@@ -729,11 +690,6 @@ div.help,
 form div.help,
 div.help li {
     color: #111;
-    font-size: 14px;
-}
-
-form div.help ul {
-    padding-left: 14px;
 }
 
 form ul.radiolist input[type="radio"] {
@@ -771,10 +727,6 @@ p.file-upload {
     vertical-align: middle;
 }
 
-.inline-group .tabular td.original p {
-    display: none;
-}
-
 div.inline-group table.ui-sortable tr.form-row.has_original td.drag {
     background: url(../img/sorting-icons.svg) 0 1px no-repeat !important;
     background-position-x: center !important;
@@ -800,99 +752,4 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
 .img_preview_linkbinder {
     width: 200px;
     height: auto;
-}
-
-.delete-confirmation form .cancel-link {
-    height: auto;
-    line-height: initial;
-}
-
-/* Порядок отображения настроек в JSON */
-
-fieldset.module {
-    margin-bottom: 0;
-}
-
-fieldset.json_settings {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-}
-
-fieldset.json_settings h2 {
-    order: 1;
-}
-
-fieldset.json_settings .form-row.field-settings {
-    padding: 0;
-    width: 100%;
-    order: 2;
-}
-
-fieldset.json_settings .description {
-    padding: 0;
-    order: 3;
-}
-
-fieldset.json_settings .description ul {
-    margin-left: 0;
-}
-
-/* JSON Editor */
-
-.jsoneditor {
-    color: #111 !important;
-    border: 2px solid #999 !important;
-}
-
-.jsoneditor .search {
-    margin: 2px 0;
-    position: static !important;
-}
-
-.jsoneditor .search .frame {
-    border: 1px solid #999 !important;
-}
-
-.jsoneditor .menu {
-    color: #111 !important;
-    background-color: #fc0 !important;
-    border-bottom: 2px solid #999 !important;
-}
-
-.jsoneditor .menu button {
-    border: 1px solid #999 !important;
-    border-radius: 0.33rem !important;
-    opacity: 1 !important;
-}
-
-.jsoneditor .search button {
-    border: none !important;
-}
-
-.jsoneditor table td,
-.jsoneditor table td {
-    border-bottom: none !important;
-}
-
-.jsoneditor .empty {
-    border: 1px dashed #999 !important;
-    border-radius: 0.33rem !important;
-}
-
-.jsoneditor .field,
-.jsoneditor .value,
-.jsoneditor .readonly {
-    min-height: 22px !important;
-    min-width: 38px !important;
-}
-
-.jsoneditor .field {
-    font-weight: bold !important;
-}
-
-.jsoneditor-contextmenu ul li ul {
-    height: auto !important;
 }
