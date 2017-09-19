@@ -29,6 +29,10 @@ def payment_error(request):
     event = {}
     event['info'] = get_or_set_event_cache(event_uuid)
     event['id'] = event['info']['ticket_service_event']
+    # event['info']['url'] = 'http://{domain_url}/{event_url}'.format(
+    #     domain_url=request.url_domain,
+    #     event_url=event['info']['url']
+    # )
     # logger.info('Событие')
     # logger.info(event['info'])
 

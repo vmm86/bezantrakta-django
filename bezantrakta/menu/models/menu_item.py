@@ -33,8 +33,8 @@ class MenuItem(models.Model):
         max_length=64,
         verbose_name=_('menuitem_title'),
     )
-    slug = models.CharField(
-        max_length=128,
+    slug = models.SlugField(
+        max_length=64,
         blank=True,
         help_text=_('menuitem_slug_help_text'),
         verbose_name=_('menuitem_slug'),

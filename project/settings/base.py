@@ -20,8 +20,6 @@ INTERNAL_IPS = ['127.0.0.1']
 
 PREPEND_WWW = False
 
-# Кастомный параметр, указывающий, работает ли сайт по HTTPS
-BEZANTRAKTA_IS_SECURE = False
 # Кастомный адрес для админ-панели
 BEZANTRAKTA_ADMIN_URL = 'simsim'
 # Псевдоним категории "Все события"

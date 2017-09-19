@@ -1,4 +1,5 @@
 from django.db.models import Case, F, URLField, Value, When
+from django.db.models.functions.base import Concat
 
 from project.shortcuts import base_template_context_processor
 
@@ -21,7 +22,11 @@ def menu_items(request):
             menu_items[m['slug']] = MenuItem.objects.annotate(
                 url=Case(
                     When(slug='', then=Value('/')),
-                    default=F('slug'),
+                    default=Concat(
+                        Value('/'),
+                        F('slug'),
+                        Value('/'),
+                    ),
                     output_field=URLField()
                 )
             ).filter(

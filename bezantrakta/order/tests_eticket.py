@@ -4,8 +4,6 @@ from xhtml2pdf import pisa
 
 from django.template.loader import get_template
 
-from project.shortcuts import build_absolute_url
-
 
 def render_to_pdf(template, context, output_file):
     template = get_template(template)
@@ -21,7 +19,7 @@ def render_to_pdf(template, context, output_file):
     return None
 
 context = {
-    'url': build_absolute_url('nsk.bezantrakta-dev.rterm.ru', '/afisha/2017/09/01/19-00/test-novosibirsk-1916/'),
+    'url':          'http://nsk.bezantrakta-dev.rterm.ru/afisha/2017/09/01/19-00/test-novosibirsk-1916/',
     'title':        'Борис Годунов гастроли Воронежского Камерного театра',
     'event_date':   '32 декабря',
     'event_time':   '16:00',

@@ -26,7 +26,7 @@ def img_path(instance, filename):
             time=params['datetime_localized'].strftime('%H-%M'),
             slug=params['instance_slug'],
         ),
-        '{slug}.{ext}'.format(slug=instance.event_container.mode, ext=extension)
+        '{slug}.{ext}'.join(slug=instance.event_container.mode, ext=extension)
     )
     # Абсолютный путь до файла
     full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)

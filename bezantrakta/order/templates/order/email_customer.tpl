@@ -30,11 +30,15 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
     </ul>
 
     <p><strong>Общая сумма заказа</strong>: {{ order.total }} р.
-    {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-        <br>В сумму заказа включена стоимость доставки курьером.
+    {% if customer.delivery == "courier" %}
+        {% if ticket_service.settings.courier_price > 0 %}
+            <br>В сумму заказа включена стоимость доставки курьером.
+        {% else %}
+            <br>Доставка курьером осуществляется бесплатно.
+        {% endif %}
     {% endif %}
-    {% if customer.payment == "online" and payment_service.settings.commission > 0 %}
-        <br>В сумму заказа включена комиссия сервиса онлайн-оплаты и сервисный сбор.
+    {% if customer.payment == "online" and not payment_service.settings.commission_included %}
+            <br>К сумме заказа добавлена комиссия сервиса онлайн-оплаты.
     {% endif %}
     </p>
 
@@ -68,12 +72,11 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
             {{ ticket_service.settings.order_email_description.self_online|safe }}
         {% endif %}
     {% elif customer.delivery == "courier" %}
-        <p>Наш курьер свяжется с Вами по телефону в течение 24-х часов и доставит билеты по указанному адресу в удобное для Вас время.</p>
+        <p>В течение 24-х часов с Вами по телефону свяжется наш курьер и доставит билеты по указанному адресу в удобное для Вас время.</p>
         {{ ticket_service.settings.order_email_description.courier_cash|safe }}
     {% elif customer.delivery == "email" %}
         <p>PDF-файлы с билетами вложены в это письмо. Для того, чтобы их открыть, потребуется программа <a href="https://get.adobe.com/ru/reader/" target="_blank">Adobe Reader</a> или любая другая программа, открывающая файлы формата PDF.</p>
         <p>Вам необходимо распечатать каждый билет на отдельном листе формата A4 и предъявить его при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно</strong>! Для удобства его можно сложить по пунктирным линиям сгиба.</p>
-        {{ ticket_service.settings.order_email_description.email_online|safe }}
     {% endif %}
 
     {% if domain.settings.telephone.0 != "" %}

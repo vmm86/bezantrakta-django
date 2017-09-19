@@ -121,7 +121,7 @@ ______________________________________________________________________________
 
         if len(active_ticket_services) > 0:
             self.log(
-                'Найдено {n} активных сервисов продажи билетов.\n'.format(n=len(active_ticket_services)),
+                'Найдено {n} активных сервисов продажи билетов.'.format(n=len(active_ticket_services)),
                 level='INFO'
             )
 
@@ -132,7 +132,7 @@ ______________________________________________________________________________
 
                 # Экземпляр класса сервиса продажи билетов для конкретного сайта
                 ts = ticket_service_instance(ats['id'])
-                self.log('{ico} {title}'.format(ico='🎫', title=ticket_service['title']), level='INFO')
+                self.log('{ico} {title}'.format(ico='🎫', title=ticket_service['title']))
                 self.log('Часовой пояс: {tz}'.format(tz=current_timezone))
 
                 # Залы конкретного сервиса продажи билетов
@@ -212,6 +212,9 @@ ______________________________________________________________________________
                     group_id_uuid_mapping = {ge['ticket_service_event']: ge['id'] for ge in groups_exist}
                     self.stdout.write('Имеющиеся группы событий: {}'.format(group_id_uuid_mapping))
 
+                    self.stdout.write('Поиск групп событий...')
+                    groups = ts.discover_groups()
+
                     # События, уже добавленные в БД ранее
                     events_exist = Event.objects.filter(
                         is_group=False,
@@ -223,9 +226,6 @@ ______________________________________________________________________________
                     )
                     events_id_uuid_mapping = {ee['ticket_service_event']: ee['id'] for ee in events_exist}
                     self.stdout.write('Имеющиеся события: {}'.format(events_id_uuid_mapping))
-
-                    self.stdout.write('Поиск групп событий...')
-                    groups = ts.discover_groups()
 
                     self.stdout.write('Поиск событий...')
                     events = ts.discover_events()
@@ -309,13 +309,7 @@ ______________________________________________________________________________
                                         id=e['event_id'],
                                     )
                                     # Список цен на билеты для легенды схемы зала
-                                    prices = ts.prices(event_id=e['event_id'])
-                                    # При отсутствии минимальная цена на билет берётся из списка цен
-                                    e['event_min_price'] = (
-                                        prices[0] if
-                                        e['event_min_price'] == 0 and len(prices) > 0 else
-                                        0
-                                    )
+                                    prices = json.dumps(ts.prices(event_id=e['event_id']))
 
                                     # Если событие уже было добавлено ранее
                                     if e['event_id'] in events_id_uuid_mapping.keys():
@@ -349,7 +343,7 @@ ______________________________________________________________________________
                                                 is_group=False,
                                                 ticket_service_id=ticket_service['id'],
                                                 ticket_service_event=e['event_id'],
-                                                ticket_service_prices=json.dumps(prices),
+                                                ticket_service_prices=prices,
                                                 ticket_service_scheme=e['scheme_id'],
                                             )
                                         except IntegrityError:
@@ -408,13 +402,7 @@ ______________________________________________________________________________
                                         id=e['event_id'],
                                     )
                                     # Список цен на билеты для легенды схемы зала
-                                    prices = ts.prices(event_id=e['event_id'])
-                                    # При отсутствии минимальная цена на билет берётся из списка цен
-                                    e['event_min_price'] = (
-                                        prices[0] if
-                                        e['event_min_price'] == 0 and len(prices) > 0 else
-                                        0
-                                    )
+                                    prices = json.dumps(ts.prices(event_id=e['event_id']))
 
                                     # Если событие уже было добавлено ранее
                                     if e['event_id'] in events_id_uuid_mapping.keys():
@@ -448,7 +436,7 @@ ______________________________________________________________________________
                                                 is_group=False,
                                                 ticket_service_id=ticket_service['id'],
                                                 ticket_service_event=e['event_id'],
-                                                ticket_service_prices=json.dumps(prices),
+                                                ticket_service_prices=prices,
                                                 ticket_service_scheme=e['scheme_id'],
                                             )
                                         except IntegrityError:

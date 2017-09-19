@@ -7,7 +7,7 @@ from django.db.models import F
 from django.urls.base import reverse
 from django.utils import dateformat
 
-from project.shortcuts import build_absolute_url, json_serializer
+from project.shortcuts import json_serializer
 
 from .models import Event
 
@@ -103,9 +103,9 @@ def get_or_set_cache(event_uuid, reset=False):
 
         # Полный URL страницы события
         domain = (
-            '{domain}.{root}'.format(domain=event['domain_slug'], root=settings.BEZANTRAKTA_ROOT_DOMAIN) if
+            'http://{domain}.{root}'.format(domain=event['domain_slug'], root=settings.BEZANTRAKTA_ROOT_DOMAIN) if
             event['domain_slug'] != settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG else
-            '{root}'.format(root=settings.BEZANTRAKTA_ROOT_DOMAIN)
+            'http://{root}'.format(root=settings.BEZANTRAKTA_ROOT_DOMAIN)
         )
         url = reverse(
             'event:event',
@@ -118,7 +118,7 @@ def get_or_set_cache(event_uuid, reset=False):
                 event['event_slug']
             ]
         )
-        event['url'] = build_absolute_url(domain, url)
+        event['url'] = '{domain}{url}'.format(domain=domain, url=url)
 
         # Содержится ли событие в группе - приведение к bool для удобства
         event['is_in_group'] = True if event['is_in_group'] is not None else False

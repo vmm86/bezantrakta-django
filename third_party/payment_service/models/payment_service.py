@@ -46,7 +46,7 @@ class PaymentService(models.Model):
         db_table = 'third_party_payment_service'
         verbose_name = _('paymentservice')
         verbose_name_plural = _('paymentservices')
-        ordering = ('slug', 'title',)
+        ordering = ('id', 'title',)
 
     def __str__(self):
         return self.title

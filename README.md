@@ -29,7 +29,7 @@ dpkg-reconfigure locales
 
 ```bash
 sudo su || su
-apt-get install g++ gcc build-essential automake autoconf gettext
+apt-get install g++ gcc build-essential automake autoconf
 apt-get install python3 python3-pip python-virtualenv virtualenv python-pkg-resources python3-virtualenv python3-dev libpython3-dev python-imaging libjpeg-dev python3-lxml python3-dev libffi-dev
 apt-get install php php-mbstring php-mysqli zip unzip
 apt-get install (mysql-server libmysqlclient-dev) || (mariadb-server libmariadbclient-dev)

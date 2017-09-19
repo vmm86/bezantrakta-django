@@ -18,7 +18,7 @@ def img_path(instance, filename):
         domain,
         instance._meta.app_label,
         instance.banner_group.slug,
-        '{slug}.{ext}'.format(slug=instance.slug, ext=extension)
+        '{slug}.{ext}'.join(slug=instance.slug, ext=extension)
     )
     # Абсолютный путь до файла
     full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)

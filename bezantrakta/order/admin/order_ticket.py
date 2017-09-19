@@ -1,8 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
 
-from project.decorators import queryset_filter
-
 from ..models import OrderTicket
 
 
@@ -16,10 +14,6 @@ class OrderTicketAdmin(admin.ModelAdmin):
                        'is_punched', 'bar_code',
                        'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id', 'price',
                        'domain',)
-
-    @queryset_filter('Domain', 'domain__slug')
-    def get_queryset(self, request):
-        return super(OrderTicketAdmin, self).get_queryset(request)
 
     def has_add_permission(self, request):
         return False

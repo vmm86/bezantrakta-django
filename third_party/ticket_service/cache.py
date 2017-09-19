@@ -22,6 +22,7 @@ def get_or_set_cache(ticket_service_id, reset=False):
     cache_key = 'ticket_service.{ticket_service_id}'.format(ticket_service_id=ticket_service_id)
     cache_value = cache.get(cache_key)
 
+    cache_value = json.loads(cache.get(cache_key))
     # logger.info('\nИсходный кэш:\n{}'.format(cache_value['settings']['order_description']['email_online']))
 
     if reset:
