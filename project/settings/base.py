@@ -20,8 +20,6 @@ INTERNAL_IPS = ['127.0.0.1']
 
 PREPEND_WWW = False
 
-# Кастомный параметр, указывающий, работает ли сайт по HTTPS
-BEZANTRAKTA_IS_SECURE = False
 # Кастомный адрес для админ-панели
 BEZANTRAKTA_ADMIN_URL = 'simsim'
 # Псевдоним категории "Все события"
@@ -185,7 +183,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
-            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗'},
+            {'model': 'ticket_service.TicketServiceVenueBinder', 'label': 'Схемы залов 🔗'},
         )
 
     },
@@ -249,7 +247,7 @@ ADMIN_REORDER = (
 DATABASES = {
     'default': {
         'ENGINE':    'django.db.backends.mysql',
-        'NAME':      'belcanto_bezantrakta_django_2',
+        'NAME':      'belcanto_bezantrakta_django',
         'USER':      'belcanto',
         'PASSWORD':  'wrtwefsf352',
         'HOST':      'localhost',
@@ -302,7 +300,7 @@ LANGUAGES = [
     ('ru', 'Русский'),
 ]
 
-LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 

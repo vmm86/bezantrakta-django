@@ -12,25 +12,7 @@ class OrderTicketManager(models.Manager):
 
 
 class OrderTicket(models.Model):
-    """Билеты в заказах из сторонних сервисов продажи билетов.
-
-    Attributes:
-        objects (OrderTicketManager): Менеджер модели.
-        id (UUIDField): Уникальный идентификатор.
-        order (ForeignKey): Привязка к заказу.
-        ticket_service (ForeignKey): Привязка к сервису продажи билетов.
-        ticket_service_order (PositiveIntegerField): Идентификатор заказа в сервисе продажи билетов.
-        is_punched (BooleanField): Пробит ли билет на входе (``True``) или нет (``False``) (**TODO** - на будущее).
-        bar_code (CharField): Штрих-код билета.
-        sector_id (PositiveIntegerField): Идентификатор сектора.
-        sector_title (CharField): Название сектора.
-        row_id (PositiveIntegerField): Идентификатор ряда.
-        seat_id (PositiveIntegerField): Идентификатор места.
-        seat_title (CharField): Название места.
-        price_group_id (PositiveIntegerField): Идентификатор группы цен.
-        price (DecimalField): Цена билета.
-        domain (ForeignKey): Привязка к сайту.
-    """
+    """Билеты в заказах из сторонних сервисов продажи билетов."""
     objects = OrderTicketManager()
 
     id = models.UUIDField(

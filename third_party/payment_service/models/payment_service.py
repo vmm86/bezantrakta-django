@@ -3,15 +3,8 @@ from django.utils.translation import ugettext as _
 
 
 class PaymentService(models.Model):
-    """Сервисы онлайн-оплаты.
-
-    Attributes:
-        id (SlugField): Идентификатор.
-        title (CharField): Название.
-        slug (SlugField): Псевдоним (должен совпадать с атрибутом ``slug`` класса сервиса-онлайн-оплаты).
-        is_active (BooleanField): Работает (``True``) или НЕ работает (``False``).
-        is_production (BooleanField): Оплата настоящими деньгами (``True``) или тестовая оплата (``False``).
-        settings (TextField): Настройки сервиса-онлайн-оплаты в *JSON*.
+    """
+    Сервисы онлайн-оплаты.
     """
     id = models.SlugField(
         primary_key=True,
@@ -43,10 +36,10 @@ class PaymentService(models.Model):
 
     class Meta:
         app_label = 'payment_service'
-        db_table = 'third_party_payment_service'
+        db_table = 'bezantrakta_payment_service'
         verbose_name = _('paymentservice')
         verbose_name_plural = _('paymentservices')
-        ordering = ('slug', 'title',)
+        ordering = ('id', 'title',)
 
     def __str__(self):
         return self.title

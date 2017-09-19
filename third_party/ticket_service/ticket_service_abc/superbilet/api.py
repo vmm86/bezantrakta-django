@@ -16,15 +16,15 @@ from ..abc import TicketService
 class SuperBilet(TicketService):
     """Класс для работы с API СуперБилет.
 
-    Любой метод, делающий запросы к API, вызывает для этого конструктор запросов ``request``.
+    Любой метод, делающий запросы к API, вызывает для этого конструктор запросов request.
 
-    Каждая запись в ответе имеет атрибут ``result_code``.
-    При успешном ответе он равен ``0``, при НЕуспешном ответе содержит код ошибки (int) и сообщение об ошибке (str).
+    Каждая запись в ответе имеет атрибут result_code.
+    При успешном ответе он равен 0, при НЕуспешном ответе содержит код ошибки (int) и сообщение об ошибке (str).
 
-    Атрибуты класса:
-        slug (str): Псевдоним для инстанцирования класса (``superbilet``).
+    Class attributes:
+        slug (str): Псевдоним для инстанцирования класса (`superbilet`).
         LOG_OPERATIONS (dict): Коды ошибок и сообщения об ошибках.
-        RESPONSE_CODES (dict): Значения параметра ``actiondone`` в методе ``GetLog``.
+        RESPONSE_CODES (dict): Значения параметра `actiondone` в методе `GetLog`.
         SEAT_STATUSES (dict): Статусы места в предварительном резерве, созданном или оплаченном заказе.
 
     Instance attributes:
@@ -122,7 +122,7 @@ class SuperBilet(TicketService):
         Даже если в ответе всего одна запись, она в люом случае кладётся в список.
 
         Args:
-            method (str): HTTP-метод (``GET`` или ``POST``).
+            method (str): HTTP-метод (GET или POST).
             input_mapping (dict): Сопоставление входных человекоНЕпонятных параметров входным человекопонятным.
             data (list|dict): Необходимые для конкретного метода параметры.
             output_mapping (dict): Сопоставление выходных человекоНЕпонятных параметров выходным человекопонятным.
@@ -328,7 +328,7 @@ class SuperBilet(TicketService):
         """Места проведения событий.
 
         Returns:
-            list: Список словарей с информацией о месте проведения событий.
+            list: Список словарей с ифнормацией о месте проведения событий.
         """
         method = 'GetLocationList'
         input_mapping = None
@@ -351,14 +351,14 @@ class SuperBilet(TicketService):
 
         return places
 
-    def schemes(self, **kwargs):
-        """Схемы залов в конкретном месте проведения событий.
+    def venues(self, **kwargs):
+        """Залы в конкретном месте проведения событий.
 
         Args:
             place_id (int): Идентификатор места проведения событий.
 
         Returns:
-            list: Список словарей с информацией о схеме залах.
+            list: Список словарей с ифнормацией о залах места проведения событий.
         """
         method = 'GetHallList'
         input_mapping = {
@@ -367,9 +367,9 @@ class SuperBilet(TicketService):
         data = kwargs
         output_mapping = {
             # Идентификатор зала
-            'cod_th':      self.internal('scheme_id', int, 0,),
+            'cod_th':      self.internal('venue_id', int, 0,),
             # Название зала
-            'name_h':      self.internal('scheme_title', str,),
+            'name_h':      self.internal('venue_title', str,),
             # Код возврата
             'result_code': self.internal('result_code', int,),
 
@@ -377,35 +377,35 @@ class SuperBilet(TicketService):
             'tel_h':     None,
             'address_h': None,
         }
-        schemes = self.request(method, input_mapping, data, output_mapping)
+        venues = self.request(method, input_mapping, data, output_mapping)
 
-        schemes = sorted(schemes, key=itemgetter('scheme_id'))
+        venues = sorted(venues, key=itemgetter('venue_id'))
 
-        return schemes
+        return venues
 
-    def discover_schemes(self):
-        """Получение списка схем залов для записи в БД (с включением недостающей информации из мест проведения событий).
+    def discover_venues(self):
+        """Получение списка залов для записи в БД (с включением недостающей информации из мест проведения событий).
 
         Returns:
-            list: Список словарей с информацией о схемах залов.
+            list: Список словарей с информацией о залах.
         """
-        discovered_schemes = []
+        discovered_venues = []
         places = self.places()
         for p in places:
             if p['result_code'] == 0:
-                schemes = self.schemes(place_id=p['place_id'])
-                for s in schemes:
-                    # Формирование названия схемы зала
-                    s['scheme_title'] = '{place_title} ({scheme_title})'.format(
+                venues = self.venues(place_id=p['place_id'])
+                for v in venues:
+                    # Формирование названия зала
+                    v['venue_title'] = '{place_title} ({venue_title})'.format(
                         place_title=p['place_title'],
-                        scheme_title=s['scheme_title'].lower()
+                        venue_title=v['venue_title'].lower()
                     )
-                    del s['result_code']
-                    discovered_schemes.append(s)
+                    del v['result_code']
+                    discovered_venues.append(v)
 
-        discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
+        discovered_venues = sorted(discovered_venues, key=itemgetter('venue_id'))
 
-        return discovered_schemes
+        return discovered_venues
 
     def groups(self):
         """Группы событий ("шоу").
@@ -483,7 +483,7 @@ class SuperBilet(TicketService):
                     )
                     g['group_datetime'] = events_by_groups[(e['group_id'])][0]['event_datetime']
                     g['group_min_price'] = events_by_groups[(e['group_id'])][0]['event_min_price']
-                    g['scheme_id'] = events_by_groups[(e['group_id'])][0]['scheme_id']
+                    g['venue_id'] = events_by_groups[(e['group_id'])][0]['venue_id']
 
         # Сортировка групп по дате/времени
         groups = sorted(groups, key=itemgetter('group_datetime'))
@@ -495,7 +495,7 @@ class SuperBilet(TicketService):
 
         Args:
             place_id (int): Идентификатор места проведения событий.
-            scheme_id (int): Идентификатор схемы зала.
+            venue_id (int): Идентификатор зала.
 
         Returns:
             method: Вызов конструктора запросов request.
@@ -503,7 +503,7 @@ class SuperBilet(TicketService):
         method = 'GetEventList'
         input_mapping = {
             'cod_t':  'place_id',
-            'cod_th': 'scheme_id',
+            'cod_th': 'venue_id',
         }
         data = kwargs
         output_mapping = {
@@ -523,8 +523,8 @@ class SuperBilet(TicketService):
             'cod_show':    self.internal('group_id', int,),
             # Идентификатор места
             'cod_t':       self.internal('place_id', int),
-            # Идентификатор схемы зала
-            'cod_h':       self.internal('scheme_id', int,),
+            # Идентификатор зала
+            'cod_h':       self.internal('venue_id', int,),
             # Код возврата
             'result_code': self.internal('result_code', int,),
 
@@ -829,7 +829,7 @@ class SuperBilet(TicketService):
             dict: Информация о состоянии места.
                 order_id (int): Идентификатор заказа, если он был создан, иначе None.
                 ticket_uuid (str): Уникальный UUID билета.
-                seat_status (str): Статус места, сопоставляемый из словаря ``SEAT_STATUSES``.
+                seat_status (str): Статус места, сопоставляемый из словаря self.SEAT_STATUSES.
         """
         method = 'GetCurrentState'
         input_mapping = {
@@ -891,7 +891,7 @@ class SuperBilet(TicketService):
         """Создание заказа из предварительно зарезервированных мест.
 
         Агентство вызывает обычный метод, а Театр вызывает Ext-метод с одними и теми же аргументами.
-        При попытка запуска Ext-метода в Агентстве приходила ошибка ``2 "Ошибка интерфейса - неверный формат данных"``.
+        При попытка запуска Ext-метода в Агентстве приходила ошибка 2 'Ошибка интерфейса - неверный формат данных'.
 
         Args:
             event_id (int): Идентификатор события.
@@ -919,7 +919,7 @@ class SuperBilet(TicketService):
             order_id (int): Идентификатор заказа в сервисе заказа билетов.
             tickets (list): Информация о заказанных билетах.
             tickets[ticket_uuid] (str): Уникальный UUID билета (на данный момент генерируется на клиенте).
-            tickets[bar_code] (str): Штрих-код билета (**20 символов**).
+            tickets[bar_code] (str): Штрих-код билета (20 символов).
         """
         if self.__mode == 'agency':
             method = 'SetReservation'
@@ -1109,7 +1109,7 @@ class SuperBilet(TicketService):
             order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             order_id (int): Идентификатор заказа.
             payment_id (int): Идентификатор оплаты.
-            payment_datetime (datetime.datetime): Дата и время оплаты.
+            payment_datetime (datetime): Дата и время оплаты.
             tickets (list): Список словарей с параметрами заказываемого места.
                 sector_id (int): Идентификатор сектора.
                 row_id (int): Идентификатор ряда.

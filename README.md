@@ -1,5 +1,7 @@
 # Сайты Безантракта на базе Django
 
+Основа проекта - фреймворк `Django` (стабильная LTS-версия 1.11), работающий на `Python 3.5` в отдельном виртуальном окружении. Список пакетов для установки содержится в `requirements.txt`.
+
 ## Структура проекта
 
 Содержимое модулей проекта документируется в docstings, а содержимое docstings, в свою очередь, используется при создании HTML-документации с помощью Sphinx из исходных .rst-файлов, находящихся в дереве проекта и автодокументирующих соответствующие модули.
@@ -18,7 +20,7 @@ Production deployment - на базе `nginx` как проксирующего 
 
 * Установка ОС на виртуальной машине (`Debian 9`).
 
-* Настройка ОС (установка русской локали).
+* Настройка ОС (уствновка русской локали).
 
 ```bash
 sudo su || su
@@ -29,7 +31,7 @@ dpkg-reconfigure locales
 
 ```bash
 sudo su || su
-apt-get install g++ gcc build-essential automake autoconf gettext
+apt-get install g++ gcc build-essential automake autoconf
 apt-get install python3 python3-pip python-virtualenv virtualenv python-pkg-resources python3-virtualenv python3-dev libpython3-dev python-imaging libjpeg-dev python3-lxml python3-dev libffi-dev
 apt-get install php php-mbstring php-mysqli zip unzip
 apt-get install (mysql-server libmysqlclient-dev) || (mariadb-server libmariadbclient-dev)

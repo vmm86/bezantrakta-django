@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-08 13:50+0000\n"
+"POT-Creation-Date: 2017-09-06 13:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,58 +26,7 @@ msgstr "Схема зала"
 
 #: admin.py:83
 msgid "ticket_service_help_text"
-msgstr ""
-"<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от "
-"конкретного сервиса продажи билетов):<ul><li><strong>СуперБилет</"
-"strong><ul><li>string <strong>host</strong> - URL для отправки запросов к "
-"API,</li><li>string <strong>user</strong> - имя пользователя API,</"
-"li><li>string <strong>pswd</strong> - пароль пользователя API,</"
-"li><li>string <strong>mode</strong> - режим работы API (agency - Агентство, "
-"theatre - Театр).</li></ul></li><li><strong>Радарио</strong><ul><li>number "
-"<strong>api_id</strong> - идентификатор доступа к API,</li><li>string "
-"<strong>api_key</strong> - ключ доступа к API,</li><li>number "
-"<strong>city_id</strong> - идентификатор города в БД Радарио, в котором "
-"находится организатор,</li><li>number <strong>company_id</strong> - "
-"идентификатор организатора в БД Радарио,</li><li>string "
-"<strong>company_title</strong> - название организатора в БД Радарио.</li></"
-"ul></li></ul></li><li>[ <strong>schemes</strong> ] - список number "
-"идентификаторов схем залов в сервисе продажи билетов:При импорте информации "
-"из сервиса продажи билетов:<ul><li>Если список НЕпустой - будут "
-"импортироваться только те залы, идентификаторы которых указаны в этом списке;"
-"</li><li>Если список пустой - будут импортироваться ВСЕ залы.</li></ul></"
-"li><li>{ <strong>order</strong> } - включение/выключение способов заказа "
-"билетов на сайте (true - включено, false - отключено):<ul><li>boolean "
-"<strong>self_cash</strong> - получение в кассе (оплата наличными),</"
-"li><li>boolean <strong>courier_cash</strong> - доставка курьером (оплата "
-"наличными),</li><li>boolean <strong>self_online</strong> - получение в кассе "
-"(онлайн-оплата),</li><li>boolean <strong>email_online</strong> - электронный "
-"билет на email (онлайн-оплата).</li></ul></"
-"li><li>{ <strong>order_description</strong> } - сопроводительный текст к "
-"способам заказа билетов на 2-м шаге заказа билетов (строка с HTML-кодом):"
-"<ul><li>string <strong>self_cash</strong> - получение в кассе (оплата "
-"наличными),</li><li>string <strong>courier_cash</strong> - доставка курьером "
-"(оплата наличными),</li><li>string <strong>self_online</strong> - получение "
-"в кассе (онлайн-оплата),</li><li>string <strong>email_online</strong> - "
-"электронный билет на email (онлайн-оплата).</li></ul></"
-"li><li>{ <strong>order_email</strong> } - электронная почта для отправки "
-"сообщений администратору и покупателю:<ul><li>string <strong>user</strong> - "
-"логин (например, zakaz@bezantrakta.ru),</li><li>string <strong>pswd</strong> "
-"- пароль.</li></ul></li><li>{ <strong>order_email_description</strong> } - "
-"сопроводительный текст к способам заказа билетов в email-сообщении "
-"покупателю (строка с HTML-кодом):<ul><li>string <strong>self_cash</strong> - "
-"получение в кассе (оплата наличными),</li><li>string <strong>courier_cash</"
-"strong> - доставка курьером (оплата наличными),</li><li>string "
-"<strong>self_online</strong> - получение в кассе (онлайн-оплата),</"
-"li><li>string <strong>email_online</strong> - электронный билет на email "
-"(онлайн-оплата).</li></ul></li><li>number <strong>max_seats_per_order</"
-"strong> - максимальное число билетов в заказе (по умолчанию - 7).</"
-"li><li>number <strong>courier_price</strong> - стоимость доставки курьером в "
-"рублях (если 0 - доставка бесплатная).</li><li>number "
-"<strong>heartbeat_timeout</strong> - время в секундах, по истечении которого "
-"вновь запрашивается список доступных к продаже мест на схеме зала (по "
-"умолчанию - 10).</li><li>number <strong>seat_timeout</strong> - время в "
-"минутах, по истечении которого автоматически снимается предварительный "
-"резерв мест на схеме зала (по умолчанию - 15).</li></ul>"
+msgstr "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от конкретного сервиса продажи билетов):<ul><li><strong>СуперБилет</strong><ul><li>string <strong>host</strong> - URL для отправки запросов к API,</li><li>string <strong>user</strong> - имя пользователя API,</li><li>string <strong>pswd</strong> - пароль пользователя API,</li><li>string <strong>mode</strong> - режим работы API (agency - Агентство, theatre - Театр).</li></ul></li><li><strong>Радарио</strong><ul><li>number <strong>api_id</strong> - идентификатор доступа к API,</li><li>string <strong>api_key</strong> - ключ доступа к API,</li><li>number <strong>city_id</strong> - идентификатор города в БД Радарио, в котором находится организатор,</li><li>number <strong>company_id</strong> - идентификатор организатора в БД Радарио,</li><li>string <strong>company_title</strong> - название организатора в БД Радарио.</li></ul></li></ul></li><li>[ <strong>schemes</strong> ] - список number идентификаторов схем залов в сервисе продажи билетов:При импорте информации из сервиса продажи билетов:<ul><li>Если список НЕпустой - будут импортироваться только те залы, идентификаторы которых указаны в этом списке;</li><li>Если список пустой - будут импортироваться ВСЕ залы.</li></ul></li><li>number <strong>max_seats_per_order</strong> - максимальное число билетов в заказе (по умолчанию - 7),</li><li>number <strong>courier_price</strong> - стоимость доставки курьером в рублях (если 0 - доставка бесплатная),</li><li>{ <strong>order</strong> } - включение/выключение способов заказа билетов на сайте (true - включено, false - отключено):<ul><li>boolean <strong>self_cash</strong> - получение в кассе (оплата наличными),</li><li>boolean <strong>courier_cash</strong> - доставка курьером (оплата наличными),</li><li>boolean <strong>self_online</strong> - получение в кассе (онлайн-оплата),</li><li>boolean <strong>email_online</strong> - электронный билет на email (онлайн-оплата).</li></ul></li><li>{ <strong>order_description</strong> } - сопроводительный текст к способам заказа билетов на 2-м шаге заказа билетов (строка с HTML-кодом):<ul><li>string <strong>self_cash</strong> - получение в кассе (оплата наличными),</li><li>string <strong>courier_cash</strong> - доставка курьером (оплата наличными),</li><li>string <strong>self_online</strong> - получение в кассе (онлайн-оплата),</li><li>string <strong>email_online</strong> - электронный билет на email (онлайн-оплата).</li></ul></li><li>{ <strong>order_email</strong> } - электронная почта для отправки сообщений администратору и покупателю:<ul><li>string <strong>user</strong> - логин (например, zakaz@bezantrakta.ru),</li><li>string <strong>pswd</strong> - пароль.</li></ul></li><li>{ <strong>order_email_description</strong> } - сопроводительный текст к способам заказа билетов в email-сообщении покупателю (строка с HTML-кодом):<ul><li>string <strong>self_cash</strong> - получение в кассе (оплата наличными),</li><li>string <strong>courier_cash</strong> - доставка курьером (оплата наличными),</li><li>string <strong>self_online</strong> - получение в кассе (онлайн-оплата),</li><li>string <strong>email_online</strong> - электронный билет на email (онлайн-оплата).</li></ul></li></ul>"
 
 #: admin.py:105
 msgid "ticket_service_admin_batch_set_cache"
@@ -88,8 +37,8 @@ msgid "event_admin_activate_or_deactivate_items"
 msgstr "Включить или отключить сервисы продажи билетов"
 
 #: admin.py:120
-msgid "ticket_service_admin_ticket_service_schemes_count"
-msgstr "Схем залов"
+msgid "ticket_service_admin_ticket_service_venue_binder_count"
+msgstr "Связанных залов"
 
 #: admin.py:126
 msgid "ticket_service_admin_is_payment_service_added"
@@ -105,11 +54,7 @@ msgstr "Название"
 
 #: models/ticket_service.py:32
 msgid "ticketservice_slug_help_text"
-msgstr ""
-"<p>Псевдоним должен совпадать с атрибутом <strong>slug</strong> класса "
-"соответствующего билетного сервиса.</p><p><ul><li><strong>superbilet</"
-"strong> для СуперБилет,</li><li><strong>radario</strong> для Радарио.</li></"
-"ul></p>"
+msgstr "<p>Псевдоним должен совпадать с атрибутом <strong>slug</strong> класса соответствующего билетного сервиса.</p><p><ul><li><strong>superbilet</strong> для СуперБилет,</li><li><strong>radario</strong> для Радарио.</li></ul></p>"
 
 #: models/ticket_service.py:33
 msgid "ticketservice_slug"
@@ -128,8 +73,8 @@ msgid "ticketservice_domain"
 msgstr "Сайт"
 
 #: models/ticket_service.py:54
-msgid "ticketservice_schemes"
-msgstr "Схемы залов"
+msgid "ticketservice_event_venue"
+msgstr "Зал"
 
 #: models/ticket_service.py:62
 msgid "ticketservice_payment_service"
@@ -137,53 +82,40 @@ msgstr "Сервис онлайн-оплаты"
 
 #: models/ticket_service.py:68
 msgid "ticketservice"
-msgstr "сервис продажи билетов"
+msgstr "Сервис продажи билетов"
 
 #: models/ticket_service.py:69
 msgid "ticketservices"
-msgstr "сервисы продажи билетов"
+msgstr "Сервисы продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:31
-msgid "ticketserviceschemevenuebinder_ticket_service"
+#: models/venue_binder.py:31
+msgid "ticketservicevenuebinder_ticket_service"
 msgstr "Сервис продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:34
-msgid "ticketserviceschemevenuebinder_ticket_service_scheme"
+#: models/venue_binder.py:34
+msgid "ticketservicevenuebinder_ticket_service_event_venue"
 msgstr "ID схемы в сервисе продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:38
-msgid "ticketserviceschemevenuebinder_ticket_service_scheme_title"
+#: models/venue_binder.py:38
+msgid "ticketservicevenuebinder_ticket_service_event_venue_title"
 msgstr "Название схемы в сервисе продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:46
-msgid "ticketserviceschemevenuebinder_event_venue"
+#: models/venue_binder.py:46
+msgid "ticketservicevenuebinder_event_venue"
 msgstr "Зал"
 
-#: models/ticket_service_scheme_venue_binder.py:51
-msgid "ticketserviceschemevenuebinder_scheme_help_text"
-msgstr ""
-"<p>Схема зала в HTML, как правило, на основе таблиц. Возможно использование "
-"SVG в тех случаях, когда это необходимо.</p><p>У родительского элемента всей "
-"схемы зала (&lt;table&gt; или &lt;svg&gt;) указывается класс "
-"<strong>stagehall</strong>.</p><p>Специфическим элементам схемы зала "
-"указываются соответствующие классы:</p><ul><li><strong>stage</strong> - "
-"сцена,</li><li><strong>sector</strong> - название сектора или номер ряда,</"
-"li><li><strong>seat</strong> - кликабельное место, которое также содержит "
-"data-атрибуты места из схемы в сервисе продажи билетов:<ul><li><strong>data-"
-"sector-id</strong> - идентификатор сектора,</li><li><strong>data-row-id</"
-"strong> - идентификатор ряда,</li><li><strong>data-seat-id</strong> - "
-"идентификатор места.</li></ul></li></ul><p>Остальные data-атрибуты "
-"подгружаются к каждому доступному для заказа месту при обновлении схемы зала "
-"на 1-м шаге заказа билетов.</p>"
+#: models/venue_binder.py:51
+msgid "ticketservicevenuebinder_scheme_help_text"
+msgstr "<p>Схема зала в HTML, как правило, на основе таблиц. Возможно использование SVG в тех случаях, когда это необходимо.</p><p>У родительского элемента всей схемы зала (&lt;table&gt; или &lt;svg&gt;) указывается класс <strong>stagehall</strong>.</p><p>Специфическим элементам схемы зала указываются соответствующие классы:</p><ul><li><strong>stage</strong> - сцена,</li><li><strong>sector</strong> - название сектора или номер ряда,</li><li><strong>seat</strong> - кликабельное место, которое также содержит data-атрибуты места из схемы в сервисе продажи билетов:<ul><li><strong>data-sector-id</strong> - идентификатор сектора,</li><li><strong>data-row-id</strong> - идентификатор ряда,</li><li><strong>data-seat-id</strong> - идентификатор места.</li></ul></li></ul><p>Остальные data-атрибуты подгружаются к каждому доступному для заказа месту при обновлении схемы зала на 1-м шаге заказа билетов.</p>"
 
-#: models/ticket_service_scheme_venue_binder.py:52
-msgid "ticketserviceschemevenuebinder_scheme"
+#: models/venue_binder.py:52
+msgid "ticketservicevenuebinder_scheme"
 msgstr "Схема зала"
 
-#: models/ticket_service_scheme_venue_binder.py:58
-msgid "ticketserviceschemevenuebinder"
-msgstr "схема зала"
+#: models/venue_binder.py:58
+msgid "ticketservicevenuebinder"
+msgstr "Связка сервисов продажи билетов и схем залов"
 
-#: models/ticket_service_scheme_venue_binder.py:59
-msgid "ticketserviceschemevenuebinders"
-msgstr "схемы залов"
+#: models/venue_binder.py:59
+msgid "ticketservicevenuebinders"
+msgstr "Связки сервисов продажи билетов и схем залов"

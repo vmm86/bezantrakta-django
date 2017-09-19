@@ -7,22 +7,24 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 
-from project.shortcuts import build_absolute_url, message, render_messages
+from project.shortcuts import message, render_messages
 
 from .models import City, Domain
 
 
 class CurrentLocationMiddleware(MiddlewareMixin):
-    """Получение информации о текущем городе и домене и её добавление в ``request``."""
+    """
+    Получение информации о текущем городе и домене и её добавление в request.
+    """
     def process_request(self, request):
         host = request.get_host()
         url_domain, url_port = split_domain_port(host)
         root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
         root_domain_slug = settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG
-        # Если URL содержит основной домен, указанный в настройках, получаем его поддомен(ы)
+        # Если URL содержит основной домен, указанный в настройках, вытаскиваем его поддомен(ы)
         if url_domain.endswith(root_domain):
             domain_slug = url_domain[:-len(root_domain)].rstrip('.')
-            # Обход отсутствия поддомена для главного сайта
+            # Обход отсутствия поддомена для воронежского сайта
             domain_slug = root_domain_slug if domain_slug == '' else domain_slug
 
         request.domain_is_published = False
@@ -99,10 +101,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     request.root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
                     request.url_domain = url_domain
                     request.url_path = path
-                    # URL сайта (прокотол + домен) без слэша в конце (для подстановки к относительным ссылкам)
-                    request.url_protocol_domain = build_absolute_url(url_domain)
-                    # Полный абсолютный URL текущей страницы
-                    request.url_full = build_absolute_url(url_domain, path)
+                    request.url_full = '{domain}{path}'.format(domain=url_domain, path=path)
 
                     # Активация текущего часового пояса
                     if request.city_timezone:

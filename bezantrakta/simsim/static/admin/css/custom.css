@@ -771,10 +771,6 @@ p.file-upload {
     vertical-align: middle;
 }
 
-.inline-group .tabular td.original p {
-    display: none;
-}
-
 div.inline-group table.ui-sortable tr.form-row.has_original td.drag {
     background: url(../img/sorting-icons.svg) 0 1px no-repeat !important;
     background-position-x: center !important;
@@ -891,8 +887,4 @@ fieldset.json_settings .description ul {
 
 .jsoneditor .field {
     font-weight: bold !important;
-}
-
-.jsoneditor-contextmenu ul li ul {
-    height: auto !important;
 }

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import admin
 from django.core.cache import cache
 from django.utils.translation import ugettext as _
@@ -54,7 +53,7 @@ class EventAdmin(admin.ModelAdmin):
                 'fields': ('title', 'slug', 'description', 'keywords', 'text',
                            'is_published', 'is_on_index', 'min_price', 'min_age',
                            'datetime', 'event_category', 'event_venue', 'domain', 'is_group',
-                           'ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',),
+                           'ticket_service', 'ticket_service_event', 'ticket_service_venue', 'ticket_service_prices',),
             }
         ),
     )
@@ -76,7 +75,7 @@ class EventAdmin(admin.ModelAdmin):
         'event_category': admin.VERTICAL,
         'min_age': admin.HORIZONTAL,
     }
-    readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',)
+    readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_venue', 'ticket_service_prices',)
     search_fields = ('title',)
 
     @queryset_filter('Domain', 'domain__slug')
@@ -103,16 +102,16 @@ class EventAdmin(admin.ModelAdmin):
         Импортируемые из сервисов продажи билетов события нельзя удалить,
         поскольку при каждом удалении они будут импортироваться снова.
         """
-        if obj is not None and obj.ticket_service is not None and not settings.DEBUG:
+        if obj is not None and obj.ticket_service is not None:
             return False
         return super(EventAdmin, self).has_delete_permission(request, obj=obj)
 
-    def get_actions(self, request):
-        """Отключение пакетного удаления по умолчанию."""
-        actions = super(EventAdmin, self).get_actions(request)
-        if 'delete_selected' in actions and not settings.DEBUG:
-            del actions['delete_selected']
-        return actions
+    # def get_actions(self, request):
+    #     """Отключение пакетного удаления по умолчанию."""
+    #     actions = super(EventAdmin, self).get_actions(request)
+    #     if 'delete_selected' in actions:
+    #         del actions['delete_selected']
+    #     return actions
 
     def delete_non_ticket_service_items(self, request, queryset):
         """

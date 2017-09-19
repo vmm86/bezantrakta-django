@@ -7,7 +7,7 @@ from django.urls import resolve, Resolver404
 
 
 class EventCalendarMiddleware(MiddlewareMixin):
-    """Получение выбранной в календаре даты и её добавление в ``request`` для фильтра событий по дате в календаре."""
+    """Получение даты, выбранной в календаре её добавление в request."""
     def process_request(self, request):
         host = request.get_host()
         url_domain, url_port = split_domain_port(host)

@@ -22,7 +22,7 @@ msgstr ""
 
 #: admin.py:32
 msgid "payment_service_help_text"
-msgstr "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от конкретного сервиса онлайн-оплаты):<ul><li><strong>Сбербанк</strong><ul><li>string <strong>user</strong> - имя пользователя API,</li><li>string <strong>test_pswd</strong> - пароль для тестовой оплаты НЕнастоящими деньгами,</li><li>string <strong>prod_pswd</strong> - пароль для production-оплаты настоящими деньгами.</li></ul></li><li><strong>СНГБ</strong></li></ul></li><li>number <strong>commission</strong> - комиссия сервиса онлайн-оплаты (если комиссия равна 0 - она НЕ прибавляется к сумме заказа),</li><li>number <strong>timeout</strong> - время на оплату заказа в минутах (по умолчанию - 15 минут).</li></ul>"
+msgstr "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от конкретного сервиса онлайн-оплаты):<ul><li><strong>Сбербанк</strong><ul><li>string <strong>user</strong> - имя пользователя API,</li><li>string <strong>test_pswd</strong> - пароль для тестовой оплаты НЕнастоящими деньгами,</li><li>string <strong>prod_pswd</strong> - пароль для production-оплаты настоящими деньгами.</li></ul></li><li><strong>СНГБ</strong></li></ul></li><li>number <strong>commission</strong> - комиссия сервиса онлайн-оплаты,</li><li>boolean <strong>commission_included</strong> - включена ли комиссия в сумму заказа (true - включена, false - НЕ включена),</li><li>number <strong>timeout</strong> - время на оплату заказа в минутах (по умолчанию - 15 минут).</li></ul>"
 
 #: admin.py:51
 msgid "payment_service_admin_batch_set_cache"
@@ -60,8 +60,8 @@ msgstr "Настройки"
 
 #: models.py:40
 msgid "paymentservice"
-msgstr "сервис онлайн-оплаты"
+msgstr "Сервис онлайн-оплаты"
 
 #: models.py:41
 msgid "paymentservices"
-msgstr "сервисы онлайн-оплаты"
+msgstr "Сервисы онлайн-оплаты"

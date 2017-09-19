@@ -7,23 +7,13 @@ class TicketServiceManager(models.Manager):
         return super(TicketServiceManager, self).get_queryset().select_related(
             'domain', 'payment_service'
         ).prefetch_related(
-            'schemes'
+            'event_venue'
         )
 
 
 class TicketService(models.Model):
-    """Сервисы продажи билетов.
-
-    Attributes:
-        objects (TicketServiceManager): Менеджер модели.
-        id (SlugField): Идентификатор.
-        title (CharField): Название.
-        slug (SlugField): Псевдоним (должен совпадать с атрибутом ``slug`` класса сервиса-онлайн-оплаты).
-        is_active (BooleanField): Работает (``True``) или НЕ работает (``False``).
-        settings (TextField): Настройки в JSON.
-        domain (ForeignKey): Сайт, к которому привязан сервис продажи билетов.
-        schemes (ManyToManyField): Связь со схемами залов, импорируемыми из стороннего сервиса продажи билетов в БД.
-        payment_service (ForeignKey): Сервис онлайн-оплаты (может отсутствовать).
+    """
+    Сервисы продажи билетов.
     """
     objects = TicketServiceManager()
 
@@ -56,12 +46,12 @@ class TicketService(models.Model):
         db_column='domain_id',
         verbose_name=_('ticketservice_domain'),
     )
-    schemes = models.ManyToManyField(
+    event_venue = models.ManyToManyField(
         'event.EventVenue',
-        through='ticket_service.TicketServiceSchemeVenueBinder',
-        related_name='schemes',
+        through='ticket_service.TicketServiceVenueBinder',
+        related_name='ticket_service_venues',
         blank=True,
-        verbose_name=_('ticketservice_schemes'),
+        verbose_name=_('ticketservice_event_venue'),
     )
     payment_service = models.ForeignKey(
         'payment_service.PaymentService',
@@ -74,7 +64,7 @@ class TicketService(models.Model):
 
     class Meta:
         app_label = 'ticket_service'
-        db_table = 'third_party_ticket_service'
+        db_table = 'bezantrakta_ticket_service'
         verbose_name = _('ticketservice')
         verbose_name_plural = _('ticketservices')
         ordering = ('slug', 'title',)

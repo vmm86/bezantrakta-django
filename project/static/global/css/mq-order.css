@@ -199,8 +199,6 @@ h1, h2 {
 #links-header,
 #chosen-tickets-header,
 #overall-header,
-#overall-courier h3,
-#overall-online h3,
 #order-info-header {
     display: block;
 
@@ -224,8 +222,6 @@ h1, h2 {
 #basket-container-full #chosen-tickets,
 #basket-container #overall,
 #basket-container-full #overall,
-#overall-courier p,
-#overall-online p,
 #order-info {
     display: block;
 
@@ -233,10 +229,6 @@ h1, h2 {
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
-
-    font-size: 0.95rem;
-    font-weight: bold;
-    text-transform: lowercase;
 
     padding: 0.5rem 2rem;
 }
@@ -819,37 +811,16 @@ h1, h2 {
     width: 90vw;
 }
 
-.share {
+.share{
     display: inline-block;
-
-    position: relative;
-    left: 2.5rem;
 
     width: 30%;
 }
-
-.share .share-text {
-    color: #FFF;
-    font-size: 0.875rem;
-    font-weight: bold;
-    text-align: center;
-    text-transform: uppercase;
-    width: auto;
-
-    min-width: 220px;
-}
-
-.share .share-icons {
-    padding: 0.5rem 2rem 0.5rem 3rem;
-
-    width: auto;
-}
-
 .share .pluso div .pluso-wrap .pluso-more {
     display: none;
 }
 
-.order-telephone {
+.order-telephone.step1 {
     display: inline-block;
 
     text-align: center;
@@ -1145,14 +1116,13 @@ input[type=checkbox]:disabled + img {
 
 .customer-address p {
     font-size: 1rem;
+    font-weight: bold;
 
     margin-left: 18rem;
 }
 
 .ticket-offices-contacts p,
-.ticket-offices-contacts ul li,
-.online-info p,
-.online-info ul li {
+.online-info p {
     font-size: 0.85rem;
 }
 
@@ -1583,7 +1553,6 @@ p.input-body,
     #chosen-tickets-header,
     #chosen-tickets,
     #overall-header,
-    #overall-header-courier,
     #overall,
     #customer-name-label, 
     #customer-email-label, 
@@ -1605,7 +1574,6 @@ p.input-body,
     #chosen-tickets-header.step2,
     #chosen-tickets.step2,
     #overall-header.step2,
-    #overall-header-courier.step2,
     #overall.step2,
     #customer-name-label.step2, 
     #customer-email-label.step2, 

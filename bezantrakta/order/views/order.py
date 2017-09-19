@@ -32,7 +32,7 @@ def order(request):
     Заказы с оплатой наличными завершаются в этом же методе с отправкой уведомлений администратору и покупателю.
 
     Заказы с онлайн-оплатой редиректятся на форму оплаты (её адрес приходит в ответе на запрос новой онлайн-оплаты).
-    Они оформляются в видах ``payment_service.payment_success`` или ``payment_service.payment_error`` в зависимости от результата оплаты.
+    Они оформляются в видах payment_success или payment_error в зависимости от результата оплаты.
     """
     logger = logging.getLogger('bezantrakta.order')
 
@@ -94,7 +94,7 @@ def order(request):
 
             # При доставке курьером - общая сумма заказа плюс стоимость доставки курьером
             if customer['delivery'] == 'courier':
-                order['total'] += ps.decimal_price(ticket_service['info']['settings']['courier_price'])
+                order['total'] += ps.decimal_price(ticket_service['settings']['courier_price'])
             # При онлайн-оплате - общая сумма заказа с комиссией сервиса онлайн-оплаты
             if customer['payment'] == 'online':
                 order['total'] = ps.total_plus_commission(order['total'])
@@ -310,18 +310,16 @@ def order(request):
                         }
 
                         admin_email = EmailMessage(
-                            'order/email_admin.tpl',
+                            'order/email_customer.tpl',
                             email_context,
-                            from_email['user'],
-                            (from_email['user'],),
-                            connection=from_email['connection']
+                            ticket_service['info']['settings']['order_email'],
+                            (ticket_service['info']['settings']['order_email'],)
                         )
                         customer_email = EmailMessage(
                             'order/email_customer.tpl',
                             email_context,
-                            from_email['user'],
-                            (customer['email'],),
-                            connection=from_email['connection']
+                            ticket_service['info']['settings']['order_email'],
+                            (customer['email'],)
                         )
                         admin_email.send()
                         logger.info('Email-уведомление администратору отправлено')

@@ -3,7 +3,7 @@ import simplejson as json
 from django.conf import settings
 from django.shortcuts import redirect, render
 
-from project.shortcuts import build_absolute_url, message, render_messages
+from project.shortcuts import message, render_messages
 
 from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
 
@@ -44,9 +44,6 @@ def checkout(request):
     ts = ticket_service_instance(event['ticket_service_id'])
     # Экземпляр класса сервиса онлайн-оплаты
     ps = payment_service_instance(event['payment_service_id'])
-
-    # Описание процесса онлайн-оплаты из атрибута класса онлайн-оплаты
-    payment_service['settings']['description'] = ps.description
 
     # Получение реквизитов покупателя из предыдущего заказа (если он был)
     customer = {}
@@ -94,8 +91,6 @@ def checkout(request):
 
     context['commission'] = commission
     context['order_total_plus_commission'] = str(order_total_plus_commission)
-
-    context['checkout_form_action'] = build_absolute_url(request.url_domain, '/afisha/order/')
 
     # Если корзина заказа пустая
     if context['order_count'] == 0:

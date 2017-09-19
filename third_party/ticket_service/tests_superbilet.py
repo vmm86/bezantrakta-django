@@ -46,18 +46,17 @@ AGENCY_NVAR = {
 }
 
 slug = 'superbilet'
-# init = AGENCY_VRN
-init = THEATRE_VRN
+init = AGENCY_VRN
 # init = THEATRE_VRN_TEST
 # init = AGENCY_SAR
 # init = AGENCY_SUR
 # init = AGENCY_NVAR
 ts = ticket_service_factory(slug, init)
-print(ts)
+# print(ts)
 
 # AGENCY_VRN
 place_id = 14
-scheme_id = 20
+venue_id = 20
 group_id = 214
 # event_id = 1875  # Test
 # event_id = 1887  # Billy's Band
@@ -68,7 +67,7 @@ event_id = 1916  # nsk test
 sector_id = 509
 
 # THEATRE_VRN_TEST
-# scheme_id = 1
+# venue_id = 1
 # place_id = 1
 # group_id = 1
 # event_id = 615
@@ -79,10 +78,10 @@ sector_id = 509
 
 # PLACES
 # py_result = ts.places()
-# SCHEMES
-# py_result = ts.schemes(place_id=place_id)
-# DISCOVER_SCHEMES
-# py_result = ts.discover_schemes()
+# VENUES
+# py_result = ts.venues(place_id=place_id)
+# DISCOVER_VENUES
+# py_result = ts.discover_venues()
 
 # GROUPS
 # py_result = ts.groups()
@@ -92,7 +91,7 @@ sector_id = 509
 # EVENTS
 # py_result = ts.events()
 # py_result = ts.events(place_id=place_id)
-# py_result = ts.events(scheme_id=scheme_id)
+# py_result = ts.events(venue_id=venue_id)
 # DISCOVER_EVENTS
 py_result = ts.discover_events()
 
@@ -108,16 +107,16 @@ py_result = ts.discover_events()
 
 order_uuid = 'cc9525df-a0c1-4214-a525-2b3bffdfe4d7'
 # RESERVE (ADD OR REMOVE)
-# # action = 'add'
-# action = 'remove'
-# py_result = ts.reserve(
-#     action=action,
-#     event_id=event_id,
-#     sector_id=sector_id,
-#     row_id=11,
-#     seat_id=35,
-#     order_uuid=order_uuid
-# )
+# action = 'add'
+action = 'remove'
+py_result = ts.reserve(
+    action=action,
+    event_id=event_id,
+    sector_id=sector_id,
+    row_id=11,
+    seat_id=35,
+    order_uuid=order_uuid
+)
 
 # TICKET_STATUS
 # py_result = ts.ticket_status(

@@ -15,46 +15,7 @@ class OrderManager(models.Manager):
 
 
 class Order(models.Model):
-    """Заказы в сторонних сервисах продажи билетов.
-
-    Attributes:
-        objects (OrderManager): Менеджер модели.
-        id (UUIDField): Уникальный идентификатор заказа.
-        ticket_service (ForeignKey): Привязка к сервису продажи билетов.
-        ticket_service_order (PositiveIntegerField): Идентификатор заказа в сервисе продажи билетов.
-        event (ForeignKey): Привязка к событию.
-        ticket_service_event (PositiveIntegerField): Идентификатор события в сервисе продажи билетов.
-        datetime (DateTimeField): Дата/время заказа.
-        name (CharField): ФИО покупателя.
-        email (EmailField): Электронная почта покупателя.
-        phone (PhoneNumberField): Телефон покупателя.
-        address (CharField): Адрес доставки (пустое поле, если доставка по адресу не требуется).
-        delivery (CharField): Способ получения билетов.
-
-            Содержимое ``DELIVERY_CHOICES`` (кортеж из кортежей "значение" / "подпись").
-                * **DELIVERY_SELF** (str): Получение в кассе (``self``).
-                * **DELIVERY_COURIER** (str): Доставка курьером (``courier``).
-                * **DELIVERY_EMAIL** (str): Электронный билет на email (``email``).
-
-        payment (CharField): Способ оплаты билетов.
-
-            Содержимое ``PAYMENT_CHOICES`` (кортеж из кортежей "значение" / "подпись").
-                * **PAYMENT_CASH** (str): Наличные (``cash``).
-                * **PAYMENT_ONLINE** (str): Онлайн-оплата (``online``).
-
-        payment_id (CharField): Идентификатор онлайн-оплаты.
-        status (CharField): Статус заказа.
-
-            Содержимое ``STATUS_CHOICES`` (кортеж из кортежей "значение" / "подпись").
-                * **STATUS_ORDERED** (str): создан (``ordered``).
-                * **STATUS_CANCELLED** (str): отменён (``cancelled``).
-                * **STATUS_APPROVED** (str): успешно завершён (``approved``).
-                * **STATUS_REFUNDED** (str): возвращён (``refunded``).
-
-        tickets_count (PositiveSmallIntegerField): Число билетов в заказе.
-        total (DecimalField): Общая сумма заказа (со стоимостью доставки курьером или комиссией сервиса онлайн-оплаты).
-        domain (ForeignKey): Привязка к сайту.
-    """
+    """Заказы в сторонних сервисах продажи билетов."""
     objects = OrderManager()
 
     id = models.UUIDField(
@@ -125,16 +86,16 @@ class Order(models.Model):
         blank=False,
         verbose_name=_('order_delivery'),
     )
-    PAYMENT_CASH = 'cash'
-    PAYMENT_ONLINE = 'online'
-    PAYMENT_CHOICES = (
-        (PAYMENT_CASH, _('order_mode_cash')),
-        (PAYMENT_ONLINE, _('order_mode_online')),
+    MODE_CASH = 'cash'
+    MODE_ONLINE = 'online'
+    MODE_CHOICES = (
+        (MODE_CASH, _('order_mode_cash')),
+        (MODE_ONLINE, _('order_mode_online')),
     )
     payment = models.CharField(
         max_length=16,
-        choices=PAYMENT_CHOICES,
-        default=PAYMENT_CASH,
+        choices=MODE_CHOICES,
+        default=MODE_CASH,
         blank=False,
         verbose_name=_('order_payment'),
     )

@@ -7,7 +7,7 @@ $(document).ready(function() {
     {# Максимальное число билетов в заказе #}
     window.max_seats_per_order = {{ ticket_service.settings.max_seats_per_order }};
     window.event_id = {{ event.ticket_service_event }};
-    window.scheme_id = {{ event.ticket_service_scheme }};
+    window.venue_id = {{ event.ticket_service_venue }};
     window.heartbeat_id = undefined;
     {# Таймаут для повторения запроса списка мест в событии #}
     window.heartbeat_timeout = {{ ticket_service.settings.heartbeat_timeout }} * 1000;
@@ -540,7 +540,7 @@ $(document).ready(function() {
             data: {
                 'ticket_service_id': window.ticket_service_id,
                 'event_id':          window.event_id,
-                'scheme_id':         window.scheme_id
+                'venue_id':          window.venue_id
             },
             success: update_scheme,
             error: clear_order_if_error
@@ -595,8 +595,9 @@ $(document).ready(function() {
     }
 
     {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
+    /*
     function eventYandex() {
-        yaCounter{{ request.domain_settings.counter.yandex }}.reachGoal('step1');
+        yaCounter<?php echo $config->getValue('config.yandex_counter'); ?>.reachGoal('step1');
         console.log('eventYandex');
         return true;
     }
@@ -614,7 +615,7 @@ $(document).ready(function() {
             console.log(e);
         }
     }
+    */
 
-    document.getElementById('buy-tickets').addEventListener('click', eventsYandexGoogle);
 });
 {% endspaceless %}

@@ -11,10 +11,7 @@ from ..shortcuts import add_small_vertical_poster
 
 def category(request, slug):
     """
-    Вывод событий, принадлежащих какой-либо категории событий в позиции ``small_vertical``.
-
-    Args:
-        slug (str): Псевдоним категории.
+    Вывод событий, принадлежащих какой-либо категории событий.
     """
     today = timezone_now()
 

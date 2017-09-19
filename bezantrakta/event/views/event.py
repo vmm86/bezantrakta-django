@@ -6,12 +6,12 @@ from django.conf import settings
 from django.db.models import F
 from django.shortcuts import redirect, render
 
-from project.shortcuts import build_absolute_url, message, render_messages, timezone_now
+from project.shortcuts import message, render_messages, timezone_now
 
 from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
 
 from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.models import TicketServiceSchemeVenueBinder
+from third_party.ticket_service.models import TicketServiceVenueBinder
 
 from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
@@ -21,36 +21,24 @@ from ..shortcuts import add_small_vertical_poster
 def event(request, year, month, day, hour, minute, slug):
     """Отображение страницы конкретного события.
 
-    Шаг 1 процесса заказа билетов - выбор билетов на схеме зала и формирование корзины заказа.
-
     Схема зала с возможностью выбора билетов подгружается, если конкретное событие привязано к сервису продажи билетов.
 
     Логика отображения событий (псевдокод):
-    ::
-
-        try event:  # Запрос события в БД для конкретного домена
-            ...
-        except:  # События НЕ существует в БД
-            [ Ошибка 404 ]
-        else:  # Событие существует в БД
-            if event.is_published:  # Событие опубликовано
-                if event.is_coming:  # Событие опубликовано и ещё НЕ прошло
-                    [ Вся страница выбора билетов ]
-                else:  # Событие опубликовано и уже прошло
-                    [ Только общая информация о событии ]
-            else:  # Событие НЕ опубликовано
-                if event.is_coming:  # Событие НЕ опубликовано и ещё НЕ прошло
-                    [ Ошибка 403 ]
-                else:  # Событие НЕ опубликовано и уже прошло
-                    [ Ошибка 410 ]
-
-    Args:
-        year (str): Год из даты/времени события (``YYYY``).
-        month (str): Месяц из даты/времени события (``MM``).
-        day (str): День из даты/времени события (``DD``).
-        hour (str): Час из даты/времени события (``HH``).
-        minute (str): Минуты из даты/времени события (``MM``).
-        slug (str): Псевдоним события.
+    try event: Запрос события в БД для конкретного домена
+        ...
+    except: События НЕ существует в БД
+        [ Ошибка 404 ]
+    else: Событие существует в БД
+        if event.is_published: Событие опубликовано
+            if event.is_coming: Событие опубликовано и ещё НЕ прошло
+                [ Вся страница выбора билетов ]
+            else: Событие опубликовано и уже прошло
+                [ Только общая информация о событии ]
+        else: Событие НЕ опубликовано
+            if event.is_coming: Событие НЕ опубликовано и ещё НЕ прошло
+                [ Ошибка 403 ]
+            else: Событие НЕ опубликовано и уже прошло
+                [ Ошибка 410 ]
     """
     current_timezone = request.city_timezone
     event_datetime = datetime.datetime(
@@ -91,30 +79,24 @@ def event(request, year, month, day, hour, minute, slug):
         # Кэширование информации о событии, сервисе продажи билетов и сервисе онлайн-оплаты
         event = get_or_set_event_cache(event['event_uuid'])
 
-        if event['ticket_service_id']:
-            # Настройки сервиса продажи билетов
-            ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+        # Настройки сервиса продажи билетов
+        ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
 
-            # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
-            ticket_service_defaults = {
-                # Максимальное число билетов в заказе
-                'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
-                # Таймаут для повторения запроса списка мест в событии в секундах
-                'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
-                # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
-                'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
-            }
-            for param, value in ticket_service_defaults.items():
-                if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
-                    ticket_service['settings'][param] = value
-        else:
-            ticket_service = None
+        # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
+        ticket_service_defaults = {
+            # Максимальное число билетов в заказе
+            'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
+            # Таймаут для повторения запроса списка мест в событии в секундах
+            'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
+            # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
+            'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
+        }
+        for param, value in ticket_service_defaults.items():
+            if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
+                ticket_service['settings'][param] = value
 
-        if event['payment_service_id']:
-            # Настройки сервиса онлайн-оплаты
-            payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
-        else:
-            payment_service = None
+        # Настройки сервиса онлайн-оплаты
+        payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
 
         today = timezone_now()
         event_is_coming = True if event['event_datetime'] > today else False
@@ -186,11 +168,11 @@ def event(request, year, month, day, hour, minute, slug):
 
                 # Схема зала из БД
                 try:
-                    venue_scheme = TicketServiceSchemeVenueBinder.objects.values_list('scheme', flat=True).get(
+                    venue_scheme = TicketServiceVenueBinder.objects.values_list('scheme', flat=True).get(
                         ticket_service__domain_id=request.domain_id,
-                        ticket_service_scheme_id=event['ticket_service_scheme'],
+                        ticket_service_event_venue_id=event['ticket_service_venue'],
                     )
-                except TicketServiceSchemeVenueBinder.DoesNotExist:
+                except TicketServiceVenueBinder.DoesNotExist:
                     pass
                 else:
                     context['venue_scheme'] = venue_scheme
@@ -199,9 +181,6 @@ def event(request, year, month, day, hour, minute, slug):
             context['event']['is_coming'] = event_is_coming
             context['ticket_service'] = ticket_service
             context['payment_service'] = payment_service
-
-            context['checkout_url'] = build_absolute_url(request.url_domain, '/afisha/checkout/')
-
             return render(request, 'event/event.html', context)
         # Событие НЕ опубликовано
         else:

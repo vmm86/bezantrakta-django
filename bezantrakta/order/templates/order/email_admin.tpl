@@ -1,7 +1,7 @@
 {% extends "mail_templated/base.tpl" %}
 
 {% block subject %}
-{{ domain.title }}: {% if order.order_id %}Заказ № {{ order.order_id }}{% else %}Заказ{% endif %} ({{ customer.delivery_description }}, {{ customer.payment_description }})
+{% if order.order_id %}Заказ № {{ order.order_id }}{% else %}Заказ{% endif %} ({{ customer.delivery_description }}, {{ customer.payment_description }})
 {% endblock %}
 
 {% block html %}
@@ -16,7 +16,7 @@
 </head>
 <body bgcolor="ffffff" topmargin="10" leftmargin="10" marginwidth="10" marginheight="10" offset="0">
 
-    <h2>{{ domain.title }}: {% if order.order_id %}Заказ № &#8203;{{ order.order_id }}{% else %}Заказ{% endif %}</h2>
+    <h2>{% if order.order_id %}Заказ № &#8203;{{ order.order_id }}{% else %}Заказ{% endif %}</h2>
 
     <h3>{{ event.event_date }} {{ event.event_title }}</h3>
     <h3>{{ event.event_venue_title }}</h3>
@@ -29,11 +29,19 @@
     </ul>
 
     <p><strong>Общая сумма заказа</strong>: {{ order.total }} р.
-    {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-        <br>В сумму заказа включена стоимость доставки курьером.
+    {% if customer.delivery == "courier" %}
+        {% if ticket_service.courier_price > 0 %}
+            <br>В сумму заказа включена стоимость доставки курьером.
+        {% else %}
+            <br>Доставка курьером бесплатная.
+        {% endif %}
     {% endif %}
-    {% if customer.payment == "online" and payment_service.settings.commission > 0 %}
-        <br>К сумме заказа добавлена комиссия сервиса онлайн-оплаты.
+    {% if customer.payment == "cash" %}
+        {% if payment_service.commission_included %}
+            <br>В сумму заказа НЕ включена комиссия сервиса онлайн-оплаты.
+        {% else %}
+            <br>В сумму заказа включена комиссия сервиса онлайн-оплаты.
+        {% endif %}
     {% endif %}
     </p>
 

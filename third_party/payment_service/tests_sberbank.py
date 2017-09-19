@@ -9,17 +9,11 @@ SBERBANK_VRN = {
     'prod_pswd': '',
 
     'commission': 2.8,
+    'commission_included': False,
     'timeout': 15,
-}
 
-SBERBANK_VLUKI = {
-    'mode': 'test',
-    'user': 'vluki-api',
-    'test_pswd': 'vluki',
-    'prod_pswd': '',
-
-    'commission': 2.8,
-    'timeout': 15,
+    'success_url': 'http://adm.bezantrakta-dev.rterm.ru/ps/success/',
+    'error_url': 'http://adm.bezantrakta-dev.rterm.ru/ps/error/',
 }
 
 SBERBANK_NSK = {
@@ -29,38 +23,46 @@ SBERBANK_NSK = {
     'prod_pswd': '',
 
     'commission': 2.8,
+    'commission_included': False,
     'timeout': 15,
+
+    'success_url': 'http://adm.bezantrakta-dev.rterm.ru/ps/success/',
+    'error_url': 'http://adm.bezantrakta-dev.rterm.ru/ps/error/',
 }
 
 slug = 'sberbank'
-init = SBERBANK_VLUKI
+init = SBERBANK_NSK
 ps = payment_service_factory(slug, init)
+
+domain = {
+    'slug': 'nsk', 'title': 'Новосибирск',
+}
 
 # event_id = 52238  # Тест (сектор без мест)
 event_id = 73811  # Тест (зал)
 # event_id = 130324
 
-event_uuid = '407b7b8a-28a4-470b-b7b9-53753cae3550'
+order_uuid = '0a74b7bc-5ea5-451e-97aa-3fe13051d440'
+order_id = 4
+total = ps.decimal_price(10.0)
 
 customer = {
     'name': 'Test Client', 'email': 'test@rterm.ru', 'phone': '+74739876543',
 }
 
-order = {}
-order['order_uuid'] = '0a74b7bc-5ea5-451e-97aa-3fe13051d440'
-order['order_id'] = 1
-order['total'] = ps.decimal_price(10.0)
-
 # PAYMENT_CREATE
-py_result = ps.payment_create(
-    event_uuid=event_uuid,
-    customer=customer,
-    order=order,
-)
+# py_result = ps.payment_create(
+#     domain=domain,
+#     event_id=event_id,
+#     order_uuid=order_uuid,
+#     order_id=order_id,
+#     total=total,
+#     customer=customer,
+# )
 
 # PAYMENT_STATUS
-# payment_id = '0c8e3cd2-1704-49e4-b051-d310cffd39bf'
-# py_result = ps.payment_status(payment_id=payment_id)
+payment_id = '0c8e3cd2-1704-49e4-b051-d310cffd39bf'
+py_result = ps.payment_status(payment_id=payment_id)
 
 # PAYMENT_REFUND
 # py_result = ps.payment_refund(payment_id=payment_id, total=total)

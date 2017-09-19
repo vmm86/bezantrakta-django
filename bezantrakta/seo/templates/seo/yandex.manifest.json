@@ -1,7 +1,7 @@
 {
     "api_version": 4,
     "layout": {
-        "logo": "{{ logo_url }}",
+        "logo": "http://{{ host }}/static/global/ico/yandex-tableau.png",
         "color": "#ffffff"
     }
 }

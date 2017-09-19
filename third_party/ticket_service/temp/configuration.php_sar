@@ -1,0 +1,145 @@
+<?php
+class JConfig {
+// Общие параметры Joomla
+    var $dostavka = '200';
+    var $offline = '0';
+    var $editor = 'jce';
+    var $list_limit = '20';
+    var $helpurl = 'http://help.joomla.org';
+    var $debug = '0';
+    var $debug_lang = '0';
+    var $sef = '1';
+    var $sef_rewrite = '1';
+    var $sef_suffix = '0';
+    var $feed_limit = '10';
+    var $feed_email = 'author';
+    var $secret = 'jutierout90e48';
+    var $gzip = '0';
+    var $error_reporting = '-1';
+    var $xmlrpc_server = '0';
+    var $log_path = '/home/belcanto/sar.bezantrakta.ru_v3.1/log';
+    var $tmp_path = '/home/belcanto/sar.bezantrakta.ru_v3.1/tmp';
+    var $live_site = '';
+    var $force_ssl = '0';
+    var $offset = '0';
+    var $caching = '0';
+    var $cachetime = '15';
+    var $cache_handler = 'file';
+    var $memcache_settings = array();
+    var $ftp_enable = '0';
+    var $ftp_host = '127.0.0.1';
+    var $ftp_port = '21';
+    var $ftp_user = 'admin';
+    var $ftp_pass = 'E2E4seven7';
+    var $ftp_root = '';
+    var $dbtype = 'mysqli';
+    var $host = 'localhost';
+    var $user = 'belcanto';
+    var $db = 'bezantrakta_sar';
+    var $dbprefix = 'jos_';
+    var $mailer = 'smtp';
+    var $mailfrom = 'zakaz_sar@bezantrakta.ru';
+    var $fromname = 'Безантракта.ru';
+    var $sendmail = '/usr/sbin/sendmail';
+    var $smtpauth = '1';
+    var $smtpsecure = 'none';
+    var $smtpport = '587';
+    var $smtpuser = 'zakaz_sar@bezantrakta.ru';
+    var $smtppass = 'inc0m1ngfort';
+    var $smtphost = 'mail.rterm.ru';
+    var $MetaAuthor = '1';
+    var $MetaTitle = '1';
+    var $lifetime = '120';
+    var $session_handler = 'none';
+    var $password = 'wrtwefsf352';
+    var $sitename = 'Афиша Саратова bezantrakta.ru заказ билетов в театр и на концерт в Саратове';
+    var $MetaDesc = 'bezantrakta.ru Афиша Саратова, первая интернет касса Саратове, заказ билетов в театр и на концерт в Саратове. Удобные варианты заказа и оформления билетов: забронировать и выкупить в кассах ... ';
+    var $MetaKeys = 'билеты саратов, гастроли в саратове, гастроли, афиша, афиша саратова, афиша театров, афиша театров саратова, афиша концертов, афиша саратовских театров, репертуар театров, репертуар театров спектакли, артисты, артисты в саратове, представляет, гастрольные агентства, гастрольные агентства саратова, концерты, концерты в саратове, концертные агентства саратова, афиша найти, гастроли найти, саратовские артисты, артисты саратова, саратовские артисты найти, артисты саратова найти, билеты, театральные билеты, билеты в саратове, билет в театр, билеты в театр онлайн, заказ билетов, купить билеты в театр, купите билеты на концерт, купите билеты в театр, купите билеты на концерт, билеты на концерты, билеты на концерт, билеты в театры, билеты спектакль, билеты в саратове купить, купить билеты в театр, купить билеты в саратове, купить билеты на концерт, продажа театральных билетов, театральные билеты, театральные билеты в саратове, театральные билеты в саратове купить, купить театральные билеты в саратове, билеты в кино, билеты в кино в саратове, купить билеты в кино в саратове, сеансы саратовских кинотеатров, спектакль, спектакли, спектакли саратова, театральная афиша, афиша саратова, афиша саратова. театры для детей, афиша оперного театра. саратов, театральная афиша, театральная афиша саратова, анонс, анонсы, анонсы саратова, саратовские анонсы, театральные кассы, отдых в саратове, вечер в саратове, цены на билеты в театр, заказ билетов, заказ билетов в театр, заказ билетов в театр, заказ билетов в кино, заказ билетов в саратове, заказ билетов в театры саратова, заказ билетов в кинотеатры саратова, кинотеатры саратова, куда сходить, куда сходить в саратове, антракт, без антракта, без антракта саратов, без антракта ру, bezantrakta, без антракта, безантракта, театр, театр начинается, театр начинается с вешалки, концертная деятельность, звезды в саратове, корпоративы, корпоративы в саратове, бельканто, агентство бельканто, гастрольное агентство бельканто, балет в саратове, опера в саратове, драматический театр, театр балета, театр драмы, театр оперы';
+    var $offline_message = 'Сайт сейчас закрыт на техническое обслуживание. Пожалуйста, зайдите позже.';
+// Отключен ли сайт
+    var $off = '0';
+// Нужно ли выводить отладочную информацию в процессе разработки
+    var $test = '0';
+// Email для технических уведомлений
+    var $admin_email = 'web@rterm.ru';
+// Город и поддомен сайта
+    var $city = 'sar';
+// Подтверждение доступа к сайту в средствах для вебмастеров Яндекс и Google
+    var $yandex_webmaster = '58baef84e1cd5742';
+    var $google_webmaster = '-udRklmWJAa16hRenZ46rprg-YGgwb-fv70KXihql0c';
+// Идентификаторы счётчиков Яндекс.Метрика, Google.Analytics, UpToLike (кнопки соцсетей), пиксель вКонтакте
+    var $yandex_counter   = '36806690';
+    var $google_counter   = 'UA-59614371-4';
+    var $uptolike_counter = '1512142';
+    var $vkontakte_pixel  = 'VK-RTRG-117921-4ZTNV';
+// Общий телефон для справок и бронирования
+    var $help_telephones = array(
+        'tel:78452774211'=>'+7 (8452) 77-42-11'
+    );
+// Подтверждение согласия на обработку персональных данных и м.б. работает ли почтовая рассылка
+    var $emailing = 1;
+    var $emailingText = 'Оформляя заказ, Вы подтверждаете своё согласие на обработку Ваших персональных данных согласно <a href="/oferta" target="_blank">договору оферты</a>. В свою очередь мы гарантируем, что Ваши персональные данные будут использоваться исключительно при оформлении заказа и не будут переданы третьим лицам.';
+// Сссылки на аккаунты в соцсетях
+    var $social_accounts = array(
+        array(
+            'alias'=>'vkontakte',
+            'title'=>'ВКонтакте',
+            'link' =>'https://vk.com/bezantrakta_ru'
+        ),
+        array(
+            'alias'=>'facebook',
+            'title'=>'Facebook',
+            'link' =>'https://www.facebook.com/bezantrakta'
+        ),
+        array(
+            'alias'=>'twitter',
+            'title'=>'Twitter',
+            'link' =>'https://twitter.com/bezantrakta'
+        ),
+        array(
+            'alias'=>'instagram',
+            'title'=>'Instagram',
+            'link' =>'https://www.instagram.com/bezantrakta.ru'
+        )
+    );
+// СуперБилет: параметры подключения
+    var $SBGS_host = 'http://sbgs.gastroli.net/cgi-bin/agency-radiobereg/STicketGate.exe/wsdl/ISTicket';
+    var $SBGS_user = 'sbgs_sar';
+    var $SBGS_pass = 'SaR1bE6i3Z';
+    var $SBGS_mode = 'agencyext';
+    var $sb_max_places_per_order = 7;
+    var $sb_courier_price = 0;
+    var $sb_active_payment         = 'Sberbank';
+    var $superbilet_active_payment = 'Sberbank';
+//// СуперБилет: глобальное включение/отключение способов получения/оплаты билетов
+    var $sb_delivery_self    = 1;
+    var $sb_delivery_courier = 1;
+    var $sb_delivery_payment = 1;
+    var $sb_delivery_eticket = 1;
+//// СуперБилет: описание способов получения/оплаты билетов на шаге 2
+    var $sb_self_description = "";
+    var $sb_courier_description = "<p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>\n<p>Стоимость доставки %d рублей.</p>\n";
+    var $sb_payment_description = "<p>Билеты, оплаченные банковской картой, можно получить не ранее 24-х часов после оплаты заказа и не позднее 24-х часов до начала мероприятия в любой из наших касс по номеру заказа, предъявив документ, удостоверяющий личность владельца карты (паспорт или водительское удостоверение).</p>\n";
+    var $sb_eticket_description = "<p>После успешного подтверждения оплаты PDF-файлы с билетами будут отправлены на указанную Вами электронную почту. Их нужно будет <strong>распечатать на листе формата А4</strong> и предъявить при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно!</strong> Для удобства его можно сложить по пунктирным линиям сгиба.</p>\n<br><p>Возврат билетов осуществляется только в случае переноса или отмены меропиятия, а также по согласованию с организатором.</p>\n<br><p><strong>В целях Вашей безопасности не сообщайте номер оплаченного заказа посторонним лицам и не выкладывайте изображения билетов в социальные сети – по ним могут пройти посторонние люди!</strong></p>\n";
+//// СуперБилет: описание способов получения/оплаты билетов в email-уведомлениях
+    var $sb_self_email_description = "<p>Бронь на билеты действует в течение 2-х дней после оформления заказа!</p>\n<p>Вы сможете выкупить билеты в любой из наших касс.</p>\n<p>Список касс и схемы проезда вы можете увидеть <a href=\"%s/kontakty\" target=\"_blank\">на странице \"Контакты\"</a>.</p>\n";
+    var $sb_courier_email_description = "<p>Бронь на билеты действует в течение 2-х дней после оформления заказа!</p>\n<p>В течение 24-х часов с Вами по телефону свяжется наш курьер и доставит билеты по указанному адресу в удобное для Вас время.</p>\n";
+    var $sb_payment_email_description = "<p>Перед посещением мероприятия, пожалуйста, получите свои билеты в любой кассе Безантракта.</p>\n<p>Список касс и схемы проезда вы можете увидеть <a href=\"%s/kontakty\" target=\"_blank\">на странице \"Контакты\"</a>.</p>\n<p>В кассах билеты можно получить не ранее, чем через 24 часа после подтверждения заказа и не позже, чем за 24 часа до начала мероприятия.</p>\n";
+    var $sb_eticket_email_description = "<p>PDF-файлы с билетами вложены в это письмо. Для того, чтобы их открыть, потребуется программа <a href=\"https://get.adobe.com/ru/reader/\" target=\"_blank\">Adobe Reader</a> или любая другая программа, открывающая файлы формата PDF.</p>\n<p>Вам необходимо распечатать каждый билет на отдельном листе формата A4 и предъявить его при входе на мероприятие.<br>\n<p>Билет на листе A4 обрезать не нужно! Для удобства его можно сложить по пунктирным линиям сгиба.</p>\n";
+// Сбербанк: параметры оплаты
+// `test` - тестовая оплата, `production` - боевая оплата
+    var $sberbank_payment_type = 'production';
+    var $sberbank_api_username = 'sar_bezantrakta-api';
+
+    var $sberbank_api_test_password = 'sar_bezantrakta';
+    var $sberbank_api_test_return_url = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentSuccess';
+    var $sberbank_api_test_fail_url   = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentError';
+
+    var $sberbank_api_production_password = 'ubHm37mjKaAE';
+    var $sberbank_api_production_return_url = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentSuccess';
+    var $sberbank_api_production_fail_url   = 'http://sar.bezantrakta.ru/index.php?option=com_afisha&controller=gettickets&task=paymentError';
+
+    var $sberbank_commission = 2.2;
+    var $sberbank_timeout = 15;
+}
+?>
