@@ -37,30 +37,14 @@
             <div class="order-header step2">
                 <div id="basket-container" class="step2">
                     <h3 id="chosen-tickets-header">Выбранные места</h3>
-                    <ul id="chosen-tickets"></ul>
-
+                    <p>
+                        <ul id="chosen-tickets">
+                        </ul>
+                    </p>
                     <h3 id="overall-header">Всего</h3>
                     <p id="overall">
                         <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
                     </p>
-
-                {% if ticket_service.settings.order.courier_cash %}
-                    <div id="overall-courier">
-                        <h3>Всего с учётом доставки курьером</h3>
-                        <p>
-                            К оплате {{ order_total_plus_courier_price }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
-                        </p>
-                    </div>
-                {% endif %}
-
-                {% if ticket_service.settings.order.self_online or ticket_service.settings.order.email_online %}
-                    <div id="overall-online">
-                        <h3>Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
-                        <p>
-                            К оплате {{ order_total_plus_commission }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
-                        </p>
-                    </div>
-                {% endif %}
 
                     {# Описание процесса заказа билетов #}
                     {% include "order/legend_text.html" with ticket_service=ticket_service %}

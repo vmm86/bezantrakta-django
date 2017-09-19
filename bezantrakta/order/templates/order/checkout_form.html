@@ -92,11 +92,12 @@
                 <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
                 <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ request.city_title }}" value="{{ address }}"></input>
                 <br>
-                <p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>
+                {{ ticket_service.settings.order_description.courier_cash|safe }}
                 {% if ticket_service.settings.courier_price > 0 %}
                     <p>Стоимость доставки {{ ticket_service.settings.courier_price }} р.</p>
+                {% else %}
+                    <p>Доставка осуществляется бесплатно.</p>
                 {% endif %}
-                {{ ticket_service.settings.order_description.courier_cash|safe }}
            </div>
         {% endif %}
 
@@ -104,9 +105,15 @@
             <div class="online-info payment-info step2" style="text-align: justify; width: 45rem;">
                 <br>
                 <br>
-                {{ ticket_service.settings.order_description.self_online|safe }}
+                {% if payment_service.settings.commission_included %}
+                    <p><strong>Комиссия сервиса онлайн-оплаты включена в сумму заказа</strong>.</p>
+                {% else %}
+                    <p><strong>К сумме заказа добавлена комиссия сервиса онлайн-оплаты</strong>.</p>
+                {% endif %}
                 <br>
                 {{ payment_service.settings.description|safe }}
+                <br>
+                {{ ticket_service.settings.order_description.self_online|safe }}
             </div>
         {% endif %}
 
@@ -114,7 +121,13 @@
             <div class="online-info eticket-info step2" style="text-align: justify; width: 45rem;">
                 <br>
                 <br>
-                {{ ticket_service.settings.order_description.email_online|safe }}
+                {% if payment_service.settings.commission_included %}
+                    <p><strong>Комиссия сервиса онлайн-оплаты включена в сумму заказа</strong>.</p>
+                {% else %}
+                    <p><strong>К сумме заказа добавлена комиссия сервиса онлайн-оплаты</strong>.</p>
+                {% endif %}
+                <br>
+                {{ payment_service.settings.description|safe }}
                 <br>
                 <p>После успешного подтверждения оплаты PDF-файлы с билетами будут отправлены на указанную Вами электронную почту.<br>Корректно указывайте свой адрес электронной почты! В противном случае Вам необходимо связаться с администратором сайта для повторной отправки билетов.
                 <br>
@@ -124,7 +137,7 @@
                 <br>
                 <p>Возврат билетов осуществляется только в случае переноса или отмены мероприятия, а также по согласованию с организатором.</p>
                 <br>
-                {{ payment_service.settings.description|safe }}
+                {{ ticket_service.settings.order_description.email_online|safe }}
             </div>
         {% endif %}
 
