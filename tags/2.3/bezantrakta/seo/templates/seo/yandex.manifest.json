@@ -1,0 +1,7 @@
+{
+    "api_version": 4,
+    "layout": {
+        "logo": "{{ logo_url }}",
+        "color": "#ffffff"
+    }
+}
