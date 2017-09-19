@@ -1,32 +1,50 @@
-{% extends "index.html" %}
-{% load tz %}
-
-{% block content_header %}
-<h1>События на {{ calendar_date|date:"j E" }}</h1>
-{% endblock %}
-
-{% block content_body %}
-{% if events_on_date %}
-<div class="poster-small-vertical-body">
-    {% for item in events_on_date %}
-    {% localtime on %}
-        {% include "event/small_vertical_posters.html" with item=item %}
-    {% endlocaltime %}
+{% now "Y" as year %}
+{% now "F" as month %}
+{% now "j" as today %}
+<table class="event_calendar">
+    <thead>
+        <tr>
+            <td colspan="1" class="title">‹</td>
+            <td colspan="5" class="title">{{ month|lower }} {{ year }}</td>
+            <td colspan="1" class="title">›</td>
+        </tr>
+        <tr class="daynames">
+            <td class="day name">&nbsp;пн&nbsp;</td>
+            <td class="day name">&nbsp;вт&nbsp;</td>
+            <td class="day name">&nbsp;ср&nbsp;</td>
+            <td class="day name">&nbsp;чт&nbsp;</td>
+            <td class="day name">&nbsp;пт&nbsp;</td>
+            <td class="name day weekend">&nbsp;сб&nbsp;</td>
+            <td class="name day weekend">&nbsp;вс&nbsp;</td>
+        </tr>
+{% comment %}
+        <tr class="daynames">
+        {% for day in head %}
+            <td class="day name">{{ day|date:"D"|slice:":2"|lower }}</td>
+        {% endfor %}
+        </tr>
+{% endcomment %}
+    </thead>
+    <tbody>
+{% for week in body %}
+    <tr class="daysrow">
+    {% for day in week %}
+        <td class="
+            {% if day.in_month %}day{% if day.day|date:"j" == today %} today{% endif %}
+            {% else %}emptycell{% endif %}
+            ">
+        {# if day.event #}
+        {% if day.in_month %}
+            <a href="/afisha/{{ day.day|date:"Y" }}/{{ day.day|date:"m" }}/{{ day.day|date:"d" }}/">
+                {{ day.day|date:"j" }}
+            </a>
+        {% endif %}
+        {# else #}
+            {# day.day|date:"j" #}
+        {# endif #}
+        </td>
     {% endfor %}
-</div>
-{% else %}
-    <p>К сожалению, на этот день нет событий в продаже 😞.</p>
-{% endif %}
-
-{% if debug %}
-<br><br>
-request.calendar_date: {{ request.calendar_date }}
-<br>
-calendar_date: {{ calendar_date }}
-<br>
-calendar_next_date: {{ calendar_next_date }}
-<br>
-events_on_date: <pre>{{ events_on_dates|pprint }}</pre>
-<br><br>
-{% endif %}
-{% endblock %}
+    </tr>
+{% endfor %}
+    </tbody>
+</table>

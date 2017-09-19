@@ -1,13 +1,15 @@
 from django.db.models import Case, F, URLField, Value, When
-
-from project.shortcuts import base_template_context_processor
+from django.db.models.functions.base import Concat
 
 from .models import Menu, MenuItem
 
 
 def menu_items(request):
-    """Получение информации о меню и её добавление в контекст шаблона."""
-    if base_template_context_processor(request):
+    """
+    Получение информации о меню и её добавление в template context.
+    """
+    # Только если домен опубликован
+    if request.domain_is_published:
         menu_values = Menu.objects.values('id', 'slug', 'title')
 
         menu = {
@@ -21,7 +23,11 @@ def menu_items(request):
             menu_items[m['slug']] = MenuItem.objects.annotate(
                 url=Case(
                     When(slug='', then=Value('/')),
-                    default=F('slug'),
+                    default=Concat(
+                        Value('/'),
+                        F('slug'),
+                        Value('/'),
+                    ),
                     output_field=URLField()
                 )
             ).filter(

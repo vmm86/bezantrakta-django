@@ -47,12 +47,6 @@ body {
     {% choose_domain %}
 </div>
 {% endif %}
-<div class="warning">{% trans 'choose_city_warning' %}</div>
-{% endblock %}
-
-{% block content_title %}
-<h1>{% trans 'bezantrakta_admin' %}{% if debug %} TIME_ZONE: {{ TIME_ZONE }}{% endif %}</h1>
-<p>{% trans 'domain_icon_help_text' %}</p>
 {% endblock %}
 
 {% block footer %}
@@ -61,83 +55,26 @@ body {
 <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
-    {# Сохранение данных выбранного для фильтрации сайта в cookie #}
+    {# Сохранение выбранного для фильтрации данных сайта в cookie `bezantrakta_domain` #}
     $('#choose_domain').change(function() {
         var value = $('#choose_domain option:selected').val();
-        var city = $('#choose_domain option:selected').data('city');
-        var timezone = $('#choose_domain option:selected').data('timezone');
         {# Адрес главного сайта, к которому могут добавляться поддомены #}
         var domain = '.{{ request.root_domain }}';
         {# Период действия куки (год) #}
-        var expires = new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 366);
-        {# Запись в cookie выбранного домена для фильтрации админки #}
-        Cookies.set('bezantrakta_admin_domain', value, {expires: expires, domain: domain});
-        {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
-        Cookies.set('bezantrakta_admin_city', city, {expires: expires, domain: domain});
-        {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
-        Cookies.set('bezantrakta_admin_timezone', timezone, {expires: expires, domain: domain});
+        var expires = new Date(new Date().getTime() + 31622400000);
+        {# Запись в cookie выбранного фильтра по домену в админке #}
+        Cookies.set('bezantrakta_domain', value, {expires: expires, domain: domain});
         location.reload();
     });
 
     {# При создании новых записей #}
-    var domain_id = {{ bezantrakta_admin_domain_id }};
+    var domain_id = {{ bezantrakta_domain_id }};
     if (domain_id !== 0) {
         $('.object-tools .addlink').attr('href', function(i, h) {
             var qs = h + (h.indexOf('?') != -1 ? '&' : '?');
             return qs + 'domain=' + domain_id;
         });
     }
-
-    {# Добавление событий в группе работает только для группы #}
-    {# Добавление ссылок доступно только в событиях и в группе не работает #}
-    function show_hide_add_group_link(){
-        if (
-            $('#id_is_group').prop('checked') === true || $('.field-is_group .readonly img').attr('alt') === 'True'
-        ) {
-            $('#groups-group .tabular table .add-row a').show();
-            $('#eventlinkbinder_set-group .tabular table .add-row a').hide();
-        } else {
-            $('#groups-group .tabular table .add-row a').hide();
-            $('#eventlinkbinder_set-group .tabular table .add-row a').show();
-        }
-    }
-    show_hide_add_group_link();
-    $('#id_is_group').click(function(){
-        show_hide_add_group_link();
-    });
-
-    {# Стилизация строк в таблице заказав в зависимости от из статуса #}
-    $('.model-order #result_list tbody tr').each(function(index, element) {
-        status_description = $(this).children('.field-status').html();
-        console.log(index, element, status);
-
-        if (status_description === 'создан') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#c7d6e7');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#b5c9df');
-            }
-        } else if (status_description === 'подтверждён') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#d9eeda');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#c7e7c8');
-            }
-        } else if (status_description === 'отменён') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#e7c8c7');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#dfb7b5');
-            }
-        } else if (status_description === 'возвращён') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#c8c7e7');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#b6b5df');
-            }
-        }
-
-    });
 });
 </script>
 {% endblock %}

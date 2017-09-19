@@ -8,14 +8,6 @@
         font-size: 16px;
     }
 
-    .choose-city-list {
-        height: 100vh;
-    }
-
-    .choose-city-list li {
-        width: 33.3%;
-    }
-
     .events-menu {
         text-align: center;
 
@@ -24,7 +16,7 @@
         width: 100%;
     }
 
-    .poster-big-vertical-left, .poster-big-vertical-right,
+    .poster-left, .poster-right,
     .bottom-left-logo, .bottom-right-logo {
         display: none;
     }
@@ -51,17 +43,15 @@
 }
 
 @media all and (max-width: 1180px) {
+    .choose-city-list li {
+        width: 50%;
+    }
+}
+
+@media all and (max-width: 1180px) {
 
     html {
         font-size: 15px;
-    }
-
-    .choose-city-list {
-        height: 140vh;
-    }
-
-    .choose-city-list li {
-        width: 50%;
     }
 
     .panorama {
@@ -104,6 +94,10 @@
 
     html {
         font-size: 13px;
+    }
+
+    .top {
+        height: 4.5rem;
     }
 
 }
@@ -156,24 +150,19 @@
         font-size: 12px;
     }
 
-    .choose-city-list {
-        height: auto;
-    }
-
     .choose-city-list li {
         width: 100%;
     }
 
     .header-left .bzlogo {
-        width: auto;
-        height: 5rem;
+        height: 3.5rem;
 
         position: absolute;
-        top: -5.5rem;
-        left: 120%;
+        top: -4.5rem;
+        left: 165%;
     }
 
-    .poster-small-vertical-body.vip .poster-small-vertical-min_price {
+    .poster-small-vertical-body.order1 .poster-small-vertical-min_price {
         left: 0;
     }
 
@@ -339,8 +328,7 @@
     }
 
     .header-left .bzlogo {
-        top: -4.75rem;
-        left: 35%;
+        left: 40%;
     }
 
     .header-right {

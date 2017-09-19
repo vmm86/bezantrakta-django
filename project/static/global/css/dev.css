@@ -4,11 +4,10 @@
     display: block;
     background: #F5F5F5;
     border: 1px dashed #000;
-    font-size: 0.85rem;
-    white-space: pre-wrap;
-    overflow-y: scroll;
-    width: 60vw;
-    max-height: 18vw;
+    font-size: 0.75rem;
+    overflow: auto;
+    width: 65vw;
+    height: 20vw;
 }
 
 div {

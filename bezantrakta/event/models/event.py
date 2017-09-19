@@ -7,53 +7,10 @@ from django.urls.base import reverse
 from django.utils.translation import ugettext as _
 
 
-class EventManager(models.Manager):
-    def get_queryset(self):
-        return super(EventManager, self).get_queryset().select_related(
-            'event_category', 'event_venue', 'domain'
-        ).prefetch_related(
-            'event_group', 'event_container', 'event_link'
-        )
-
-
 class Event(models.Model):
-    """События, привязанные к какому-то билетному сервису или независимые (добавленные вручную).
-
-    Attributes:
-        objects (EventManager): Менеджер модели.
-        id (UUIDField): Уникальный идентификатор.
-        title (CharField): Название.
-        slug (SlugField): Псевдоним.
-        description (TextField): Метатег ``description`` (краткое описание страницы, не более 150-200 символов).
-        keywords (TextField): Метатег ``keywords`` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
-        text (RichTextField): Текстовое описание события в HTML.
-        is_published (BooleanField): Опубликовано (``True``) или НЕ опубликовано (``False``).
-        is_on_index (BooleanField): Показывать "на главной" в позициях ``small_vertical`` (``True``) или НЕ показывать (``False``).
-        min_price (DecimalField): Минимальная цена на билет.
-        min_age (PositiveSmallIntegerField): Ограничение по возрасту, берущееся из ``MIN_AGE_CHOICES`` (по умолчанию - ``0``).
-
-            Содержимое ``MIN_AGE_CHOICES`` (кортеж из кортежей "значение" / "подпись").
-                * **AGE_00** (int): ``0``.
-                * **AGE_06** (int): ``6``.
-                * **AGE_12** (int): ``12``.
-                * **AGE_16** (int): ``16``.
-                * **AGE_18** (int): ``18``.
-
-        datetime (DateTimeField): Дата/время события.
-        event_category (ForeignKey): Привязка к категории события.
-        event_venue (ForeignKey): Привязка к залу (месту проведения события).
-        domain (ForeignKey): Привязка к сайту.
-        is_group (BooleanField): Является ли запись в БД событием (``False``) или группой (``True``).
-        event_group (ManyToManyField): Привязка событий к группе (если текущая запись в БД - группа).
-        event_container (ManyToManyField): Привязка к категории событий.
-        event_link (ManyToManyField): Привязка к внешним ссылкам с иконками.
-        ticket_service (ForeignKey): Привязка к сервису продажи билетов.
-        ticket_service_event (PositiveIntegerField): Идентификатор события в сервисе продажи билетов.
-        ticket_service_prices (TextField): Список цен на билеты в событии по возрастанию из сервиса продажи билетов.
-        ticket_service_scheme (PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
     """
-    objects = EventManager()
-
+    События, привязанные к какому-то билетному сервису или независимые.
+    """
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
@@ -112,8 +69,29 @@ class Event(models.Model):
         blank=False,
         verbose_name=_('event_min_age'),
     )
-    datetime = models.DateTimeField(
-        verbose_name=_('event_datetime'),
+    date = models.DateField(
+        verbose_name=_('event_date'),
+    )
+    time = models.TimeField(
+        verbose_name=_('event_time'),
+    )
+    event_group = models.ManyToManyField(
+        'event.EventGroup',
+        through='event.EventGroupBinder',
+        blank=True,
+        verbose_name=_('event_event_group'),
+    )
+    event_container = models.ManyToManyField(
+        'event.EventContainer',
+        through='event.EventContainerBinder',
+        blank=True,
+        verbose_name=_('event_event_container'),
+    )
+    event_link = models.ManyToManyField(
+        'event.EventLink',
+        through='event.EventLinkBinder',
+        blank=True,
+        verbose_name=_('event_event_link'),
     )
     event_category = models.ForeignKey(
         'event.EventCategory',
@@ -125,8 +103,6 @@ class Event(models.Model):
     )
     event_venue = models.ForeignKey(
         'event.EventVenue',
-        blank=True,
-        null=True,
         on_delete=models.CASCADE,
         db_column='event_venue_id',
         verbose_name=_('event_event_venue'),
@@ -137,87 +113,36 @@ class Event(models.Model):
         db_column='domain_id',
         verbose_name=_('event_domain'),
     )
-    is_group = models.BooleanField(
-        default=False,
-        verbose_name=_('event_is_group'),
-    )
-    event_group = models.ManyToManyField(
-        'self',
-        through='event.EventGroupBinder',
-        through_fields=('group', 'event',),
-        related_name='event_groups',
-        symmetrical=False,
-        blank=True,
-        verbose_name=_('event_event_group'),
-    )
-    event_container = models.ManyToManyField(
-        'event.EventContainer',
-        through='event.EventContainerBinder',
-        related_name='event_containers',
-        blank=True,
-        verbose_name=_('event_event_container'),
-    )
-    event_link = models.ManyToManyField(
-        'event.EventLink',
-        through='event.EventLinkBinder',
-        related_name='event_links',
-        blank=True,
-        verbose_name=_('event_event_link'),
-    )
-    ticket_service = models.ForeignKey(
-        'ticket_service.TicketService',
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-        db_column='ticket_service_id',
-        verbose_name=_('event_ticket_service'),
-    )
-    ticket_service_event = models.PositiveIntegerField(
-        blank=True,
-        null=True,
-        db_column='ticket_service_event_id',
-        verbose_name=_('event_ticket_service_event'),
-    )
-    ticket_service_prices = models.TextField(
-        max_length=200,
-        blank=True,
-        null=True,
-        verbose_name=_('event_ticket_service_prices'),
-    )
-    ticket_service_scheme = models.PositiveIntegerField(
-        blank=True,
-        null=True,
-        db_column='ticket_service_scheme_id',
-        verbose_name=_('event_ticket_service_scheme'),
-    )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event'
         verbose_name = _('event')
         verbose_name_plural = _('events')
-        ordering = ('domain', '-datetime', 'title', 'is_group',)
+        ordering = ('domain', 'date', 'time', 'title',)
         unique_together = (
-            ('domain', 'datetime', 'slug',),
+            ('domain', 'date', 'slug',),
         )
 
     def __str__(self):
-        return '{title} ({datetime}) {ts_event_id} - {domain}'.format(
-            title=self.title,
-            ts_event_id=self.ticket_service_event if self.ticket_service_event is not None else '',
-            datetime=self.datetime.strftime('%d.%m.%Y %H:%M'),
-            domain=self.domain.title,
-        )
+        from django.contrib.humanize.templatetags.humanize import naturalday
+        return '{} ({})'.format(self.title, naturalday(self.date),)
 
     def get_absolute_url(self):
         return reverse(
             'event',
             args=[
-                str(self.datetime.year),
-                str(self.datetime.month),
-                str(self.datetime.day),
-                str(self.datetime.hour),
-                str(self.datetime.minute),
+                str(self.date.year),
+                str(self.date.month),
+                str(self.date.day),
                 self.slug
             ]
         )
+
+    def container_count(self):
+        return self.event_container.count()
+    container_count.short_description = _('event_container_count')
+
+    def link_count(self):
+        return self.event_link.count()
+    link_count.short_description = _('event_link_count')

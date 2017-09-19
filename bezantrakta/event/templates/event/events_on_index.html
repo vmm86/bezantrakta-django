@@ -1,33 +1,80 @@
-{% extends "index.html" %}
-{% load tz %}
+{% extends "base.html" %}
 
 {% block content_body %}
 
 {% if small_vertical_vip %}
 <div class="poster-small-vertical-body vip">
-{% for item in small_vertical_vip %}
-{% localtime on %}
-    {% include "event/small_vertical_posters.html" with item=item %}
-{% endlocaltime %}
+{% for event in small_vertical_vip %}
+        {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
+        <div class="poster-small-vertical">
+            <div class="poster-small-vertical-image">
+                <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                    <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                </a>
+            </div>
+            <div class="poster-small-vertical-price">
+                <div class="poster-small-vertical-date">
+                    <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
+                </div>
+                <div class="poster-small-vertical-min_price">
+                    <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
+                </div>
+            </div>
+        </div>
 {% endfor %}
 </div>
 {% endif %}
 
 {% if small_vertical %}
 <div class="poster-small-vertical-body">
-{% for item in small_vertical %}
-{% localtime on %}
-    {% include "event/small_vertical_posters.html" with item=item %}
-{% endlocaltime %}
+{% for event in small_vertical %}
+        {% url 'event:event' year=event.date|date:"Y" month=event.date|date:"m" day=event.date|date:"d" slug=event.slug as event_url %}
+        <div class="poster-small-vertical">
+            <div class="poster-small-vertical-image">
+                <a href="{{ event_url }}" title="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                    <img src="{{ event.poster }}" alt="{{ event.date }} {{ event.time }} {{ event.title }} {{ event.venue }}">
+                </a>
+            </div>
+            <div class="poster-small-vertical-price">
+                <div class="poster-small-vertical-date">
+                    <a href="{{ event_url }}">{{ event.date|date:"j" }} {{ event.date|date:"E" }}</a>
+                </div>
+                <div class="poster-small-vertical-min_price">
+                    <a href="{{ event_url }}">от {{ event.min_price|floatformat }}</a>
+                </div>
+            </div>
+        </div>
 {% endfor %}
 </div>
 {% endif %}
 
 <div class="share-help">
-{% include "share_help.html" %}
+
+{% if request.settings.counter.uptolike %}
+    <div class="share">
+        <span class="label grey">Поделиться</span>
+        <span class="input yellow">
+            {# UpToLike - Кнопки "Поделиться" #}
+            <div data-background-alpha="0.0" data-buttons-color="#FFFFFF" data-counter-background-color="#FFFFFF" data-share-counter-size="12" data-top-button="false" data-share-counter-type="disable" data-share-style="1" data-mode="share" data-like-text-enable="false" data-mobile-view="false" data-icon-color="#FFFFFF" data-orientation="horizontal" data-text-color="#000000" data-share-shape="round" data-sn-ids="vk.fb.tw." data-share-size="30" data-background-color="#FFFFFF" data-preview-mobile="false" data-mobile-sn-ids="vk.fb.tw." data-pid="{{ request.settings.counter.uptolike }}" data-counter-background-alpha="1.0" data-following-enable="false" data-exclude-show-more="true" data-selection-enable="true" class="uptolike-buttons" ></div>
+            {# UpToLike - Кнопки "Поделиться" #}
+        </span>
+    </div>
+{% endif %}
+
+{% if request.settings.telephone %}
+    <div class="order-telephone">
+        <span class="help">Справки бронирование</span>
+        <span class="bzlogo-mask"></span>
+        <span class="help-contact">
+        {% for tel in request.settings.telephone %}
+            <a href="tel:{{ tel|cut:" "|cut:"-"|cut:"("|cut:")" }}">{{ tel }}</a>
+            <br>
+        {% endfor %}
+        </span>
+    </div>
+{% endif %}
 
 {# Иконка для страницы Бельканто выводится только на основном сайте Безантракта #}
-{% comment %}
 {% if request.domain == "vrn" %}
     <div class="belcanto-banner">
         <a href="/gastroli">
@@ -35,26 +82,21 @@
         </a>
     </div>
 {% endif %}
-{% endcomment %}
 </div>
 
 {% if debug %}
 <br><br>
-categories: <pre>{{ categories|pprint }}</pre>
+categories: {{ categories|pprint }}
 <br><br>
-current_month: {{ request.current_month|pprint }}
+big_vertical_left: {{ big_vertical_left|pprint }}
 <br><br>
-event_days: <pre>{{ event_days|pprint }}</pre>
+big_vertical_right: {{ big_vertical_right|pprint }}
 <br><br>
-big_vertical_left: <pre>{{ big_vertical_left|pprint }}</pre>
+big_horizontal: {{ big_horizontal|pprint }}
 <br><br>
-big_vertical_right: <pre>{{ big_vertical_right|pprint }}</pre>
+small_vertical_vip: {{ small_vertical_vip|pprint }}
 <br><br>
-big_horizontal: <pre>{{ big_horizontal|pprint }}</pre>
-<br><br>
-small_vertical_vip: <pre>{{ small_vertical_vip|pprint }}</pre>
-<br><br>
-small_vertical: <pre>{{ small_vertical|pprint }}</pre>
+small_vertical: {{ small_vertical|pprint }}
 <br><br>
 {% endif %}
 {% endblock %}

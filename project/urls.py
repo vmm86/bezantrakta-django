@@ -17,28 +17,10 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from project.views import error, error_400, error_403, error_404, error_410, error_500, error_503
-
 urlpatterns = [
-    # Сообщения об ошибках
-    url(r'^error/', error, name='error'),
-    url(r'^error_400/', error_400, name='error_400'),
-    url(r'^error_400/', error_400, name='error_400'),
-    url(r'^error_403/', error_403, name='error_403'),
-    url(r'^error_404/', error_404, name='error_404'),
-    url(r'^error_410/', error_410, name='error_410'),
-    url(r'^error_500/', error_500, name='error_500'),
-    url(r'^error_503/', error_503, name='error_503'),
-
     url(r'^simsim/', admin.site.urls),
-    # url(r'^simsim/doc/', include('django.contrib.admindocs.urls')),
-
-    url(r'', include('third_party.ticket_service.urls')),
-    url(r'', include('third_party.payment_service.urls')),
-
     url(r'', include('bezantrakta.event.urls')),
     url(r'', include('bezantrakta.seo.urls')),
-    url(r'', include('bezantrakta.order.urls')),
     url(r'', include('bezantrakta.article.urls')),
 ]
 

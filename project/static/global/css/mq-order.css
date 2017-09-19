@@ -52,7 +52,7 @@
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: normal;
     text-align: center;
     vertical-align: middle;
     text-transform: uppercase;
@@ -98,11 +98,11 @@ h1, h2 {
 
     font-family: 'Roboto', sans-serif;
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: normal;
     text-align: left;
     text-transform: uppercase;
 
-    padding: 1rem 2rem;
+    padding: 1rem 2.5rem;
     margin: 0.5rem 0 1% 0;
 }
 
@@ -146,7 +146,7 @@ h1, h2 {
     color: #FFF;
     vertical-align: middle;
 
-    padding: 1.75rem 2.75rem;
+    padding: 1.75rem 2.5rem;
 
     max-width: 50vw;
 
@@ -182,6 +182,8 @@ h1, h2 {
 /* Выбранные билеты и список цен */
 
 #basket-container {
+/*    display: table-cell;*/
+
     font-size: 0.95rem;
     text-align: left;
     vertical-align: top;
@@ -194,14 +196,13 @@ h1, h2 {
 #basket-container-full {
     width: 100%;
 }
-
-#group-events-header,
-#links-header,
+/*#basket-container-full #chosen-tickets,
+#basket-container-full #overall {
+    text-transform: lowercase;
+}*/
+#related-events-header, 
 #chosen-tickets-header,
-#overall-header,
-#overall-courier h3,
-#overall-online h3,
-#order-info-header {
+#overall-header {
     display: block;
 
     background: url(/static/global/svg/background-grey.svg) no-repeat;
@@ -209,24 +210,21 @@ h1, h2 {
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
 
-    color: #fff;
+    color: #FFF;
     font-family: 'Roboto', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: normal;
     text-transform: uppercase;
 
-    padding: 1.75rem 2rem;
+    padding: 0.5rem 2.5rem;
 
     width: 100%;
 }
 
-#basket-container #chosen-tickets,
-#basket-container-full #chosen-tickets,
+#basket-container ul,
+#basket-container-full ul,
 #basket-container #overall,
-#basket-container-full #overall,
-#overall-courier p,
-#overall-online p,
-#order-info {
+#basket-container-full #overall {
     display: block;
 
     background: url(/static/global/svg/background-yellow.svg) no-repeat;
@@ -234,26 +232,17 @@ h1, h2 {
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
 
-    font-size: 0.95rem;
-    font-weight: bold;
-    text-transform: lowercase;
-
-    padding: 0.5rem 2rem;
+    padding: 0.5rem 2.5rem;
 }
 
-#basket-container #chosen-tickets li,
-#basket-container-full #chosen-tickets li,
+#basket-container ul li,
+#basket-container-full ul li,
+/*#basket-container-full span,*/
 #basket-container #overall,
-#basket-container-full #overall,
-#order-info li,
-.ticket-message {
+#basket-container-full #overall {
     font-size: 0.95rem;
     font-weight: bold;
     text-transform: lowercase;
-}
-
-#basket-container #chosen-tickets li .countdown {
-    color: #F44336;
 }
 
 #basket-container ul li,
@@ -261,91 +250,61 @@ h1, h2 {
     list-style: none;
 }
 
-#basket-container #group-events {
+/*#basket-container .show-events > h3 {
+    background: url(/static/global/svg/background-grey.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    margin: 0 0 0.25rem 0;
+}*/
+
+#basket-container #related-events {
+/*    padding-left: 1.5rem;*/
     display: table;
 
     background: transparent;
 }
 
-#basket-container #group-events li {
+#basket-container #related-events li {
     display: table;
 
-    background: url(/static/global/svg/group-event.svg) no-repeat;
+    background: url(/static/global/svg/related-event.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
 
     color: #FFF;
     font-family: 'Roboto', sans-serif;
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1rem;
+    font-weight: normal;
     text-transform: uppercase;
 
+    /*padding: 0.2rem 1rem 0.2rem 2.5rem;*/
     padding: 0.1rem;
-    margin: 0.5rem 0 0.5rem 2rem;
+    margin: 0 0 0.25rem 0;
 }
 
-#basket-container #group-events li.group-event-chosen {
+#basket-container #related-events li.r-e-chosen {
     display: table;
 
-    background: url(/static/global/svg/group-event-chosen.svg) no-repeat;
+    background: url(/static/global/svg/related-event-chosen.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
 
     color: #000;
 
-    padding: 0.25rem 1.75rem 0.25rem 3.5rem !important;
+    padding: 0.25rem 1.2rem 0.25rem 2.5rem !important;
 }
 
-#basket-container #group-events li a {
+#basket-container #related-events li a {
     color: #FFF;
     text-decoration: none;
 
     display: inline-block;
     width: 100% !important;
-    padding: 0.25rem 1.75rem 0.25rem 3.25rem !important;
-}
-
-.ruble-sign {
-    vertical-align: baseline;
-    width: 0.525rem;
-}
-
-#links-header {
-}
-
-#links,
-/* временное сообщение */
-.ticket-message {
-    display: block;
-
-    background: url(/static/global/svg/links.svg) no-repeat;
-    background-size: 100% 100%;
-    -moz-background-size: 100% 100%;
-    -webkit-background-size: 100% 100%;
-
-    margin-top: 0.25rem;
-    padding: 0.5rem 2rem;
-}
-
-#links li .link-checkbox {
-    display: inline-block;
-
-    background: url(/static/global/svg/order-checkbox-selected.svg) center center no-repeat;
-    background-size: 100% 100%;
-
-    border: none;
-    border-style: none;
-    outline: none;
-
-    padding: 0;
-    margin-right: 1rem;
-
-    vertical-align: 0.5rem;
-
-    height: 3rem;
-    width: 3.5rem;
+    padding: 0.2rem 1rem 0.2rem 2.5rem !important;
 }
 
 #legend-general,
@@ -353,45 +312,9 @@ h1, h2 {
     font-weight: bold;
 }
 
-#legend-text {
-    font-weight: bold;
-}
-
-#legend-text .highlight {
-    color: #F44336;
-}
-
 .ruble {
     width: 0.62rem;
     vertical-align: baseline;
-}
-
-/* временное сообщение */
-.ticket-message {
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    text-align: left !important;
-    padding: 1.5rem 3rem !important;
-}
-
-/* временное сообщение */
-.ticket-message .ticket-message-checkbox {
-    display: inline-block;
-
-    background: url(/static/global/svg/order-checkbox.svg) center center no-repeat;
-    background-size: 100% 100%;
-
-    border: none;
-    border-style: none;
-    outline: none;
-
-    padding: 0;
-    margin-right: 1rem;
-
-    height: 3rem;
-    width: 3.5rem;
-
-    float: left;
 }
 
 /* Шаг 1 - Выбор билетов по схеме зала и описание события */
@@ -451,7 +374,7 @@ h1, h2 {
     display: table-cell;
 
     text-align: center;
-    vertical-align: top; /* временно */
+    vertical-align: top;
 
     padding: 0;
     margin-left: auto;
@@ -461,6 +384,7 @@ h1, h2 {
     width: -webkit-calc(70vw - 3rem);
     width:    -moz-calc(70vw - 3rem);
     width:         calc(70vw - 3rem);
+/*    height: 90%;*/
 }
 
 .stagehall {
@@ -495,10 +419,7 @@ h1, h2 {
 .seat  {
     background: #ECEFF1;
     border: 1px solid #000;
-    color: #999;
     font-size: 1rem;
-    font-weight: normal;
-
     width: *;
     min-width: 11px;
     height: *;
@@ -518,6 +439,12 @@ h1, h2 {
 .bb {border-bottom: 2px solid #000;}
 .bl {border-left:   2px solid #000;}
 
+.stateE, 
+.stateP {
+    color: #999;
+    font-weight: normal;
+}
+
 .stateF,
 .stateS {
     cursor:pointer;
@@ -533,6 +460,7 @@ h1, h2 {
 
 .stateS         { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
 .stateO         { background-color: #FF9800; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* orange 500*/
+.stateE         { background-color: #ECEFF1; } /* blue grey 50 */
 .stateF         { color: #FFF; text-shadow: 0.0625rem 0.09rem 0 #000; }
 
 .stateF.color1  { background-color: #F44336; } /* red 500 */
@@ -673,7 +601,7 @@ h1, h2 {
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 1.5rem;
-    font-weight: bold;
+    font-weight: normal;
     text-decoration: none;
     text-transform: uppercase;
 }
@@ -703,15 +631,11 @@ h1, h2 {
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
 }
-.order-buttons #buy-tickets-inactive,
-.order-buttons #buy-tickets:disabled,
-.order-buttons #isubmit:disabled {
+.order-buttons #buy-tickets-inactive {
     background: url(/static/global/svg/order-next-button.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
-
-    color: #FFF;
 }
 .order-buttons #buy-tickets,
 .order-buttons #isubmit {
@@ -819,37 +743,16 @@ h1, h2 {
     width: 90vw;
 }
 
-.share {
+.share{
     display: inline-block;
-
-    position: relative;
-    left: 2.5rem;
 
     width: 30%;
 }
-
-.share .share-text {
-    color: #FFF;
-    font-size: 0.875rem;
-    font-weight: bold;
-    text-align: center;
-    text-transform: uppercase;
-    width: auto;
-
-    min-width: 220px;
-}
-
-.share .share-icons {
-    padding: 0.5rem 2rem 0.5rem 3rem;
-
-    width: auto;
-}
-
 .share .pluso div .pluso-wrap .pluso-more {
     display: none;
 }
 
-.order-telephone {
+.order-telephone.step1 {
     display: inline-block;
 
     text-align: center;
@@ -869,6 +772,7 @@ h1, h2 {
 /* Шаг 2 - Ввод контактной информации и выбор способа получения билетов */
 
 .order-progress.step2,
+#basket-container.step2,
 p.input-body.step2,
 .ticket-offices-contacts.step2,
 .customer-address.step2,
@@ -883,18 +787,13 @@ p.input-body.step2,
 }
 
 #event-title-date-time.step2,
-.order-header.step2 {
-    margin-left: 3rem;
-
+.order-header.step2,
+#basket-container.step2 {
     width: 45.75rem;
     width: -webkit-calc(40vw - 5rem);
     width:    -moz-calc(40vw - 5rem);
     width:         calc(40vw - 5rem);
     min-width: 45.75rem;
-}
-
-#basket-container.step2 {
-    width: 100%;
 }
 
 h2 span {
@@ -924,7 +823,7 @@ textarea {
     color: #000;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: normal;
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.05rem;
@@ -1037,7 +936,7 @@ label.customer-delivery {
     color: #000;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: normal;
     letter-spacing: -0.001rem;
 
     padding: 0.75rem 1.5rem 0.75rem 3.5rem;
@@ -1054,8 +953,7 @@ label.customer-delivery a {
     color: #000;
 }
 
-input[type=radio],
-input[type=checkbox] {
+input[type=radio] {
     -khtml-opacity: 0;
     -webkit-opacity: 0;
     -moz-opacity: 0;
@@ -1077,8 +975,7 @@ input[type=checkbox] {
 
     z-index: 100;
 }
-input[type=radio] + img,
-input[type=checkbox] + img {
+input[type=radio] + img {
     display: inline-block;
 
     background: url(/static/global/svg/order-checkbox.svg) center center no-repeat;
@@ -1102,15 +999,8 @@ input[type=checkbox] + img {
 
     z-index: 2;
 }
-input[type=radio]:checked + img,
-input[type=checkbox]:checked + img {
+input[type=radio]:checked + img {
     background: url(/static/global/svg/order-checkbox-selected.svg) center center no-repeat;
-    background-size: 100% 100%;
-}
-
-input[type=radio]:disabled + img,
-input[type=checkbox]:disabled + img {
-    background: url(/static/global/svg/order-checkbox-disabled.svg) center center no-repeat;
     background-size: 100% 100%;
 }
 
@@ -1145,14 +1035,13 @@ input[type=checkbox]:disabled + img {
 
 .customer-address p {
     font-size: 1rem;
+    font-weight: bold;
 
     margin-left: 18rem;
 }
 
 .ticket-offices-contacts p,
-.ticket-offices-contacts ul li,
-.online-info p,
-.online-info ul li {
+.online-info p {
     font-size: 0.85rem;
 }
 
@@ -1290,22 +1179,15 @@ p.input-body,
 
 #event-title-date-time.step3,
 .order-header.step3,
-#basket-container.step3,
 #order-result-header.step3,
 #header-fail.step3,
 .order-result,
 #goodluck {
-    margin-left: 3rem;
-
     width: 45.75rem;
     width: -webkit-calc(40vw - 5rem);
     width:    -moz-calc(40vw - 5rem);
     width:         calc(40vw - 5rem);
     min-width: 45.75rem;
-}
-
-#basket-container.step3 {
-    margin-left: 0;
 }
 
 .order-result {
@@ -1320,18 +1202,6 @@ p.input-body,
         top: 1.25rem;
 
         z-index: 10;
-    }
-}
-
-@media all and (max-width: 1600px) {
-    #event-title-date-time {
-        margin-bottom: 0;
-    }
-
-    #event-venue {
-        position: static;
-        margin-top: -0.75rem;
-        margin-left: 3rem;
     }
 }
 
@@ -1579,11 +1449,10 @@ p.input-body,
 
     #event-title-date-time,
     #event-venue,
-    #group-events-header, 
+    #related-events-header, 
     #chosen-tickets-header,
     #chosen-tickets,
     #overall-header,
-    #overall-header-courier,
     #overall,
     #customer-name-label, 
     #customer-email-label, 
@@ -1605,7 +1474,6 @@ p.input-body,
     #chosen-tickets-header.step2,
     #chosen-tickets.step2,
     #overall-header.step2,
-    #overall-header-courier.step2,
     #overall.step2,
     #customer-name-label.step2, 
     #customer-email-label.step2, 
@@ -1629,7 +1497,7 @@ p.input-body,
         font-size: 0.75rem;
     }
 
-    #basket-container #group-events-header + p {
+    #basket-container #related-events-header + p {
         display: none;
     }
 

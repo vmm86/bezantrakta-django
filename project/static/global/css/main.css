@@ -1,9 +1,8 @@
 @charset "utf-8";
 
-/* Roboto */
-@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic');
-/* Roboto Condensed */
-@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700&subset=latin,cyrillic');
+/*@import url(http://fonts.googleapis.com/css?family=Russo+One:700,900&subset=cyrillic,latin);*/
+@import url(http://fonts.googleapis.com/css?family=Roboto:700,900&subset=latin,cyrillic);
+/*@import url(http://fonts.googleapis.com/css?family=Arimo:700,900&subset=latin,cyrillic);*/
 
 /* Основные элементы */
 
@@ -21,7 +20,7 @@
 
 html {
     color:#000;
-    font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
     font-weight: normal;
     -webkit-font-smoothing: antialiased;
@@ -60,7 +59,7 @@ h1, h2, h3, h4, h5, h6,
     -webkit-background-size: 100% 100%;
 
     font-family: 'Roboto', sans-serif;
-    font-weight: bold;
+    font-weight: normal;
     color: #000;
     text-transform: uppercase;
 
@@ -347,7 +346,7 @@ button {
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 0.875rem;
-    font-weight: bold;
+    font-weight: normal;
     text-transform: uppercase;
 
     padding: 1rem 1.3rem;
@@ -407,23 +406,20 @@ button {
     font-family: 'Roboto', sans-serif;
 }
 
-/*
-.debug {
-    color: #999;
-}
-.success {
-    color: green;
-}
 .error {
-    color: #c40000;
+    color:#c40000;
+    font-weight:bold;
 }
 .info {
-    color: #000;
+    color:#8f0808;
+    font-size:11px;
 }
 .warning {
-    color: #c40000;
+    color:#8f0808;
+    text-align:center;
+    font-weight:bold;
+    font-size:16px;
 }
-*/
 
 .fleft {
     float:left;

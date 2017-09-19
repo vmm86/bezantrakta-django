@@ -1,5 +1,4 @@
 import os
-from django.conf.locale.ru import formats as ru_formats
 
 
 # Папка проекта, пути внутри строятся с помощью: os.path.join(BASE_DIR, ...)
@@ -12,25 +11,13 @@ try:
     from project.settings.simsim import SECRET_KEY
 except ImportError:
     from django.utils.crypto import get_random_string
-    SECRET_KEY = get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
+    key = get_random_string(50, 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)')
     with open(os.path.join(BASE_DIR, 'project', 'settings', 'simsim.py'), 'w') as key_file:
-        key_file.write("SECRET_KEY = '{key}'\n".format(key=SECRET_KEY))
+        key_file.write("SECRET_KEY = '{}'\n".format(key))
 
 INTERNAL_IPS = ['127.0.0.1']
 
 PREPEND_WWW = False
-
-# Кастомный параметр, указывающий, работает ли сайт по HTTPS
-BEZANTRAKTA_IS_SECURE = False
-# Кастомный адрес для админ-панели
-BEZANTRAKTA_ADMIN_URL = 'simsim'
-# Псевдоним категории "Все события"
-BEZANTRAKTA_CATEGORY_ALL = 'vse'
-# Виды, при выполнении которых проходит заказ билетов
-# При их выполнении не должны работать context_processors для вывода событий в базовом шаблоне
-BEZANTRAKTA_ORDER_VIEWS = ('event', 'checkout', 'confirmation')
-# Путь для сохранения электронных билетов в формате PDF
-BEZANTRAKTA_ETICKET_PATH = os.path.join(PARENT_DIR, 'e_tickets')
 
 # Application definition
 
@@ -51,20 +38,12 @@ INSTALLED_APPS = [
 
     'adminsortable2',
 
-    'phonenumber_field',
-
     'django.contrib.admin',
-    # 'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    'compressor',
-
-    'mail_templated',
 
     'bezantrakta.simsim',
     'bezantrakta.location',
@@ -73,17 +52,11 @@ INSTALLED_APPS = [
     'bezantrakta.banner',
     'bezantrakta.event',
     'bezantrakta.seo',
-    'bezantrakta.order',
-    'bezantrakta.eticket',
-
-    'third_party.ticket_service',
-    'third_party.payment_service',
 ]
 
 MIDDLEWARE = [
     'admin_reorder.middleware.ModelAdminReorder',
 
-    # 'django.contrib.admindocs.middleware.XViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -94,7 +67,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'bezantrakta.location.middleware.CurrentLocationMiddleware',
-    'bezantrakta.event.middleware.EventCalendarMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -118,12 +90,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
 
-                'bezantrakta.simsim.context_processors.environment',
-                'bezantrakta.simsim.context_processors.queryset_filter',
+                'bezantrakta.simsim.context_processors.domain_filter',
+                'bezantrakta.location.context_processors.environment',
                 'bezantrakta.menu.context_processors.menu_items',
                 'bezantrakta.banner.context_processors.banner_group_items',
                 'bezantrakta.event.context_processors.big_containers',
-                'bezantrakta.event.context_processors.categories',
+                'bezantrakta.event.context_processors.categories'
             ],
         },
     },
@@ -171,64 +143,22 @@ ADMIN_REORDER = (
         'app': 'event',
         'models':
         (
-            {'model': 'event.EventCategory', 'label': 'Категории'},
+            {'model': 'event.EventVenue', 'label': 'Залы'},
+            {'model': 'event.Event', 'label': 'События'},
+            {'model': 'event.EventGroup', 'label': 'Группы'},
+            {'model': 'event.EventContainer', 'label': 'Контейнеры'},
             {'model': 'event.EventLink', 'label': 'Ссылки'},
-            {'model': 'event.EventVenue', 'label': 'Залы 🔗'},
-            {'model': 'event.Event', 'label': 'События или группы 🔗'},
-            {'model': 'event.EventGroup', 'label': 'Группы 🔗'},
-            {'model': 'event.EventContainer', 'label': 'Контейнеры 🔗'},
+            {'model': 'event.EventCategory', 'label': 'Категории'},
         )
     },
-    {
-        'app': 'ticket_service',
-        'label': 'Сервисы продажи билетов',
-        'models':
-        (
-            {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
-            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗'},
-        )
-
-    },
-    {
-        'app': 'payment_service',
-        'label': 'Сервисы онлайн-оплаты',
-        'models':
-        (
-            {'model': 'payment_service.PaymentService', 'label': 'Сервисы онлайн-оплаты 🔗'},
-        )
-
-    },
-    {
-        'app': 'order',
-        'label': 'Заказы',
-        'models':
-        (
-            {'model': 'order.Order', 'label': 'Заказы 🔗'},
-            {'model': 'order.OrderTicket', 'label': 'Билеты в заказах 🔗'},
-        )
-
-    },
-    {
-        'app': 'article',
-        'models':
-        (
-            {'model': 'article.Article', 'label': 'HTML-страницы 🔗'},
-        )
-    },
-    {
-        'app': 'menu',
-        'models':
-        (
-            {'model': 'menu.Menu', 'label': 'Меню'},
-            {'model': 'menu.MenuItem', 'label': 'Пункты меню 🔗'},
-        )
-    },
+    {'app': 'menu', },
+    {'app': 'article', },
     {
         'app': 'banner',
         'models':
         (
             {'model': 'banner.BannerGroup', 'label': 'Группы баннеров'},
-            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры 🔗'},
+            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры'},
         )
     },
     {
@@ -248,21 +178,13 @@ ADMIN_REORDER = (
 
 DATABASES = {
     'default': {
-        'ENGINE':    'django.db.backends.mysql',
-        'NAME':      'belcanto_bezantrakta_django_2',
-        'USER':      'belcanto',
-        'PASSWORD':  'wrtwefsf352',
-        'HOST':      'localhost',
-        'TIME_ZONE': 'UTC',
-        'CHARSET':   'utf8',
-        'COLLATION': 'utf8_general_ci',
-        'OPTIONS': {
-            'init_command': 'SET sql_mode="STRICT_TRANS_TABLES", innodb_strict_mode=1',
-        },
+        'ENGINE':   'django.db.backends.mysql',
+        'NAME':     'belcanto_bezantrakta_django',
+        'USER':     'belcanto',
+        'PASSWORD': 'wrtwefsf352',
+        'HOST':     'localhost',
         'TEST': {
-            'NAME':      'belcanto_bezantrakta_django_test',
-            'CHARSET':   'utf8',
-            'COLLATION': 'utf8_general_ci',
+            'NAME': 'belcanto_bezantrakta_django_test'
         }
     }
 }
@@ -302,26 +224,18 @@ LANGUAGES = [
     ('ru', 'Русский'),
 ]
 
-LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
-
-USE_TZ = True
 
 USE_I18N = True
 
 USE_L10N = True
 
-ru_formats.DATE_FORMAT = 'd.m.Y'
-ru_formats.TIME_FORMAT = 'H:i'
-ru_formats.DATETIME_FORMAT = 'd.m.Y H:i'
-DATE_FORMAT = 'j E Y'
-TIME_FORMAT = 'H:i'
-DATETIME_FORMAT = 'j E Y H:i'
-# YEAR_MONTH_FORMAT = 'F Y'
-# MONTH_DAY_FORMAT = 'F j'
-# SHORT_DATE_FORMAT = 'm/d/Y'
-# SHORT_DATETIME_FORMAT = 'm/d/Y P'
+LOCALE_PATHS = (os.path.join(BASE_DIR, 'project', 'locale'),)
+
+USE_TZ = True
+
 FIRST_DAY_OF_WEEK = 1  # Понедельник
 
 DATETIME_INPUT_FORMATS = ['%Y-%m-%d %H:%M', ]
@@ -331,19 +245,10 @@ TIME_INPUT_FORMATS = ['%H:%M', ]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_ROOT = os.path.join(PARENT_DIR, 'static')
-MEDIA_ROOT = os.path.join(PARENT_DIR, 'media')
-
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 # Параметры сбора статики
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-
-    'compressor.finders.CompressorFinder',
-]
 STATICFILES_DIRS = [
     # Общая статика для всего проекта
     ('global', os.path.join(BASE_DIR, 'project', 'static', 'global')),
@@ -351,24 +256,11 @@ STATICFILES_DIRS = [
     ('admin', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'admin')),
 ]
 
-# FILE_UPLOAD_DIRECTORY_PERMISSIONS = '0o755'
-# FILE_UPLOAD_PERMISSIONS = '0o644'
-
-# Caching settings
-# https://docs.djangoproject.com/en/1.11/topics/cache/
-CACHES = {
-    'default': {
-        'BACKEND': 'project.custom_filebased_cache.FileBasedCache',
-        'LOCATION': os.path.join(PARENT_DIR, 'cache'),
-        'TIMEOUT': None,
-    }
-}
 
 # CKEditor settings
 # https://github.com/django-ckeditor/django-ckeditor/
 
 CKEDITOR_CONFIGS = {
-    # Редактор по умолчанию
     'default': {
         'skin': 'moono-lisa',
         # 'toolbar': 'full',
@@ -442,66 +334,6 @@ CKEDITOR_CONFIGS = {
         'allowedContent': True,
         'contentsCss': '/static/global/css/editor.css',
     },
-    # Редактор схем залов
-    'scheme': {
-        'skin': 'moono-lisa',
-        'toolbar': [
-            {
-                'name': 'basic',
-                'items':
-                [
-                    'Source', '-',
-                    'Cut', 'Copy', 'Paste', '-',
-                    'Undo', 'Redo',
-                ]
-            },
-            {
-                'name': 'editing',
-                'items':
-                [
-                    'Find', 'Replace', '-',
-                    'SpellChecker', 'Scayt', '-',
-                    'RemoveFormat', '-',
-                    'ShowBlocks', '-',
-                    'Maximize',
-                ]
-            },
-            '/',
-            {
-                'name': 'text',
-                'items':
-                [
-                    'Bold', 'Italic', 'Underline', 'Strike', '-',
-                    'TextColor', 'BGColor', '-',
-                    'Format', 'Font', 'FontSize',
-                ]
-            },
-            '/',
-            {
-                'name': 'paragraph',
-                'items':
-                [
-                    'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-',
-                    'BulletedList', 'NumberedList', '-',
-                    'Outdent', 'Indent',
-                ]
-            },
-            {
-                'name': 'insert',
-                'items':
-                [
-                    'Link', 'Unlink', '-',
-                    'Image', 'Iframe', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', '-',
-                    'Blockquote', 'CreateDiv',
-                ]
-            },
-        ],
-        'removePlugins': 'stylesheetparser',
-        'extraPlugins': 'codemirror',
-        'uiColor': '#cccccc',
-        'allowedContent': True,
-        'contentsCss': '/static/global/css/stagehall-style.css',
-    },
 }
 
 CKEDITOR_JQUERY_URL = '/static/global/js/jquery/jquery-1.9.1.min.js'
@@ -510,13 +342,3 @@ CKEDITOR_UPLOAD_PATH = 'global/uploads/'
 
 JSON_EDITOR_JS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.js'
 JSON_EDITOR_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.css'
-
-COMPRESS_ENABLED = True
-
-PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'  # E164 INTERNATIONAL NATIONAL RFC3966
-PHONENUMBER_DEFAULT_REGION = 'RU'
-
-
-# The messages framework
-# https://docs.djangoproject.com/en/1.11/ref/contrib/messages/
-# MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'

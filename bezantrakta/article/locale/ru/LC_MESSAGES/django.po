@@ -35,7 +35,7 @@ msgstr "Псевдоним"
 #: bezantrakta/article/models.py:30
 msgid "article_description_help_text"
 msgstr ""
-"Краткое описание содержимого страницы."
+"Содержит ключевые слова или фразы, описывающие страницу, но не более 3-5 шт."
 "<br>Всего не более 150-200 символов."
 
 #: bezantrakta/article/models.py:31

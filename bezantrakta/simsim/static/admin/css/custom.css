@@ -41,7 +41,6 @@ body.login {
 h1 {
     color: #111;
     font-weight: bold;
-    margin: 0;
 }
 
 a {
@@ -71,10 +70,6 @@ thead th.sorted {
     background: #aaa;
 }
 
-thead th.sorted .text {
-    padding-right: 24px;
-}
-
 table thead th .text a:focus,
 table thead th .text a:hover {
     background: inherit;
@@ -93,20 +88,10 @@ td, th {
     outline: none;
 }
 
-input, textarea, select, .form-row p, form .button {
-    font-family: 'Roboto', 'Lucida Grande', 'Verdana', 'Arial', sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-
-    margin: 2px 0;
-    padding: 2px 4px;
-
+input,
+select {
     height: auto;
     vertical-align: middle;
-}
-
-li, dt, dd {
-    font-size: 14px;
 }
 
 /* Контейнер */
@@ -133,7 +118,6 @@ li, dt, dd {
     align-items: center;
 
     background: #999;
-    color: #fff;
     padding: 0 40px;
     width: 100%;
     height: auto;
@@ -145,12 +129,6 @@ li, dt, dd {
     color: #fff;
     font-weight: bold;
     text-shadow: 0px 1px 0 #111;
-}
-
-#header .warning {
-    font-weight: bold;
-    margin: 0;
-    margin-left: 16px;
 }
 
 .login #header {
@@ -187,31 +165,7 @@ li, dt, dd {
     text-shadow: 1px 1px 0px #111;
 }
 
-#choose_domain {
-    background-color: #fff;
-}
-
-#choose_domain option {
-    color: #111;
-}
-
-#choose_domain .enabled {
-    background-color: #4caf50;
-}
-
-#choose_domain .progress {
-    background-color: #fc0;
-}
-
-#choose_domain .disabled {
-    background-color: #f44336;
-}
-
-#choose_domain .published {
-    text-decoration: none;
-}
-
-#choose_domain .not_published {
+select#choose_domain option.not_published {
     text-decoration: line-through;
 }
 
@@ -298,8 +252,6 @@ a.section:visited {
 #content-related {
     background: transparent;
     border-radius: 2rem 2rem 0 0;
-    margin-right: -400px;
-    width: 360px;
 }
 
 #content-related h3 {
@@ -350,7 +302,11 @@ a.section:visited {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    width: 60%;
+    width: 70%;
+}
+
+#content-related .actionlist li br {
+    display: none;
 }
 
 #content-related .actionlist li span {
@@ -359,7 +315,7 @@ a.section:visited {
     text-transform: lowercase;
     white-space: nowrap;
     overflow: hidden;
-    width: 20%;
+    width: 30%;
 }
 
 #content-related .module h2 {
@@ -381,19 +337,6 @@ a.section:visited {
 #result_list div.drag:hover {
     background: url(../img/sorting-icons.svg) 0 -13px no-repeat;
     background-position-x: center;
-}
-
-.nowrap {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-#result_list .field-is_group {
-    max-width: 50px;
-}
-#result_list .field-event_venue {
-    max-width: 100px;
 }
 
 /* Кнопки */
@@ -449,22 +392,6 @@ a.section:visited {
 
 /* Фильтры */
 
-/*#changelist .actions,
-.change-list .filtered .results,
-.change-list .filtered .paginator,
-.filtered #toolbar,
-.filtered div.xfull {
-    margin-right: 0;
-}*/
-
-/*.change-list .filtered table tbody th {
-    padding-right: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 50px;
-    white-space: nowrap;
-}*/
-
 #changelist table tr:hover {
     background-color: #ffc;
 }
@@ -493,12 +420,7 @@ a.section:visited {
 }
 
 #changelist-filter {
-/*    background: transparent;
-    padding-top: 46px;
-    float: right;
-    position: fixed;
-    top: auto;
-    right: 40px;*/
+    background: transparent;
 }
 
 #changelist-filter h2 {
@@ -510,7 +432,6 @@ a.section:visited {
 }
 
 #changelist-filter h3 {
-    background: #fff;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
     color: #222;
@@ -522,7 +443,6 @@ a.section:visited {
 }
 
 #changelist-filter ul {
-    background: #fff;
     border-left: 1px solid #ccc;
     border-right: 1px solid #ccc;
     padding: 0 16px 16px 16px;
@@ -609,10 +529,6 @@ textarea,
     border-radius: 0.33rem;
 }
 
-input[type="number"] {
-    padding: 5px 1px 5px 6px;
-}
-
 input[type=text]:focus,
 input[type=password]:focus,
 input[type=email]:focus,
@@ -621,7 +537,6 @@ input[type=number]:focus,
 textarea:focus,
 .vTextField:focus {
     border: 2px solid #fc0;
-    font-weight: bold;
 }
 
 .submit-row input,
@@ -631,16 +546,11 @@ textarea:focus,
     text-shadow: 0 1px 0px #111;
 }
 
-.submit-row a.deletelink{
-    background: #C62828;
-    text-transform: uppercase;
-    height: auto;
-}
-
+.submit-row a.deletelink,
 .submit-row a.deletelink:focus,
 .submit-row a.deletelink:hover,
 .submit-row a.deletelink:active {
-    background: #b71c1c;
+    background: #C62828;
     text-transform: uppercase;
     height: auto;
 }
@@ -669,15 +579,6 @@ input[name=_continue] {
 input[type=submit].default,
 input[name=_save].default {
     background: #2E7D32;
-}
-
-.button.default:active,
-input.default[type="submit"]:active,
-.button.default:focus,
-input.default[type="submit"]:focus,
-.button.default:hover,
-input.default[type="submit"]:hover {
-    background: #1b5e20;
 }
 
 label,
@@ -713,15 +614,6 @@ form .aligned div.help {
     padding-left: 0;
 }
 
-form .aligned ul:not(.radiolist) > li {
-    list-style: inherit;
-}
-
-form .aligned ul:not(.radiolist) > li > ul > li {
-    list-style: inherit;
-    margin-left: 1rem;
-}
-
 .help,
 p.help,
 form p.help,
@@ -729,11 +621,6 @@ div.help,
 form div.help,
 div.help li {
     color: #111;
-    font-size: 14px;
-}
-
-form div.help ul {
-    padding-left: 14px;
 }
 
 form ul.radiolist input[type="radio"] {
@@ -771,10 +658,6 @@ p.file-upload {
     vertical-align: middle;
 }
 
-.inline-group .tabular td.original p {
-    display: none;
-}
-
 div.inline-group table.ui-sortable tr.form-row.has_original td.drag {
     background: url(../img/sorting-icons.svg) 0 1px no-repeat !important;
     background-position-x: center !important;
@@ -785,114 +668,4 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     background: url(../img/sorting-icons.svg) 0 20% no-repeat !important;
     background-position-x: center !important;
     background-size: 100% 550% !important;
-}
-
-.img_preview_eventcontainerbinder {
-    width: auto;
-    height: 64px;
-}
-
-.img_preview_link {
-    width: 192px;
-    height: auto;
-}
-
-.img_preview_linkbinder {
-    width: 200px;
-    height: auto;
-}
-
-.delete-confirmation form .cancel-link {
-    height: auto;
-    line-height: initial;
-}
-
-/* Порядок отображения настроек в JSON */
-
-fieldset.module {
-    margin-bottom: 0;
-}
-
-fieldset.json_settings {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-}
-
-fieldset.json_settings h2 {
-    order: 1;
-}
-
-fieldset.json_settings .form-row.field-settings {
-    padding: 0;
-    width: 100%;
-    order: 2;
-}
-
-fieldset.json_settings .description {
-    padding: 0;
-    order: 3;
-}
-
-fieldset.json_settings .description ul {
-    margin-left: 0;
-}
-
-/* JSON Editor */
-
-.jsoneditor {
-    color: #111 !important;
-    border: 2px solid #999 !important;
-}
-
-.jsoneditor .search {
-    margin: 2px 0;
-    position: static !important;
-}
-
-.jsoneditor .search .frame {
-    border: 1px solid #999 !important;
-}
-
-.jsoneditor .menu {
-    color: #111 !important;
-    background-color: #fc0 !important;
-    border-bottom: 2px solid #999 !important;
-}
-
-.jsoneditor .menu button {
-    border: 1px solid #999 !important;
-    border-radius: 0.33rem !important;
-    opacity: 1 !important;
-}
-
-.jsoneditor .search button {
-    border: none !important;
-}
-
-.jsoneditor table td,
-.jsoneditor table td {
-    border-bottom: none !important;
-}
-
-.jsoneditor .empty {
-    border: 1px dashed #999 !important;
-    border-radius: 0.33rem !important;
-}
-
-.jsoneditor .field,
-.jsoneditor .value,
-.jsoneditor .readonly {
-    min-height: 22px !important;
-    min-width: 38px !important;
-}
-
-.jsoneditor .field {
-    font-weight: bold !important;
-}
-
-.jsoneditor-contextmenu ul li ul {
-    height: auto !important;
 }

@@ -1,37 +1,20 @@
-from django.conf import settings
-
 from bezantrakta.location.models import Domain
 
 
-def environment(request):
+def domain_filter(request):
     """
-    Получение параметров рабочего окружения и их добавление в template context.
+    Получение параметров выбранного для фильтрации сайта и их добавление в template context.
     """
-    return {
-        'ENVIRONMENT_NAME': settings.ENVIRONMENT['NAME'],
-        'ENVIRONMENT_COLOR': settings.ENVIRONMENT['COLOR'],
-    }
+    domain_slug = request.COOKIES.get('bezantrakta_domain', None)
 
-
-def queryset_filter(request):
-    """
-    Получение параметров выбранного для фильтрации города и сайта и их добавление в template context.
-    """
-    if settings.BEZANTRAKTA_ADMIN_URL in request.url_path:
-        city_slug = request.COOKIES.get('bezantrakta_admin_city', None)
-        domain_slug = request.COOKIES.get('bezantrakta_admin_domain', None)
-
-        try:
-            current_domain = Domain.objects.get(slug=domain_slug)
-        except Domain.DoesNotExist:
-            domain_id = 0
-        else:
-            domain_id = current_domain.id
-
-        return {
-            'bezantrakta_admin_city_slug': city_slug,
-            'bezantrakta_admin_domain_slug': domain_slug,
-            'bezantrakta_admin_domain_id': domain_id,
-        }
+    try:
+        current_domain = Domain.objects.get(slug=domain_slug)
+    except Domain.DoesNotExist:
+        domain_id = 0
     else:
-        return {}
+        domain_id = current_domain.id
+
+    return {
+        'bezantrakta_domain_slug': domain_slug,
+        'bezantrakta_domain_id': domain_id,
+    }

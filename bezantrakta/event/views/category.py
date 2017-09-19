@@ -1,133 +1,47 @@
-from django.conf import settings
-from django.db.models import BooleanField, CharField, DateTimeField, DecimalField, IntegerField, SlugField
-from django.db.models import Case, OuterRef, Subquery, F, Q, Value, When
+import datetime
+
 from django.shortcuts import render
 
-from project.shortcuts import timezone_now
+from project.shortcuts import add_small_vertical_poster
 
-from ..models import Event, EventGroupBinder, EventCategory
-from ..shortcuts import add_small_vertical_poster
+from ..models import Event
 
 
 def category(request, slug):
     """
-    Вывод событий, принадлежащих какой-либо категории событий в позиции ``small_vertical``.
-
-    Args:
-        slug (str): Псевдоним категории.
+    Вывод событий, принадлежащих какой-либо категории событий.
     """
-    today = timezone_now()
-
-    group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
-        group_id=OuterRef('id'),
-        # event__is_published=True,
-        event__datetime__gt=today,
-    ).order_by('event__datetime')[:1]
-
-    # Вывод событий во всех категориях или фильтр по конкретной категории
-    if slug == settings.BEZANTRAKTA_CATEGORY_ALL:
-        category_name = 'Все события'
-        category_event_filter = Q(event_category__isnull=False)
+    today = datetime.datetime.today()
+    # Фильтр событий в категориях
+    category_events_filter = {}
+    category_events_filter['is_published'] = True
+    category_events_filter['date__gt'] = today
+    category_events_filter['domain_id'] = request.domain_id
+    category_events_filter['event_category__is_published'] = True
+    if slug == 'vse':
+        category_events_filter['event_category__isnull'] = False
     else:
-        category_name = EventCategory.objects.values_list('title', flat=True).get(slug=slug)
-        category_event_filter = Q(event_category__slug=slug)
+        category_events_filter['event_category__slug'] = slug
 
-    # Запрос событий из всех категорий или из какой-либо конкретной
+    # Запрос событий из любой категории или какой-либо конкретной
     category_events = Event.objects.select_related(
         'event_category',
         'event_venue',
         'domain'
-    ).annotate(
-        # Общие параметры
-        is_in_group=Case(
-            When(event_groups__isnull=False, then=Value(True)),
-            default=False,
-            output_field=BooleanField()
-        ),
-        # Параметры события
-        event_title=Case(
-            When(is_group=True, then=F('event_group__title')),
-            default=F('title'),
-            output_field=CharField()
-        ),
-        event_slug=Case(
-            When(is_group=True, then=F('event_group__slug')),
-            default=F('slug'),
-            output_field=SlugField()
-        ),
-        event_datetime=Case(
-            When(is_group=True, then=F('event_group__datetime')),
-            default=F('datetime'),
-            output_field=DateTimeField()
-        ),
-        event_min_price=Case(
-            When(is_group=True, then=F('event_group__min_price')),
-            default=F('min_price'),
-            output_field=DecimalField()
-        ),
-        event_min_age=Case(
-            When(is_group=True, then=F('event_group__min_age')),
-            default=F('min_age'),
-            output_field=IntegerField()
-        ),
-        event_venue_title=Case(
-            When(is_group=True, then=F('event_group__event_venue__title')),
-            default=F('event_venue__title'),
-            output_field=CharField()
-            ),
-        event_category_title=Case(
-            When(is_group=True, then=F('event_group__event_category__title')),
-            default=F('event_category__title'),
-            output_field=CharField()
-            ),
-        # Параметры группы, если событие в неё входит
-        group_slug=Case(
-            When(is_group=True, then=F('slug')),
-            default=None,
-            output_field=SlugField()
-        ),
-        group_datetime=Case(
-            When(is_group=True, then=F('datetime')),
-            default=None,
-            output_field=DateTimeField()
-        ),
-    ).values(
-        'is_group',
-        'is_in_group',
-        'event_title',
-        'event_slug',
-        'group_slug',
-        'event_datetime',
-        'group_datetime',
-        'event_min_price',
-        'event_min_age',
-        'event_venue_title',
-        'event_category_title',
-    ).filter(
-        Q(
-            Q(is_published=True) &
-            Q(event_category__is_published=True) &
-            category_event_filter &
-            Q(domain_id=request.domain_id)
-        ) &
-        Q(
-            Q(
-                Q(is_group=True) &
-                Q(event_datetime=Subquery(group_min_datetime))
-            ) |
-            Q(
-                (Q(is_group=False) & Q(is_in_group=False)) &
-                Q(event_datetime__gt=today)
-            )
-        )
+    ).filter(**category_events_filter).values(
+        'title',
+        'slug',
+        'date',
+        'time',
+        'min_price',
+        'min_age',
+        'event_venue__title',
     )
 
-    # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     add_small_vertical_poster(request, category_events)
 
     context = {
-        'title': category_name,
+        'category_events': category_events,
         'slug': slug,
-        'category_events': list(category_events),
     }
     return render(request, 'event/category.html', context)
