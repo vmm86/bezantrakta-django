@@ -3,6 +3,8 @@ from django.contrib import admin
 # from django.core.cache import cache
 from django.utils.translation import ugettext as _
 
+from project.decorators import queryset_filter
+
 # from ..cache import get_or_set_cache
 from ..models import Order
 
@@ -47,6 +49,10 @@ class OrderAdmin(admin.ModelAdmin):
                        'delivery', 'payment', 'payment_id',
                        'status', 'total', 'tickets_count',
                        'domain',)
+
+    @queryset_filter('Domain', 'domain__slug')
+    def get_queryset(self, request):
+        return super(OrderAdmin, self).get_queryset(request)
 
     def has_add_permission(self, request):
         return False
