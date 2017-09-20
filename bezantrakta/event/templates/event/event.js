@@ -566,7 +566,7 @@ $(document).ready(function() {
                 'price':             seat['price'],
                 'price_order':       seat['price_order'],
 
-                'csrfmiddlewaretoken': cookies.get('csrftoken'),
+                'csrfmiddlewaretoken': cookies.get('csrftoken')
             },
             success: update_order,
             error: clear_order_if_error
