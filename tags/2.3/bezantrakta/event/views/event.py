@@ -5,6 +5,7 @@ from decimal import Decimal
 from django.conf import settings
 from django.db.models import F
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from project.shortcuts import build_absolute_url, message, render_messages, timezone_now
 
@@ -18,6 +19,7 @@ from ..models import Event, EventGroupBinder, EventLinkBinder
 from ..shortcuts import add_small_vertical_poster
 
 
+@ensure_csrf_cookie
 def event(request, year, month, day, hour, minute, slug):
     """Отображение страницы конкретного события.
 
