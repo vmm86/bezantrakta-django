@@ -199,7 +199,7 @@ def order(request):
                                 'bar_code' in o and o['bar_code'] is not None else
                                 ''.join([str(randint(0, 9)) for x in range(20)])
                             )
-                            logger.info('t[bar_code]: ', t['bar_code'])
+                            logger.info('t[bar_code]: {barcode}'.format(barcode=t['bar_code']))
                         else:
                             continue
 
