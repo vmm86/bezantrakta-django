@@ -31,7 +31,7 @@ def order(request):
 
     Заказы с оплатой наличными завершаются в этом же методе с отправкой уведомлений администратору и покупателю.
 
-    Заказы с онлайн-оплатой редиректятся на форму оплаты (её адрес приходит в ответе на запрос новой онлайн-оплаты).
+    Заказы с онлайн-оплатой редиректятся на платёжную форму (её адрес приходит в ответе на запрос новой онлайн-оплаты).
     Они оформляются в видах ``payment_service.payment_success`` или ``payment_service.payment_error`` в зависимости от результата оплаты.
     """
     logger = logging.getLogger('bezantrakta.order')
@@ -189,11 +189,12 @@ def order(request):
                 for o in order_create['tickets']:
                     for t in order['tickets']:
                         if uuid.UUID(o['ticket_uuid']) == uuid.UUID(t['ticket_uuid']):
-                            logger.info('\n{o_uuid} == {t_uuid}: {cond}'.format(
-                                o_uuid=uuid.UUID(o['ticket_uuid']),
-                                t_uuid=uuid.UUID(t['ticket_uuid']),
-                                cond=uuid.UUID(o['ticket_uuid']) == uuid.UUID(t['ticket_uuid']))
-                            )
+                            if settings.DEBUG:
+                                logger.info('\n{o_uuid} == {t_uuid}: {cond}'.format(
+                                    o_uuid=uuid.UUID(o['ticket_uuid']),
+                                    t_uuid=uuid.UUID(t['ticket_uuid']),
+                                    cond=uuid.UUID(o['ticket_uuid']) == uuid.UUID(t['ticket_uuid']))
+                                )
                             t['bar_code'] = (
                                 o['bar_code'] if
                                 'bar_code' in o and o['bar_code'] is not None else
@@ -212,7 +213,6 @@ def order(request):
                 order['tickets'][:] = [t for t in order['tickets'] if t.get('seat_status') == 'ordered']
 
                 now = timezone_now()
-                # logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
                 # Сохранение предварительного заказа
                 try:
                     Order.objects.create(
@@ -247,7 +247,7 @@ def order(request):
                     render_messages(request, msgs)
                     return redirect('error')
                 else:
-                    logger.info('Заказ {order_uuid} сохранён в БД'.format(order_uuid=order['order_uuid']))
+                    logger.info('\nЗаказ {order_uuid} сохранён в БД'.format(order_uuid=order['order_uuid']))
 
                     for t in order['tickets']:
                         try:
@@ -329,7 +329,7 @@ def order(request):
                         logger.info('Email-уведомление покупателю отправлено')
 
                         return redirect('order:confirmation', order_uuid=order['order_uuid'])
-                    # Если онлайн-оплата - запрос новой оплаты и редирект на URL платёжной формы
+                    # Если онлайн-оплата - запрос новой оплаты
                     elif customer['payment'] == 'online':
                         # Создание новой онлайн-оплаты
                         payment_create = ps.payment_create(
@@ -338,24 +338,39 @@ def order(request):
                             order=order
                         )
 
-                        # Успешный или НЕуспешный запрос на оплату
+                        logger.info('Создание онлайн-оплаты: {payment_create}'.format(payment_create=payment_create))
+
+                        # Если запрос на оплату успешный
                         if payment_create['success']:
+                            logger.info('\nСоздание новой онлайн-оплаты завершилось успешно')
+
                             # Получение номера оплаты
                             payment_id = payment_create['payment_id']
                             payment_url = payment_create['payment_url']
 
                             now = timezone_now()
-                            # logger.info('{:%Y-%m-%d %H:%M:%S}'.format((now)))
                             # Сохранение идентификатора оплаты в БД
                             Order.objects.filter(id=order['order_uuid']).update(
                                 datetime=now,
                                 payment_id=payment_id
                             )
-                            logger.info('\nИдентификатор оплаты: {payment_id}'.format(payment_id=payment_id))
+                            logger.info('Идентификатор оплаты: {payment_id}'.format(payment_id=payment_id))
+                            logger.info('Перенаправление на URL платёжной формы...')
 
-                            # Редирект на форму онлайн-оплаты
+                            # Редирект на URL платёжной формы
                             return redirect(payment_url)
+                        # Если запрос на оплату НЕуспешный
                         else:
+                            logger.info('\nСоздание новой онлайн-оплаты завершилось НЕуспешно')
+
+                            # Отмена заказа в сервисе продажи билетов
+                            ts.order_delete(
+                                event_id=event['id'],
+                                order_uuid=order['order_uuid'],
+                                order_id=order['order_id'],
+                                tickets=order['tickets'],
+                            )
+
                             # Отмена заказа в БД
                             order['status'] = 'cancelled'
                             logger.info('Статус заказа: {status}'.format(
