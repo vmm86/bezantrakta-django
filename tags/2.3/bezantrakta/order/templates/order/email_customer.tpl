@@ -73,6 +73,7 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
     {% elif customer.delivery == "email" %}
         <p>PDF-файлы с билетами вложены в это письмо. Для того, чтобы их открыть, потребуется программа <a href="https://get.adobe.com/ru/reader/" target="_blank">Adobe Reader</a> или любая другая программа, открывающая файлы формата PDF.</p>
         <p>Вам необходимо распечатать каждый билет на отдельном листе формата A4 и предъявить его при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно</strong>! Для удобства его можно сложить по пунктирным линиям сгиба.</p>
+        <p>При проходе на мероприятия <strong>необходимо иметь при себе документ, удостоверяющий личность</strong>.</p>
         {{ ticket_service.settings.order_email_description.email_online|safe }}
     {% endif %}
 
