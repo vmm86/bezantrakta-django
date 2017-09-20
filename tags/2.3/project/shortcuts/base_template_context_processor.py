@@ -14,9 +14,10 @@ def base_template_context_processor(request):
     frontend = settings.BEZANTRAKTA_ADMIN_URL not in request.url_path
 
     # Если текущий вид НЕ принадлежит процессу оформления заказа билетов
-    order_progress = True if request.resolver_match.url_name in settings.BEZANTRAKTA_ORDER_VIEWS else False
-    # for v in settings.BEZANTRAKTA_ORDER_VIEWS:
-    #     if request.resolver_match.url_name == v:
-    #         order_in_progress = True
+    order_progress = (
+        True if
+        request.resolver_match is not None and request.resolver_match.url_name in settings.BEZANTRAKTA_ORDER_VIEWS else
+        False
+    )
 
     return True if (domain_is_published and frontend and not order_progress) else False
