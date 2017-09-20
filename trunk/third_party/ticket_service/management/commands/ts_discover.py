@@ -223,14 +223,19 @@ ______________________________________________________________________________
                         'id',
                         'ticket_service_event',
                     )
-                    events_id_uuid_mapping = {ee['ticket_service_event']: ee['id'] for ee in events_exist}
-                    self.stdout.write('Имеющиеся события: {}'.format(events_id_uuid_mapping))
+                    event_id_uuid_mapping = {ee['ticket_service_event']: ee['id'] for ee in events_exist}
+                    self.stdout.write('Имеющиеся события: {}'.format(event_id_uuid_mapping))
 
                     self.stdout.write('Поиск групп событий...')
                     groups = ts.discover_groups()
 
                     self.stdout.write('Поиск событий...')
                     events = ts.discover_events()
+
+                    # Группы и события фильтруются по схемам залов в schemes_inclusion_list, если параметр присутствует
+                    if schemes_inclusion_list is not None:
+                        groups = [g for g in groups if g['scheme_id'] in schemes_inclusion_list]
+                        events = [e for e in events if e['scheme_id'] in schemes_inclusion_list]
 
                     if groups is not None and len(groups) > 0:
                         # Сохранение групп в БД
@@ -320,14 +325,14 @@ ______________________________________________________________________________
                                     )
 
                                     # Если событие уже было добавлено ранее
-                                    if e['event_id'] in events_id_uuid_mapping.keys():
-                                        event_uuid = events_id_uuid_mapping[e['event_id']]
+                                    if e['event_id'] in event_id_uuid_mapping.keys():
+                                        event_uuid = event_id_uuid_mapping[e['event_id']]
                                         self.stdout.write(
                                             'Событие {eid} было добавлено ранее'.format(eid=e['event_id'])
                                         )
                                         # Обновление информации в добавленном ранее событии
                                         Event.objects.filter(
-                                            id=events_id_uuid_mapping[e['event_id']]
+                                            id=event_id_uuid_mapping[e['event_id']]
                                         ).update(
                                             datetime=e['event_datetime'],
                                         )
@@ -419,14 +424,14 @@ ______________________________________________________________________________
                                     )
 
                                     # Если событие уже было добавлено ранее
-                                    if e['event_id'] in events_id_uuid_mapping.keys():
-                                        event_uuid = events_id_uuid_mapping[e['event_id']]
+                                    if e['event_id'] in event_id_uuid_mapping.keys():
+                                        event_uuid = event_id_uuid_mapping[e['event_id']]
                                         self.stdout.write(
                                             'Событие {eid} было добавлено ранее...'.format(eid=e['event_id'])
                                         )
                                         # Обновление информации в добавленном ранее событии
                                         Event.objects.filter(
-                                            id=events_id_uuid_mapping[e['event_id']]
+                                            id=event_id_uuid_mapping[e['event_id']]
                                         ).update(
                                             datetime=e['event_datetime'],
                                         )
