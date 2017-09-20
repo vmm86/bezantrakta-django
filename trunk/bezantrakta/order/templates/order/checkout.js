@@ -395,9 +395,9 @@ $(document).ready(function(){
                 ts_reserve('remove', seat);
             }
 
-            {# Если средний совокупный таймаут всех билетов в заказе меньше 15 секунд - #}
+            {# Если средний совокупный таймаут всех билетов в заказе меньше 10 секунд - #}
             {# возможность подтверждения заказа отключается во избежание ошибок #}
-            if (window.order_timeout < 15000) {
+            if (window.order_timeout < 10000) {
                 $('#agree').prop('disabled', true);
                 $('#isubmit').prop('disabled', true);
                 console.log('order_timeout is coming...');
