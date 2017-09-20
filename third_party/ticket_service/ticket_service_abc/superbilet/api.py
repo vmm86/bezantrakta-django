@@ -979,10 +979,10 @@ class SuperBilet(TicketService):
         elif self.__mode == 'theatre':
             output_mapping['barcode'] = self.internal('bar_code', str, '')
 
-        logger = logging.getLogger('bezantrakta.order')
+        # logger = logging.getLogger('bezantrakta.order')
 
         order = self.request(method, input_mapping, data, output_mapping)
-        logger.info('\norder response: {}'.format(order))
+        # logger.info('\norder response: {}'.format(order))
 
         # order []:
         # 'order_uuid': '1fa590a2-21e4-453a-ab5a-945e422ac42c',
