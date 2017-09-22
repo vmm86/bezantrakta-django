@@ -86,7 +86,7 @@ class Migration(migrations.Migration):
             name='EventContainerBinder',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('order', models.PositiveSmallIntegerField(default=1, verbose_name='Порядок')),
+                ('order', models.PositiveSmallIntegerField(help_text='<div class="help"><strong>Афишу в позиции "маленькие вертикальные" нужно добавлять для всех событий</strong>, принадлежащих группе или независимых от групп! При отсутствии будет выводиться картинка-заглушка с логотипом Безантракта <img src="/static/global/ico/favicon.ico" width="16" height="16">.<br>"Маленькие вертикальные" афиши работают следующим образом:<ul><li>Если позиция <strong>равна 0</strong> – афиша НЕ выводится на главной, но используется для показа при фильтрации событий (по дате в календаре, категории, в поиске), а также для генерации электронных билетов.</li><li>Если позиция <strong>больше 1</strong> – афиши выводятся на главной при включении возможности показа на главной.</li><li>Если позиции афиш в контейнере <strong>больше 1 и одинаковые</strong> – афиши сортируются по дате/времени.</li></ul></div>', default=1, verbose_name='Порядок')),
                 ('img', models.ImageField(blank=True, null=True, upload_to=bezantrakta.event.models.event_container_binder.img_path, verbose_name='Афиша')),
                 ('event', models.ForeignKey(db_column='event_id', on_delete=django.db.models.deletion.CASCADE, to='event.Event', verbose_name='Событие')),
                 ('event_container', models.ForeignKey(db_column='event_container_id', on_delete=django.db.models.deletion.CASCADE, to='event.EventContainer', verbose_name='Контейнер')),

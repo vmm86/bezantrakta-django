@@ -24,8 +24,8 @@ class Migration(migrations.Migration):
                 ('settings', models.TextField(default='{}', verbose_name='Настройки')),
             ],
             options={
-                'verbose_name': 'Сервис онлайн-оплаты',
-                'verbose_name_plural': 'Сервисы онлайн-оплаты',
+                'verbose_name': 'сервис онлайн-оплаты',
+                'verbose_name_plural': 'сервисы онлайн-оплаты',
                 'db_table': 'third_party_payment_service',
                 'ordering': ('slug', 'title'),
             },

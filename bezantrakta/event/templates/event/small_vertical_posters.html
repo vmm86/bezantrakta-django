@@ -9,7 +9,7 @@
                 {% if not item.is_group and item.is_in_group %}
                     {{ item.is_in_group|yesno:'in_group,not_in_group' }}
                 {% endif %}
-                    <br>{% if item.order %}order {{ item.order }}{% endif %}
+                    <br>{% if item.order >= 0 %}order {{ item.order }}{% endif %}
                     <br>{{ item.event_datetime }}
                     <br>{% if item.event_category_title %}{{ item.event_category_title }}{% endif %}
                 </span>

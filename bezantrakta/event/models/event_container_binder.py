@@ -86,6 +86,7 @@ class EventContainerBinder(models.Model):
     )
     order = models.PositiveSmallIntegerField(
         default=1,
+        help_text=_('eventcontainerbinder_order_help_text'),
         verbose_name=_('eventcontainerbinder_order'),
     )
     img = models.ImageField(

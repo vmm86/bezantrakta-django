@@ -2,16 +2,15 @@ import calendar as cal
 import datetime
 
 from django.contrib.humanize.templatetags.humanize import naturalday
-from django.db.models import BooleanField, CharField, DateTimeField, DecimalField, IntegerField, SlugField
-from django.db.models import Case, OuterRef, Subquery, F, Q, Value, When
+from django.db.models import F
 from django.shortcuts import render
 
-from ..models import Event, EventGroupBinder
+from ..models import Event
 from ..shortcuts import add_small_vertical_poster
 
 
 def calendar(request, year, month, day):
-    """Вывод событий, проходящих в выбранную дату в позиции ``small_vertical``.
+    """Фильтр событий, проходящих в выбранную дату и вывод их афиш в позиции ``small_vertical``.
 
     В текущей версии Django ``1.11`` удобнее фильтровать дату по вхождению в диапазон "текущая дата-следующая дата".
     Прямое равенство с датами пока не работает.
@@ -41,7 +40,6 @@ def calendar(request, year, month, day):
     month_max_day_mapping = {
         1:  31,
         # Високосный год кратен 4, но при этом ЛИБО не кратен 100, ЛИБО кратен 400
-        # 2:  29 if (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)) else 28,
         2:  29 if cal.isleap(year) else 28,
         3:  31,
         4:  30,
@@ -58,6 +56,7 @@ def calendar(request, year, month, day):
     is_last_day_of_month = day == month_max_day_mapping[month]
     is_last_day_of_year = month == 12
 
+    # Параметры следующей даты
     if is_last_day_of_month:
         next_year = year
         next_month = month + 1
@@ -81,91 +80,32 @@ def calendar(request, year, month, day):
     # Диапазон для фильтрации по текущей дате
     range_filter = (calendar_date_localized, calendar_next_date_localized)
 
-    group_subquery = EventGroupBinder.objects.values('event__datetime').filter(
-        group_id=OuterRef('id'),
-        # event__is_published=True,
-        event__datetime__range=range_filter,
-    ).order_by('event__datetime')[:1]
-
-    # Получение событий или групп в заданный день
+    # Получение событий в заданный день
     events_on_date = Event.objects.select_related(
         'event_venue',
         'domain'
     ).annotate(
-        # Общие параметры
-        is_in_group=Case(
-            When(event_groups__isnull=False, then=Value(True)),
-            default=False,
-            output_field=BooleanField()
-        ),
-        # Параметры события
-        event_title=Case(
-            When(is_group=True, then=F('event_group__title')),
-            default=F('title'),
-            output_field=CharField()
-        ),
-        event_slug=Case(
-            When(is_group=True, then=F('event_group__slug')),
-            default=F('slug'),
-            output_field=SlugField()
-        ),
-        event_datetime=Case(
-            When(is_group=True, then=F('event_group__datetime')),
-            default=F('datetime'),
-            output_field=DateTimeField()
-        ),
-        event_min_price=Case(
-            When(is_group=True, then=F('event_group__min_price')),
-            default=F('min_price'),
-            output_field=DecimalField()
-        ),
-        event_min_age=Case(
-            When(is_group=True, then=F('event_group__min_age')),
-            default=F('min_age'),
-            output_field=IntegerField()
-        ),
-        event_venue_title=Case(
-            When(is_group=True, then=F('event_group__event_venue__title')),
-            default=F('event_venue__title'),
-            output_field=CharField()
-            ),
-        # Параметры группы, если событие в неё входит
-        group_slug=Case(
-            When(is_group=True, then=F('slug')),
-            default=None,
-            output_field=SlugField()
-        ),
-        group_datetime=Case(
-            When(is_group=True, then=F('datetime')),
-            default=None,
-            output_field=DateTimeField()
-        ),
+        event_title=F('title'),
+        event_slug=F('slug'),
+        event_datetime=F('datetime'),
+        event_min_price=F('min_price'),
+        event_min_age=F('min_age'),
+        event_venue_title=F('event_venue__title'),
     ).values(
-        'is_group',
-        'is_in_group',
         'event_title',
         'event_slug',
-        'group_slug',
         'event_datetime',
-        'group_datetime',
         'event_min_price',
         'event_min_age',
         'event_venue_title',
     ).filter(
-        Q(
-            Q(is_published=True) &
-            Q(domain_id=request.domain_id)
-        ) &
-        Q(
-            Q(
-                Q(is_group=True) &
-                Q(event_datetime=Subquery(group_subquery))
-            ) |
-            Q(
-                (Q(is_group=False) & Q(is_in_group=False)) &
-                Q(event_datetime__range=range_filter)
-            )
-        )
+        is_group=False,
+        is_published=True,
+        event_datetime__range=range_filter,
+        domain_id=request.domain_id
+    ).order_by(
+        'event_datetime',
+        'event_title'
     )
 
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
