@@ -1,0 +1,67 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-09-06 12:53+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: admin.py:32
+msgid "payment_service_help_text"
+msgstr "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от конкретного сервиса онлайн-оплаты):<ul><li><strong>Сбербанк</strong><ul><li>string <strong>user</strong> - имя пользователя API,</li><li>string <strong>test_pswd</strong> - пароль для тестовой оплаты НЕнастоящими деньгами,</li><li>string <strong>prod_pswd</strong> - пароль для production-оплаты настоящими деньгами.</li></ul></li><li><strong>СНГБ</strong></li></ul></li><li>number <strong>commission</strong> - комиссия сервиса онлайн-оплаты (если комиссия равна 0 - она НЕ прибавляется к сумме заказа),</li><li>number <strong>timeout</strong> - время на оплату заказа в минутах (по умолчанию - 15 минут).</li></ul>"
+
+#: admin.py:51
+msgid "payment_service_admin_batch_set_cache"
+msgstr "Пересоздать кэш выбранных сервисов онлайн-оплаты"
+
+#: models.py:13
+msgid "paymentservice_id"
+msgstr "Идентификатор"
+
+#: models.py:17
+msgid "paymentservice_title"
+msgstr "Название"
+
+#: models.py:21
+msgid "paymentservice_slug"
+msgstr "Псевдоним"
+
+#: models.py:25
+msgid "paymentservice_is_active"
+msgstr "Работает"
+
+#: models.py:29
+msgid "paymentservice_is_production_help_text"
+msgstr ""
+"<ul><li>Если включено - оплата настоящими деньгами.</li><li>Если отключено - "
+"тестовая оплата НЕнастоящими деньгами.</li></ul>"
+
+#: models.py:30
+msgid "paymentservice_is_production"
+msgstr "Оплата настоящими деньгами"
+
+#: models.py:34
+msgid "paymentservice_settings"
+msgstr "Настройки"
+
+#: models.py:40
+msgid "paymentservice"
+msgstr "сервис онлайн-оплаты"
+
+#: models.py:41
+msgid "paymentservices"
+msgstr "сервисы онлайн-оплаты"
