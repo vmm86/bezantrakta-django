@@ -1,9 +1,0 @@
-@charset "utf-8";
-
-/* Стиль для редактора HTML-страниц в админке */
-
-@import "main.css";
-
-body {
-    background: #FFF;
-}
