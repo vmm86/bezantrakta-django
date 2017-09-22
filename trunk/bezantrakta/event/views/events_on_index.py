@@ -9,13 +9,17 @@ from ..shortcuts import add_small_vertical_poster
 
 
 def events_on_index(request):
-    """Вывод событий в базовом шаблоне в позициях ``small_vertical``."""
+    """Вывод афиш событий в базовом шаблоне в позициях ``small_vertical``.
+
+    Позиция афиши должна быть больше 0.
+    Афиши в позиции 0 используются НЕ для вывода на главной, а для вывода событий, отфильтрованных по разным основаниям.
+    """
     today = timezone_now()
 
     # Поиск опубликованных событий или групп на главной, привязанных к текущему домену
     group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
         group_id=OuterRef('event__id'),
-        # event__is_published=True,
+        event__is_published=True,
         event__datetime__gt=today,
     ).order_by('event__datetime')[:1]
 
@@ -85,6 +89,7 @@ def events_on_index(request):
             Q(event__is_published=True) &
             Q(event__is_on_index=True) &
             Q(event_container__mode='small_vertical') &
+            Q(order__gt=0) &
             Q(event__domain_id=request.domain_id)
         ) &
         Q(

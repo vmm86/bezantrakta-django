@@ -5,9 +5,9 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import F
 from django.urls.base import reverse
-from django.utils import dateformat
+# from django.utils import dateformat
 
-from project.shortcuts import build_absolute_url, json_serializer
+from project.shortcuts import build_absolute_url, json_serializer, humanize_date
 
 from .models import Event
 
@@ -93,9 +93,10 @@ def get_or_set_cache(event_uuid, reset=False):
 
         # Человекопонятные локализованные дата и время события
         event_datetime_localized = event['event_datetime'].astimezone(event['city_timezone'])
-        event['event_date'] = '{date_humanized} г.'.format(
-            date_humanized=dateformat.format(event_datetime_localized, settings.DATE_FORMAT)
-        )
+        # event['event_date'] = '{date_humanized} г.'.format(
+        #     date_humanized=dateformat.format(event_datetime_localized, settings.DATE_FORMAT)
+        # )
+        event['event_date'] = humanize_date(event_datetime_localized)
         event['event_time'] = event_datetime_localized.strftime('%H:%M')
 
         # Приведение часового пояса города к str во избежание исключения

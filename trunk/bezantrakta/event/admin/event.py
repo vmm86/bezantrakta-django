@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.core.cache import cache
 from django.utils.translation import ugettext as _
 
+from django.db.models import F, Q
+
 from project.decorators import queryset_filter
 from ..cache import get_or_set_cache
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
@@ -161,6 +163,14 @@ class EventAdmin(admin.ModelAdmin):
     link_count.short_description = _('event_link_count')
 
     def container_count(self, obj):
-        """Число контейнеров для показа в разных позициях на сайте"""
-        return obj.event_container.count()
+        """Число афиш в контейнерах для показа в разных позициях на сайте.
+
+        Считаются все афиши, кроме маленьких вертикальных в любой позиции и маленькие верикальные в позиции больше 0.
+        """
+        return obj.event_container.filter(
+            ~Q(mode='small_vertical') |
+            (
+                Q(mode='small_vertical') & Q(eventcontainerbinder__order__gt=0)
+            )
+        ).count()
     container_count.short_description = _('event_container_count')

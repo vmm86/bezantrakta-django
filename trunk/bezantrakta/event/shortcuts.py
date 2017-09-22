@@ -23,7 +23,7 @@ def add_small_vertical_poster(request, query):
 def process_event_data(request, data):
     params = {}
     # Событие или группа
-    if ('is_group' in data and data['is_group']) or ('is_in_group' in data and data['is_in_group']):
+    if ('is_group' in data and data['is_group']):
         params['item'] = 'group'
         params['datetime'] = data['group_datetime']
         params['slug'] = data['group_slug']
