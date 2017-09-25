@@ -4,12 +4,12 @@
     {# Реквизиты покупателя #}
     <p class="input-body step2">
         <label id="customer-name-label" class="label yellow step2" for="customer-name">Фамилия Имя</label>
-        <input id="customer-name" class="input grey step2" type="text" name="customer_name" required="required" placeholder="Фамилия Имя Отчество" value="{{ customer.name }}">
+        <input id="customer-name" class="input grey step2" type="text" name="customer_name" required="required" placeholder="Фамилия Имя Отчество" max="48" maxlength="48" value="{{ customer.name }}">
     </p>
 
     <p class="input-body step2">
         <label id="customer-email-label" class="label yellow step2" for="customer-email">Электронная почта</label>
-        <input id="customer-email" class="input grey step2" type="email" name="customer_email" required="required" placeholder="primer@mail.ru" value="{{ customer.email }}">
+        <input id="customer-email" class="input grey step2" type="email" name="customer_email" required="required" placeholder="primer@mail.ru" max="32" maxlength="32" value="{{ customer.email }}">
     </p>
 
     <p class="input-body step2">
