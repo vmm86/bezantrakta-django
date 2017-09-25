@@ -179,7 +179,7 @@ ______________________________________________________________________________
                             pass
                         else:
                             self.log(
-                                'Добавлена связка со схемой зала {id}: {title}'.format(
+                                'Добавлена схема зала {id}: {title}'.format(
                                     id=s['scheme_id'],
                                     title=s['scheme_title']
                                 ), level='SUCCESS'
@@ -321,7 +321,7 @@ ______________________________________________________________________________
                                     e['event_min_price'] = (
                                         prices[0] if
                                         e['event_min_price'] == 0 and len(prices) > 0 else
-                                        0
+                                        e['event_min_price']
                                     )
 
                                     # Если событие уже было добавлено ранее
@@ -335,6 +335,8 @@ ______________________________________________________________________________
                                             id=event_id_uuid_mapping[e['event_id']]
                                         ).update(
                                             datetime=e['event_datetime'],
+                                            min_price=e['event_min_price'],
+                                            ticket_service_prices=json.dumps(prices)
                                         )
                                     else:
                                         event_uuid = uuid.uuid4()
@@ -420,7 +422,7 @@ ______________________________________________________________________________
                                     e['event_min_price'] = (
                                         prices[0] if
                                         e['event_min_price'] == 0 and len(prices) > 0 else
-                                        0
+                                        e['event_min_price']
                                     )
 
                                     # Если событие уже было добавлено ранее
@@ -434,6 +436,8 @@ ______________________________________________________________________________
                                             id=event_id_uuid_mapping[e['event_id']]
                                         ).update(
                                             datetime=e['event_datetime'],
+                                            min_price=e['event_min_price'],
+                                            ticket_service_prices=json.dumps(prices)
                                         )
                                     else:
                                         event_uuid = uuid.uuid4()
