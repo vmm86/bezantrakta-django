@@ -87,14 +87,14 @@ sector_id = 509
 # GROUPS
 # py_result = ts.groups()
 # DISCOVER_GROUPS
-py_result = ts.discover_groups()
+# py_result = ts.discover_groups()
 
 # EVENTS
 # py_result = ts.events()
 # py_result = ts.events(place_id=place_id)
 # py_result = ts.events(scheme_id=scheme_id)
 # DISCOVER_EVENTS
-# py_result = ts.discover_events()
+py_result = ts.discover_events()
 
 # SECTORS
 # py_result = ts.sectors(event_id=event_id)
