@@ -78,14 +78,8 @@
 
             <div class="header-left">
 
-                <div class="calendar">
-                    {% comment %}
-                    {% now "Y" as year %}
-                    {% now "n" as month %}
-                    {% load calendar %}
-                    {% calendar year month %}
-                    {% endcomment %}
-                </div>
+                {# Фильтр событий по календарю #}
+                <div class="calendar"></div>
 
                 <div class="top-menu">
                 {% if menu_items.top_menu %}
@@ -105,7 +99,7 @@
             <div class="header-right">
 
                     <div class="search">
-                        {# Поиск #}
+                        {# Фильтр событий по поиску #}
                         <div class="modul">
                             <div class="mod_top">
                                 <form action="/search" method="GET">
@@ -136,7 +130,7 @@
 
         </header>
 
-        {# Категории событий #}
+        {# Фильтр событий по категориям #}
         <div class="events-menu">
             {% if categories %}
                 <ul>
