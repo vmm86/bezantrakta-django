@@ -60,8 +60,8 @@ class FileBasedCache(BaseCache):
                 os.remove(tmp_path)
 
     def delete(self, key, version=None):
-        print('delete key: ', key)
-        print('delete version: ', version)
+        # print('delete key: ', key)
+        # print('delete version: ', version)
         self._delete(self._key_to_file(key, version))
 
     def _delete(self, fname):
