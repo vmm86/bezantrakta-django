@@ -6,7 +6,20 @@ from django.utils.translation import ugettext as _
 from project.decorators import queryset_filter
 
 # from ..cache import get_or_set_cache
-from ..models import Order
+from ..models import Order, OrderTicket
+
+
+class OrderTicketInline(admin.TabularInline):
+    model = OrderTicket
+    extra = 0
+    fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id',)
+    readonly_fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id',)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Order)
@@ -33,6 +46,7 @@ class OrderAdmin(admin.ModelAdmin):
             }
         ),
     )
+    inlines = (OrderTicketInline,)
     list_display = ('ticket_service_order', 'datetime',
                     'total', 'tickets_count',
                     'name', 'email', 'phone',
