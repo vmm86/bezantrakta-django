@@ -12,16 +12,18 @@ from ..models import PaymentService
 @admin.register(PaymentService)
 class PaymentServiceAdmin(admin.ModelAdmin):
     actions = ('batch_set_cache',)
+
     formfield_overrides = {
         TextField: {'widget': JSONEditor},
     }
     list_display = ('title', 'id', 'is_active', 'is_production',)
+    list_per_page = 20
 
     fieldsets = (
         (
             None,
             {
-                'fields': ('id', 'title', 'slug', 'is_active', 'is_production',),
+                'fields': ('title', 'id', 'slug', 'is_active', 'is_production',),
             }
         ),
         (
@@ -33,6 +35,10 @@ class PaymentServiceAdmin(admin.ModelAdmin):
             }
         ),
     )
+
+    prepopulated_fields = {
+        'id': ('title',),
+    }
 
     def save_model(self, request, obj, form, change):
         """Пересоздать кэш:
