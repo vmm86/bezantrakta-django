@@ -26,17 +26,14 @@ class TicketServiceAdmin(admin.ModelAdmin):
     formfield_overrides = {
         TextField: {'widget': JSONEditor},
     }
-    prepopulated_fields = {
-        'id': ('title',),
-    }
     list_display = ('title', 'id', 'is_active', 'is_payment', 'ticket_service_schemes_count')
-    list_per_page = 10
+    list_per_page = 20
 
     fieldsets = (
         (
             None,
             {
-                'fields': ('id', 'title', 'slug', 'is_active', 'domain', 'payment_service'),
+                'fields': ('title', 'id', 'slug', 'is_active', 'domain', 'payment_service'),
             }
         ),
         (
@@ -48,6 +45,10 @@ class TicketServiceAdmin(admin.ModelAdmin):
             }
         ),
     )
+
+    prepopulated_fields = {
+        'id': ('title',),
+    }
 
     def get_queryset(self, request):
         return super(TicketServiceAdmin, self).get_queryset(request)
