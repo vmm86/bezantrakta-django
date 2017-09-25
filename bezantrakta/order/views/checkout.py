@@ -7,6 +7,8 @@ from project.shortcuts import build_absolute_url, message, render_messages
 
 from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
 
+from bezantrakta.order.settings import ORDER_TYPE
+
 from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
 from third_party.payment_service.cache import payment_service_instance
 
@@ -56,6 +58,13 @@ def checkout(request):
     customer['address'] = request.COOKIES.get('bezantrakta_customer_address', request.city_title)
     customer['order_type'] = request.COOKIES.get('bezantrakta_customer_order_type', '')
 
+    # Предварительный выбор типа заказа из списка активных, если заказов ранее не было
+    order_types_active = [ot for ot in ticket_service['settings']['order'] if ot == True]
+    for ot in ORDER_TYPE:
+        if ot in order_types_active:
+            customer['order_type'] = ot
+            break
+
     # Получение параметров заказа из cookie
     order_uuid = request.COOKIES.get('bezantrakta_order_uuid')
     order_tickets = json.loads(request.COOKIES.get('bezantrakta_order_tickets'))
@@ -84,6 +93,8 @@ def checkout(request):
 
     context['customer'] = customer
 
+    context['order_types_active'] = order_types_active
+
     context['order_uuid'] = order_uuid
     context['order_tickets'] = order_tickets
     context['order_count'] = order_count
@@ -107,7 +118,7 @@ def checkout(request):
             ),
             message(
                 'info',
-                '👉 <a href="javascript: history.go(-1)">Выбирайте нужные Вам билеты и оформляйте заказ</a>.'
+                '👉 <a href="{url}">Выбирайте нужные Вам билеты и оформляйте заказ</a>.'.format(url=event['url'])
             ),
         ]
         render_messages(request, msgs)
