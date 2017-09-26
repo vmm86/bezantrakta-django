@@ -1,16 +1,16 @@
 from django.contrib import admin
 
-from adminsortable2.admin import SortableInlineAdminMixin
+# from adminsortable2.admin import SortableInlineAdminMixin
 
 from project.decorators import queryset_filter
 from ..models import EventContainer, EventContainerBinder
 
 
-class EventContainerBinderInline(SortableInlineAdminMixin, admin.TabularInline):
+class EventContainerBinderInline(admin.TabularInline):  # SortableInlineAdminMixin
     model = EventContainerBinder
     extra = 0
-    fields = ('order', 'order_preview', 'event', 'event_datetime_localized', 'img', 'img_preview',)
-    readonly_fields = ('order_preview', 'event', 'event_datetime_localized', 'img_preview',)
+    fields = ('order', 'event', 'event_datetime_localized', 'img', 'img_preview',)  # 'order_preview'
+    readonly_fields = ('event', 'event_datetime_localized', 'img_preview',)
 
     @queryset_filter('Domain', 'event__domain__slug')
     def get_queryset(self, request):
