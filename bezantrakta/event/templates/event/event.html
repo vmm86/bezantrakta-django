@@ -37,39 +37,6 @@
             <div class="order-header">
                 <div id="basket-container">
 
-                {# Корзина заказа билетов и легенда #}
-                {% if event.ticket_service_event %}
-                    <h3 id="chosen-tickets-header">Выбранные места</h3>
-                    <ul id="chosen-tickets">
-                        <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
-                    </ul>
-
-                    <h3 id="overall-header">Всего</h3>
-                    <p id="overall">
-                        <span id="no-overall">пока ничего не выбрано</span>
-                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
-                    </p>
-                    <br>
-
-                    <div id="legend-general">
-                        <p><a class="box stateS"></a> выбрано вами</p>
-                        <p><a class="box stateO"></a> выбрано другим</p>
-                        <p><a class="box stateE"></a> недоступно</p>
-                    </div>
-                    <br>
-
-                    <div id="legend-prices">
-                        <ul id="legend-extension">
-                        {% for p in prices %}
-                            <li><a class="box stateF color{{ forloop.counter }}"></a> {{ p }}</li>
-                        {% endfor %}
-                        </ul>
-                    </div>
-
-                    {# Описание процесса заказа билетов #}
-                    {% include "order/legend_text.html" with ticket_service=ticket_service %}
-                {% endif %}
-
                 {# События в группе выводятся, только если их больше одного #}
                 {% if group_events and group_events|length > 1 %}
                     <div class="group-events-container">
@@ -101,6 +68,39 @@
                     {% endfor %}
                         </ul>
                     </div>
+                {% endif %}
+
+                {# Корзина заказа билетов и легенда #}
+                {% if event.ticket_service_event %}
+                    <h3 id="chosen-tickets-header">Выбранные места</h3>
+                    <ul id="chosen-tickets">
+                        <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
+                    </ul>
+
+                    <h3 id="overall-header">Всего</h3>
+                    <p id="overall">
+                        <span id="no-overall">пока ничего не выбрано</span>
+                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
+                    </p>
+                    <br>
+
+                    <div id="legend-general">
+                        <p><a class="box stateS"></a> выбрано вами</p>
+                        <p><a class="box stateO"></a> выбрано другим</p>
+                        <p><a class="box stateE"></a> недоступно</p>
+                    </div>
+                    <br>
+
+                    <div id="legend-prices">
+                        <ul id="legend-extension">
+                        {% for p in prices %}
+                            <li><a class="box stateF color{{ forloop.counter }}"></a> {{ p }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+
+                    {# Описание процесса заказа билетов #}
+                    {% include "order/legend_text.html" with ticket_service=ticket_service %}
                 {% endif %}
 
                 {# Ссылки, добавленные к событию #}
