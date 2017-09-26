@@ -14,7 +14,7 @@ def big_containers(request):
         # Поиск опубликованных событий на главной, привязанных к текущему домену
         group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
             group_id=OuterRef('event__id'),
-            # event__is_published=True,
+            event__is_published=True,
             event__datetime__gt=today,
         ).order_by('event__datetime')[:1]
 
@@ -93,6 +93,10 @@ def big_containers(request):
                     Q(event_datetime__gt=today)
                 )
             )
+        ).order_by(
+            'container',
+            'order',
+            'event_datetime',
         )
 
         big_vertical_left = list(events_published.filter(
@@ -106,9 +110,9 @@ def big_containers(request):
         ))
 
         return {
-            'big_vertical_left': big_vertical_left,
+            'big_vertical_left':  big_vertical_left,
             'big_vertical_right': big_vertical_right,
-            'big_horizontal': big_horizontal,
+            'big_horizontal':     big_horizontal,
         }
     else:
         return {}
