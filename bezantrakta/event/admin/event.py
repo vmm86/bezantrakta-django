@@ -65,8 +65,8 @@ class EventAdmin(admin.ModelAdmin):
     )
     filter_horizontal = ('event_container',)
     inlines = (EventGroupBinderInline, EventLinkBinderInline, EventContainerBinderInline,)
-    list_display = ('title', 'is_published', 'is_on_index', 'datetime', 'event_category', 'event_venue',
-                    'is_group', 'group_count', 'link_count', 'container_count',
+    list_display = ('title', 'is_published', 'is_on_index', 'is_group', 'datetime', 'event_category', 'event_venue',
+                    'group_count', 'link_count', 'container_count',
                     'ticket_service', 'domain',)
     list_filter = (
         ('is_group', admin.BooleanFieldListFilter),
