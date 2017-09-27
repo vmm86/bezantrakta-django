@@ -873,6 +873,8 @@ class SuperBilet(TicketService):
         status = self.request(method, input_mapping, data, output_mapping)
         response = {}
 
+        # print('\nticket_status:', status, '\n')
+
         if type(status) is list and status[0]['result_code'] == 0:
             status = {k: v for k, v in status[0].items()}
 
@@ -884,6 +886,8 @@ class SuperBilet(TicketService):
                 status['seat_status'] == '' else
                 self.SEAT_STATUSES[status['seat_status']]
             )
+        else:
+            response = status
 
         return response
 

@@ -94,7 +94,7 @@ sector_id = 509
 # py_result = ts.events(place_id=place_id)
 # py_result = ts.events(scheme_id=scheme_id)
 # DISCOVER_EVENTS
-py_result = ts.discover_events()
+# py_result = ts.discover_events()
 
 # SECTORS
 # py_result = ts.sectors(event_id=event_id)
@@ -106,7 +106,7 @@ py_result = ts.discover_events()
 # SCHEME
 # py_result = ts.scheme(event_id=event_id)
 
-order_uuid = 'cc9525df-a0c1-4214-a525-2b3bffdfe4d7'
+order_uuid = 'c126ea91-f896-49ef-bdee-f8ab8fb6146a'
 # RESERVE (ADD OR REMOVE)
 # # action = 'add'
 # action = 'remove'
@@ -126,20 +126,20 @@ order_uuid = 'cc9525df-a0c1-4214-a525-2b3bffdfe4d7'
 # )
 
 # ORDER_CREATE
-customer = {
-    'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '89201234567',
-    'is_courier': True, 'address': 'Воронеж',
-    # 'is_courier': False, 'address': '',
-}
+# customer = {
+#     'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '89201234567',
+#     'is_courier': True, 'address': 'Воронеж',
+#     # 'is_courier': False, 'address': '',
+# }
 tickets = [
-    {'ticket_uuid': 'c1d1d880-c3c8-4d9b-ada6-325501af1cf8', 'sector_id': sector_id, 'row_id': 1, 'seat_id': 35, },
-    # {'ticket_uuid': 'c0b88fc5-5f6b-4fcd-a19c-4f88f53bdf2b', 'sector_id': sector_id, 'row_id': 1, 'seat_id': 37, },
+    {'ticket_uuid': 'f2449bd0-2cf4-4153-b37f-15eaf21c15d0', 'sector_id': 509, 'row_id': 2, 'seat_id': 14, },
+    {'ticket_uuid': '424603cc-1871-4f41-9cf1-e11ad525ae2f', 'sector_id': 509, 'row_id': 2, 'seat_id': 15, },
 ]
 # py_result = ts.order_create(event_id=event_id, order_uuid=order_uuid, customer=customer, tickets=tickets)
 
 # ORDER_DELETE
-# order_id = 38293
-# py_result = ts.order_delete(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
+order_id = 39351
+py_result = ts.order_delete(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
 
 # ORDER_PAYMENT
 # payment_id = '2d529111-1da0-455a-be55-3456eaf97055'

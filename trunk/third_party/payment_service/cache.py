@@ -60,12 +60,12 @@ def get_or_set_cache(payment_service_id, reset=False):
     return cache_value
 
 
-def payment_service_instance(payment_service_id, url_domain=None):
+def payment_service_instance(payment_service_id, domain_slug=None):
     """Получение экземпляра класса сервиса продажи билетов с использованием параметров из его кэша.
 
     Args:
         payment_service_id (str): ID сервиса онлайн-оплаты в БД.
-        url_domain (str, optional): Корневой домен текущего сайта для URL завершения удачной или НЕудачной оплаты.
+        domain_slug (str, optional): Псевдоним (поддомен) текущего сайта для URL завершения онлайн-оплаты.
 
     Returns:
         PaymentService: Экземпляр класса конкретного сервиса онлайн-оплаты.
@@ -74,9 +74,9 @@ def payment_service_instance(payment_service_id, url_domain=None):
     cache_value = json.loads(cache.get(cache_key))
 
     # URL для завершения заказа после удачной или НЕудачной оплаты
-    url_domain = url_domain if url_domain is not None else settings.BEZANTRAKTA_ROOT_DOMAIN
-    cache_value['settings']['init']['success_url'] = build_absolute_url(url_domain, '/api/ps/success/')
-    cache_value['settings']['init']['error_url'] = build_absolute_url(url_domain, '/api/ps/error/')
+    domain_slug = domain_slug if domain_slug is not None else settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG
+    cache_value['settings']['init']['success_url'] = build_absolute_url(domain_slug, '/api/ps/success/')
+    cache_value['settings']['init']['error_url'] = build_absolute_url(domain_slug, '/api/ps/error/')
 
     # Экземпляр класса сервиса продажи билетов
     ps = payment_service_factory(

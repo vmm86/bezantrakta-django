@@ -59,11 +59,12 @@ def checkout(request):
     customer['order_type'] = request.COOKIES.get('bezantrakta_customer_order_type', '')
 
     # Предварительный выбор типа заказа из списка активных, если заказов ранее не было
-    order_types_active = [ot for ot in ticket_service['settings']['order'] if ot == True]
-    for ot in ORDER_TYPE:
-        if ot in order_types_active:
-            customer['order_type'] = ot
-            break
+    order_types_active = [k for k, v in ticket_service['settings']['order'].items() if v == True]
+    if customer['order_type'] == '' or customer['order_type'] not in order_types_active:
+        for ot in ORDER_TYPE:
+            if ot in order_types_active:
+                customer['order_type'] = ot
+                break
 
     # Получение параметров заказа из cookie
     order_uuid = request.COOKIES.get('bezantrakta_order_uuid')
@@ -106,7 +107,7 @@ def checkout(request):
     context['commission'] = commission
     context['order_total_plus_commission'] = str(order_total_plus_commission)
 
-    context['checkout_form_action'] = build_absolute_url(request.url_domain, '/afisha/order/')
+    context['checkout_form_action'] = build_absolute_url(request.domain_slug, '/afisha/order/')
 
     # Если корзина заказа пустая
     if context['order_count'] == 0:

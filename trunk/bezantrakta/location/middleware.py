@@ -100,9 +100,9 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     request.url_domain = url_domain
                     request.url_path = path
                     # URL сайта (прокотол + домен) без слэша в конце (для подстановки к относительным ссылкам)
-                    request.url_protocol_domain = build_absolute_url(url_domain)
+                    request.url_protocol_domain = build_absolute_url(request.domain_slug)
                     # Полный абсолютный URL текущей страницы
-                    request.url_full = build_absolute_url(url_domain, path)
+                    request.url_full = build_absolute_url(request.domain_slug, path)
 
                     # Активация текущего часового пояса
                     if request.city_timezone:

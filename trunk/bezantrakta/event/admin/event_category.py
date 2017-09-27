@@ -10,3 +10,6 @@ class EventCategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
+
+    def view_on_site(self, obj):
+        return None

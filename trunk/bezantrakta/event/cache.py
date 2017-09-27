@@ -5,7 +5,6 @@ from django.conf import settings
 from django.core.cache import cache
 from django.db.models import F
 from django.urls.base import reverse
-# from django.utils import dateformat
 
 from project.shortcuts import build_absolute_url, json_serializer, humanize_date
 
@@ -93,9 +92,6 @@ def get_or_set_cache(event_uuid, reset=False):
 
         # Человекопонятные локализованные дата и время события
         event_datetime_localized = event['event_datetime'].astimezone(event['city_timezone'])
-        # event['event_date'] = '{date_humanized} г.'.format(
-        #     date_humanized=dateformat.format(event_datetime_localized, settings.DATE_FORMAT)
-        # )
         event['event_date'] = humanize_date(event_datetime_localized)
         event['event_time'] = event_datetime_localized.strftime('%H:%M')
 
@@ -103,11 +99,6 @@ def get_or_set_cache(event_uuid, reset=False):
         event['city_timezone'] = str(event['city_timezone'])
 
         # Полный URL страницы события
-        domain = (
-            '{domain}.{root}'.format(domain=event['domain_slug'], root=settings.BEZANTRAKTA_ROOT_DOMAIN) if
-            event['domain_slug'] != settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG else
-            '{root}'.format(root=settings.BEZANTRAKTA_ROOT_DOMAIN)
-        )
         url = reverse(
             'event:event',
             args=[
@@ -119,7 +110,7 @@ def get_or_set_cache(event_uuid, reset=False):
                 event['event_slug']
             ]
         )
-        event['url'] = build_absolute_url(domain, url)
+        event['url'] = build_absolute_url(event['domain_slug'], url)
 
         # Содержится ли событие в группе - приведение к bool для удобства
         event['is_in_group'] = True if event['is_in_group'] is not None else False
