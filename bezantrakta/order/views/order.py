@@ -57,7 +57,7 @@ def order(request):
         payment_service['id'] = event['info']['payment_service_id']
         payment_service['info'] = get_or_set_payment_service_cache(payment_service['id'])
 
-        ps = payment_service_instance(payment_service['id'], url_domain=request.url_domain)
+        ps = payment_service_instance(payment_service['id'], domain_slug=request.domain_slug)
 
         # Получение реквизитов покупателя
         customer = {}
@@ -147,8 +147,19 @@ def order(request):
             for ticket in order['tickets']:
                 ticket['event_id'] = event['id']
                 ticket_status = ts.ticket_status(**ticket)
-                ticket['seat_status'] = ticket_status['seat_status']
-                logger.info('* {ticket_status}'.format(ticket_status=str(ticket_status)))
+                if 'error' in ticket_status and ticket_status['error']:
+                    # Сообщение об ошибке
+                    msgs = [
+                        message('error', 'К сожалению, произошла ошибка резерва билетов 😞'),
+                        message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
+                                event_url=event['info']['url'])
+                                ),
+                    ]
+                    render_messages(request, msgs)
+                    return redirect('error')
+                else:
+                    ticket['seat_status'] = ticket_status['seat_status']
+                    logger.info('* {ticket_status}'.format(ticket_status=str(ticket_status)))
             order['tickets'][:] = [t for t in order['tickets'] if t.get('seat_status') == 'reserved']
 
             if len(order['tickets']) == 0:

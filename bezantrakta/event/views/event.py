@@ -202,7 +202,7 @@ def event(request, year, month, day, hour, minute, slug):
             context['ticket_service'] = ticket_service
             context['payment_service'] = payment_service
 
-            context['checkout_url'] = build_absolute_url(request.url_domain, '/afisha/checkout/')
+            context['checkout_url'] = build_absolute_url(request.domain_slug, '/afisha/checkout/')
 
             return render(request, 'event/event.html', context)
         # Событие НЕ опубликовано

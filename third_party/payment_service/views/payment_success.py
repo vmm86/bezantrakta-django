@@ -109,13 +109,6 @@ def payment_success(request):
         customer['email'] = order['email']
         customer['phone'] = order['phone']
 
-        # Проверка корректности `order_id`
-        # Если билеты сменили статус на `SOL` при том, что сохранили сессию и номер брони - они были выкуплены в кассе.
-        # reservation_timed_out = check_order_id(tickets, order['order_id'])
-        # if (reservation_timed_out == false)
-        #     order['payment_info']['code'] = ''
-        #     order['payment_info']['message'] = 'reservation ' + order['order_id'] + ' timed out'
-
         # Экземпляр класса сервиса продажи билетов
         ticket_service = {}
         ticket_service['id'] = event['info']['ticket_service_id']

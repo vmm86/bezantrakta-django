@@ -2,10 +2,13 @@ from django.conf import settings
 from django.contrib import admin
 from django.core.cache import cache
 from django.utils.translation import ugettext as _
+from django.urls import reverse
 
-from django.db.models import F, Q
+from django.db.models import Q
 
 from project.decorators import queryset_filter
+from project.shortcuts import build_absolute_url
+
 from ..cache import get_or_set_cache
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
@@ -80,6 +83,23 @@ class EventAdmin(admin.ModelAdmin):
     }
     readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',)
     search_fields = ('title',)
+
+    def view_on_site(self, obj):
+        event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
+
+        url = reverse(
+            'event:event',
+            args=[
+                event_datetime_localized.strftime('%Y'),
+                event_datetime_localized.strftime('%m'),
+                event_datetime_localized.strftime('%d'),
+                event_datetime_localized.strftime('%H'),
+                event_datetime_localized.strftime('%M'),
+                obj.slug
+            ]
+        )
+
+        return build_absolute_url(obj.domain.slug, url)
 
     @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):

@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.contrib import admin
-# from django.core.cache import cache
 from django.utils.translation import ugettext as _
+from django.urls import reverse
 
 from project.decorators import queryset_filter
+from project.shortcuts import build_absolute_url
 
-# from ..cache import get_or_set_cache
 from ..models import Order, OrderTicket
 
 
@@ -64,6 +64,10 @@ class OrderAdmin(admin.ModelAdmin):
                        'status', 'total', 'tickets_count',
                        'domain',)
 
+    def view_on_site(self, obj):
+        url = reverse('order:confirmation', args=[obj.id])
+        return build_absolute_url(obj.domain.slug, url)
+
     @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):
         return super(OrderAdmin, self).get_queryset(request)
@@ -74,18 +78,6 @@ class OrderAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         if not settings.DEBUG:
             return False
-
-    # def save_model(self, request, obj, form, change):
-    #     """Пересоздать кэш:
-    #     * при сохранении созданной ранее записи,
-    #     * если созданная ранее запись не пересохраняется в новую запись с новым первичным ключом.
-    #     """
-    #     if change and obj._meta.pk.name not in form.changed_data:
-    #         cache_key = 'order.{order_uuid}'.format(order_uuid=obj.id)
-    #         cache.delete(cache_key)
-    #         get_or_set_cache(obj.id)
-
-    #     super(OrderAdmin, self).save_model(request, obj, form, change)
 
     def order_uuid(self, obj):
         """Вывод нередактируемого уникального UUID заказа."""
