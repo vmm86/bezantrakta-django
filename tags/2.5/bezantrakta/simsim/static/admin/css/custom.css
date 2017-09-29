@@ -469,6 +469,10 @@ a.section:visited {
     background-color: #ffc;
 }
 
+#changelist-form {
+    position: relative;
+}
+
 #changelist .actions select {
     border: 2px solid #999;
     height: auto;
@@ -493,12 +497,12 @@ a.section:visited {
 }
 
 #changelist-filter {
-/*    background: transparent;
+    background: transparent;
     padding-top: 46px;
     float: right;
     position: fixed;
     top: auto;
-    right: 40px;*/
+    right: 40px;
 }
 
 #changelist-filter h2 {
@@ -551,6 +555,7 @@ a.section:visited {
     border-radius: 1rem;
     background-color: #999;
     color: #fff;
+    font-size: 0.75rem;
     text-shadow: 0 1px 0px #111;
     padding: 2px 10px 3px 10px;
 }
@@ -591,9 +596,13 @@ a.section:visited {
     color: #111;
 }
 
-#changelist .paginator {
+/*#changelist .paginator {
     color: #111;
-}
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+}*/
 
 /* Формы */
 
