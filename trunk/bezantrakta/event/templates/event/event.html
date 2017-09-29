@@ -40,7 +40,7 @@
                 {# События в группе выводятся, только если их больше одного #}
                 {% if group_events and group_events|length > 1 %}
                     <div class="group-events-container">
-                        <h3 id="group-events-header">Билеты на другую дату / сектор</h3>
+                        <h3 id="group-events-header">Билеты на другую дату</h3>
                         <ul id="group-events">
                     {% for event in group_events %}
                     {% localtime on %}
