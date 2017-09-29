@@ -20,9 +20,7 @@ class EventGroupBinderInline(admin.TabularInline):
     fields = ('event', 'caption',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """
-        Для добавления в группу выводятся только привязанные к выбранному домену события.
-        """
+        """Для добавления в группу выводятся только привязанные к выбранному домену актуальные события."""
         if db_field.name == 'event':
             domain_filter = request.COOKIES.get('bezantrakta_admin_domain', None)
             kwargs['queryset'] = Event.objects.select_related(
@@ -70,6 +68,7 @@ class EventAdmin(admin.ModelAdmin):
                     'ticket_service', 'domain',)
     list_filter = (
         ('is_group', admin.BooleanFieldListFilter),
+        ('event_venue', admin.RelatedOnlyFieldListFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_select_related = ('event_category', 'event_venue', 'domain',)
@@ -112,8 +111,7 @@ class EventAdmin(admin.ModelAdmin):
         return super(EventAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_readonly_fields(self, request, obj=None):
-        """
-        В событиях из сервисов продажи билетов нельзя изменить информацию,
+        """В событиях из сервисов продажи билетов нельзя изменить информацию,
         приходящую непосредственно из сервиса продажи билетов.
         """
         if obj is not None and obj.ticket_service is not None:
@@ -121,8 +119,7 @@ class EventAdmin(admin.ModelAdmin):
         return self.readonly_fields
 
     def has_delete_permission(self, request, obj=None):
-        """
-        Импортируемые из сервисов продажи билетов события нельзя удалить,
+        """Импортируемые из сервисов продажи билетов события нельзя удалить,
         поскольку при каждом удалении они будут импортироваться снова.
         """
         if obj is not None and obj.ticket_service is not None and not settings.DEBUG:
@@ -137,8 +134,7 @@ class EventAdmin(admin.ModelAdmin):
         return actions
 
     def delete_non_ticket_service_items(self, request, queryset):
-        """
-        Пакетное удаление только добавленных вручную групп/событий,
+        """Пакетное удаление только добавленных вручную групп/событий,
         т.е. не импортируемых из сервисов продажи билетов.
         """
         from django.contrib.admin.actions import delete_selected
