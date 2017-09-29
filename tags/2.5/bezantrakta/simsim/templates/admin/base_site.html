@@ -88,6 +88,52 @@ $(document).ready(function() {
         });
     }
 
+    {# Показ процесса заполнения title, description, keywords #}
+    $('#id_title + .help').prepend('<strong id="id_title_info"></strong><br>');
+    $('#id_description + .help').prepend('<strong id="id_description_info"></strong><br>');
+    $('#id_keywords + .help').prepend('<strong id="id_keywords_info"></strong><br>');
+
+    $('#id_title, #id_description, #id_keywords').each(function() {
+            var thisElement = '#' + this.id + '_info';
+            var maxLength = $(this).attr('maxlength');
+            var currentLength = $(this).val().length;
+            $(this).val( $(this).val().substr(0, maxLength) );
+            var remaningLength = maxLength - currentLength;
+            if (remaningLength < 0) {
+                remaningLength = 0;
+            }
+            var warnLength = $(this).attr('warnlength');
+            $(thisElement).html('набрано ' + currentLength + ' симв.');
+            if (remaningLength < warnLength) {
+                $(this).css('background-color', '#FF7F7F');
+                $(thisElement).css('color', 'red');
+            } else {
+                $(this).css('background-color', '#FFF');
+                $(thisElement).css('color', 'black');
+            }
+    });
+    $(function() {
+        $('#id_title, #id_description, #id_keywords').keyup(function() {
+            var thisElement = '#' + this.id + '_info';
+            var maxLength = $(this).attr('maxlength');
+            var currentLength = $(this).val().length;
+            $(this).val( $(this).val().substr(0, maxLength) );
+            var remaningLength = maxLength - currentLength;
+            if (remaningLength < 0) {
+                remaningLength = 0;
+            }
+            var warnLength = $(this).attr('warnlength');
+            $(thisElement).html('набрано ' + currentLength + ' симв.');
+            if (remaningLength < warnLength) {
+                $(this).css('background-color', '#FF7F7F');
+                $(thisElement).css('color', 'red');
+            } else {
+                $(this).css('background-color', '#FFD');
+                $(thisElement).css('color', 'black');
+            }
+        })
+    });
+
     {# Добавление событий в группе работает только для группы #}
     {# Добавление ссылок доступно только в событиях и в группе не работает #}
     function show_hide_add_group_link(){
