@@ -72,7 +72,8 @@ class BannerGroupItem(models.Model):
         upload_to=img_path,
         verbose_name=_('bannergroupitem_img')
     )
-    href = models.URLField(
+    href = models.CharField(
+        max_length=128,
         blank=True,
         verbose_name=_('bannergroupitem_href'),
     )

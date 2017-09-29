@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=32, verbose_name='Название')),
                 ('slug', models.SlugField(max_length=32, verbose_name='Псевдоним')),
                 ('img', models.ImageField(upload_to=bezantrakta.banner.models.img_path, verbose_name='Изображение')),
-                ('href', models.URLField(blank=True, verbose_name='Внешняя ссылка')),
+                ('href', models.CharField(blank=True, max_length=128, verbose_name='Внешняя ссылка')),
                 ('is_published', models.BooleanField(default=False, verbose_name='Публикация')),
                 ('order', models.PositiveSmallIntegerField(default=1, verbose_name='Порядок')),
                 ('banner_group', models.ForeignKey(db_column='banner_group_id', on_delete=django.db.models.deletion.CASCADE, to='banner.BannerGroup', verbose_name='Группа баннеров')),
