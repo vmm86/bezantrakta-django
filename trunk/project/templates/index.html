@@ -37,14 +37,25 @@
             {% endwith %}
                 <span class="title" title="Выбрать город">{{ request.city_title }}</span>
             </div>
-            {# Вывод города текущего сайта #}
         </div>
         <div class="top-right">&nbsp;</div>
     </div>
 
+    {# Большие вертикальные афиши (слева) #}
     <div class="poster-big-vertical-left">
-    {% if big_vertical_left %}
+    {% if big_vertical_left or banner_group_items.banner_big_vertical_left %}
         <div class="bannergroup">
+        {# Баннеры #}
+        {% for banner in banner_group_items.banner_big_vertical_left %}
+            {% if banner.href %}
+                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+            {% endif %}
+                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}" title="{{ banner.title }}">
+            {% if banner.href %}
+                </a>
+            {% endif %}
+        {% endfor %}
+        {# Афиши #}
         {% for item in big_vertical_left %}
             <div class="banneritem">
             {% localtime on %}
@@ -56,9 +67,21 @@
     {% endif %}
     </div>
 
+    {# Большие вертикальные афиши (справа) #}
     <div class="poster-big-vertical-right">
-    {% if big_vertical_right %}
+    {% if big_vertical_right or banner_group_items.banner_big_vertical_right %}
         <div class="bannergroup">
+        {# Баннеры #}
+        {% for banner in banner_group_items.banner_big_vertical_left %}
+            {% if banner.href %}
+                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+            {% endif %}
+                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}" title="{{ banner.title }}">
+            {% if banner.href %}
+                </a>
+            {% endif %}
+        {% endfor %}
+        {# Афиши #}
         {% for item in big_vertical_right %}
             <div class="banneritem">
             {% localtime on %}
@@ -112,9 +135,23 @@
                         {# Поиск #}
                     </div>
 
+                    {# Большие горизонтальные баннеры или афиши #}
                     <div class="poster-big-horizontal-body" style="height: 0;">
                     {% if big_horizontal %}
                         <ul class="slider">
+                        {# Баннеры #}
+                        {% for banner in banner_group_items.banner_big_horizontal %}
+                            <li class="slide">
+                            {% if banner.href %}
+                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                            {% endif %}
+                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}" title="{{ banner.title }}">
+                            {% if banner.href %}
+                                </a>
+                            {% endif %}
+                            </li>
+                        {% endfor %}
+                        {# Афиши #}
                         {% for item in big_horizontal %}
                             <li class="slide">
                             {% localtime on %}
@@ -168,6 +205,9 @@
             <hr>
             <br>
             <p>settings: <pre>{{ request.domain_settings|pprint }}</pre></p>
+            <br>
+            <p>banner_group: <pre>{{ banner_group|pprint }}</pre></p>
+            <p>banner_group_items: <pre>{{ banner_group_items|pprint }}</pre></p>
         {% endif %}
         </main>
 
@@ -187,6 +227,7 @@
 
         <div class="banners-body">
 
+            {# Нижние баннеры (слева) - Мы в сети #}
             {% if banner_group_items.banner_social %}
             <div class="banners banners-left">
                 <div class="bannergroup">
@@ -206,6 +247,7 @@
             </div>
             {% endif %}
 
+            {# Нижние баннеры (центр) - Наши партнёры #}
             {% if banner_group_items.banner_partners %}
             <div class="banners banners-center">
                 <div class="bannergroup">
@@ -225,6 +267,7 @@
             </div>
             {% endif %}
 
+            {# Нижние баннеры (справа) - Наши партнёры #}
             {% if banner_group_items.banner_payment %}
             <div class="banners banners-right">
                 <div class="bannergroup">

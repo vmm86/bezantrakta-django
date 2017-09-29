@@ -16,11 +16,11 @@ def banner_group_items(request):
 
         banner_group_items = {}
         for bg in banner_group_values:
-            banner_group_items[bg['slug']] = BannerGroupItem.objects.filter(
+            banner_group_items[bg['slug']] = list(BannerGroupItem.objects.filter(
                 banner_group_id=bg['id'],
                 is_published=True,
                 domain_id=request.domain_id,
-            ).values('title', 'img', 'href')
+            ).values('title', 'img', 'href', 'order'))
 
         return {
             'banner_group': banner_group,
