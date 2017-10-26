@@ -62,7 +62,7 @@ cd /var/www
 mkdir bezantrakta-django
 cd bezantrakta-django
 mkdir media static log
-svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y.Z current_stable_tag
+svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y.Z bezantrakta_latest
 ```
 
 * Создание и активация виртуального окружения `Python 3`, установка необходимых Python-пакетов, синхронизация с БД.
@@ -88,7 +88,7 @@ touch /etc/uwsgi/sites-available/bezantrakta.ini
 
 ```ini
 [uwsgi]
-project = /var/www/bezantrakta-django/current_stable_tag
+project = /var/www/bezantrakta-django/bezantrakta_latest
 chdir = %(project)
 
 plugin = python3
@@ -117,7 +117,7 @@ touch /etc/nginx/sites-available/bezantrakta.conf
 server {
     listen 80;
     listen [::]:80;
-    root /var/www/bezantrakta-django/current_stable_tag;
+    root /var/www/bezantrakta-django/bezantrakta_latest;
     server_name bezantrakta.ru *.bezantrakta.ru;
 
     client_body_buffer_size 10M;
