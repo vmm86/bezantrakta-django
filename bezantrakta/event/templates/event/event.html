@@ -129,9 +129,30 @@
             {% if event.ticket_service_event %}
                 {% spaceless %}
                 <div id="tickets">
+                {% if venue_sectors %}
+                    <b>Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</b>
+                    <br>
+                    <br>
+                {% endif %}
                     {{ venue_scheme|safe }}
+
+                {# Опциональное включение схем отдельных секторов, #}
+                {# если к общей схеме зала в БД добавлен хотя бы один сектор #}
+                {% if venue_sectors %}
+                    <div class="sectors-slider">
+                    {% for sector in venue_sectors %}
+                        <div class="sectors sector-{{ sector.sector_id }}">
+                            <p class="sector-title">{{ sector.sector_title }}</p>
+                            <br>
+                            {{ sector.sector_scheme|safe }}
+                        </div>
+                    {% endfor%}
+                    </div>
+                {% endif %}
+
                 </div>
                 {% endspaceless %}
+
             {% else %}
                 <div id="tickets">
                     <div class="ticket-message">
@@ -202,6 +223,8 @@
         ticket_service: <pre>{{ ticket_service|pprint }}</pre>
         <br><br>
         payment_service: <pre>{{ payment_service|pprint }}</pre>
+        <br><br>
+        venue_sectors: <pre>{{ venue_sectors|pprint }}</pre>
         {% endif %}
 
         </main>
@@ -221,66 +244,46 @@
     {% compress js inline %}
     <script type="text/javascript" defer>
     $(document).ready(function() {
-        // Добавление паддинга к блоку "Место проведения события", чтобы по высоте оно было соразмерно блоку "Название события/дата/время" (костыль)
-        var eventTitleHeight = $("#event-title-date-time").height() / 28.75;
-        $("#event-venue").css("padding-top", eventTitleHeight + "rem").css("padding-bottom", eventTitleHeight + "rem");
-
-        // временное сообщение
-        var linksHeight = $("#links").height() + 16;
-        if (linksHeight > 16) {
-            $(".ticket-message").css("min-height", linksHeight);
-        }
-        // временное сообщение
-
         // Показ и скрытие прелоадера "Подождите, страница загружается" с временем его показа в .delay()
-        $("#tickets-preloader").fadeIn().delay(5000).fadeOut();
+        $("#tickets-preloader").fadeIn().delay(4000).fadeOut();
 
-        // Включение отдельных файлов со схемами секторов в общую схему зала, только если зал большой 
-        // (если в общей схеме зала задан булев параметр stagehall_composite)
-        if (typeof stagehall_composite != 'undefined' && stagehall_composite == true) {
-            // После общей схемы зала создаётся блок-слайдер для показа выбранного сектора зала
-            $('#tickets').append($('<div class="sectors-slider">'));
-
-            $.each(sector_names, function(sector_id, sector_name){
-                // Фильтр только по поименованным секторам в конкретном зале, а не по всем вообще
-                if (sector_name != undefined) {
-                    // Создание блока со схемой каждого из секторов
-                    $('.sectors-slider').prepend($('<div class="sectors sector-' + sector_id + '">'));
-                    // Имя файла со схемой соотв. сектора
-                    sector_filename = '{# sector_filename #}' + sector_id + '-sector.inc.html';
-                    // Селектор блока со схемой соотв. сектора
-                    sector_holder = '.sector-' + sector_id;
-
-                    // Включение схемы соотв. сектора в содержащий его селектор
-                    sector_loaded = $(sector_holder).load(sector_filename);
-                    // $("<span class=\"sectors-slider_close\">X</span>").appendTo($(sector_loaded));
-                    // Скрытие каждого из секторов по умолчанию
-                    $(sector_holder).hide();
-                }
-            });
-
-            // Показ выбранного сектора и скрытие всех невыбранных секторов в больших залах (при загрузке страницы)
-            $('input[name="sectors"]').each(function() {
-                sectorScheme = '.sectors-slider > .' + $(this).attr('id');
-                if ($(this).is(':checked')) {
-                    $(sectorScheme).show();
-                }
-            });
-        }
-
-    });
-
-    if (typeof stagehall_composite != 'undefined' && stagehall_composite == true) {
-        // Показ выбранного сектора и скрытие всех невыбранных секторов в больших залах (при переключении радиокнопок)
-        $('input[name="sectors"]').change(function() {
-            $('.sectors-slider .sectors').hide();
-            sectorScheme = '.sectors-slider > .' + $(this).attr('id');
+        // Скрытие каждого из секторов по умолчанию
+        $('.sectors-slider .sectors').hide();
+        // Показ выбранного сектора и скрытие всех НЕвыбранных секторов (при загрузке страницы)
+        $('input[name="sectors"]').each(function() {
+            sector_scheme = '.sectors-slider > .' + $(this).attr('id');
+            console.log('sector_scheme: ', sector_scheme);
             if ($(this).is(':checked')) {
-                console.log(sectorScheme, 'checked');
-                $(sectorScheme).fadeIn(250);
+                console.log(sector_scheme, 'checked');
+                $(sector_scheme).fadeIn(200);
             }
         });
-    }
+
+        var tickets_width = $("#tickets").width();
+        $(".sectors-slider").css("max-width", tickets_width + "px");
+
+        // Добавление паддинга к блоку "Место проведения события", чтобы по высоте оно было соразмерно блоку "Название события/дата/время" (костыль)
+        var event_title_height = $("#event-title-date-time").height() / 28.75;
+        $("#event-venue").css("padding-top", event_title_height + "rem").css("padding-bottom", event_title_height + "rem");
+
+        // временное сообщение
+        var links_height = $("#links").height() + 16;
+        if (links_height > 16) {
+            $(".ticket-message").css("min-height", links_height);
+        }
+        // временное сообщение
+    });
+
+    // Показ выбранного сектора и скрытие всех НЕвыбранных секторов (при переключении радиокнопок)
+    $('input[name="sectors"]').change(function() {
+        $('.sectors-slider .sectors').hide();
+        sector_scheme = '.sectors-slider > .' + $(this).attr('id');
+        console.log('sector_scheme: ', sector_scheme);
+        if ($(this).is(':checked')) {
+            console.log(sector_scheme, 'checked');
+            $(sector_scheme).fadeIn(200);
+        }
+    });
     </script>
     {% endcompress %}
 {% endblock %}

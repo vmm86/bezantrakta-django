@@ -12,7 +12,7 @@ from project.shortcuts import build_absolute_url, message, render_messages, time
 from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
 
 from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.models import TicketServiceSchemeVenueBinder
+from third_party.ticket_service.models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
 
 from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
@@ -93,40 +93,41 @@ def event(request, year, month, day, hour, minute, slug):
         # Кэширование информации о событии, сервисе продажи билетов и сервисе онлайн-оплаты
         event = get_or_set_event_cache(event['event_uuid'])
 
-        if event['ticket_service_id']:
-            # Настройки сервиса продажи билетов
-            ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+        # Событие опубликовано
+        if event['is_published']:
 
-            # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
-            ticket_service_defaults = {
-                # Максимальное число билетов в заказе
-                'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
-                # Таймаут для повторения запроса списка мест в событии в секундах
-                'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
-                # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
-                'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
-            }
-            for param, value in ticket_service_defaults.items():
-                if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
-                    ticket_service['settings'][param] = value
-        else:
-            ticket_service = None
+            if event['ticket_service_id']:
+                # Настройки сервиса продажи билетов
+                ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
 
-        if event['payment_service_id']:
-            # Настройки сервиса онлайн-оплаты
-            payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
-        else:
-            payment_service = None
+                # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
+                ticket_service_defaults = {
+                    # Максимальное число билетов в заказе
+                    'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
+                    # Таймаут для повторения запроса списка мест в событии в секундах
+                    'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
+                    # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
+                    'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
+                }
+                for param, value in ticket_service_defaults.items():
+                    if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
+                        ticket_service['settings'][param] = value
+            else:
+                ticket_service = None
 
-        today = timezone_now()
-        event_is_coming = True if event['event_datetime'] > today else False
+            if event['payment_service_id']:
+                # Настройки сервиса онлайн-оплаты
+                payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
+            else:
+                payment_service = None
 
-        # Событие находится в группе событий или НЕ находится в группе событий и опубликовано
-        if event['is_in_group'] or (not event['is_in_group'] and event['is_published']):
-            context = {}
+            today = timezone_now()
+            event_is_coming = True if event['event_datetime'] > today else False
 
             # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
             add_small_vertical_poster(request, event)
+
+            context = {}
 
             # Запрос ссылок в этом событии
             try:
@@ -166,7 +167,7 @@ def event(request, year, month, day, hour, minute, slug):
                     venue=F('event__event_venue__title'),
                 ).filter(
                     group=event['group_id'],
-                    # event__is_published=True,
+                    event__is_published=True,
                     event__datetime__gt=today,
                     event__domain_id=request.domain_id,
                 ).values(
@@ -196,6 +197,25 @@ def event(request, year, month, day, hour, minute, slug):
                     pass
                 else:
                     context['venue_scheme'] = venue_scheme
+
+                # Опциональные секторы в схеме зала из БД
+                try:
+                    venue_sectors = TicketServiceSchemeSector.objects.filter(
+                        scheme__ticket_service__domain_id=request.domain_id,
+                        scheme__ticket_service_scheme_id=event['ticket_service_scheme'],
+                    ).annotate(
+                        sector_id=F('ticket_service_sector_id'),
+                        sector_title=F('ticket_service_sector_title'),
+                        sector_scheme=F('sector'),
+                    ).values(
+                        'sector_id',
+                        'sector_title',
+                        'sector_scheme',
+                    )
+                except TicketServiceSchemeVenueBinder.DoesNotExist:
+                    pass
+                else:
+                    context['venue_sectors'] = list(venue_sectors)
 
             context['event'] = event
             context['event']['is_coming'] = event_is_coming
