@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-08 13:50+0000\n"
+"POT-Creation-Date: 2017-10-25 08:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,11 +20,7 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin.py:45
-msgid "ticket_service_venue_binder_if_scheme_exists"
-msgstr "Схема зала"
-
-#: admin.py:83
+#: admin/ticket_service.py:44
 msgid "ticket_service_help_text"
 msgstr ""
 "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от "
@@ -79,31 +75,43 @@ msgstr ""
 "минутах, по истечении которого автоматически снимается предварительный "
 "резерв мест на схеме зала (по умолчанию - 15).</li></ul>"
 
-#: admin.py:105
+#: admin/ticket_service.py:70
 msgid "ticket_service_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных сервисов продажи билетов"
 
-#: admin.py:115
+#: admin/ticket_service.py:80
 msgid "event_admin_activate_or_deactivate_items"
 msgstr "Включить или отключить сервисы продажи билетов"
 
-#: admin.py:120
+#: admin/ticket_service.py:85
 msgid "ticket_service_admin_ticket_service_schemes_count"
 msgstr "Схем залов"
 
-#: admin.py:126
+#: admin/ticket_service.py:91
 msgid "ticket_service_admin_is_payment_service_added"
 msgstr "Оплата"
 
-#: models/ticket_service.py:24
+#: admin/ticket_service_scheme_sector.py:36
+msgid "ticketserviceschemesector_if_sector_exists"
+msgstr "Сектор"
+
+#: admin/ticket_service_scheme_venue_binder.py:45
+msgid "ticketservicevenuebinder_if_scheme_exists"
+msgstr "Схема зала"
+
+#: admin/ticket_service_scheme_venue_binder.py:52
+msgid "ticketservicevenuebinder_if_sectors_exist"
+msgstr "Секторы"
+
+#: models/ticket_service.py:34
 msgid "ticketservice_id"
 msgstr "Идентификатор"
 
-#: models/ticket_service.py:28
+#: models/ticket_service.py:38
 msgid "ticketservice_title"
 msgstr "Название"
 
-#: models/ticket_service.py:32
+#: models/ticket_service.py:42
 msgid "ticketservice_slug_help_text"
 msgstr ""
 "<p>Псевдоним должен совпадать с атрибутом <strong>slug</strong> класса "
@@ -111,55 +119,88 @@ msgstr ""
 "strong> для СуперБилет,</li><li><strong>radario</strong> для Радарио.</li></"
 "ul></p>"
 
-#: models/ticket_service.py:33
+#: models/ticket_service.py:43
 msgid "ticketservice_slug"
 msgstr "Псевдоним"
 
-#: models/ticket_service.py:37
+#: models/ticket_service.py:47
 msgid "ticketservice_is_active"
 msgstr "Работает"
 
-#: models/ticket_service.py:41
+#: models/ticket_service.py:51
 msgid "ticketservice_settings"
 msgstr "Настройки в JSON"
 
-#: models/ticket_service.py:47
+#: models/ticket_service.py:57
 msgid "ticketservice_domain"
 msgstr "Сайт"
 
-#: models/ticket_service.py:54
+#: models/ticket_service.py:64
 msgid "ticketservice_schemes"
 msgstr "Схемы залов"
 
-#: models/ticket_service.py:62
+#: models/ticket_service.py:72
 msgid "ticketservice_payment_service"
 msgstr "Сервис онлайн-оплаты"
 
-#: models/ticket_service.py:68
+#: models/ticket_service.py:78
 msgid "ticketservice"
 msgstr "сервис продажи билетов"
 
-#: models/ticket_service.py:69
+#: models/ticket_service.py:79
 msgid "ticketservices"
 msgstr "сервисы продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:31
+#: models/ticket_service_scheme_sector.py:39
+msgid "ticketserviceschemesector_scheme"
+msgstr "Схема зала"
+
+#: models/ticket_service_scheme_sector.py:42
+msgid "ticketserviceschemesector_ticket_service_sector_id"
+msgstr "ID сектора в схеме зала"
+
+#: models/ticket_service_scheme_sector.py:46
+msgid "ticketserviceschemesector_ticket_service_sector_title"
+msgstr "Название сектора в схеме зала"
+
+#: models/ticket_service_scheme_sector.py:51
+msgid "ticketserviceschemesector_sector_help_text"
+msgstr ""
+"<p>Схемы секторов создаются аналогично схеме зала.<br>Общая схема зала для "
+"работы с секторами должна содержать ссылки для открытия схем секторов по "
+"клику в отдельном блоке под общей схемой зала. При клике на каком-либо "
+"секторе на общей схеме зала выбранный сектор становится видимым, а все "
+"остальны секторы скрываются."
+
+#: models/ticket_service_scheme_sector.py:52
+msgid "ticketserviceschemesector_sector"
+msgstr "Сектор в схеме зала"
+
+#: models/ticket_service_scheme_sector.py:58
+msgid "ticketserviceschemesector"
+msgstr "сектор в схеме зала"
+
+#: models/ticket_service_scheme_sector.py:59
+msgid "ticketserviceschemesectors"
+msgstr "секторы в схеме зала"
+
+#: models/ticket_service_scheme_venue_binder.py:43
 msgid "ticketserviceschemevenuebinder_ticket_service"
 msgstr "Сервис продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:34
+#: models/ticket_service_scheme_venue_binder.py:46
 msgid "ticketserviceschemevenuebinder_ticket_service_scheme"
 msgstr "ID схемы в сервисе продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:38
+#: models/ticket_service_scheme_venue_binder.py:50
 msgid "ticketserviceschemevenuebinder_ticket_service_scheme_title"
 msgstr "Название схемы в сервисе продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:46
+#: models/ticket_service_scheme_venue_binder.py:58
 msgid "ticketserviceschemevenuebinder_event_venue"
 msgstr "Зал"
 
-#: models/ticket_service_scheme_venue_binder.py:51
+#: models/ticket_service_scheme_venue_binder.py:63
 msgid "ticketserviceschemevenuebinder_scheme_help_text"
 msgstr ""
 "<p>Схема зала в HTML, как правило, на основе таблиц. Возможно использование "
@@ -176,14 +217,14 @@ msgstr ""
 "подгружаются к каждому доступному для заказа месту при обновлении схемы зала "
 "на 1-м шаге заказа билетов.</p>"
 
-#: models/ticket_service_scheme_venue_binder.py:52
+#: models/ticket_service_scheme_venue_binder.py:64
 msgid "ticketserviceschemevenuebinder_scheme"
 msgstr "Схема зала"
 
-#: models/ticket_service_scheme_venue_binder.py:58
+#: models/ticket_service_scheme_venue_binder.py:70
 msgid "ticketserviceschemevenuebinder"
 msgstr "схема зала"
 
-#: models/ticket_service_scheme_venue_binder.py:59
+#: models/ticket_service_scheme_venue_binder.py:71
 msgid "ticketserviceschemevenuebinders"
 msgstr "схемы залов"

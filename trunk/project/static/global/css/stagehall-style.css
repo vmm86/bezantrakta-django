@@ -120,3 +120,62 @@ html {
 .stagehall .br {border-right:  2px solid #000 !important;}
 .stagehall .bb {border-bottom: 2px solid #000 !important;}
 .stagehall .bl {border-left:   2px solid #000 !important;}
+
+.stagehall .sector-button {
+    display: table;
+    width:  100%;
+    height: 100%;
+    transition: background 0.5s linear 0s;
+}
+.stagehall .sector-button:hover label {
+    cursor: pointer;
+    background: #FFCC00;
+    color: #000;
+    transition: background 0.5s linear 0s;
+}
+
+.stagehall .sector-button label {
+    display: table-cell;
+    background: #FFE57F;
+    color: #000;
+    font-weight: bold;
+    vertical-align: middle;
+    transition: background 0.5s linear 0s;
+}
+
+.stagehall .sector-button span {
+    display: table-cell;
+    background: #E1E1E1;
+    color: #000;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.stagehall .sector-button input {
+    display: none;
+}
+.stagehall .sector-button input:checked + label {
+    background: #FFCC00;
+    color: #000;
+}
+
+.sectors-slider {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+
+    padding: 1rem 0;
+
+    max-width: 65vw;
+    overflow-x: auto;
+}
+
+.sectors-slider .sector-title {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.sectors-slider .stagehall {
+    margin: 0 auto;
+    width: auto;
+}

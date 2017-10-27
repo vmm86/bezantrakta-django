@@ -94,7 +94,7 @@ sector_id = 509
 # py_result = ts.events(place_id=place_id)
 # py_result = ts.events(scheme_id=scheme_id)
 # DISCOVER_EVENTS
-# py_result = ts.discover_events()
+py_result = ts.discover_events()
 
 # SECTORS
 # py_result = ts.sectors(event_id=event_id)
@@ -139,7 +139,7 @@ tickets = [
 
 # ORDER_DELETE
 order_id = 39351
-py_result = ts.order_delete(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
+# py_result = ts.order_delete(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
 
 # ORDER_PAYMENT
 # payment_id = '2d529111-1da0-455a-be55-3456eaf97055'
