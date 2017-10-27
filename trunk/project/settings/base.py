@@ -172,7 +172,7 @@ ADMIN_REORDER = (
         'label': 'Сервисы продажи билетов',
         'models':
         (
-            {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
+            {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗 '},
         )
 
     },
@@ -181,7 +181,7 @@ ADMIN_REORDER = (
         'label': 'Сервисы онлайн-оплаты',
         'models':
         (
-            {'model': 'payment_service.PaymentService', 'label': 'Сервисы онлайн-оплаты 🔗'},
+            {'model': 'payment_service.PaymentService', 'label': 'Сервисы онлайн-оплаты 🔗 '},
         )
 
     },
@@ -191,11 +191,11 @@ ADMIN_REORDER = (
         (
             {'model': 'event.EventCategory', 'label': 'Категории'},
             {'model': 'event.EventLink', 'label': 'Ссылки'},
-            {'model': 'event.EventVenue', 'label': 'Залы (места проведения событий) 🔗'},
-            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗'},
-            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': 'Секторы в схемах залов 🔗'},
-            {'model': 'event.Event', 'label': 'События или группы 🔗'},
-            {'model': 'event.EventContainer', 'label': 'Контейнеры для размещения афиш 🔗'},
+            {'model': 'event.EventVenue', 'label': 'Залы (места проведения событий) 🔗 '},
+            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗 '},
+            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': 'Секторы в схемах залов 🔗 '},
+            {'model': 'event.Event', 'label': 'События или группы 🔗 '},
+            {'model': 'event.EventContainer', 'label': 'Контейнеры для размещения афиш 🔗 '},
         )
     },
     {
@@ -203,8 +203,8 @@ ADMIN_REORDER = (
         'label': 'Заказы',
         'models':
         (
-            {'model': 'order.Order', 'label': 'Заказы 🔗'},
-            {'model': 'order.OrderTicket', 'label': 'Билеты в заказах 🔗'},
+            {'model': 'order.Order', 'label': 'Заказы 🔗 '},
+            {'model': 'order.OrderTicket', 'label': 'Билеты в заказах 🔗 '},
         )
 
     },
@@ -212,7 +212,7 @@ ADMIN_REORDER = (
         'app': 'article',
         'models':
         (
-            {'model': 'article.Article', 'label': 'HTML-страницы 🔗'},
+            {'model': 'article.Article', 'label': 'HTML-страницы 🔗 '},
         )
     },
     {
@@ -220,7 +220,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'menu.Menu', 'label': 'Меню'},
-            {'model': 'menu.MenuItem', 'label': 'Пункты меню 🔗'},
+            {'model': 'menu.MenuItem', 'label': 'Пункты меню 🔗 '},
         )
     },
     {
@@ -228,7 +228,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'banner.BannerGroup', 'label': 'Группы баннеров'},
-            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры 🔗'},
+            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры 🔗 '},
         )
     },
     {
