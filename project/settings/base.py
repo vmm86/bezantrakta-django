@@ -173,8 +173,6 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
-            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗'},
-            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': 'Секторы в схемах залов 🔗'},
         )
 
     },
@@ -194,6 +192,8 @@ ADMIN_REORDER = (
             {'model': 'event.EventCategory', 'label': 'Категории'},
             {'model': 'event.EventLink', 'label': 'Ссылки'},
             {'model': 'event.EventVenue', 'label': 'Залы (места проведения событий) 🔗'},
+            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗'},
+            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': 'Секторы в схемах залов 🔗'},
             {'model': 'event.Event', 'label': 'События или группы 🔗'},
             {'model': 'event.EventContainer', 'label': 'Контейнеры для размещения афиш 🔗'},
         )
