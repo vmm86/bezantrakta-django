@@ -168,24 +168,13 @@ ADMIN_REORDER = (
 
     },
     {
-        'app': 'event',
-        'models':
-        (
-            {'model': 'event.EventCategory', 'label': 'Категории'},
-            {'model': 'event.EventLink', 'label': 'Ссылки'},
-            {'model': 'event.EventVenue', 'label': 'Залы 🔗'},
-            {'model': 'event.Event', 'label': 'События или группы 🔗'},
-            {'model': 'event.EventGroup', 'label': 'Группы 🔗'},
-            {'model': 'event.EventContainer', 'label': 'Контейнеры 🔗'},
-        )
-    },
-    {
         'app': 'ticket_service',
         'label': 'Сервисы продажи билетов',
         'models':
         (
             {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗'},
             {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗'},
+            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': 'Секторы в схемах залов 🔗'},
         )
 
     },
@@ -197,6 +186,17 @@ ADMIN_REORDER = (
             {'model': 'payment_service.PaymentService', 'label': 'Сервисы онлайн-оплаты 🔗'},
         )
 
+    },
+    {
+        'app': 'event',
+        'models':
+        (
+            {'model': 'event.EventCategory', 'label': 'Категории'},
+            {'model': 'event.EventLink', 'label': 'Ссылки'},
+            {'model': 'event.EventVenue', 'label': 'Залы (места проведения событий) 🔗'},
+            {'model': 'event.Event', 'label': 'События или группы 🔗'},
+            {'model': 'event.EventContainer', 'label': 'Контейнеры для размещения афиш 🔗'},
+        )
     },
     {
         'app': 'order',
