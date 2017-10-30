@@ -93,8 +93,8 @@
 
                     <div id="legend-prices">
                         <ul id="legend-extension">
-                        {% for p in prices %}
-                            <li><a class="box stateF color{{ forloop.counter }}"></a> {{ p }}</li>
+                        {% for price in prices %}
+                            <li><a class="box stateF color{{ forloop.counter }}"></a> {{ price }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</li>
                         {% endfor %}
                         </ul>
                     </div>
@@ -245,7 +245,7 @@
     <script type="text/javascript" defer>
     $(document).ready(function() {
         // Показ и скрытие прелоадера "Подождите, страница загружается" с временем его показа в .delay()
-        $("#tickets-preloader").fadeIn().delay(4000).fadeOut();
+        $('#tickets-preloader').fadeIn().delay(4000).fadeOut();
 
         // Скрытие каждого из секторов по умолчанию
         $('.sectors-slider .sectors').hide();
@@ -260,16 +260,16 @@
         });
 
         var tickets_width = $("#tickets").width();
-        $(".sectors-slider").css("max-width", tickets_width + "px");
+        $('.sectors-slider').css('max-width', tickets_width + 'px');
 
         // Добавление паддинга к блоку "Место проведения события", чтобы по высоте оно было соразмерно блоку "Название события/дата/время" (костыль)
-        var event_title_height = $("#event-title-date-time").height() / 28.75;
-        $("#event-venue").css("padding-top", event_title_height + "rem").css("padding-bottom", event_title_height + "rem");
+        var event_title_height = $('#event-title-date-time').height() / 28.75;
+        $('#event-venue').css('padding-top', event_title_height + 'rem').css('padding-bottom', event_title_height + 'rem');
 
         // временное сообщение
-        var links_height = $("#links").height() + 16;
+        var links_height = $('#links').height() + 16;
         if (links_height > 16) {
-            $(".ticket-message").css("min-height", links_height);
+            $('.ticket-message').css('min-height', links_height);
         }
         // временное сообщение
     });
