@@ -119,7 +119,7 @@ def get_or_set_cache(event_uuid, reset=False):
         cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False, default=json_serializer))
     else:
         cache_value = json.loads(cache.get(cache_key))
-        print('cache_value: ', cache_value)
+        # print('cache_value: ', cache_value)
         # Получение из строки даты и времени в UTC ('2017-08-31T16:00:00+00:00')
         # В шаблоне она должна локализоваться с учётом текущего часового пояса
         cache_value['event_datetime'] = parse(cache_value['event_datetime'])
