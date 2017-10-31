@@ -196,7 +196,7 @@ class Event(models.Model):
         db_table = 'bezantrakta_event'
         verbose_name = _('event')
         verbose_name_plural = _('events')
-        ordering = ('domain', '-datetime', 'title', 'is_group',)
+        ordering = ('domain', 'is_group', '-datetime', 'title',)
         unique_together = (
             ('domain', 'datetime', 'slug',),
         )

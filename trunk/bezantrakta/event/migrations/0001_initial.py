@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'события или группы',
                 'verbose_name': 'событие или группа',
                 'db_table': 'bezantrakta_event',
-                'ordering': ('domain', '-datetime', 'title', 'is_group'),
+                'ordering': ('domain', 'is_group', '-datetime', 'title'),
             },
         ),
         migrations.CreateModel(
