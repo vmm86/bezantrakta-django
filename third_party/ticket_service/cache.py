@@ -29,28 +29,31 @@ def get_or_set_cache(ticket_service_id, reset=False):
         # logger.info('\nПринудительное удаление (reset)')
 
     if not cache_value or reset:
-        ts = dict(TicketService.objects.select_related(
-            'domain',
-        ).values(
-            'id',
-            'title',
-            'slug',
-            'is_active',
-            'settings',
-            'domain_id',
-        ).get(
-            id=ticket_service_id,
-        ))
+        try:
+            ts = dict(TicketService.objects.select_related(
+                'domain',
+            ).values(
+                'id',
+                'title',
+                'slug',
+                'is_active',
+                'settings',
+                'domain_id',
+            ).get(
+                id=ticket_service_id,
+            ))
+        except TicketService.DoesNotExist:
+            return None
+        else:
+            # Получение настроек сервиса продажи билетов
+            ts['settings'] = (
+                json.loads(ts['settings']) if ts['settings'] is not None else None
+            )
 
-        # Получение настроек сервиса продажи билетов
-        ts['settings'] = (
-            json.loads(ts['settings']) if ts['settings'] is not None else None
-        )
-
-        cache_value = {k: v for k, v in ts.items()}
-        # logger.info('\nНовый кэш:\n{}'.format(cache_value['settings']['order_description']['email_online']))
-        cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
-        # logger.info('\nПерезапись кэша')
+            cache_value = {k: v for k, v in ts.items()}
+            # logger.info('\nНовый кэш:\n{}'.format(cache_value['settings']['order_description']['email_online']))
+            cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
+            # logger.info('\nПерезапись кэша')
     else:
         cache_value = json.loads(cache.get(cache_key))
         # logger.info('\nИмеющийся кэш без перезаписи:\n{}'.format(cache_value['settings']['order_description']['email_online']))

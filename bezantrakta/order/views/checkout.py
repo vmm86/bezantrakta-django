@@ -1,4 +1,5 @@
 import simplejson as json
+import uuid
 
 from django.conf import settings
 from django.shortcuts import redirect, render
@@ -19,11 +20,25 @@ from third_party.ticket_service.cache import ticket_service_instance
 def checkout(request):
     """Введение контактных данных покупателем и выбор типа заказа."""
     # Получение параметров события из cookie
-    event_uuid = request.COOKIES.get('bezantrakta_event_uuid')
-    event_id = int(request.COOKIES.get('bezantrakta_event_id'))
+    event_uuid = request.COOKIES.get('bezantrakta_event_uuid', uuid.uuid4())
+    event_id = int(request.COOKIES.get('bezantrakta_event_id', 0))
 
     # Информация о событии из кэша
     event = get_or_set_event_cache(event_uuid)
+    if event is None:
+        # Сообщение об ошибке
+        msgs = [
+            message(
+                'warning',
+                'К сожалению, произошла ошибка предварительного резерва билетов. 😞'
+            ),
+            message(
+                'info',
+                '👉 <a href="/">Начните поиск с главной страницы</a>.'
+            ),
+        ]
+        render_messages(request, msgs)
+        return redirect('error')
 
     # Информация о сервисе продажи билетов
     ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
@@ -115,7 +130,7 @@ def checkout(request):
         msgs = [
             message(
                 'warning',
-                'К сожалению, вы ещё не забронировали ни одного места либо ваша бронь истекла. 😞'
+                'К сожалению, вы не добавили билеты в предварительный резерв либо время его действия истекло. 😞'
             ),
             message(
                 'info',
