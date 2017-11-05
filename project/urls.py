@@ -23,7 +23,6 @@ urlpatterns = [
     # Сообщения об ошибках
     url(r'^error/', error, name='error'),
     url(r'^error_400/', error_400, name='error_400'),
-    url(r'^error_400/', error_400, name='error_400'),
     url(r'^error_403/', error_403, name='error_403'),
     url(r'^error_404/', error_404, name='error_404'),
     url(r'^error_410/', error_410, name='error_410'),
