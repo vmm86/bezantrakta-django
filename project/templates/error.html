@@ -35,10 +35,10 @@
 <script type="text/javascript" src="{% static "global/js/jquery/jquery-3.2.1.min.js" %}"></script>
 <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
 
-{# compress js inline #}
+{% compress js inline %}
 <script type="text/javascript">
     {% include "order/confirmation.js" %}
 </script>
-{# endcompress #}
+{% endcompress %}
 
 {% endspaceless %}

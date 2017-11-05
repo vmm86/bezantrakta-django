@@ -43,13 +43,12 @@ def reserve(request):
         # Формирование ответа
         response = {}
 
-        if reserve['success']:
-            response['success'] = True
-            for k in keys:
-                response[k[0]] = params[k[0]]
-        else:
-            response['success'] = False
-            response['action'] = params['action']
+        for k in keys:
+            response[k[0]] = params[k[0]]
+
+        response['success'] = True if reserve['success'] else False
+
+        if not reserve['success']:
             response['code'] = reserve['code']
             response['message'] = reserve['message']
 
