@@ -504,19 +504,6 @@ h1, h2 {
     height: *;
     min-height: 11px;
 }
-.rownumber {
-    font-size: 0.5rem;
-}
-
-.three-digits {
-    font-size: 0.75rem;
-    letter-spacing: -0.12rem;
-}
-
-.bt {border-top:    2px solid #000;}
-.br {border-right:  2px solid #000;}
-.bb {border-bottom: 2px solid #000;}
-.bl {border-left:   2px solid #000;}
 
 .free,
 .selected {
@@ -525,9 +512,11 @@ h1, h2 {
     font-weight: bold;
 }
 
-.box            { display: inline-block; width: 14px; height: 14px; border: 1px solid #000; vertical-align: -1px;}
+.box          { display: inline-block; width: 14px; height: 14px; border: 1px solid #000; vertical-align: -1px;}
 
 .free         { color: #ECEFF1; text-shadow: 0.0625rem 0.09rem 0 #000; }
+.free:hover,
+.selected     { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
 
 .free.color1  { background-color: #F44336; } /* red 500 */
 .free.color2  { background-color: #4CAF50; } /* green 500 */
@@ -550,8 +539,10 @@ h1, h2 {
 .free.color19 { background-color: #004D40; } /* teal 900 */
 .free.color20 { background-color: #1A237E; } /* indigo 900 */
 
-.free:hover,
-.selected     { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
+.bt {border-top:    2px solid #000;}
+.br {border-right:  2px solid #000;}
+.bb {border-bottom: 2px solid #000;}
+.bl {border-left:   2px solid #000;}
 
 /* Для мест, расположение которых в пространстве не важно (фан-зона, танцпол, входной билет и т.п.) */
 
