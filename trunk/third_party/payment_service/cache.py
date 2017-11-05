@@ -27,33 +27,36 @@ def get_or_set_cache(payment_service_id, reset=False):
         cache.delete(cache_key)
 
     if not cache_value or reset:
-        ps = dict(PaymentService.objects.values(
-            'id',
-            'title',
-            'slug',
-            'is_active',
-            'is_production',
-            'settings'
-        ).get(
-            id=payment_service_id,
-        ))
+        try:
+            ps = dict(PaymentService.objects.values(
+                'id',
+                'title',
+                'slug',
+                'is_active',
+                'is_production',
+                'settings'
+            ).get(
+                id=payment_service_id,
+            ))
+        except PaymentService.DoesNotExist:
+            return None
+        else:
+            # Получение настроек сервиса онлайн-оплаты
+            ps['settings'] = (
+                json.loads(ps['settings']) if ps['settings'] is not None else None
+            )
 
-        # Получение настроек сервиса онлайн-оплаты
-        ps['settings'] = (
-            json.loads(ps['settings']) if ps['settings'] is not None else None
-        )
+            # Тип оплаты помещается в init в виде строки `test` или `prod`,
+            # чтобы затем использоваться при инстанцировании класса
+            ps['settings']['init']['mode'] = 'prod' if ps['is_production'] else 'test'
 
-        # Тип оплаты помещается в init в виде строки `test` или `prod`,
-        # чтобы затем использоваться при инстанцировании класса
-        ps['settings']['init']['mode'] = 'prod' if ps['is_production'] else 'test'
+            # Общие параметры, лежащие вне init, помещаются в него,
+            # чтобы затем использоваться при инстанцировании класса
+            for gp in PaymentServiceABC.GENERAL_PARAMS:
+                ps['settings']['init'][gp] = ps['settings'][gp]
 
-        # Общие параметры, лежащие вне init, помещаются в него,
-        # чтобы затем использоваться при инстанцировании класса
-        for gp in PaymentServiceABC.GENERAL_PARAMS:
-            ps['settings']['init'][gp] = ps['settings'][gp]
-
-        cache_value = {k: v for k, v in ps.items()}
-        cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
+            cache_value = {k: v for k, v in ps.items()}
+            cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
     else:
         cache_value = json.loads(cache.get(cache_key))
 
