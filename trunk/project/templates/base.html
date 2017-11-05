@@ -92,9 +92,9 @@
     {% if not debug %}
     {% spaceless %}
     <div class="counters">
-        {% compress js inline %}
+    {% compress js inline %}
         {% include "counters.html" %}
-        {% endcompress %}
+    {% endcompress %}
     </div>
     {% endspaceless %}
     {% endif %}

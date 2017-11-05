@@ -86,8 +86,7 @@
 
                     <div id="legend-general">
                         <p><a class="box stateS"></a> выбрано вами</p>
-                        <p><a class="box stateO"></a> выбрано другим</p>
-                        <p><a class="box stateE"></a> недоступно</p>
+                        <p><a class="box stateF"></a> недоступно</p>
                     </div>
                     <br>
 
@@ -205,8 +204,6 @@
                 <div>
                     <div class="modal-body">
                         <div style="display: flex; flex-direction: column; flex-wrap: wrap; justify-content: center; height: 100%;">
-                            <strong style="font-size: 1.5rem;">Подождите, страница загружается...</strong>
-                            <p>&nbsp;</p>
                             <p><img src="{% static "global/ani/striped-progress.gif" %}"></p>
                         </div>
                     </div>
@@ -232,58 +229,52 @@
 {% endblock %}
 
 {% block scripts %}
+    {# Общие скрипты для оформления страницы, даже если событие НЕ привязано к сервису продажи билетов #}
+    {% compress js inline %}
+    <script type="text/javascript" defer>
+    $(document).ready(function() {
+        {% if event.ticket_service_event %}$('#tickets-preloader').hide();{% endif %}
+
+        {# Добавление паддинга к блоку "Место проведения события" #}
+        {# Этот блок становится соразмерным по высоте блоку "Название события/дата/время" (костыль) #}
+        var event_title_height = $('#event-title-date-time').height() / 28.75;
+        $('#event-venue').css('padding-top', event_title_height + 'rem');
+        $('#event-venue').css('padding-bottom', event_title_height + 'rem');
+
+        {# временное сообщение #}
+        var links_height = $('#links').height() + 16;
+        if (links_height > 16) {
+            $('.ticket-message').css('min-height', links_height);
+        }
+        {# временное сообщение #}
+    });
+    </script>
+    {% endcompress %}
+
+{# Скрипты для работы с заказом билетов #}
+{% if event.ticket_service_event %}
     <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
     <script type="text/javascript" src="{% static "global/js/lodash/lodash.min.js" %}"></script>
 
     {% compress js inline %}
     <script type="text/javascript">
-        {% include "event/event.js" with event=event %}
-    </script>
-    {% endcompress %}
-
-    {% compress js inline %}
-    <script type="text/javascript" defer>
+    {# Базовый функционал процесса заказа билетов #}
     $(document).ready(function() {
-        // Показ и скрытие прелоадера "Подождите, страница загружается" с временем его показа в .delay()
-        $('#tickets-preloader').fadeIn().delay(4000).fadeOut();
-
-        // Скрытие каждого из секторов по умолчанию
-        $('.sectors-slider .sectors').hide();
-        // Показ выбранного сектора и скрытие всех НЕвыбранных секторов (при загрузке страницы)
-        $('input[name="sectors"]').each(function() {
-            sector_scheme = '.sectors-slider > .' + $(this).attr('id');
-            console.log('sector_scheme: ', sector_scheme);
-            if ($(this).is(':checked')) {
-                console.log(sector_scheme, 'checked');
-                $(sector_scheme).fadeIn(200);
-            }
-        });
-
-        var tickets_width = $("#tickets").width();
-        $('.sectors-slider').css('max-width', tickets_width + 'px');
-
-        // Добавление паддинга к блоку "Место проведения события", чтобы по высоте оно было соразмерно блоку "Название события/дата/время" (костыль)
-        var event_title_height = $('#event-title-date-time').height() / 28.75;
-        $('#event-venue').css('padding-top', event_title_height + 'rem').css('padding-bottom', event_title_height + 'rem');
-
-        // временное сообщение
-        var links_height = $('#links').height() + 16;
-        if (links_height > 16) {
-            $('.ticket-message').css('min-height', links_height);
-        }
-        // временное сообщение
-    });
-
-    // Показ выбранного сектора и скрытие всех НЕвыбранных секторов (при переключении радиокнопок)
-    $('input[name="sectors"]').change(function() {
-        $('.sectors-slider .sectors').hide();
-        sector_scheme = '.sectors-slider > .' + $(this).attr('id');
-        console.log('sector_scheme: ', sector_scheme);
-        if ($(this).is(':checked')) {
-            console.log(sector_scheme, 'checked');
-            $(sector_scheme).fadeIn(200);
-        }
+        {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_sectors=venue_sectors %}
+        prepare_order_onload();
+        start_heartbeat();
     });
     </script>
     {% endcompress %}
+
+    {% if not debug %}
+    {% compress js inline %}
+    <script type="text/javascript">
+        {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
+        {% include "seo/order_counter_events.js" with active="step1" %}
+    </script>
+    {% endcompress %}
+    {% endif %}
+{% endif %}
+
 {% endblock %}

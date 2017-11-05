@@ -41,7 +41,7 @@
                         <ul id="chosen-tickets">
                         {% for t in order.tickets %}
                             <li>
-                                {{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}, цена {{ t.price }} <img class="ruble" src="/static/global/ico/ruble_sign.svg">
+                                {{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}, цена {{ t.price }} <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">
                             </li>
                         {% endfor %}
                         </ul>
@@ -92,6 +92,7 @@
 {% endblock %}
 
 {% block scripts %}
+{# Скрипты для работы с заказом билетов #}
     <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
 
     {% compress js inline %}
@@ -99,4 +100,14 @@
         {% include "order/confirmation.js" %}
     </script>
     {% endcompress %}
+
+    {% if not debug %}
+    {% compress js inline %}
+    <script type="text/javascript">
+        {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
+        {% include "seo/order_counter_events.js" with active="step3" %}
+    </script>
+    {% endcompress %}
+    {% endif %}
+
 {% endblock %}

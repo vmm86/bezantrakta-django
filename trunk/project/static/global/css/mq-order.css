@@ -309,7 +309,7 @@ h1, h2 {
 
 .ruble-sign {
     vertical-align: baseline;
-    width: 0.525rem;
+    width: 0.563rem;
 }
 
 #links-header {
@@ -359,11 +359,6 @@ h1, h2 {
 
 #legend-text .highlight {
     color: #F44336;
-}
-
-.ruble {
-    width: 0.62rem;
-    vertical-align: baseline;
 }
 
 /* временное сообщение */
@@ -461,6 +456,11 @@ h1, h2 {
     width: -webkit-calc(70vw - 3rem);
     width:    -moz-calc(70vw - 3rem);
     width:         calc(70vw - 3rem);
+
+    max-width: 70%;
+    max-width: -webkit-calc(70vw - 3rem);
+    max-width:    -moz-calc(70vw - 3rem);
+    max-width:         calc(70vw - 3rem);
 }
 
 .stagehall {
@@ -518,61 +518,68 @@ h1, h2 {
 .bb {border-bottom: 2px solid #000;}
 .bl {border-left:   2px solid #000;}
 
-.stateF,
-.stateS {
+.free,
+.selected {
     cursor:pointer;
 
     font-weight: bold;
 }
 
-.stateO {
-    font-weight: bold;
-}
-
 .box            { display: inline-block; width: 14px; height: 14px; border: 1px solid #000; vertical-align: -1px;}
 
-.stateS         { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
-.stateO         { background-color: #FF9800; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* orange 500*/
-.stateF         { color: #FFF; text-shadow: 0.0625rem 0.09rem 0 #000; }
+.free         { color: #ECEFF1; text-shadow: 0.0625rem 0.09rem 0 #000; }
 
-.stateF.color1  { background-color: #F44336; } /* red 500 */
-.stateF.color2  { background-color: #4CAF50; } /* green 500 */
-.stateF.color3  { background-color: #2196F3; } /* blue 500 */
-.stateF.color4  { background-color: #E91E63; } /* pink 500 */
-.stateF.color5  { background-color: #00bcd4; } /* cyan 700 */
-.stateF.color6  { background-color: #9C27B0; } /* purple 500 */
-.stateF.color7  { background-color: #795548; } /* brown 500 */
-.stateF.color8  { background-color: #512da8; } /* deep purple 700 */
-.stateF.color9  { background-color: #009688; } /* teal 500*/
-.stateF.color10 { background-color: #3F51B5; } /* indigo 500 */
-.stateF.color11 { background-color: #B71C1C; } /* red 900 */
-.stateF.color12 { background-color: #1B5E20; } /* green 900 */
-.stateF.color13 { background-color: #0D47A1; } /* blue 900 */
-.stateF.color14 { background-color: #880E4F; } /* pink 900 */
-.stateF.color15 { background-color: #006064; } /* cyan 900 */
-.stateF.color16 { background-color: #4A148C; } /* purple 900*/
-.stateF.color17 { background-color: #3E2723; } /* brown 900 */
-.stateF.color18 { background-color: #311B92; } /* deep purple 900 */
-.stateF.color19 { background-color: #004D40; } /* teal 900 */
-.stateF.color20 { background-color: #1A237E; } /* indigo 900 */
+.free.color1  { background-color: #F44336; } /* red 500 */
+.free.color2  { background-color: #4CAF50; } /* green 500 */
+.free.color3  { background-color: #2196F3; } /* blue 500 */
+.free.color4  { background-color: #E91E63; } /* pink 500 */
+.free.color5  { background-color: #00bcd4; } /* cyan 700 */
+.free.color6  { background-color: #9C27B0; } /* purple 500 */
+.free.color7  { background-color: #795548; } /* brown 500 */
+.free.color8  { background-color: #512da8; } /* deep purple 700 */
+.free.color9  { background-color: #009688; } /* teal 500*/
+.free.color10 { background-color: #3F51B5; } /* indigo 500 */
+.free.color11 { background-color: #B71C1C; } /* red 900 */
+.free.color12 { background-color: #1B5E20; } /* green 900 */
+.free.color13 { background-color: #0D47A1; } /* blue 900 */
+.free.color14 { background-color: #880E4F; } /* pink 900 */
+.free.color15 { background-color: #006064; } /* cyan 900 */
+.free.color16 { background-color: #4A148C; } /* purple 900*/
+.free.color17 { background-color: #3E2723; } /* brown 900 */
+.free.color18 { background-color: #311B92; } /* deep purple 900 */
+.free.color19 { background-color: #004D40; } /* teal 900 */
+.free.color20 { background-color: #1A237E; } /* indigo 900 */
 
-.stateF:hover   { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; }
+.free:hover,
+.selected     { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
 
 /* Для мест, расположение которых в пространстве не важно (фан-зона, танцпол, входной билет и т.п.) */
 
 .stagehall ul {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
 
-    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
-.stagehall ul .seat {
-    display: inline-block;
+.stagehall ul.horizontal {
+    flex-direction: row;
+}
+.stagehall ul.vertical {
+    flex-direction: column;
+}
+.stagehall li.seat {
+    list-style-type: none;
+    padding: 0.1rem 0.131rem;
+    margin: 0.1rem 0.1rem;
+}
 
-    width:  2%;
-    height: 1.3rem;
+.stagehall .seat.one {
+    padding-left: 0.163rem;
+    padding-right: 0.163rem;
 }
 
 /* Блок-слайдер для показа выбранного сектора в больших залах */

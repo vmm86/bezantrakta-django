@@ -41,7 +41,7 @@
 
                     <h3 id="overall-header">Всего</h3>
                     <p id="overall">
-                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
+                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum">{{ order_total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
                     </p>
 
             {% if ticket_service.settings.order.courier_cash %}
@@ -49,7 +49,7 @@
                     <div id="overall-courier">
                         <h3>Всего с учётом доставки курьером</h3>
                         <p>
-                            К оплате {{ order_total_plus_courier_price }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
+                            К оплате <span id="total-sum-courier">{{ order_total_plus_courier_price }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
                         </p>
                     </div>
                 {% endif %}
@@ -60,7 +60,7 @@
                     <div id="overall-online">
                         <h3>Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
                         <p>
-                            К оплате {{ order_total_plus_commission }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
+                            К оплате <span id="total-sum-online">{{ order_total_plus_commission }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
                         </p>
                     </div>
                 {% endif %}
@@ -101,19 +101,28 @@
 {% endblock %}
 
 {% block scripts %}
+{# Скрипты для работы с заказом билетов #}
     <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
+
 
     {% compress js inline %}
     <script type="text/javascript">
-        {% include "order/checkout.js" with order_total_plus_commission=order_total_plus_commission delivery_price=delivery_price customer=customer %}
+    {# Базовый функционал процесса заказа билетов #}
+    $(document).ready(function() {
+        {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order_total_plus_commission=order_total_plus_commission delivery_price=delivery_price customer=customer %}
+        prepare_order_onload();
+        start_heartbeat();
+    });
     </script>
     {% endcompress %}
 
+    {% if not debug %}
+    {% compress js inline %}
     <script type="text/javascript">
-    $(document).ready(function() {
-        $('checkout-form').submit(function() {
-          $(this).find('button[type="submit"]').prop('disabled', true);
-        });
-    });
+        {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
+        {% include "seo/order_counter_events.js" with active="step2" %}
     </script>
+    {% endcompress %}
+    {% endif %}
+
 {% endblock %}
