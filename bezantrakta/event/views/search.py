@@ -3,8 +3,9 @@ from django.shortcuts import redirect, render
 
 from project.shortcuts import timezone_now
 
+from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event
-from ..shortcuts import add_small_vertical_poster
+from ..shortcuts import process_event_data
 
 
 def search(request):
@@ -16,45 +17,41 @@ def search(request):
     # Поиск по непустому поисковому запросу, иначе - редирект на главную
     if text and text != '':
         # Получение найденных по поисковому запросу событий
-        events_found = Event.objects.select_related(
+        events_found = list(Event.objects.select_related(
             'event_venue',
             'domain'
         ).annotate(
-            event_title=F('title'),
-            event_slug=F('slug'),
-            event_datetime=F('datetime'),
-            event_min_price=F('min_price'),
-            event_min_age=F('min_age'),
-            event_venue_title=F('event_venue__title'),
+            uuid=F('id'),
         ).values(
-            'event_title',
-            'event_slug',
-            'event_datetime',
-            'event_min_price',
-            'event_min_age',
-            'event_venue_title',
+            'uuid',
         ).filter(
             Q(
                 Q(is_group=False) &
                 Q(is_published=True) &
                 Q(event_category__is_published=True) &
                 (
-                    Q(title__icontains=text) | Q(description__icontains=text) | Q(keywords__icontains=text)
+                    Q(title__icontains=text) |
+                    Q(description__icontains=text) |
+                    Q(keywords__icontains=text)
                 ),
-                Q(event_datetime__gt=today) &
+                Q(datetime__gt=today) &
                 Q(domain_id=request.domain_id)
             )
         ).order_by(
-            'event_datetime',
-            'event_title'
-        )
+            'datetime',
+            'title'
+        ))
 
-        # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-        add_small_vertical_poster(request, events_found)
+        if events_found:
+            for event in events_found:
+                # Получение информации о каждом размещённом событии из кэша
+                event.update(get_or_set_event_cache(event['uuid']))
+                # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
+                process_event_data(event)
 
         context = {
             'title': 'Поиск',
-            'events_found': list(events_found),
+            'events_found': events_found,
         }
 
         return render(request, 'event/search.html', context)

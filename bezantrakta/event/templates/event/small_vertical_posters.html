@@ -11,7 +11,7 @@
                 {% endif %}
                     <br>{% if item.order >= 0 %}order {{ item.order }}{% endif %}
                     <br>{{ item.event_datetime }}
-                    <br>{% if item.event_category_title %}{{ item.event_category_title }}{% endif %}
+                    <br>{% if item.category_title %}{{ item.category_title }}{% endif %}
                 </span>
             {% endif %}
             <img src="{{ item.poster }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">

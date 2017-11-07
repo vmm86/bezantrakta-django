@@ -1,11 +1,12 @@
-from django.db.models import CharField, DateTimeField, DecimalField, IntegerField, SlugField
+from django.db.models import DateTimeField, UUIDField
 from django.db.models import Case, OuterRef, Subquery, F, Q, When
 from django.shortcuts import render
 
 from project.shortcuts import timezone_now
 
+from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import EventContainerBinder, EventGroupBinder
-from ..shortcuts import add_small_vertical_poster
+from ..shortcuts import process_event_data
 
 
 def events_on_index(request):
@@ -27,63 +28,24 @@ def events_on_index(request):
         'event',
         'event_container',
     ).annotate(
-        # Общие параметры
-        is_group=F('event__is_group'),
-        container=F('event_container__slug'),
-        # Параметры события
-        event_title=Case(
-            When(event__is_group=True, then=F('event__event_group__title')),
-            default=F('event__title'),
-            output_field=CharField()
+        uuid=Case(
+            When(event__is_group=True, then=F('event__event_group__id')),
+            default=F('event__id'),
+            output_field=UUIDField()
         ),
-        event_slug=Case(
-            When(event__is_group=True, then=F('event__event_group__slug')),
-            default=F('event__slug'),
-            output_field=SlugField()
-        ),
-        event_datetime=Case(
+        datetime=Case(
             When(event__is_group=True, then=F('event__event_group__datetime')),
             default=F('event__datetime'),
             output_field=DateTimeField()
         ),
-        event_min_price=Case(
-            When(event__is_group=True, then=F('event__event_group__min_price')),
-            default=F('event__min_price'),
-            output_field=DecimalField()
-        ),
-        event_min_age=Case(
-            When(event__is_group=True, then=F('event__event_group__min_age')),
-            default=F('event__min_age'),
-            output_field=IntegerField()
-        ),
-        event_venue_title=Case(
-            When(event__is_group=True, then=F('event__event_group__event_venue__title')),
-            default=F('event__event_venue__title'),
-            output_field=CharField()
-        ),
-        # Параметры группы, если событие в неё входит
-        group_slug=Case(
-            When(event__is_group=True, then=F('event__slug')),
-            default=None,
-            output_field=SlugField()
-        ),
-        group_datetime=Case(
-            When(event__is_group=True, then=F('event__datetime')),
-            default=None,
-            output_field=DateTimeField()
-        ),
+        is_group=F('event__is_group'),
+        container=F('event_container__slug'),
     ).values(
+        'uuid',
+        'datetime',
         'is_group',
         'container',
         'order',
-        'event_title',
-        'event_slug',
-        'group_slug',
-        'event_datetime',
-        'group_datetime',
-        'event_min_price',
-        'event_min_age',
-        'event_venue_title',
     ).filter(
         Q(
             Q(event__is_published=True) &
@@ -95,25 +57,31 @@ def events_on_index(request):
         Q(
             Q(
                 Q(is_group=True) &
-                Q(event_datetime=Subquery(group_min_datetime))
+                Q(datetime=Subquery(group_min_datetime))
             ) |
             Q(
                 Q(is_group=False) &
-                Q(event_datetime__gt=today)
+                Q(datetime__gt=today)
             )
         )
     ).order_by(
         'container',
         'order',
-        'event_datetime',
+        'datetime',
     )
 
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     small_vertical_vip = list(items_on_index.filter(container='small_vertical_vip'))
-    add_small_vertical_poster(request, small_vertical_vip)
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     small_vertical = list(items_on_index.filter(container='small_vertical'))
-    add_small_vertical_poster(request, small_vertical)
+
+    for container in (small_vertical, small_vertical_vip):
+        if container:
+            for event in container:
+                # Получение информации о каждом размещённом событии из кэша
+                event.update(get_or_set_event_cache(event['uuid']))
+                # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
+                process_event_data(event)
 
     context = {
         'title': '',

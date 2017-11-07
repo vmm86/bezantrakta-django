@@ -43,13 +43,12 @@ def get_or_set_cache(event_uuid, reset=False):
                 event_description=F('description'),
                 event_keywords=F('keywords'),
                 event_text=F('text'),
+                event_min_price=F('min_price'),
                 event_min_age=F('min_age'),
                 event_venue_title=F('event_venue__title'),
                 event_venue_city=F('event_venue__city__title'),
                 # Параметры группы, если событие в неё входит
-                group_id=F('event_groups'),
-                group_slug=F('event_groups__slug'),
-                group_datetime=F('event_groups__datetime'),
+                group_uuid=F('event_groups'),
 
                 payment_service_id=F('ticket_service__payment_service__id'),
 
@@ -58,6 +57,7 @@ def get_or_set_cache(event_uuid, reset=False):
                 city_timezone=F('domain__city__timezone'),
             ).values(
                 'is_published',
+                'is_on_index',
                 'is_group',
                 'is_in_group',
 
@@ -68,13 +68,12 @@ def get_or_set_cache(event_uuid, reset=False):
                 'event_description',
                 'event_keywords',
                 'event_text',
+                'event_min_price',
                 'event_min_age',
                 'event_venue_title',
                 'event_venue_city',
 
-                'group_id',
-                'group_slug',
-                'group_datetime',
+                'group_uuid',
 
                 'ticket_service_id',
                 'ticket_service_event',
@@ -122,14 +121,8 @@ def get_or_set_cache(event_uuid, reset=False):
             cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False, default=json_serializer))
     else:
         cache_value = json.loads(cache.get(cache_key))
-        # print('cache_value: ', cache_value)
         # Получение из строки даты и времени в UTC ('2017-08-31T16:00:00+00:00')
         # В шаблоне она должна локализоваться с учётом текущего часового пояса
         cache_value['event_datetime'] = parse(cache_value['event_datetime'])
-        cache_value['group_datetime'] = (
-            parse(cache_value['group_datetime']) if
-            cache_value['group_datetime'] is not None else
-            None
-        )
 
     return cache_value

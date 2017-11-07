@@ -43,7 +43,7 @@ def order(request):
         event['info'] = get_or_set_event_cache(event['uuid'])
         event['id'] = event['info']['ticket_service_event']
         # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-        add_small_vertical_poster(request, event['info'])
+        add_small_vertical_poster(event['info'])
 
         # Экземпляр класса сервиса продажи билетов
         ticket_service = {}
