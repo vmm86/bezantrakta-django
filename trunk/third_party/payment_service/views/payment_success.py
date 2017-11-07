@@ -37,7 +37,7 @@ def payment_success(request):
     event['info'] = get_or_set_event_cache(event_uuid)
     event['id'] = event['info']['ticket_service_event']
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-    add_small_vertical_poster(request, event['info'])
+    add_small_vertical_poster(event['info'])
     logger.info('Событие')
     logger.info(event['info'])
 

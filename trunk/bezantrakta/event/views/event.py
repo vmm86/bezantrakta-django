@@ -16,7 +16,7 @@ from third_party.ticket_service.models import TicketServiceSchemeVenueBinder, Ti
 
 from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
-from ..shortcuts import add_small_vertical_poster
+from ..shortcuts import process_event_data
 
 
 @ensure_csrf_cookie
@@ -90,14 +90,14 @@ def event(request, year, month, day, hour, minute, slug):
 
     # Событие существует в БД
     else:
-        # Кэширование информации о событии, сервисе продажи билетов и сервисе онлайн-оплаты
+        # Получение информации о событии из кэша
         event = get_or_set_event_cache(event['event_uuid'])
 
         # Событие опубликовано
         if event['is_published']:
 
             if event['ticket_service_id']:
-                # Настройки сервиса продажи билетов
+                # Получение настроек сервиса продажи билетов из кэша
                 ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
 
                 # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
@@ -116,16 +116,16 @@ def event(request, year, month, day, hour, minute, slug):
                 ticket_service = None
 
             if event['payment_service_id']:
-                # Настройки сервиса онлайн-оплаты
+                # Получение настроек сервиса онлайн-оплаты билетов из кэша
                 payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
             else:
                 payment_service = None
 
             today = timezone_now()
-            event_is_coming = True if event['event_datetime'] > today else False
+            event['is_coming'] = True if event['event_datetime'] > today else False
 
             # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-            add_small_vertical_poster(request, event)
+            process_event_data(event)
 
             context = {}
 
@@ -155,8 +155,23 @@ def event(request, year, month, day, hour, minute, slug):
             else:
                 context['links'] = links
 
-            # Запрос событий в группе, если это событие добавлено в группу
+            # Если событие привязано к группе
             if event['is_in_group']:
+                # Получение информации о группе из кэша
+                group = get_or_set_event_cache(event['group_uuid'])
+
+                # Замена некоторых параметров события на параметры родительской группы, если событие в неё входит
+                group_substitutes = (
+                    'event_title',
+                    'event_min_age',
+                    'event_description',
+                    'event_text',
+                )
+
+                for sub in group_substitutes:
+                    event[sub] = group[sub]
+
+                # Запрос событий в группе
                 group_events = EventGroupBinder.objects.select_related(
                     'event',
                     'domain',
@@ -166,7 +181,7 @@ def event(request, year, month, day, hour, minute, slug):
                     datetime=F('event__datetime'),
                     venue=F('event__event_venue__title'),
                 ).filter(
-                    group=event['group_id'],
+                    group=event['group_uuid'],
                     event__is_published=True,
                     event__datetime__gt=today,
                     event__domain_id=request.domain_id,
@@ -218,7 +233,6 @@ def event(request, year, month, day, hour, minute, slug):
                     context['venue_sectors'] = list(venue_sectors)
 
             context['event'] = event
-            context['event']['is_coming'] = event_is_coming
             context['ticket_service'] = ticket_service
             context['payment_service'] = payment_service
 
@@ -228,7 +242,7 @@ def event(request, year, month, day, hour, minute, slug):
         # Событие НЕ опубликовано
         else:
             # Событие НЕ опубликовано и ещё НЕ прошло
-            if event_is_coming:
+            if event['is_coming']:
                 # Сообщение об ошибке
                 msgs = [
                     message('error', 'К сожалению, это событие ещё не опубликовано на сайте. 😞'),

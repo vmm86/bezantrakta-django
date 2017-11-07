@@ -5,8 +5,9 @@ from django.contrib.humanize.templatetags.humanize import naturalday
 from django.db.models import F
 from django.shortcuts import render
 
+from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event
-from ..shortcuts import add_small_vertical_poster
+from ..shortcuts import process_event_data
 
 
 def calendar(request, year, month, day):
@@ -81,41 +82,35 @@ def calendar(request, year, month, day):
     range_filter = (calendar_date_localized, calendar_next_date_localized)
 
     # Получение событий в заданный день
-    events_on_date = Event.objects.select_related(
+    events_on_date = list(Event.objects.select_related(
         'event_venue',
         'domain'
     ).annotate(
-        event_title=F('title'),
-        event_slug=F('slug'),
-        event_datetime=F('datetime'),
-        event_min_price=F('min_price'),
-        event_min_age=F('min_age'),
-        event_venue_title=F('event_venue__title'),
+        uuid=F('id'),
     ).values(
-        'event_title',
-        'event_slug',
-        'event_datetime',
-        'event_min_price',
-        'event_min_age',
-        'event_venue_title',
+        'uuid',
     ).filter(
         is_group=False,
         is_published=True,
-        event_datetime__range=range_filter,
+        datetime__range=range_filter,
         domain_id=request.domain_id
     ).order_by(
-        'event_datetime',
-        'event_title'
-    )
+        'datetime',
+        'title'
+    ))
 
-    # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-    add_small_vertical_poster(request, events_on_date)
+    if events_on_date:
+        for event in events_on_date:
+            # Получение информации о каждом размещённом событии из кэша
+            event.update(get_or_set_event_cache(event['uuid']))
+            # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
+            process_event_data(event)
 
     context = {
         'title': 'События на {naturalday}'.format(naturalday=naturalday(calendar_date_localized)),
         'calendar_date': calendar_date_localized,
         'calendar_next_date': calendar_next_date_localized,
-        'events_on_date': list(events_on_date),
+        'events_on_date': events_on_date,
     }
 
     return render(request, 'event/calendar.html', context)

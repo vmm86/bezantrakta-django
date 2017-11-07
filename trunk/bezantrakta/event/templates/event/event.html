@@ -31,7 +31,7 @@
             {% include "order/order_progress.html" with active="step1" %}
         {% endif %}
 
-            {% include "order/event_title_date_time.html" with active="step1" event=event %}
+            {% include "event/event_title_date_time.html" with active="step1" event=event %}
 
         {% if event.is_coming %}
             <div class="order-header">
@@ -50,7 +50,7 @@
                                 {% if event.caption %}
                                     {{ event.caption }}
                                 {% else %}
-                                    {{ event.datetime|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
+                                    {{ event.datetime|date:"d.m.Y G:i" }}
                                 {% endif %}
                             </li>
                         {% else %}
@@ -59,7 +59,7 @@
                                 {% if event.caption %}
                                     {{ event.caption }}
                                 {% else %}
-                                    {{ event.datetime|date:"d.m.Y" }} {{ event.time|date:"G:i" }}
+                                    {{ event.datetime|date:"d.m.Y G:i" }}
                                 {% endif %}
                                 </a>
                             </li>

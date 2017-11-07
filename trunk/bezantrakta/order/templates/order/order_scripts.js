@@ -128,7 +128,7 @@ function prepare_order_onload() {
                 $(seat_selector).attr('data-price',          seat['price']);
                 $(seat_selector).attr('data-price-order',    seat['price_order']);
 
-                $(seat_selector).attr('title', ticket_title);
+                $(seat_selector).attr('title', ticket_title + ' ₽');
             {% endif %}
         }
     }
@@ -468,7 +468,7 @@ function scheme_update(seats_diff_state, seats_diff) {
             $(seat_selector).attr('data-price',          seat['price']);
             $(seat_selector).attr('data-price-order',    seat['price_order']);
 
-            $(seat_selector).attr('title', ticket_title);
+            $(seat_selector).attr('title', ticket_title + ' ₽');
 
             $(seat_selector).addClass(class_f);
         {# Если мест пришло меньше, чем раньше - отключаем занятые места #}
@@ -741,8 +741,7 @@ function reserve_success(response, status, xhr) {
             $('#chosen-tickets').append(
                 '<li id="' + ticket_id + '">' +
                 '<span id="' + ticket_id + '-countdown" class="countdown"></span> ' +
-                ticket_title +
-                ' <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">' +
+                ticket_title + ' <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">' +
                 '</li>'
             );
 

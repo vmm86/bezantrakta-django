@@ -10,22 +10,16 @@ from django.utils.translation import ugettext as _
 
 def img_path(instance, filename):
     params = {}
+    params['uuid'] = instance.event.id
     params['domain_slug'] = instance.event.domain.slug if instance.event.domain is not None else 'global'
     params['model_slug'] = 'group' if instance.event.is_group else 'event'
-    params['instance_slug'] = instance.event.slug
-    params['current_timezone'] = instance.event.domain.city.timezone
-    params['datetime_localized'] = instance.event.datetime.astimezone(params['current_timezone'])
 
     name, dot, extension = filename.rpartition('.')
     # Относительный путь до файла
     file_path = os.path.join(
         params['domain_slug'],
         params['model_slug'],
-        '{date}_{time}_{slug}'.format(
-            date=params['datetime_localized'].strftime('%Y-%m-%d'),
-            time=params['datetime_localized'].strftime('%H-%M'),
-            slug=params['instance_slug'],
-        ),
+        str(params['uuid']),
         '{slug}.{ext}'.format(slug=instance.event_container.mode, ext=extension)
     )
     # Абсолютный путь до файла
@@ -33,8 +27,7 @@ def img_path(instance, filename):
     # Создание дерева папок до файла со стандартными правами 755
     if not os.path.exists(full_file_path):
         os.makedirs(os.path.dirname(full_file_path), mode=0o755, exist_ok=True)
-    # Если файл уже был загружен ранее,
-    # удаляем его и сохраняем новый файл с таким же именем
+    # Если файл уже был загружен ранее, удаляем его и сохраняем новый файл с таким же именем
     if os.path.isfile(full_file_path):
         os.remove(full_file_path)
     # Удаление старых пустых папок без изображений

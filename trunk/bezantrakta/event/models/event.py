@@ -25,12 +25,12 @@ class Event(models.Model):
         title (CharField): Название.
         slug (SlugField): Псевдоним.
         description (TextField): Метатег ``description`` (краткое описание страницы, не более 150-200 символов).
-        keywords (TextField): Метатег ``keywords`` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
+        keywords (TextField): Метатег ``keywords``.
         text (RichTextField): Текстовое описание события в HTML.
-        is_published (BooleanField): Опубликовано (``True``) или НЕ опубликовано (``False``).
-        is_on_index (BooleanField): Показывать "на главной" в позициях ``small_vertical`` (``True``) или НЕ показывать (``False``).
+        is_published (BooleanField): Опубликовано или НЕ опубликовано.
+        is_on_index (BooleanField): Показывать ли "на главной" в позициях ``small_vertical``.
         min_price (DecimalField): Минимальная цена на билет.
-        min_age (PositiveSmallIntegerField): Ограничение по возрасту, берущееся из ``MIN_AGE_CHOICES`` (по умолчанию - ``0``).
+        min_age (PositiveSmallIntegerField): Ограничение по возрасту из ``MIN_AGE_CHOICES`` (по умолчанию - ``0``).
 
             Содержимое ``MIN_AGE_CHOICES`` (кортеж из кортежей "значение" / "подпись").
                 * **AGE_00** (int): ``0``.
