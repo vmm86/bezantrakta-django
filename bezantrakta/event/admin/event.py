@@ -1,3 +1,4 @@
+from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from django.conf import settings
 from django.contrib import admin
 from django.core.cache import cache
@@ -68,7 +69,7 @@ class EventAdmin(admin.ModelAdmin):
                     'ticket_service', 'domain',)
     list_filter = (
         ('is_group', admin.BooleanFieldListFilter),
-        ('event_venue', admin.RelatedOnlyFieldListFilter),
+        ('event_venue', RelatedDropdownFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_select_related = ('event_category', 'event_venue', 'domain',)
