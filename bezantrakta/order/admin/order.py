@@ -62,10 +62,12 @@ class OrderAdmin(admin.ModelAdmin):
     )
     list_per_page = 20
     readonly_fields = ('order_uuid', 'ticket_service', 'ticket_service_order', 'event', 'ticket_service_event',
-                       'datetime', 'name', 'phone', 'email',
+                       'datetime',
+                       # 'name', 'phone', 'email',
                        'delivery', 'payment', 'payment_id',
                        'status', 'total', 'tickets_count',
                        'domain',)
+    search_fields = ('name', 'phone', 'email',)
 
     def view_on_site(self, obj):
         url = reverse('order:confirmation', args=[obj.id])
