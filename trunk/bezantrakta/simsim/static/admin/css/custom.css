@@ -500,9 +500,9 @@ a.section:visited {
     background: transparent;
     padding-top: 46px;
     float: right;
-    position: fixed;
     top: auto;
-    right: 40px;
+    /*position: fixed;
+    right: 40px;*/
 }
 
 #changelist-filter h2 {
@@ -565,6 +565,55 @@ a.section:visited {
     background-color: #fc0;
     color: #111;
     text-shadow: 0 1px 0px #fff;
+}
+
+.admindatefilter {
+    border-bottom: none;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    margin-top: -4px;
+}
+.admindatefilter p {
+    margin: 0;
+}
+
+.admindatefilter .controls input {
+    background-color: #999;
+    border-radius: 1rem;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+    padding: 4px 14px 5px 14px;
+}
+.admindatefilter .controls input:focus,
+.admindatefilter .controls input:hover {
+    background-color: #fc0;
+    border-radius: 1rem;
+    color: #111;
+    text-shadow: 1px 1px 0px #fff;
+}
+
+.admindatefilter #id_datetime__gte,
+.admindatefilter #id_datetime__lte {
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.admindatefilter .datetimeshortcuts > a {
+    display: none !important;
+}
+.admindatefilter .datetimeshortcuts > #calendarlink0,
+.admindatefilter .datetimeshortcuts > #calendarlink1 {
+    display: flex !important;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 1rem 1rem 0;
+    height: 2.1rem;
+    top: 0;
+}
+.admindatefilter .datetimeshortcuts > #calendarlink0 .date-icon,
+.admindatefilter .datetimeshortcuts > #calendarlink1 .date-icon {
+    left: -2px;
 }
 
 /* Пагинация */

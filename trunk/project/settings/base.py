@@ -53,6 +53,8 @@ INSTALLED_APPS = [
 
     'phonenumber_field',
 
+    'rangefilter',
+
     'django.contrib.admin',
     # 'django.contrib.admindocs',
     'django.contrib.auth',

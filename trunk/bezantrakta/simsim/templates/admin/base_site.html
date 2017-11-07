@@ -88,6 +88,13 @@ $(document).ready(function() {
         });
     }
 
+    {# Подписи к фильтру по дате #}
+    if ($('#id_datetime__gte').length || $('#id_datetime__lte').length) {
+        $('#id_datetime__gte').attr('placeholder', 'С');
+        $('#id_datetime__lte').attr('placeholder', 'По');
+        $('.admindatefilter input[type=\'reset\']').val('Очистить');
+    }
+
     {# Показ процесса заполнения title, description, keywords #}
     $('#id_title + .help').prepend('<strong id="id_title_info"></strong><br>');
     $('#id_description + .help').prepend('<strong id="id_description_info"></strong><br>');
