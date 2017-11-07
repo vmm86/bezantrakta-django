@@ -2,10 +2,11 @@ from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from django.conf import settings
 from django.contrib import admin
 from django.core.cache import cache
+from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
-from django.db.models import Q
+from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
@@ -68,6 +69,7 @@ class EventAdmin(admin.ModelAdmin):
                     'group_count', 'link_count', 'container_count',
                     'ticket_service', 'domain',)
     list_filter = (
+        ('datetime', DateRangeFilter),
         ('is_group', admin.BooleanFieldListFilter),
         ('event_venue', RelatedDropdownFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
