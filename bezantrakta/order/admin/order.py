@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
+from rangefilter.filter import DateRangeFilter
+
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
 
@@ -54,6 +56,7 @@ class OrderAdmin(admin.ModelAdmin):
                     'status',
                     'ticket_service',)
     list_filter = (
+        ('datetime', DateRangeFilter),
         'status', 'delivery', 'payment',
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
