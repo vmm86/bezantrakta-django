@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
-from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+from rangefilter.filter import DateRangeFilter
 
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
