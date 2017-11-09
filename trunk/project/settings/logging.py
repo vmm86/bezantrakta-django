@@ -138,12 +138,16 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['PAYMENT_SERVICE_CHECKUP'],
+            'maxBytes':    LOGGING_MAX_BYTES,
+            'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
         'ticket_service_discover_log': {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['TICKET_SERVICE_DISCOVER'],
+            'maxBytes':    LOGGING_MAX_BYTES,
+            'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
 
