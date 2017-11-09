@@ -82,4 +82,4 @@ class EventContainer(models.Model):
         ordering = ('order', 'is_published', 'title',)
 
     def __str__(self):
-        return '{width}x{height} px - {title}'.format(width=self.img_width, height=self.img_height, title=self.title)
+        return '{title} ({width}x{height} px)'.format(width=self.img_width, height=self.img_height, title=self.title)

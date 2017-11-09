@@ -55,4 +55,7 @@ class EventGroupBinder(models.Model):
         ordering = ('group__datetime', 'event__datetime', 'caption',)
 
     def __str__(self):
-        return ''
+        return '{event} 🔗 {group}'.format(
+            event=self.event,
+            group=self.group
+        )

@@ -60,7 +60,10 @@ class EventLinkBinder(models.Model):
         )
 
     def __str__(self):
-        return ''
+        return '{event} 🔗 {link}'.format(
+            event=self.event,
+            link=self.event_link
+        )
 
     def order_preview(self):
         return self.order
