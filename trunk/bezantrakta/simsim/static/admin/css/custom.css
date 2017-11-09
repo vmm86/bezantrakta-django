@@ -52,12 +52,15 @@ a:link,
 a:visited {
     border-bottom: none;
     color: #111;
+    font-weight: bold;
     text-decoration: none;
 }
 
 a:focus,
 a:hover {
-    border-bottom: 1px solid inherit;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: inherit;
 }
 
 thead th,
@@ -94,6 +97,8 @@ td, th {
 }
 
 input, textarea, select, .form-row p, form .button {
+    border: none;
+
     font-family: 'Roboto', 'Lucida Grande', 'Verdana', 'Arial', sans-serif;
     font-size: 14px;
     font-weight: normal;
@@ -134,7 +139,10 @@ li, dt, dd {
 
     background: #999;
     color: #fff;
-    padding: 0 40px;
+    line-height: auto;
+
+    padding: 2px 40px 4px 40px;
+
     width: 100%;
     height: auto;
 }
@@ -167,6 +175,8 @@ li, dt, dd {
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
+
+    padding: 2px 0 4px 0;
 }
 
 #branding img {
@@ -185,6 +195,10 @@ li, dt, dd {
 #branding h1 a:visited {
     color: #fff;
     text-shadow: 1px 1px 0px #111;
+}
+
+#branding_choose_domain {
+    padding-left: 1rem;
 }
 
 #choose_domain {
@@ -246,7 +260,15 @@ div.breadcrumbs a:hover {
     color: inherit;
 }
 
-/* Сообщения */
+/* Всплывающие сообщения */
+
+ul.messagelist {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    position: absolute;
+    top: 79px;
+}
 
 ul.messagelist li {
     font-size: 14px;
@@ -274,6 +296,10 @@ ul.messagelist li {
     text-transform: uppercase;
 }
 
+.module caption {
+    border-bottom: 1px solid #ccc;
+}
+
 a.section:link,
 a.section:visited {
     color: #111;
@@ -293,6 +319,10 @@ a.section:visited {
 
 .login #content {
     padding: 20px 20px 0;
+}
+
+#content-main a {
+    border-bottom: none;
 }
 
 #content-related {
@@ -324,6 +354,7 @@ a.section:visited {
     border: 1px solid #ccc;
     padding: 0;
     margin: 0;
+    margin-top: -1px;
 }
 
 #content-related .actionlist li {
@@ -347,6 +378,7 @@ a.section:visited {
 }
 
 #content-related .actionlist li a {
+    border-bottom: none;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -473,6 +505,10 @@ a.section:visited {
     position: relative;
 }
 
+#changelist-form a {
+    border-bottom: none;
+}
+
 #changelist .actions select {
     border: 2px solid #999;
     height: auto;
@@ -553,6 +589,7 @@ a.section:visited {
 #changelist-filter a {
     display: inline-block;
     border-radius: 1rem;
+    border-bottom: none;
     background-color: #999;
     color: #fff;
     font-size: 0.75rem;
@@ -727,6 +764,7 @@ input[name=_continue] {
 input[type=submit].default,
 input[name=_save].default {
     background: #2E7D32;
+    font-weight: bold;
 }
 
 .button.default:active,
@@ -866,10 +904,6 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
 }
 
 /* Порядок отображения настроек в JSON */
-
-fieldset.module {
-    margin-bottom: 0;
-}
 
 fieldset.json_settings {
     display: flex;
