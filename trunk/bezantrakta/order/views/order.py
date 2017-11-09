@@ -12,7 +12,6 @@ from django.shortcuts import redirect
 from project.shortcuts import message, render_messages, timezone_now
 
 from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
-from bezantrakta.event.shortcuts import add_small_vertical_poster
 
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
@@ -27,11 +26,11 @@ from third_party.ticket_service.cache import ticket_service_instance
 def order(request):
     """Получение контактных данных покупателя, параметров заказа и проведение заказа выбранного типа.
 
-    Сначала собирается вся необдимая информация о событии, сервисе продажи билетов и онлайн-оплаты, покупателе, заказе.
+    Сначала собирается необходимая информация о событии, сервисе продажи билетов и онлайн-оплаты, покупателе, заказе.
 
     Заказы с оплатой наличными завершаются в этом же методе с отправкой уведомлений администратору и покупателю.
 
-    Заказы с онлайн-оплатой редиректятся на платёжную форму (её адрес приходит в ответе на запрос новой онлайн-оплаты).
+    Заказы с онлайн-оплатой перенаправляются на платёжную форму (URL приходит в ответе на запрос новой онлайн-оплаты).
     Они оформляются в видах ``payment_service.payment_success`` или ``payment_service.payment_error`` в зависимости от результата оплаты.
     """
     logger = logging.getLogger('bezantrakta.order')
@@ -42,8 +41,6 @@ def order(request):
         event['uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_event_uuid', None))
         event['info'] = get_or_set_event_cache(event['uuid'])
         event['id'] = event['info']['ticket_service_event']
-        # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-        add_small_vertical_poster(event['info'])
 
         # Экземпляр класса сервиса продажи билетов
         ticket_service = {}

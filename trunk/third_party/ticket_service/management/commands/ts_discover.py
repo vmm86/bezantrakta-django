@@ -275,29 +275,37 @@ ______________________________________________________________________________
                         groups = [g for g in groups if g['scheme_id'] in schemes_inclusion_list]
                         events = [e for e in events if e['scheme_id'] in schemes_inclusion_list]
 
-                    # Сохранение групп в БД
+                    # Импорт групп в БД
                     if groups is not None and len(groups) > 0:
                         for group in groups:
                             # Поиск групп
                             self.import_groups(ticket_service, ts_scheme_venue_binder, group)
 
-                        # Сохранение событий в БД
-                        if events is not None and len(events) > 0:
-                            for event in events:
-                                # Поиск событий с возможной привязкой к группам
-                                self.import_events(ticket_service, ts, ts_scheme_venue_binder, event, group)
-                        else:
-                            self.log('Не найдено ни одного события', level='NOTICE')
+                        # # Импорт событий в БД
+                        # if events is not None and len(events) > 0:
+                        #     for event in events:
+                        #         # Поиск событий с возможной привязкой к группам
+                        #         self.import_events(ticket_service, ts, ts_scheme_venue_binder, event)
+                        # else:
+                        #     self.log('Не найдено ни одного события', level='NOTICE')
                     else:
                         self.log('Не найдено ни одной группы событий', level='NOTICE')
 
-                        # Сохранение событий в БД
-                        if events is not None and len(events) > 0:
-                            for event in events:
-                                # Поиск событий без привязки к группам
-                                self.import_events(ticket_service, ts, ts_scheme_venue_binder, event)
-                        else:
-                            self.log('Не найдено ни одного события', level='NOTICE')
+                    # Импорт событий в БД
+                    if events is not None and len(events) > 0:
+                        for event in events:
+                            # Поиск событий с возможной привязкой к группам
+                            self.import_events(ticket_service, ts, ts_scheme_venue_binder, event)
+                    else:
+                        self.log('Не найдено ни одного события', level='NOTICE')
+
+                        # # Импорт событий в БД
+                        # if events is not None and len(events) > 0:
+                        #     for event in events:
+                        #         # Поиск событий без привязки к группам
+                        #         self.import_events(ticket_service, ts, ts_scheme_venue_binder, event)
+                        # else:
+                        #     self.log('Не найдено ни одного события', level='NOTICE')
                 else:
                     self.log('Нет связок схем залов с залами (местами проведения событий)!', level='NOTICE')
                     continue
@@ -312,8 +320,9 @@ ______________________________________________________________________________
             ts_scheme_venue_binder (dict): Схемы залов в БД.
             group (dict): Информация о текущей группе в списке групп.
         """
+        today = timezone_now()
         # В БД сохраняются только те группы,
-        # схемы залов у которых связаны с залами (местами проведения событий) в БД
+        # схемы залов у которых были ранее в админ-панели связаны с залами (местами проведения событий) в БД
         if group['scheme_id'] in ts_scheme_venue_binder.keys():
             # Получение даты/времени в текущем часовом поясе (с сохранением в БД в UTC)
             group['group_datetime'] = datetime_localize_or_utc(group['group_datetime'], ticket_service['timezone'])
@@ -330,14 +339,15 @@ ______________________________________________________________________________
                 id=group['group_id'],
             )
 
-            # Если группа событий уже была добавлена ранее
+            # Если группа уже была добавлена ранее
             if group['group_id'] in self.group_id_uuid_mapping.keys():
                 self.stdout.write(
-                    'Группа событий {gid} была добавлена ранее'.format(gid=group['group_id'])
+                    'Группа {gid} была добавлена ранее'.format(gid=group['group_id'])
                 )
                 # Обновление информации в добавленной ранее группе событий
                 Event.objects.filter(
-                    id=self.group_id_uuid_mapping[group['group_id']]
+                    id=self.group_id_uuid_mapping[group['group_id']],
+                    datetime__gt=today
                 ).update(
                     datetime=group['group_datetime']
                 )
@@ -367,14 +377,20 @@ ______________________________________________________________________________
                     pass
                 else:
                     self.log(
-                        'Добавлена группа событий {id}: {title}'.format(
+                        'Добавлена группа {id}: {title}'.format(
                             id=group['group_id'],
                             title=group['group_title']
                         ), level='SUCCESS'
                     )
                     self.group_id_uuid_mapping[group['group_id']] = group_uuid
 
-    def import_events(self, ticket_service, ts, ts_scheme_venue_binder, event, group=None):
+            # В любом случае пересоздать кэш группы
+            get_or_set_event_cache(group_uuid, reset=True)
+            self.stdout.write(
+                'Обновлён кэш группы {gid}'.format(gid=group['group_id'])
+            )
+
+    def import_events(self, ticket_service, ts, ts_scheme_venue_binder, event):
         """Импорт событий из СПБ и их запись в БД (при наличии групп или при их отсутствии).
 
         При наличии групп событие может быть привязано у группе, к которой оно принадлежит.
@@ -387,8 +403,8 @@ ______________________________________________________________________________
             ts (TicketSrvice): Экземпляр класса СПБ.
             ts_scheme_venue_binder (dict): Схемы залов в БД.
             event (dict): Информация о текущем событии в списке событий.
-            group (dict, optional): Информация о текущей группе в списке групп.
         """
+        today = timezone_now()
         # В БД сохраняются только те события,
         # схемы залов у которых связаны с залами (местами проведения событий) в БД
         if event['scheme_id'] in ts_scheme_venue_binder.keys():
@@ -423,7 +439,8 @@ ______________________________________________________________________________
                 )
                 # Обновление информации в добавленном ранее событии
                 Event.objects.filter(
-                    id=self.event_id_uuid_mapping[event['event_id']]
+                    id=self.event_id_uuid_mapping[event['event_id']],
+                    datetime__gt=today
                 ).update(
                     datetime=event['event_datetime'],
                     min_price=event['event_min_price'],
@@ -464,8 +481,8 @@ ______________________________________________________________________________
                         ), level='SUCCESS'
                     )
 
-                # Если событие принадлежит ранее добавленной группе -
-                # событие привязывается к этой группе в БД
+                # Если событие принадлежит ранее добавленной в БД группе -
+                # событие привязывается к этой группе.
                 if event['group_id'] in self.group_id_uuid_mapping.keys():
                     try:
                         EventGroupBinder.objects.create(
@@ -475,19 +492,61 @@ ______________________________________________________________________________
                     except IntegrityError:
                         pass
                     else:
+                        group_info = get_or_set_event_cache(self.group_id_uuid_mapping[event['group_id']])
                         self.log(
                             'Событие {event_id}: {event_title} привязано к группе {group_id}: {group_title}'.format(
                                     event_id=event['event_id'],
                                     event_title=event['event_title'],
-                                    group_id=group['group_id'],
-                                    group_title=group['group_title']
+                                    group_id=group_info['ticket_service_event'],
+                                    group_title=group_info['event_title']
                             ), level='SUCCESS'
                         )
+                # Если событие принадлежит ЕЩЁ НЕ добавленной в БД группе -
+                # группа создаётся, используя данные из первого попавшегося события в ней.
+                # Затем любые другие подобные события будут привязываться к уже долбавленной в БД группе.
+                else:
+                    # Уникальный идентификатор новой группы
+                    group_uuid = uuid.uuid4()
+                    # Добавление к псевдониму группы идентификатора группы для уникальности
+                    slug_num_chars = self.event_model_max_length - (len(str(event['group_id'])) + 1)
+                    group_slug = '{title}-{id}'.format(
+                        title=urlify(event['event_title'], num_chars=slug_num_chars),
+                        id=event['group_id'],
+                    )
+
+                    Event.objects.create(
+                        id=group_uuid,
+                        title=event['event_title'],
+                        slug=group_slug,
+                        description='',
+                        keywords='',
+                        text=event['event_text'],
+                        is_published=False,
+                        is_on_index=False,
+                        min_price=event['event_min_price'],
+                        datetime=event['event_datetime'],
+                        event_venue_id=ts_scheme_venue_binder[event['scheme_id']],
+                        domain_id=ticket_service['domain_id'],
+                        is_group=True,
+                        ticket_service_id=ticket_service['id'],
+                        ticket_service_event=event['group_id'],
+                        ticket_service_prices=None,
+                        ticket_service_scheme=None,
+                    )
+
+                    self.log(
+                        'Добавлена пока отсутствующая группа {id}: {title} (данные взяты из её события)'.format(
+                            id=event['group_id'],
+                            title=event['event_title']
+                        ), level='SUCCESS'
+                    )
+
+                    self.group_id_uuid_mapping[event['group_id']] = group_uuid
 
             # В любом случае пересоздать кэш события
             get_or_set_event_cache(event_uuid, reset=True)
             self.stdout.write(
-                'Пересоздан кэш события {eid}'.format(eid=event['event_id'])
+                'Обновлён кэш события {eid}'.format(eid=event['event_id'])
             )
 
     def log(self, msg, level=None):

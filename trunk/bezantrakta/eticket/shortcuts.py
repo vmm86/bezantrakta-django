@@ -15,18 +15,16 @@ from django.conf import settings
 from django.template.loader import get_template
 
 
-def render_ticket(context):
+def render_eticket(context):
     """Генерация PDF-файла электронного билета.
 
     Args:
         context (dict): Информация, необходимая для генерации файла билета.
-            'debug' (bool):       settings.DEBUG
-
             'url' (str):          URL станицы события на сайте.
             'event_title' (str):  Название события.
             'venue_title' (str):  Название зала.
-            'min_age' (int):      Ограничение по возрасту (по умолчанию - 0).
-            'poster_path' (str):  Абсолютный путь к файлу афиши small_vertical на сервере.
+            'min_age' (int):      Ограничение по возрасту (по умолчанию - ``0``).
+            'poster' (str):       Относительный путь к файлу афиши ``small_vertical`` внутри папки ``MEDIA``.
 
             'order_id' (int):     Идентификатор заказа в сервисе продажи билетов.
             'ticket_id' (int)     Идентификатор билета в БД.
@@ -62,6 +60,11 @@ def render_ticket(context):
 
     context['price'] = int(context['price']) if context['price'] % 1 == 0 else context['price']
 
+    # Полный путь к файлу афиши `small vertical` на сервере
+    context['poster_path'] = '{media_root}/{poster}'.format(
+        media_root=settings.MEDIA_ROOT,
+        poster=context['poster']
+    )
     # Афиша в base64
     context['poster_base64'] = poster_to_base64(context['poster_path'])
     # QR-код в base64
@@ -97,7 +100,7 @@ def poster_to_base64(poster_path):
         poster_path (str): Полный путь к файлу афиши на сервере.
 
     Returns:
-        TYPE: Description
+        str: Афиша в base64.
     """
     name, dot, extension = poster_path.rpartition('.')
     with open(poster_path, 'rb') as p:
@@ -111,9 +114,10 @@ def bar_code_to_base64(bar_code_type, bar_code, width, height):
     Args:
         bar_code_type (str): Тип штрих-кода.
         bar_code (str): Значение штрих-кода.
+
+    Returns:
+        str: Штрих-код в base64.
     """
-    # bc = barcode.get(bar_code_type, bar_code)
-    # bc.get_fullcode()
     writer_options = {
         'module_width': 0.5,
         'module_height': 30.0,
@@ -132,7 +136,7 @@ def bar_code_to_base64(bar_code_type, bar_code, width, height):
 
     # Изменение размеров полученного изображения до необходимых
     img = Image.open(bc)
-    img = img.resize((width, height), Image.ANTIALIAS)
+    img = img.resize((width, height), Image.HAMMING)
     bc2 = BytesIO()
     img.save(bc2, format='PNG')
 
@@ -147,7 +151,7 @@ def qr_code_to_base64(url):
         url (TYPE): Description
 
     Returns:
-        TYPE: Description
+        str: QR-код в base64.
     """
     qrcode = pyqrcode.create(url)
 

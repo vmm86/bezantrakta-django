@@ -1,4 +1,6 @@
 from dateutil.parser import parse
+import os
+import pytz
 import simplejson as json
 
 from django.conf import settings
@@ -12,29 +14,27 @@ from .models import Event
 
 
 def get_or_set_cache(event_uuid, reset=False):
-    """Кэширование параметров события для последующего использования без запросов в БД.
+    """Кэширование параметров события или группы для последующего использования без запросов в БД.
 
     Args:
-        event_uuid (UUID): Уникальный идентификатор события.
+        event_uuid (UUID): Уникальный идентификатор события или группы.
         reset (bool, optional): В любом случае пересоздать кэш, даже если он имеется.
 
     Returns:
-        dict: Кэш параметров события.
+        dict: Кэш параметров события или группы.
     """
-    cache_key = 'event.{event_uuid}'.format(event_uuid=event_uuid)
-    cache_value = cache.get(cache_key)
+    event_cache_key = 'event.{event_uuid}'.format(event_uuid=event_uuid)
+    event_cache_value = cache.get(event_cache_key)
 
     if reset:
-        cache.delete(cache_key)
+        cache.delete(event_cache_key)
 
-    if not cache_value or reset:
+    if not event_cache_value or reset:
         try:
             event = dict(Event.objects.select_related(
                 'event_venue',
                 'domain'
             ).annotate(
-                # Содержится ли событие в группе
-                is_in_group=F('event_groups'),
                 # Параметры события
                 event_uuid=F('id'),
                 event_title=F('title'),
@@ -47,6 +47,7 @@ def get_or_set_cache(event_uuid, reset=False):
                 event_min_age=F('min_age'),
                 event_venue_title=F('event_venue__title'),
                 event_venue_city=F('event_venue__city__title'),
+                is_in_group=F('event_groups'),
                 # Параметры группы, если событие в неё входит
                 group_uuid=F('event_groups'),
 
@@ -97,9 +98,6 @@ def get_or_set_cache(event_uuid, reset=False):
             event['event_date'] = humanize_date(event_datetime_localized)
             event['event_time'] = event_datetime_localized.strftime('%H:%M')
 
-            # Приведение часового пояса города к str во избежание исключения
-            event['city_timezone'] = str(event['city_timezone'])
-
             # Полный URL страницы события
             url = reverse(
                 'event:event',
@@ -117,12 +115,86 @@ def get_or_set_cache(event_uuid, reset=False):
             # Содержится ли событие в группе - приведение к bool для удобства
             event['is_in_group'] = True if event['is_in_group'] is not None else False
 
-            cache_value = {k: v for k, v in event.items()}
-            cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False, default=json_serializer))
+            # Приведение часового пояса города к str перед кэшированием во избежание исключения
+            event['city_timezone'] = str(event['city_timezone'])
+
+            event_cache_value = {k: v for k, v in event.items()}
+            cache.set(event_cache_key, json.dumps(event_cache_value, ensure_ascii=False, default=json_serializer))
+
+            # Получение параметров события
+            get_or_set_cache(event_uuid)
     else:
-        cache_value = json.loads(cache.get(cache_key))
+        event_cache_value = json.loads(event_cache_value)
         # Получение из строки даты и времени в UTC ('2017-08-31T16:00:00+00:00')
         # В шаблоне она должна локализоваться с учётом текущего часового пояса
-        cache_value['event_datetime'] = parse(cache_value['event_datetime'])
+        event_cache_value['event_datetime'] = parse(event_cache_value['event_datetime'])
 
-    return cache_value
+        # Замена некоторых параметров события на параметры родительской группы, если событие в неё входит
+        if event_cache_value['is_in_group']:
+            # Получение параметров группы
+            group_cache_value = get_or_set_cache(event_cache_value['group_uuid'])
+
+            # Параметры события для замены
+            group_substitutes = (
+                'event_title',
+                'event_min_age',
+                'event_description',
+                'event_text',
+            )
+
+            for sub in group_substitutes:
+                event_cache_value[sub] = group_cache_value[sub]
+
+        # Получение пути к афише в позиции `small_vertical` либо заглушки по умолчанию
+        # Для событий, принадлежащих одной группе, афиша берётся из группы
+        if (event_cache_value['is_group'] or event_cache_value['is_in_group']):
+            item_type = 'group'
+            item_uuid = event_cache_value['group_uuid']
+        else:
+            item_type = 'event'
+            item_uuid = event_cache_value['event_uuid']
+
+        poster_path = os.path.join(
+            event_cache_value['domain_slug'],
+            item_type,
+            str(item_uuid)
+        )
+
+        # ВРЕМЕННО до перехода на сохранение афиш по UUID
+        city_timezone = pytz.timezone(event_cache_value['city_timezone'])
+        event_datetime_localized = event_cache_value['event_datetime'].astimezone(city_timezone)
+        poster_path_old = os.path.join(
+            event_cache_value['domain_slug'],
+            item_type,
+            '{date}_{time}_{slug}'.format(
+                date=event_datetime_localized.strftime('%Y-%m-%d'),
+                time=event_datetime_localized.strftime('%H-%M'),
+                slug=event_cache_value['event_slug']
+            )
+        )
+        # ВРЕМЕННО до перехода на сохранение афиш по UUID
+
+        poster_file_extensions = ('png', 'jpg', 'jpeg', 'gif',)
+
+        for ext in poster_file_extensions:
+            poster_file = 'small_vertical.{ext}'.format(ext=ext)
+            if os.path.isfile(os.path.join(settings.MEDIA_ROOT, poster_path, poster_file)):
+                event_cache_value['poster'] = '{poster_path}/{poster_file}'.format(
+                    poster_path=poster_path,
+                    poster_file=poster_file
+                )
+                break
+            # ВРЕМЕННО до перехода на сохранение афиш по UUID
+            elif os.path.isfile(os.path.join(settings.MEDIA_ROOT, poster_path_old, poster_file)):
+                event_cache_value['poster'] = '{poster_path}/{poster_file}'.format(
+                    poster_path=poster_path_old,
+                    poster_file=poster_file
+                )
+                break
+            # ВРЕМЕННО до перехода на сохранение афиш по UUID
+        else:
+            event_cache_value['poster'] = 'global/event/small_vertical.png'.format(
+                media_url=settings.MEDIA_URL
+            )
+
+    return event_cache_value

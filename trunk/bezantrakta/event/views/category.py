@@ -6,7 +6,6 @@ from project.shortcuts import timezone_now
 
 from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event, EventCategory
-from ..shortcuts import process_event_data
 
 
 def category(request, slug):
@@ -52,8 +51,6 @@ def category(request, slug):
         for event in category_events:
             # Получение информации о каждом размещённом событии из кэша
             event.update(get_or_set_event_cache(event['uuid']))
-            # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-            process_event_data(event)
 
     context = {
         'title': category_name,
