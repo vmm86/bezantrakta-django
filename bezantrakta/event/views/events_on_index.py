@@ -6,7 +6,6 @@ from project.shortcuts import timezone_now
 
 from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import EventContainerBinder, EventGroupBinder
-from ..shortcuts import process_event_data
 
 
 def events_on_index(request):
@@ -80,8 +79,6 @@ def events_on_index(request):
             for event in container:
                 # Получение информации о каждом размещённом событии из кэша
                 event.update(get_or_set_event_cache(event['uuid']))
-                # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-                process_event_data(event)
 
     context = {
         'title': '',

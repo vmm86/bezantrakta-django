@@ -16,7 +16,6 @@ from third_party.ticket_service.models import TicketServiceSchemeVenueBinder, Ti
 
 from ..cache import get_or_set_cache as get_or_set_event_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
-from ..shortcuts import process_event_data
 
 
 @ensure_csrf_cookie
@@ -124,9 +123,6 @@ def event(request, year, month, day, hour, minute, slug):
             today = timezone_now()
             event['is_coming'] = True if event['event_datetime'] > today else False
 
-            # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-            process_event_data(event)
-
             context = {}
 
             # Запрос ссылок в этом событии
@@ -157,20 +153,6 @@ def event(request, year, month, day, hour, minute, slug):
 
             # Если событие привязано к группе
             if event['is_in_group']:
-                # Получение информации о группе из кэша
-                group = get_or_set_event_cache(event['group_uuid'])
-
-                # Замена некоторых параметров события на параметры родительской группы, если событие в неё входит
-                group_substitutes = (
-                    'event_title',
-                    'event_min_age',
-                    'event_description',
-                    'event_text',
-                )
-
-                for sub in group_substitutes:
-                    event[sub] = group[sub]
-
                 # Запрос событий в группе
                 group_events = EventGroupBinder.objects.select_related(
                     'event',

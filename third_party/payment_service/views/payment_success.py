@@ -9,13 +9,12 @@ from django.shortcuts import redirect
 
 from project.shortcuts import message, render_messages, timezone_now
 
-from bezantrakta.event.shortcuts import add_small_vertical_poster
 from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
 
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
 
-from bezantrakta.eticket.shortcuts import render_ticket
+from bezantrakta.eticket.shortcuts import render_eticket
 
 from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
 from third_party.payment_service.cache import payment_service_instance
@@ -37,7 +36,6 @@ def payment_success(request):
     event['info'] = get_or_set_event_cache(event_uuid)
     event['id'] = event['info']['ticket_service_event']
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
-    add_small_vertical_poster(event['info'])
     logger.info('Событие')
     logger.info(event['info'])
 
@@ -208,7 +206,7 @@ def payment_success(request):
                     t.update(event['info'])
                     # logger.info('\nКонтекст билета')
                     # logger.info(t)
-                    pdf_ticket_file = render_ticket(t)
+                    pdf_ticket_file = render_eticket(t)
                     customer_email.attach_file(pdf_ticket_file, mimetype='application/pdf')
 
             admin_email.send()

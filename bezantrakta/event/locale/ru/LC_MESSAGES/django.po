@@ -286,11 +286,11 @@ msgstr "Афиша"
 
 #: models/event_container_binder.py:130
 msgid "event_is_group_group"
-msgstr "Группа событий"
+msgstr "Группа"
 
 #: models/event_container_binder.py:130
 msgid "event_is_group_event"
-msgstr "Группа событий"
+msgstr "Группа"
 
 #: models/event_container_binder.py:144 models/event_link_binder.py:84
 msgid "eventcontainerbinder_event_datetime"
@@ -298,7 +298,7 @@ msgstr "Дата и время"
 
 #: models/event_group_binder.py:34
 msgid "eventgroupbinder_event_group"
-msgstr "Группа событий"
+msgstr "Группа"
 
 #: models/event_group_binder.py:41
 msgid "eventgroupbinder_event"
@@ -318,11 +318,11 @@ msgstr "Подпись события в группе"
 
 #: models/event_group_binder.py:53
 msgid "eventgroupbinder"
-msgstr "привязка к группе событий"
+msgstr "привязка к группе"
 
 #: models/event_group_binder.py:54
 msgid "eventgroupbinders"
-msgstr "привязки к группе событий"
+msgstr "привязки к группе"
 
 #: models/event_link.py:50
 msgid "eventlink_title"
