@@ -108,11 +108,12 @@
                         <h3 id="links-header">Билеты</h3>
                         <ul id="links">
                         {% for link in links %}
-                            <li style="margin: 1rem 0;">
+                            <li>
                                 {% if link.href != "" %}
                                 <a href="{{ link.href }}" title="{{ link.title }}" target="_blank">
                                 {% endif %}
-                                    <img class="link-checkbox" border="0" style="border: 0; border-style: none"><img class="link-banner" src="{% get_media_prefix %}{{ link.img }}" alt="{{ link.title }}">
+                                    <img class="link-checkbox" border="0">
+                                    <img class="link-banner" src="{% get_media_prefix %}{{ link.img }}" alt="{{ link.title }}">
                                 {% if link.href != "" %}
                                 </a>
                                 {% endif %}
@@ -182,7 +183,7 @@
                 <div class="description">
                     <div id="info-poster" class="event-poster">
                         <div class="event-poster-body">
-                            <img rel="image_src" src="{{ event.poster }}" alt="{{ event.event_title }}">
+                            <img rel="image_src" src="{% get_media_prefix %}{{ event.poster }}" alt="{{ event.event_datetime }} {{ event.event_title }} {{ event.event_venue_title }}">
                         </div>
                     </div>
 
@@ -203,7 +204,7 @@
             <div id="tickets-preloader" class="modal">
                 <div>
                     <div class="modal-body">
-                        <div style="display: flex; flex-direction: column; flex-wrap: wrap; justify-content: center; height: 100%;">
+                        <div>
                             <p><img src="{% static "global/ani/striped-progress.gif" %}"></p>
                         </div>
                     </div>

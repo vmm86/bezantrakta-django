@@ -52,14 +52,14 @@
                     </p>
 
                     <h3 id="order-info-header">Информация о заказе</h3>
-                    <ul id="order-info" style="padding: 1rem 2.5rem;">
+                    <ul id="order-info">
                     {% for i in order.info %}
-                        <li style="text-transform: initial;">{{ i.key }} {{ i.value|safe }}</li>
+                        <li>{{ i.key }} {{ i.value|safe }}</li>
                     {% endfor %}
                     </ul>
                 </div>
 
-                <div id="success-message" style="font-weight: bold;">
+                <div id="success-message">
                     <br>
                     <br>
                     <p>Заказ успешно завершён.</p>
