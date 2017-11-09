@@ -100,7 +100,10 @@ class EventContainerBinder(models.Model):
         )
 
     def __str__(self):
-        return ''
+        return '{event} 🔗 {container}'.format(
+            event=self.event,
+            container=self.event_container
+        )
 
     def delete(self, *args, **kwargs):
         full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
