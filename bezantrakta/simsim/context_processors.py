@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from bezantrakta.location.models import Domain
+from bezantrakta.location.models import City, Domain
 
 
 def environment(request):
@@ -22,6 +22,13 @@ def queryset_filter(request):
         domain_slug = request.COOKIES.get('bezantrakta_admin_domain', None)
 
         try:
+            current_city = City.objects.get(slug=city_slug)
+        except City.DoesNotExist:
+            city_id = 0
+        else:
+            city_id = current_city.id
+
+        try:
             current_domain = Domain.objects.get(slug=domain_slug)
         except Domain.DoesNotExist:
             domain_id = 0
@@ -29,6 +36,7 @@ def queryset_filter(request):
             domain_id = current_domain.id
 
         return {
+            'bezantrakta_admin_city_id': city_id,
             'bezantrakta_admin_city_slug': city_slug,
             'bezantrakta_admin_domain_slug': domain_slug,
             'bezantrakta_admin_domain_id': domain_id,
