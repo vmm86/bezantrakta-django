@@ -543,3 +543,22 @@ button {
 .modal .close:hover {
     cursor: pointer;
 }
+
+.debug-info {
+    display: block;
+    background: url(/static/global/svg/search-input.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+    color: #000;
+    font-size: 0.75rem;
+    text-align: center;
+    text-transform: uppercase;
+    width: 90%;
+    padding: 0.25rem 0;
+    position: absolute;
+    top: 4%;
+    left: 6%;
+
+/*    box-shadow: 0.1rem 0.1rem black;*/
+}

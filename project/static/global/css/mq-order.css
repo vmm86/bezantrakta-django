@@ -1,18 +1,6 @@
 @charset "utf-8";
 
-/* Отключение ненужных блоков и общие стили для заказа билетов */
-
-.panorama,
-.poster-left, 
-.poster-right,
-.header,
-.events-menu,
-.banners-body,
-.footer,
-.bottom-menu,
-.counters {
-    display: none;
-}
+/* Общие стили для заказа билетов */
 
 .body {
     display: table;
@@ -33,6 +21,15 @@
 
 .content {
     padding: 0;
+}
+
+#tickets-preloader .modal-body > div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    height: 100%;
 }
 
 /* Пошаговый прогресс заказа билетов */
@@ -329,6 +326,14 @@ h1, h2 {
     padding: 0.5rem 2rem;
 }
 
+#links li {
+    margin: 1rem 0;
+}
+
+#links li a {
+    text-decoration: none;
+}
+
 #links li .link-checkbox {
     display: inline-block;
 
@@ -465,6 +470,8 @@ h1, h2 {
 
 .stagehall {
     border-collapse: collapse;
+
+    background-color: #fff;
 
     width: 100%;
 }
@@ -1317,7 +1324,15 @@ p.input-body,
     margin-left: 0;
 }
 
-.order-result {
+#order-info {
+    padding: 1rem 2.5rem;
+}
+
+#order-info li {
+    text-transform: initial;
+}
+
+#success-message {
     font-weight: bold;
 }
 

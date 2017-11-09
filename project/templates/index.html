@@ -47,13 +47,9 @@
         <div class="bannergroup">
         {# Баннеры #}
         {% for banner in banner_group_items.banner_big_vertical_left %}
-            {% if banner.href %}
-                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-            {% endif %}
-                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}" title="{{ banner.title }}">
-            {% if banner.href %}
-                </a>
-            {% endif %}
+            <div class="banneritem">
+                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+            </div>
         {% endfor %}
         {# Афиши #}
         {% for item in big_vertical_left %}
@@ -72,14 +68,10 @@
     {% if big_vertical_right or banner_group_items.banner_big_vertical_right %}
         <div class="bannergroup">
         {# Баннеры #}
-        {% for banner in banner_group_items.banner_big_vertical_left %}
-            {% if banner.href %}
-                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-            {% endif %}
-                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}" title="{{ banner.title }}">
-            {% if banner.href %}
-                </a>
-            {% endif %}
+        {% for banner in banner_group_items.banner_big_vertical_right %}
+            <div class="banneritem">
+                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+            </div>
         {% endfor %}
         {# Афиши #}
         {% for item in big_vertical_right %}
@@ -136,19 +128,13 @@
                     </div>
 
                     {# Большие горизонтальные баннеры или афиши #}
-                    <div class="poster-big-horizontal-body" style="height: 0;">
+                    <div class="poster-big-horizontal-body">
                     {% if big_horizontal or banner_group_items.banner_big_horizontal %}
                         <ul class="slider">
                         {# Баннеры #}
                         {% for banner in banner_group_items.banner_big_horizontal %}
                             <li class="slide">
-                            {% if banner.href %}
-                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-                            {% endif %}
-                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}" title="{{ banner.title }}">
-                            {% if banner.href %}
-                                </a>
-                            {% endif %}
+                                {% include "banner/banners_with_big_posters.html" with banner=banner %}
                             </li>
                         {% endfor %}
                         {# Афиши #}
