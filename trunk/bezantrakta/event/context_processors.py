@@ -1,4 +1,4 @@
-from django.db.models import CharField, DateTimeField, DecimalField, IntegerField, SlugField, UUIDField
+from django.db.models import DateTimeField, UUIDField
 from django.db.models import Case, OuterRef, Subquery, F, Q, When
 
 from project.shortcuts import base_template_context_processor, timezone_now
@@ -72,7 +72,7 @@ def big_containers(request):
             if container:
                 for event in container:
                     # Получение информации о каждом размещённом событии из кэша
-                    event.update(get_or_set_event_cache(event['uuid']))
+                    event.update(get_or_set_event_cache(event['uuid'], 'event'))
 
         return {
             'big_vertical_left':  big_vertical_left,

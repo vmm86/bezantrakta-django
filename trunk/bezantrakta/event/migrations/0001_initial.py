@@ -104,13 +104,13 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('caption', models.CharField(blank=True, help_text='<ul><li>Если событие в группе имеет особый статус, например, отдельные секторы зала в одном событии (танцпол, фанзона и т.п.). - указывается необходимое название.</li><li>Если это просто отдельные события в группе - оставляется пустым.</li></ul>', max_length=64, verbose_name='Подпись события в группе')),
                 ('event', models.ForeignKey(db_column='event_id', on_delete=django.db.models.deletion.CASCADE, related_name='events', to='event.Event', verbose_name='Событие')),
-                ('group', models.ForeignKey(db_column='group_id', on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='event.Event', verbose_name='Группа событий')),
+                ('group', models.ForeignKey(db_column='group_id', on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='event.Event', verbose_name='Группа')),
             ],
             options={
-                'verbose_name': 'привязка к группе событий',
-                'verbose_name_plural': 'привязки к группе событий',
+                'verbose_name': 'привязка к группе',
+                'verbose_name_plural': 'привязки к группе',
                 'db_table': 'bezantrakta_event_group_binder',
-                'ordering': ('group__datetime', 'event__datetime', 'caption'),
+                'ordering': ('group__datetime', '-event__datetime', 'caption'),
             },
         ),
         migrations.CreateModel(

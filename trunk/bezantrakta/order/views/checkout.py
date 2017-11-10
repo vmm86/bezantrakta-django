@@ -24,7 +24,7 @@ def checkout(request):
     event_id = int(request.COOKIES.get('bezantrakta_event_id', 0))
 
     # Информация о событии из кэша
-    event = get_or_set_event_cache(event_uuid)
+    event = get_or_set_event_cache(event_uuid, 'event')
     if event is None:
         # Сообщение об ошибке
         msgs = [

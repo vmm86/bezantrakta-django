@@ -27,7 +27,7 @@ def payment_error(request):
     logger.info('\n----------Обработка НЕуспешной оплаты заказа {order_uuid}----------'.format(order_uuid=order_uuid))
 
     event = {}
-    event['info'] = get_or_set_event_cache(event_uuid)
+    event['info'] = get_or_set_event_cache(event_uuid, 'event')
     event['id'] = event['info']['ticket_service_event']
     # logger.info('Событие')
     # logger.info(event['info'])

@@ -903,6 +903,15 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     line-height: initial;
 }
 
+/* Оформление двух инлайн-форм дополнительных инлайн-форме только для добавления данных */
+#groups-group {
+    margin-bottom: 0;
+}
+#groups-2-group fieldset h2,
+#groups-2-group fieldset table thead {
+    display: none;
+}
+
 /* Порядок отображения настроек в JSON */
 
 fieldset.json_settings {

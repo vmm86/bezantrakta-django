@@ -5,6 +5,8 @@ from django.utils.translation import ugettext as _
 
 from jsoneditor.forms import JSONEditor
 
+from bezantrakta.event.models import EventVenue
+
 from ..cache import get_or_set_cache
 from ..models import TicketService, TicketServiceSchemeVenueBinder
 

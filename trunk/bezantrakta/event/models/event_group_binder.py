@@ -52,7 +52,7 @@ class EventGroupBinder(models.Model):
         db_table = 'bezantrakta_event_group_binder'
         verbose_name = _('eventgroupbinder')
         verbose_name_plural = _('eventgroupbinders')
-        ordering = ('group__datetime', 'event__datetime', 'caption',)
+        ordering = ('group__datetime', '-event__datetime', 'caption',)
 
     def __str__(self):
         return '{event} 🔗 {group}'.format(

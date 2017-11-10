@@ -132,7 +132,7 @@ ______________________________________________________________________________
 
                     # информаци о событии из кэша
                     event = {}
-                    event['info'] = get_or_set_event_cache(order['event_uuid'])
+                    event['info'] = get_or_set_event_cache(order['event_uuid'], 'event')
 
                     # Получение реквизитов покупателя
                     customer = {}

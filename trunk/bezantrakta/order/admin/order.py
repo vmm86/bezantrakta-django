@@ -58,6 +58,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = (
         ('datetime', DateRangeFilter),
         'status', 'delivery', 'payment',
+        ('event', admin.RelatedOnlyFieldListFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_per_page = 20

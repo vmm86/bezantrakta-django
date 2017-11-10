@@ -101,7 +101,7 @@ def calendar(request, year, month, day):
     if events_on_date:
         for event in events_on_date:
             # Получение информации о каждом размещённом событии из кэша
-            event.update(get_or_set_event_cache(event['uuid']))
+            event.update(get_or_set_event_cache(event['uuid'], 'event'))
 
     context = {
         'title': 'События на {naturalday}'.format(naturalday=naturalday(calendar_date_localized)),

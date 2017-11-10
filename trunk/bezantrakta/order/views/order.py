@@ -39,7 +39,7 @@ def order(request):
         # Получение параметров события
         event = {}
         event['uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_event_uuid', None))
-        event['info'] = get_or_set_event_cache(event['uuid'])
+        event['info'] = get_or_set_event_cache(event['uuid'], 'event')
         event['id'] = event['info']['ticket_service_event']
 
         # Экземпляр класса сервиса продажи билетов

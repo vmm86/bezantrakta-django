@@ -33,7 +33,7 @@ def payment_success(request):
     logger.info('\n----------Обработка успешной оплаты заказа {order_uuid}----------'.format(order_uuid=order_uuid))
 
     event = {}
-    event['info'] = get_or_set_event_cache(event_uuid)
+    event['info'] = get_or_set_event_cache(event_uuid, 'event')
     event['id'] = event['info']['ticket_service_event']
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     logger.info('Событие')
