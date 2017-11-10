@@ -90,7 +90,11 @@ def event(request, year, month, day, hour, minute, slug):
     # Событие существует в БД
     else:
         # Получение информации о событии из кэша
-        event = get_or_set_event_cache(event['event_uuid'])
+        event = get_or_set_event_cache(event['event_uuid'], 'event')
+
+        # Событие предстоит или уже прошло
+        today = timezone_now()
+        event['is_coming'] = True if event['event_datetime'] > today else False
 
         # Событие опубликовано
         if event['is_published']:
@@ -119,9 +123,6 @@ def event(request, year, month, day, hour, minute, slug):
                 payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
             else:
                 payment_service = None
-
-            today = timezone_now()
-            event['is_coming'] = True if event['event_datetime'] > today else False
 
             context = {}
 
@@ -173,6 +174,8 @@ def event(request, year, month, day, hour, minute, slug):
                     'datetime',
                     'venue',
                     'caption',
+                ).order_by(
+                    'datetime'
                 )
                 context['group_events'] = list(group_events)
 

@@ -76,7 +76,7 @@ def confirmation(request, order_uuid):
             return redirect('error')
         else:
             # Информация о событии из кэша
-            event = get_or_set_event_cache(order['event_uuid'])
+            event = get_or_set_event_cache(order['event_uuid'], 'event')
 
             # # Информация о сервисе продажи билетов
             # ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])

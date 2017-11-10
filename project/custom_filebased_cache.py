@@ -179,9 +179,6 @@ class FileBasedCache(BaseCache):
         """
         Get app name from the key name.
         """
-        if ':' in key:
-            app_name = key.split(':')[2]
-        else:
-            app_name = key
+        app_name = key.split(':')[2] if ':' in key else key
         app_name = app_name.split('.')[0]
         return app_name

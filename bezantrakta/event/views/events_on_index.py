@@ -78,7 +78,8 @@ def events_on_index(request):
         if container:
             for event in container:
                 # Получение информации о каждом размещённом событии из кэша
-                event.update(get_or_set_event_cache(event['uuid']))
+                event_or_group = 'group' if event['is_group'] else 'event'
+                event.update(get_or_set_event_cache(event['uuid'], event_or_group))
 
     context = {
         'title': '',

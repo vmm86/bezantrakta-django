@@ -50,7 +50,7 @@ def category(request, slug):
     if category_events:
         for event in category_events:
             # Получение информации о каждом размещённом событии из кэша
-            event.update(get_or_set_event_cache(event['uuid']))
+            event.update(get_or_set_event_cache(event['uuid'], 'event'))
 
     context = {
         'title': category_name,

@@ -44,7 +44,7 @@ def search(request):
         if events_found:
             for event in events_found:
                 # Получение информации о каждом размещённом событии из кэша
-                event.update(get_or_set_event_cache(event['uuid']))
+                event.update(get_or_set_event_cache(event['uuid'], 'event'))
 
         context = {
             'title': 'Поиск',

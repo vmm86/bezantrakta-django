@@ -19,12 +19,12 @@ $(document).ready(function() {
     });
 
     {# При создании новых записей #}
-    var city_id = {{ bezantrakta_admin_city_id }};
+    {# var city_id = {{ bezantrakta_admin_city_id }}; #}
     var domain_id = {{ bezantrakta_admin_domain_id }};
     if (domain_id !== 0) {
         $('.object-tools .addlink').attr('href', function(i, h) {
             var qs = h + (h.indexOf('?') != -1 ? '&' : '?');
-            return qs + 'domain=' + domain_id + '&city=' + city_id;
+            return qs + 'domain=' + domain_id; {# + '&city=' + city_id; #}
         });
     }
 
