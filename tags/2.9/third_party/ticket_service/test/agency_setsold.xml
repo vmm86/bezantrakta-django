@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GateReq>
+    <ReqLogin>
+        <UserPass>qwaz56ty</UserPass>
+        <UserName>sbgs2</UserName>
+    </ReqLogin>
+    <ReqBody>
+        <InputRow row="1" seat="5" NomBilKn="1875" session="bd7c160b45d9c9f682324eec91c2b140" PaymentTime="15:30" PaymentDate="14.07.2017" TransactionID="8d7c160bee45d9c92324c91bf6c2b138" cod_sec="527"></InputRow>
+        <InputRow row="1" seat="6" NomBilKn="1875" session="bd7c160b45d9c9f682324eec91c2b140" PaymentTime="15:30" PaymentDate="14.07.2017" TransactionID="8d7c160bee45d9c92324c91bf6c2b138" cod_sec="527"></InputRow>
+    </ReqBody>
+</GateReq> 
+
+<?xml version="1.0" encoding="utf-8"?>
+<GateAnswer>
+    <AnswerResult>
+        <ResultCode>0</ResultCode>
+        <RecordCount>2</RecordCount>
+    </AnswerResult>
+    <AnswerBody>
+        <Row NomBilKn="1875" cod_sec="527" row="1" seat="5" price="10.00" priceSell="10.00" priceDiscount="10.00" session="bd7c160b45d9c9f682324eec91c2b140" ReservID="37941" ReservDate="18.07.2017" result_code="0"/>
+        <Row NomBilKn="1875" cod_sec="527" row="1" seat="6" price="10.00" priceSell="10.00" priceDiscount="10.00" session="bd7c160b45d9c9f682324eec91c2b140" ReservID="37941" ReservDate="18.07.2017" result_code="0"/>
+    </AnswerBody>
+</GateAnswer>

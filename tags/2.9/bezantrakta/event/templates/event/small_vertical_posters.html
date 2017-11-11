@@ -1,0 +1,37 @@
+{% load static %}
+{% url 'event:event' year=item.event_datetime|date:"Y" month=item.event_datetime|date:"m" day=item.event_datetime|date:"d" hour=item.event_datetime|date:"H" minute=item.event_datetime|date:"i" slug=item.event_slug as item_url %}
+
+<div class="poster-small-vertical">
+    <div class="poster-small-vertical-image">
+        <a href="{{ item_url }}" title="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
+            {% if debug %}
+                <span class="debug-info">
+                    {{ item.is_in_group|yesno:'группа,событие' }} {{ item.ticket_service_event }}
+                    <br>{{ item.event_datetime }}
+                    <br>{% if item.order >= 0 %}# {{ item.order }}{% endif %}
+                    <br>{% if item.category_title %}{{ item.category_title }}{% endif %}
+                </span>
+            {% endif %}
+            <img src="{% get_media_prefix %}{{ item.poster }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
+        </a>
+    </div>
+    <div class="poster-small-vertical-price">
+        <div class="poster-small-vertical-date">
+            {% with item.event_datetime|date:"Y" as item_year %}
+            {% now "Y" as current_year %}
+            <a href="{{ item_url }}">
+                {% if item_year == current_year %}
+                    {{ item.event_datetime|date:"j E" }}
+                {% else %}
+                    {{ item.event_datetime|date:"d.m.Y" }}
+                {% endif %}
+            </a>
+            {% endwith %}
+        </div>
+        {% if item.event_min_price %}
+            <div class="poster-small-vertical-min_price">
+                <a href="{{ item_url }}">от {{ item.event_min_price|floatformat }}</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
