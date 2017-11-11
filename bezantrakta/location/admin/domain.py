@@ -10,6 +10,7 @@ from ..models import Domain
 
 @admin.register(Domain)
 class DomainAdmin(admin.ModelAdmin):
+    actions = ('publish_or_unpublish_items',)
     formfield_overrides = {
         TextField: {'widget': JSONEditor},
     }
@@ -37,3 +38,10 @@ class DomainAdmin(admin.ModelAdmin):
             }
         ),
     )
+
+    def publish_or_unpublish_items(self, request, queryset):
+        """Пакетная публикация или снятие с публикации сайтов."""
+        for item in queryset:
+            item.is_published = False if item.is_published else True
+            item.save(update_fields=['is_published'])
+    publish_or_unpublish_items.short_description = _('domain_admin_publish_or_unpublish_items')
