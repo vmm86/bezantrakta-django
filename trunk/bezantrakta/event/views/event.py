@@ -85,7 +85,7 @@ def event(request, year, month, day, hour, minute, slug):
             message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
         ]
         render_messages(request, msgs)
-        return redirect('error_404')
+        return redirect('error', 404)
 
     # Событие существует в БД
     else:
@@ -234,7 +234,7 @@ def event(request, year, month, day, hour, minute, slug):
                     message('info', '👉 Зайдите позднее или <a href="/">начните поиск с главной страницы</a>.'),
                 ]
                 render_messages(request, msgs)
-                return redirect('error_403')
+                return redirect('error', 403)
             # Событие НЕ опубликовано и уже прошло
             else:
                 # Сообщение об ошибке
@@ -243,4 +243,4 @@ def event(request, year, month, day, hour, minute, slug):
                     message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
                 ]
                 render_messages(request, msgs)
-                return redirect('error_410')
+                return redirect('error', 410)

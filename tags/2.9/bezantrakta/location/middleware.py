@@ -3,7 +3,7 @@ import simplejson as json
 from django.conf import settings
 from django.db.models import CharField, Case, When, Value, Q
 from django.http.request import split_domain_port
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 
@@ -24,6 +24,13 @@ class CurrentLocationMiddleware(MiddlewareMixin):
             domain_slug = url_domain[:-len(root_domain)].rstrip('.')
             # Обход отсутствия поддомена для главного сайта
             domain_slug = root_domain_slug if domain_slug == '' else domain_slug
+
+        # Полный URL без опциональных GET-параметров (query string)
+        path = request.get_full_path().split('?')[0]
+
+        request.root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
+        request.url_domain = url_domain
+        request.url_path = path
 
         request.domain_is_published = False
 
@@ -48,7 +55,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                 message('error', 'К сожалению, такого сайта у нас пока нет. 😞'),
             ]
             render_messages(request, msgs)
-            return redirect('error_500')
+            return render(request, 'error.html', status=500)
         # Если домен добавлен в БД
         else:
             request.domain_id = domain['id']
@@ -62,6 +69,11 @@ class CurrentLocationMiddleware(MiddlewareMixin):
             request.city_timezone = domain['city__timezone']
             request.city_state = domain['city__state']
 
+            # URL сайта (прокотол + домен) без слэша в конце (для подстановки к относительным ссылкам)
+            request.url_protocol_domain = build_absolute_url(request.domain_slug)
+            # Полный абсолютный URL текущей страницы
+            request.url_full = build_absolute_url(request.domain_slug, path)
+
             # Если город отключен - такой город не существует (ошибка 500)
             if request.city_state is False:
                 # Сообщение об ошибке
@@ -69,7 +81,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     message('error', 'К сожалению, этот город не доступен для посещения. 😞'),
                 ]
                 render_messages(request, msgs)
-                return redirect('error_500')
+                return render(request, 'error.html', status=500)
 
             # Если город в процессе подготовки - "скоро открытие" (ошибка 503)
             elif request.city_state is None:
@@ -78,7 +90,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     message('error', 'Этот город пока в процессе подготовки, скоро открытие.'),
                 ]
                 render_messages(request, msgs)
-                return redirect('error_503')
+                return render(request, 'error.html', status=503)
 
             # Если город включен
             elif request.city_state is True:
@@ -90,20 +102,9 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                         message('error', 'Проводятся технические работы.'),
                     ]
                     render_messages(request, msgs)
-                    return redirect('error_503')
+                    return render(request, 'error.html', status=503)
                 # Если и город, и домен опубликованы
                 else:
-                    # Полный URL без опциональных GET-параметров (query string)
-                    path = request.get_full_path().split('?')[0]
-
-                    request.root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
-                    request.url_domain = url_domain
-                    request.url_path = path
-                    # URL сайта (прокотол + домен) без слэша в конце (для подстановки к относительным ссылкам)
-                    request.url_protocol_domain = build_absolute_url(request.domain_slug)
-                    # Полный абсолютный URL текущей страницы
-                    request.url_full = build_absolute_url(request.domain_slug, path)
-
                     # Активация текущего часового пояса
                     if request.city_timezone:
                         # На сайте (но не в админке!) активируется часовой пояс города текущего сайта из БД
@@ -138,7 +139,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                         message('error', 'К сожалению, ни один город пока не доступен для показа. 😞'),
                     ]
                     render_messages(request, msgs)
-                    return redirect('error_500')
+                    return render(request, 'error.html', status=500)
                 else:
                     request.cities = list(cities)
                     # Псевдоним города из куки `bezantrakta_city`
