@@ -9,7 +9,7 @@
                     {{ item.is_in_group|yesno:'группа,событие' }} {{ item.ticket_service_event }}
                     <br>{{ item.event_datetime }}
                     <br>{% if item.order >= 0 %}# {{ item.order }}{% endif %}
-                    <br>{% if item.category_title %}{{ item.category_title }}{% endif %}
+                    <br>{% if item.event_category_title %}{{ item.event_category_title }}{% endif %}
                 </span>
             {% endif %}
             <img src="{% get_media_prefix %}{{ item.poster }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
