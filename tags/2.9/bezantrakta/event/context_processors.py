@@ -35,6 +35,7 @@ def big_containers(request):
             ),
             is_group=F('event__is_group'),
             container=F('event_container__slug'),
+            container_mode=F('event_container__mode')
         ).values(
             'event_uuid',
             'event_datetime',
@@ -43,11 +44,9 @@ def big_containers(request):
             'order',
             'img',
         ).filter(
-            Q(
-                Q(event__is_published=True) &
-                Q(event_container__mode__startswith='big_') &
-                Q(event__domain_id=request.domain_id)
-            ) &
+            Q(event__is_published=True) &
+            Q(container_mode__startswith='big_') &
+            Q(event__domain_id=request.domain_id) &
             Q(
                 Q(
                     Q(is_group=True) &
@@ -72,8 +71,8 @@ def big_containers(request):
             if container:
                 for event in container:
                     # Получение информации о каждом размещённом событии из кэша
-                    event_or_group = 'group' if event['is_group'] else 'event'
-                    event.update(get_or_set_event_cache(event['event_uuid'], event_or_group))
+                    event_cache = get_or_set_event_cache(event['event_uuid'], 'event')
+                    event.update(event_cache)
 
         return {
             'big_vertical_left':  big_vertical_left,
