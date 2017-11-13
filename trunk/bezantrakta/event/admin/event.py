@@ -29,6 +29,13 @@ class ListEventGroupBinderInline(admin.TabularInline):
     fields = ['event', 'caption', ]
     readonly_fields = ['event', ]
 
+    today = timezone_now()
+
+    def get_queryset(self, request):
+        return EventGroupBinder.objects.filter(
+            event__datetime__gt=self.today
+        )
+
     def has_add_permission(self, request):
         return False
 

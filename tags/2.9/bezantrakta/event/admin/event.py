@@ -1,63 +1,38 @@
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from django.conf import settings
 from django.contrib import admin
 from django.core.cache import cache
-from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
-from rangefilter.filter import DateRangeFilter
+from django.db.models import Q
 
 from project.decorators import queryset_filter
-from project.shortcuts import build_absolute_url, timezone_now
+from project.shortcuts import build_absolute_url
 
 from ..cache import get_or_set_cache
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
-# Чтобы избежать множества избыточных SQL-запросов при выводе выпадающих списков в каждом связанном с группой событии,
-# эти события выводятся в первой инлайн-форме без выбора событий в выпадающих списках,
-# но с возможностью редактировать подпись события либо удалить события из группы.
-# Привязать новое событие к группе можно из второй инлайн-формы с возможнотью добавления,
-# но без возможности редактирования (без вывода уже добавленных событий).
-
-
-class ListEventGroupBinderInline(admin.TabularInline):
+class EventGroupBinderInline(admin.TabularInline):
     model = EventGroupBinder
     extra = 0
     fk_name = 'group'
-    fields = ['event', 'caption', ]
-    readonly_fields = ['event', ]
-
-    def has_add_permission(self, request):
-        return False
-
-
-class AddEventGroupBinderInline(admin.TabularInline):
-    model = EventGroupBinder
-    extra = 0
-    fk_name = 'group'
-    fields = ['event', 'caption', ]
-
-    today = timezone_now()
-
-    def has_change_permission(self, request, obj=None):
-        return False
+    fields = ('event', 'caption',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """Для добавления в группу выводятся только привязанные к выбранному домену актуальные события."""
         if db_field.name == 'event':
             domain_filter = request.COOKIES.get('bezantrakta_admin_domain', None)
-            kwargs['queryset'] = Event.objects.filter(
+            kwargs['queryset'] = Event.objects.select_related(
+                'event_category', 'event_venue', 'domain'
+            ).filter(
                 is_group=False,
-                datetime__gt=self.today,
                 domain__slug=domain_filter
             )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class EventLinkBinderInline(admin.TabularInline):
-
     model = EventLinkBinder
     extra = 0
     fields = ('order', 'event_link', 'href', 'img_preview',)
@@ -87,18 +62,13 @@ class EventAdmin(admin.ModelAdmin):
         ),
     )
     filter_horizontal = ('event_container',)
-    inlines = (
-        ListEventGroupBinderInline, AddEventGroupBinderInline,
-        EventLinkBinderInline,
-        EventContainerBinderInline,
-    )
+    inlines = (EventGroupBinderInline, EventLinkBinderInline, EventContainerBinderInline,)
     list_display = ('title', 'is_published', 'is_on_index', 'is_group', 'datetime', 'event_category', 'event_venue',
                     'group_count', 'link_count', 'container_count',
                     'ticket_service', 'domain',)
     list_filter = (
-        ('datetime', DateRangeFilter),
         ('is_group', admin.BooleanFieldListFilter),
-        ('event_venue', RelatedDropdownFilter),
+        ('event_venue', admin.RelatedOnlyFieldListFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_select_related = ('event_category', 'event_venue', 'domain',)
@@ -113,25 +83,22 @@ class EventAdmin(admin.ModelAdmin):
     readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',)
     search_fields = ('title',)
 
-    def get_view_on_site_url(self, obj=None):
-        if obj is not None and obj.is_group is False:
-            event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
+    def view_on_site(self, obj):
+        event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
 
-            url = reverse(
-                'event:event',
-                args=[
-                    event_datetime_localized.strftime('%Y'),
-                    event_datetime_localized.strftime('%m'),
-                    event_datetime_localized.strftime('%d'),
-                    event_datetime_localized.strftime('%H'),
-                    event_datetime_localized.strftime('%M'),
-                    obj.slug
-                ]
-            )
+        url = reverse(
+            'event:event',
+            args=[
+                event_datetime_localized.strftime('%Y'),
+                event_datetime_localized.strftime('%m'),
+                event_datetime_localized.strftime('%d'),
+                event_datetime_localized.strftime('%H'),
+                event_datetime_localized.strftime('%M'),
+                obj.slug
+            ]
+        )
 
-            return build_absolute_url(obj.domain.slug, url)
-        else:
-            return None
+        return build_absolute_url(obj.domain.slug, url)
 
     @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):
@@ -167,21 +134,22 @@ class EventAdmin(admin.ModelAdmin):
         return actions
 
     def delete_non_ticket_service_items(self, request, queryset):
-        """Пакетное удаление только добавленных вручную групп/событий, НЕ импортируемых из сервисов продажи билетов."""
+        """Пакетное удаление только добавленных вручную групп/событий,
+        т.е. не импортируемых из сервисов продажи билетов.
+        """
         from django.contrib.admin.actions import delete_selected
         queryset = queryset.exclude(ticket_service__isnull=False)
         delete_selected(self, request, queryset)
     delete_non_ticket_service_items.short_description = _('event_admin_delete_non_ticket_service_items')
 
     def publish_or_unpublish_items(self, request, queryset):
-        """Пакетная публикация или снятие с публикации групп/событий с последующим пересозданием кэша."""
+        """Пакетная публикация или снятие с публикации групп/событий."""
         for item in queryset:
-            item.is_published = False if item.is_published else True
+            if item.is_published:
+                item.is_published = False
+            else:
+                item.is_published = True
             item.save(update_fields=['is_published'])
-
-            event_or_group = 'group' if item.is_group else 'event'
-            get_or_set_cache(item.id, event_or_group, reset=True)
-
     publish_or_unpublish_items.short_description = _('event_admin_publish_or_unpublish_items')
 
     def save_model(self, request, obj, form, change):
@@ -191,16 +159,13 @@ class EventAdmin(admin.ModelAdmin):
         """
         super(EventAdmin, self).save_model(request, obj, form, change)
 
-        event_or_group = 'group' if obj.is_group else 'event'
-
         if change and obj._meta.pk.name not in form.changed_data:
-            get_or_set_cache(obj.id, event_or_group, reset=True)
+            get_or_set_cache(obj.id, reset=True)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
         for item in queryset:
-            event_or_group = 'group' if item.is_group else 'event'
-            get_or_set_cache(item.id, event_or_group, reset=True)
+            get_or_set_cache(item.id, reset=True)
     batch_set_cache.short_description = _('event_admin_batch_set_cache')
 
     def group_count(self, obj):
