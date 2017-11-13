@@ -18,7 +18,7 @@ def events_on_index(request):
 
     # Поиск опубликованных событий или групп на главной, привязанных к текущему домену
     group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
-        group_id=OuterRef('event_id'),
+        group_id=OuterRef('event__id'),
         event__is_published=True,
         event__datetime__gt=today,
     ).order_by('event__datetime')[:1]
@@ -39,6 +39,7 @@ def events_on_index(request):
         ),
         is_group=F('event__is_group'),
         container=F('event_container__slug'),
+        container_mode=F('event_container__mode')
     ).values(
         'event_uuid',
         'event_datetime',
@@ -46,13 +47,11 @@ def events_on_index(request):
         'container',
         'order',
     ).filter(
-        Q(
-            Q(event__is_published=True) &
-            Q(event__is_on_index=True) &
-            Q(event_container__mode='small_vertical') &
-            Q(order__gt=0) &
-            Q(event__domain_id=request.domain_id)
-        ) &
+        Q(event__is_published=True) &
+        Q(event__is_on_index=True) &
+        Q(container_mode='small_vertical') &
+        Q(order__gt=0) &
+        Q(event__domain_id=request.domain_id) &
         Q(
             Q(
                 Q(is_group=True) &
@@ -78,8 +77,8 @@ def events_on_index(request):
         if container:
             for event in container:
                 # Получение информации о каждом размещённом событии из кэша
-                event_or_group = 'group' if event['is_group'] else 'event'
-                event.update(get_or_set_event_cache(event['event_uuid'], event_or_group))
+                event_cache = get_or_set_event_cache(event['event_uuid'], 'event')
+                event.update(event_cache)
 
     context = {
         'title': '',
