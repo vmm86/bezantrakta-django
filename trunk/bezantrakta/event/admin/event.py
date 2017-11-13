@@ -103,8 +103,10 @@ class EventAdmin(admin.ModelAdmin):
                     'group_count', 'link_count', 'container_count',
                     'ticket_service', 'domain',)
     list_filter = (
-        ('datetime', DateRangeFilter),
+        ('is_published', admin.BooleanFieldListFilter),
         ('is_group', admin.BooleanFieldListFilter),
+        ('datetime', DateRangeFilter),
+        ('event_category', admin.RelatedOnlyFieldListFilter),
         ('event_venue', RelatedDropdownFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
