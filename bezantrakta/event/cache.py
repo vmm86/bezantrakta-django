@@ -26,13 +26,13 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
     """
     event_cache_key = '{type}.{event_uuid}'.format(type=event_or_group, event_uuid=event_uuid)
     event_cache_value = cache.get(event_cache_key)
-    debug_console('event_or_group cache:', event_cache_key)
+    # debug_console('event_or_group cache:', event_cache_key)
 
     if reset:
         cache.delete(event_cache_key)
 
     if not event_cache_value or reset:
-        debug_console('    getting item from DB...')
+        # debug_console('    getting item from DB...')
         try:
             event = dict(Event.objects.select_related(
                 'event_venue',
@@ -48,6 +48,8 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
                 event_text=F('text'),
                 event_min_price=F('min_price'),
                 event_min_age=F('min_age'),
+                event_category_slug=F('event_category__slug'),
+                event_category_title=F('event_category__title'),
                 event_venue_title=F('event_venue__title'),
                 event_venue_city=F('event_venue__city__title'),
                 is_in_group=F('event_groups'),
@@ -74,6 +76,8 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
                 'event_text',
                 'event_min_price',
                 'event_min_age',
+                'event_category_slug',
+                'event_category_title',
                 'event_venue_title',
                 'event_venue_city',
 
@@ -94,10 +98,10 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
                 event_uuid=event_uuid,
             ))
         except Event.DoesNotExist:
-            debug_console('    nothing found!')
+            # debug_console('    nothing found!')
             return None
         else:
-            debug_console('    pre-saving...')
+            # debug_console('    pre-saving...')
             # Человекопонятные локализованные дата и время события
             event_datetime_localized = event['event_datetime'].astimezone(event['city_timezone'])
             event['event_date'] = humanize_date(event_datetime_localized)
@@ -130,9 +134,9 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
             # if not reset:
             #     get_or_set_cache(event_uuid, event_or_group)
     else:
-        debug_console('    pre-reading...')
+        # debug_console('    pre-reading...')
         event_cache_value = json.loads(event_cache_value)
-        debug_console('    ', event_cache_value['event_title'])
+        # debug_console('    ', event_cache_value['event_title'])
 
         # Получение из строки даты и времени в UTC ('2017-08-31T16:00:00+00:00')
         # В шаблоне она должна локализоваться с учётом текущего часового пояса
@@ -140,7 +144,7 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
 
         # Замена некоторых параметров события на параметры родительской группы, если событие в неё входит
         if event_cache_value['is_in_group']:
-            debug_console('    group params overriding...')
+            # debug_console('    group params overriding...')
 
             # Получение параметров группы
             group_cache_value = get_or_set_cache(event_cache_value['group_uuid'], 'group')
@@ -151,11 +155,13 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
                 'event_min_age',
                 'event_description',
                 'event_text',
+                'event_category_slug',
+                'event_category_title',
             )
 
             for sub in group_substitutes:
                 event_cache_value[sub] = group_cache_value[sub]
-                debug_console('    ----- ', sub)
+                # debug_console('    ----- ', sub)
 
         # Получение пути к афише в позиции `small_vertical` либо заглушки по умолчанию
         # Для событий, принадлежащих одной группе, афиша берётся из группы
@@ -189,14 +195,14 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
         poster_file_extensions = ('png', 'jpg', 'jpeg', 'gif',)
 
         for ext in poster_file_extensions:
-            debug_console('    try', ext)
+            # debug_console('    try', ext)
             poster_file = 'small_vertical.{ext}'.format(ext=ext)
             if os.path.isfile(os.path.join(settings.MEDIA_ROOT, poster_path, poster_file)):
                 event_cache_value['poster'] = '{poster_path}/{poster_file}'.format(
                     poster_path=poster_path,
                     poster_file=poster_file
                 )
-                debug_console('    found poster', event_cache_value['poster'])
+                # debug_console('    found poster', event_cache_value['poster'])
                 break
             # ВРЕМЕННО до перехода на сохранение афиш по UUID
             elif os.path.isfile(os.path.join(settings.MEDIA_ROOT, poster_path_old, poster_file)):
@@ -204,7 +210,7 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
                     poster_path=poster_path_old,
                     poster_file=poster_file
                 )
-                debug_console('    found poster', event_cache_value['poster'])
+                # debug_console('    found poster', event_cache_value['poster'])
                 break
             # ВРЕМЕННО до перехода на сохранение афиш по UUID
         else:
@@ -212,6 +218,6 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
                 media_url=settings.MEDIA_URL
             )
 
-        debug_console('    reading...')
+        # debug_console('    reading...')
 
         return event_cache_value
