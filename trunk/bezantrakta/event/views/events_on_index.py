@@ -18,7 +18,7 @@ def events_on_index(request):
 
     # Поиск опубликованных событий или групп на главной, привязанных к текущему домену
     group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
-        group_id=OuterRef('event__id'),
+        group_id=OuterRef('event_id'),
         event__is_published=True,
         event__datetime__gt=today,
     ).order_by('event__datetime')[:1]
@@ -27,12 +27,12 @@ def events_on_index(request):
         'event',
         'event_container',
     ).annotate(
-        uuid=Case(
+        event_uuid=Case(
             When(event__is_group=True, then=F('event__event_group__id')),
             default=F('event__id'),
             output_field=UUIDField()
         ),
-        datetime=Case(
+        event_datetime=Case(
             When(event__is_group=True, then=F('event__event_group__datetime')),
             default=F('event__datetime'),
             output_field=DateTimeField()
@@ -40,8 +40,8 @@ def events_on_index(request):
         is_group=F('event__is_group'),
         container=F('event_container__slug'),
     ).values(
-        'uuid',
-        'datetime',
+        'event_uuid',
+        'event_datetime',
         'is_group',
         'container',
         'order',
@@ -56,17 +56,17 @@ def events_on_index(request):
         Q(
             Q(
                 Q(is_group=True) &
-                Q(datetime=Subquery(group_min_datetime))
+                Q(event_datetime=Subquery(group_min_datetime))
             ) |
             Q(
                 Q(is_group=False) &
-                Q(datetime__gt=today)
+                Q(event_datetime__gt=today)
             )
         )
     ).order_by(
         'container',
         'order',
-        'datetime',
+        'event_datetime',
     )
 
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
@@ -79,7 +79,7 @@ def events_on_index(request):
             for event in container:
                 # Получение информации о каждом размещённом событии из кэша
                 event_or_group = 'group' if event['is_group'] else 'event'
-                event.update(get_or_set_event_cache(event['uuid'], event_or_group))
+                event.update(get_or_set_event_cache(event['event_uuid'], event_or_group))
 
     context = {
         'title': '',

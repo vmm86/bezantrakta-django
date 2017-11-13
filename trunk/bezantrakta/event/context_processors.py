@@ -23,12 +23,12 @@ def big_containers(request):
             'event',
             'event_container',
         ).annotate(
-            uuid=Case(
+            event_uuid=Case(
                 When(event__is_group=True, then=F('event__event_group__id')),
                 default=F('event__id'),
                 output_field=UUIDField()
             ),
-            datetime=Case(
+            event_datetime=Case(
                 When(event__is_group=True, then=F('event__event_group__datetime')),
                 default=F('event__datetime'),
                 output_field=DateTimeField()
@@ -36,8 +36,8 @@ def big_containers(request):
             is_group=F('event__is_group'),
             container=F('event_container__slug'),
         ).values(
-            'uuid',
-            'datetime',
+            'event_uuid',
+            'event_datetime',
             'is_group',
             'container',
             'order',
@@ -51,17 +51,17 @@ def big_containers(request):
             Q(
                 Q(
                     Q(is_group=True) &
-                    Q(datetime=Subquery(group_min_datetime))
+                    Q(event_datetime=Subquery(group_min_datetime))
                 ) |
                 Q(
                     Q(is_group=False) &
-                    Q(datetime__gt=today)
+                    Q(event_datetime__gt=today)
                 )
             )
         ).order_by(
             'container',
             'order',
-            'datetime',
+            'event_datetime',
         )
 
         big_vertical_left = list(events_published.filter(container='big_vertical_left'))
@@ -72,7 +72,8 @@ def big_containers(request):
             if container:
                 for event in container:
                     # Получение информации о каждом размещённом событии из кэша
-                    event.update(get_or_set_event_cache(event['uuid'], 'event'))
+                    event_or_group = 'group' if event['is_group'] else 'event'
+                    event.update(get_or_set_event_cache(event['event_uuid'], event_or_group))
 
         return {
             'big_vertical_left':  big_vertical_left,
