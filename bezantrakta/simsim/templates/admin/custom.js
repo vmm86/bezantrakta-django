@@ -4,8 +4,10 @@ $(window).scroll(function(){
     start_height = $('body::before').height() + $('#header').height() + $('#breadcrumbs').height();
     if ($(window).scrollTop() >= start_height) {
         $('.submit-row').css('position', 'fixed');
+        $('#content').css('padding-bottom', '40px');
     } else {
         $('.submit-row').css('position', 'static');
+        $('#content').css('padding-bottom', '20px');
     }
 });
 
