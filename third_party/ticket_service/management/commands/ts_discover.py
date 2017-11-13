@@ -326,7 +326,10 @@ ______________________________________________________________________________
             # Если группа уже была добавлена ранее
             if group['group_id'] in self.group_id_uuid_mapping.keys():
                 self.stdout.write(
-                    'Группа {gid} была добавлена ранее'.format(gid=group['group_id'])
+                    'Группа {group_id}: {group_title} была добавлена ранее'.format(
+                        group_id=group['group_id'],
+                        group_title=group['group_title']
+                    )
                 )
 
                 # Обновление информации в добавленной ранее группе событий
@@ -341,7 +344,10 @@ ______________________________________________________________________________
                     # Обновить кэш группы при обновлении её данных
                     get_or_set_event_cache(group_uuid, 'group', reset=True)
                     self.stdout.write(
-                        'Обновлён кэш группы {gid}'.format(gid=group['group_id'])
+                        '    Обновлён кэш группы {group_id}: {group_title}'.format(
+                            group_id=group['group_id'],
+                            group_title=group['group_title']
+                        )
                     )
             # Добавление новой группы в БД
             else:
@@ -369,9 +375,9 @@ ______________________________________________________________________________
                     pass
                 else:
                     self.log(
-                        'Добавлена группа {id}: {title}'.format(
-                            id=group['group_id'],
-                            title=group['group_title']
+                        'Добавлена группа {group_id}: {group_title}'.format(
+                            group_id=group['group_id'],
+                            group_title=group['group_title']
                         ), level='SUCCESS'
                     )
 
@@ -380,7 +386,10 @@ ______________________________________________________________________________
                     # В любом случае обновить кэш группы
                     get_or_set_event_cache(group_uuid, 'group')
                     self.stdout.write(
-                        'Создан кэш группы {gid}'.format(gid=group['group_id'])
+                        '    Создан кэш группы {group_id}: {group_title}'.format(
+                            group_id=group['group_id'],
+                            group_title=group['group_title']
+                        )
                     )
 
     def import_events(self, ticket_service, ts, ts_scheme_venue_binder, event):
@@ -428,7 +437,10 @@ ______________________________________________________________________________
             if event['event_id'] in self.event_id_uuid_mapping.keys():
                 event_uuid = self.event_id_uuid_mapping[event['event_id']]
                 self.stdout.write(
-                    'Событие {eid} было добавлено ранее'.format(eid=event['event_id'])
+                    'Событие {event_id}: {event_title} было добавлено ранее'.format(
+                        event_id=event['event_id'],
+                        event_title=event['event_title']
+                    )
                 )
 
                 # Обновление информации в добавленном ранее событии
@@ -445,7 +457,10 @@ ______________________________________________________________________________
                     # Обновить кэш события при обновлении его данных
                     get_or_set_event_cache(event_uuid, 'event', reset=True)
                     self.stdout.write(
-                        'Обновлён кэш события {eid}'.format(eid=event['event_id'])
+                        '    Обновлён кэш события {event_id}: {event_title}'.format(
+                            event_id=event['event_id'],
+                            event_title=event['event_title']
+                        )
                     )
             # Добавление нового события в БД
             else:
@@ -476,9 +491,9 @@ ______________________________________________________________________________
                     pass
                 else:
                     self.log(
-                        'Добавлено событие {id}: {title}'.format(
-                            id=event['event_id'],
-                            title=event['event_title']
+                        'Добавлено событие {event_id}: {event_title}'.format(
+                            event_id=event['event_id'],
+                            event_title=event['event_title']
                         ), level='SUCCESS'
                     )
 
@@ -506,50 +521,11 @@ ______________________________________________________________________________
                         # Создать кэш нового события в БД
                         get_or_set_event_cache(event_uuid, 'event')
                         self.stdout.write(
-                            'Создан кэш события {eid}'.format(eid=event['event_id'])
+                            '    Создан кэш события {event_id}: {event_title}'.format(
+                                event_id=event['event_id'],
+                                event_title=event['event_title']
+                            )
                         )
-
-                # Если событие принадлежит ЕЩЁ НЕ добавленной в БД группе -
-                # группа создаётся, используя данные из первого попавшегося события в ней.
-                # Затем любые другие подобные события будут привязываться к уже долбавленной в БД группе.
-                # else:
-                #     # Уникальный идентификатор новой группы
-                #     group_uuid = uuid.uuid4()
-                #     # Добавление к псевдониму группы идентификатора группы для уникальности
-                #     slug_num_chars = self.event_model_max_length - (len(str(event['group_id'])) + 1)
-                #     group_slug = '{title}-{id}'.format(
-                #         title=urlify(event['event_title'], num_chars=slug_num_chars),
-                #         id=event['group_id'],
-                #     )
-
-                #     Event.objects.create(
-                #         id=group_uuid,
-                #         title=event['event_title'],
-                #         slug=group_slug,
-                #         description='',
-                #         keywords='',
-                #         text=event['event_text'],
-                #         is_published=False,
-                #         is_on_index=False,
-                #         min_price=event['event_min_price'],
-                #         datetime=event['event_datetime'],
-                #         event_venue_id=ts_scheme_venue_binder[event['scheme_id']],
-                #         domain_id=ticket_service['domain_id'],
-                #         is_group=True,
-                #         ticket_service_id=ticket_service['id'],
-                #         ticket_service_event=event['group_id'],
-                #         ticket_service_prices=None,
-                #         ticket_service_scheme=None,
-                #     )
-
-                #     self.log(
-                #         'Добавлена пока отсутствующая группа {id}: {title} (данные взяты из её события)'.format(
-                #             id=event['group_id'],
-                #             title=event['event_title']
-                #         ), level='SUCCESS'
-                #     )
-
-                #     self.group_id_uuid_mapping[event['group_id']] = group_uuid
 
     def log(self, msg, level=None):
         """Метод для логирования информации и в консоль, и в лог-файл.
