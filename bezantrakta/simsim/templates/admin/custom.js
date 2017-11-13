@@ -1,4 +1,14 @@
 {% load i18n %}
+{# Фиксированное позиционирование кнопок для сохранения/удаления в форме редактирования при прокручивании вниз #}
+$(window).scroll(function(){
+    start_height = $('body::before').height() + $('#header').height() + $('#breadcrumbs').height();
+    if ($(window).scrollTop() >= start_height) {
+        $('.submit-row').css('position', 'fixed');
+    } else {
+        $('.submit-row').css('position', 'static');
+    }
+});
+
 $(document).ready(function() {
     {# Сохранение данных выбранного для фильтрации сайта в cookie #}
     $('#choose_domain').change(function() {
