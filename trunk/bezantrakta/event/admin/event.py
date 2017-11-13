@@ -119,7 +119,6 @@ class EventAdmin(admin.ModelAdmin):
         'event_category': admin.VERTICAL,
         'min_age': admin.HORIZONTAL,
     }
-    # readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',)
     search_fields = ('title',)
 
     def get_view_on_site_url(self, obj=None):
@@ -153,18 +152,23 @@ class EventAdmin(admin.ModelAdmin):
         return super(EventAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_readonly_fields(self, request, obj=None):
-        """В событиях из сервисов продажи билетов нельзя изменить информацию,
-        приходящую непосредственно из сервиса продажи билетов.
-        """
-        ro_fields = ['ticket_service', 'ticket_service_event',
-                     'ticket_service_scheme', 'ticket_service_prices',
-                     'is_group', 'event_venue', 'domain', ]
-        if obj is not None and obj.ticket_service is not None:
-            # В группах оставлена возможность редактировать дату/время события,
-            # если она не обновится автоматически при запуске задания ``ts_discover``
-            if not obj.is_group:
-                ro_fields.append('datetime')
-        return ro_fields
+        """Полномочия пользователей при редактировании имеющихся или создании новых событий/групп."""
+        # Суперадминистраторы при необходимости могут редактировать или создавать вручную события/группы,
+        # например, если они по каким-то причинам НЕ исмпортировались из сервиса продажи билетов.
+        if request.user.is_superuser:
+            if obj is not None and obj.ticket_service is not None:
+                return ['ticket_service', 'ticket_service_event',
+                        'ticket_service_scheme', 'ticket_service_prices',
+                        'is_group', 'domain', ]
+            return []
+        # Обычные администраторы в любом случае НЕ могут изменить информацию, относящуюся к сервису продажи билетов.
+        else:
+            ro_fields = ['ticket_service', 'ticket_service_event',
+                         'ticket_service_scheme', 'ticket_service_prices',
+                         'is_group', 'event_venue', 'domain', ]
+            if obj is not None and obj.ticket_service is not None and not obj.is_group:
+                    ro_fields.append('datetime')
+            return ro_fields
 
     def has_delete_permission(self, request, obj=None):
         """Импортируемые из сервисов продажи билетов события нельзя удалить,
