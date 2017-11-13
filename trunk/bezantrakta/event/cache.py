@@ -178,20 +178,6 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
             str(item_uuid)
         )
 
-        # ВРЕМЕННО до перехода на сохранение афиш по UUID
-        city_timezone = pytz.timezone(event_cache_value['city_timezone'])
-        event_datetime_localized = event_cache_value['event_datetime'].astimezone(city_timezone)
-        poster_path_old = os.path.join(
-            event_cache_value['domain_slug'],
-            item_type,
-            '{date}_{time}_{slug}'.format(
-                date=event_datetime_localized.strftime('%Y-%m-%d'),
-                time=event_datetime_localized.strftime('%H-%M'),
-                slug=event_cache_value['event_slug']
-            )
-        )
-        # ВРЕМЕННО до перехода на сохранение афиш по UUID
-
         poster_file_extensions = ('png', 'jpg', 'jpeg', 'gif',)
 
         for ext in poster_file_extensions:
@@ -204,15 +190,6 @@ def get_or_set_cache(event_uuid, event_or_group, reset=False):
                 )
                 # debug_console('    found poster', event_cache_value['poster'])
                 break
-            # ВРЕМЕННО до перехода на сохранение афиш по UUID
-            elif os.path.isfile(os.path.join(settings.MEDIA_ROOT, poster_path_old, poster_file)):
-                event_cache_value['poster'] = '{poster_path}/{poster_file}'.format(
-                    poster_path=poster_path_old,
-                    poster_file=poster_file
-                )
-                # debug_console('    found poster', event_cache_value['poster'])
-                break
-            # ВРЕМЕННО до перехода на сохранение афиш по UUID
         else:
             event_cache_value['poster'] = 'global/event/small_vertical.png'.format(
                 media_url=settings.MEDIA_URL
