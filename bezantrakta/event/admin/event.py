@@ -113,22 +113,25 @@ class EventAdmin(admin.ModelAdmin):
     readonly_fields = ('ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',)
     search_fields = ('title',)
 
-    def view_on_site(self, obj):
-        event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
+    def get_view_on_site_url(self, obj=None):
+        if obj is not None and obj.is_group is False:
+            event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
 
-        url = reverse(
-            'event:event',
-            args=[
-                event_datetime_localized.strftime('%Y'),
-                event_datetime_localized.strftime('%m'),
-                event_datetime_localized.strftime('%d'),
-                event_datetime_localized.strftime('%H'),
-                event_datetime_localized.strftime('%M'),
-                obj.slug
-            ]
-        )
+            url = reverse(
+                'event:event',
+                args=[
+                    event_datetime_localized.strftime('%Y'),
+                    event_datetime_localized.strftime('%m'),
+                    event_datetime_localized.strftime('%d'),
+                    event_datetime_localized.strftime('%H'),
+                    event_datetime_localized.strftime('%M'),
+                    obj.slug
+                ]
+            )
 
-        return build_absolute_url(obj.domain.slug, url)
+            return build_absolute_url(obj.domain.slug, url)
+        else:
+            return None
 
     @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):
