@@ -121,6 +121,8 @@ class EventAdmin(admin.ModelAdmin):
     }
     search_fields = ('title',)
 
+    today = timezone_now()
+
     def get_view_on_site_url(self, obj=None):
         if obj is not None and obj.is_group is False:
             event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
@@ -214,6 +216,16 @@ class EventAdmin(admin.ModelAdmin):
 
         if change and obj._meta.pk.name not in form.changed_data:
             get_or_set_cache(obj.id, event_or_group, reset=True)
+
+            # Если обновляется кэш группы - принудительно обновить кэш всех её актуальных событий
+            if event_or_group == 'group':
+                group_events = EventGroupBinder.objects.filter(
+                    group_id=obj.id,
+                    event__datetime__gt=self.today,
+                ).values_list('event_id', flat=True)
+
+                for group_event_uuid in group_events:
+                    get_or_set_cache(group_event_uuid, 'event', reset=True)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
