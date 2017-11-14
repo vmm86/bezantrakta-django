@@ -53,6 +53,9 @@ class EventGroupBinder(models.Model):
         verbose_name = _('eventgroupbinder')
         verbose_name_plural = _('eventgroupbinders')
         ordering = ('group__datetime', '-event__datetime', 'caption',)
+        unique_together = (
+            ('group', 'event',),
+        )
 
     def __str__(self):
         return '{event} 🔗 {group}'.format(
