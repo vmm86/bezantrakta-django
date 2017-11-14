@@ -157,11 +157,11 @@ msgstr "Схема зала"
 
 #: models/ticket_service_scheme_sector.py:42
 msgid "ticketserviceschemesector_ticket_service_sector_id"
-msgstr "ID сектора в схеме зала"
+msgstr "ID"
 
 #: models/ticket_service_scheme_sector.py:46
 msgid "ticketserviceschemesector_ticket_service_sector_title"
-msgstr "Название сектора в схеме зала"
+msgstr "Название"
 
 #: models/ticket_service_scheme_sector.py:51
 msgid "ticketserviceschemesector_sector_help_text"
@@ -190,11 +190,11 @@ msgstr "Сервис продажи билетов"
 
 #: models/ticket_service_scheme_venue_binder.py:46
 msgid "ticketserviceschemevenuebinder_ticket_service_scheme"
-msgstr "ID схемы в сервисе продажи билетов"
+msgstr "ID"
 
 #: models/ticket_service_scheme_venue_binder.py:50
 msgid "ticketserviceschemevenuebinder_ticket_service_scheme_title"
-msgstr "Название схемы в сервисе продажи билетов"
+msgstr "Название"
 
 #: models/ticket_service_scheme_venue_binder.py:58
 msgid "ticketserviceschemevenuebinder_event_venue"
