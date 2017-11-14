@@ -940,6 +940,13 @@
     left: 0;
 }
 
+.ruble-sign {
+    vertical-align: baseline;
+
+    width: auto;
+    height: 0.7rem;
+}
+
 /* Блок маленьких горизонтальных афиш */
 
 .poster-small-horizontal-body {
