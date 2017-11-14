@@ -34,6 +34,10 @@ class Migration(migrations.Migration):
             unique_together=set([('event', 'event_container', 'order')]),
         ),
         migrations.AlterUniqueTogether(
+            name='eventgroupbinder',
+            unique_together=set([('group', 'event')]),
+        ),
+        migrations.AlterUniqueTogether(
             name='event',
             unique_together=set([('domain', 'datetime', 'slug')]),
         ),

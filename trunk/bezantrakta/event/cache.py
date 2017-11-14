@@ -1,6 +1,5 @@
 from dateutil.parser import parse
 import os
-import pytz
 import simplejson as json
 
 from django.conf import settings
