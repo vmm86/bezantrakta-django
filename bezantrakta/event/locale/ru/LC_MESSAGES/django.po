@@ -138,15 +138,15 @@ msgstr "Сервис продажи билетов"
 
 #: models/event.py:179
 msgid "event_ticket_service_event"
-msgstr "ID в сервисе продажи билетов"
+msgstr "ID"
 
 #: models/event.py:185
 msgid "event_ticket_service_prices"
-msgstr "Цены в сервисе продажи билетов"
+msgstr "Список цен"
 
 #: models/event.py:191
 msgid "event_ticket_service_scheme"
-msgstr "ID схемы зала в сервисе продажи билетов"
+msgstr "ID"
 
 #: models/event.py:197
 msgid "event"

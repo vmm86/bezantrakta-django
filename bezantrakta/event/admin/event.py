@@ -99,7 +99,8 @@ class EventAdmin(admin.ModelAdmin):
         EventLinkBinderInline,
         EventContainerBinderInline,
     )
-    list_display = ('title', 'is_published', 'is_on_index', 'is_group', 'datetime', 'event_category', 'event_venue',
+    list_display = ('title', 'ticket_service_event', 'is_published', 'is_on_index', 'is_group',
+                    'datetime', 'event_category', 'event_venue',
                     'group_count', 'link_count', 'container_count',
                     'ticket_service', 'domain',)
     list_filter = (
