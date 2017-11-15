@@ -1,9 +1,10 @@
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from django.contrib import admin
 from django.db.models import TextField
 from django.utils.translation import ugettext as _
 
 from jsoneditor.forms import JSONEditor
+
+from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 
 from ..models import Domain
 
@@ -16,7 +17,7 @@ class DomainAdmin(admin.ModelAdmin):
     }
     list_display = ('title', 'slug', 'is_published',)
     list_filter = (
-        ('city', RelatedDropdownFilter),
+        ('city', RelatedOnlyFieldDropdownFilter),
     )
     list_per_page = 10
     list_select_related = ('city',)

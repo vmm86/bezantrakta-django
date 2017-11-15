@@ -1,4 +1,3 @@
-from django_admin_listfilter_dropdown.filters import RelatedDropdownFilter
 from django.conf import settings
 from django.contrib import admin
 from django.core.cache import cache
@@ -10,6 +9,8 @@ from rangefilter.filter import DateRangeFilter
 
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url, timezone_now
+
+from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 
 from ..cache import get_or_set_cache
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
@@ -45,7 +46,7 @@ class AddEventGroupBinderInline(admin.TabularInline):
     model = EventGroupBinder
     extra = 0
     fk_name = 'group'
-    fields = ['event', 'caption', ]
+    fields = ('event', 'caption',)
 
     today = timezone_now()
 
@@ -111,7 +112,7 @@ class EventAdmin(admin.ModelAdmin):
         ('is_group', admin.BooleanFieldListFilter),
         ('datetime', DateRangeFilter),
         ('event_category', admin.RelatedOnlyFieldListFilter),
-        ('event_venue', RelatedDropdownFilter),
+        ('event_venue', RelatedOnlyFieldDropdownFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_select_related = ('event_category', 'event_venue', 'domain',)
