@@ -159,13 +159,15 @@ ADMIN_REORDER = (
     #     )
     # },
     # Usage example
+    # Для обозначения вложенности моделей используются символы └ и ─
+    # Для отсупов используются символы U+00A0 NO_BREAK SPACE
     {
         'app': 'location',
         'label': 'География сайтов',
         'models':
         (
-            {'model': 'location.City', 'label': 'Города'},
-            {'model': 'location.Domain', 'label': 'Сайты'},
+            {'model': 'location.City',   'label': 'Города'},
+            {'model': 'location.Domain', 'label': '└─ Сайты'},
         )
 
     },
@@ -191,13 +193,13 @@ ADMIN_REORDER = (
         'app': 'event',
         'models':
         (
-            {'model': 'event.EventCategory', 'label': 'Категории'},
-            {'model': 'event.EventLink', 'label': 'Ссылки'},
+            {'model': 'event.Event', 'label': 'События / группы 🔗 '},
             {'model': 'event.EventVenue', 'label': 'Залы (места проведения событий) 🔗 '},
-            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': 'Схемы залов 🔗 '},
-            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': 'Секторы в схемах залов 🔗 '},
-            {'model': 'event.Event', 'label': 'События или группы 🔗 '},
-            {'model': 'event.EventContainer', 'label': 'Контейнеры для размещения афиш 🔗 '},
+            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': '└─ Схемы залов 🔗 '},
+            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': '      └─ Секторы в схемах залов 🔗 '},
+            {'model': 'event.EventCategory', 'label': 'Категории'},
+            {'model': 'event.EventLink', 'label': 'Внешние ссылки'},
+            {'model': 'event.EventContainer', 'label': 'Контейнеры'},
         )
     },
     {
@@ -206,7 +208,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'order.Order', 'label': 'Заказы 🔗 '},
-            {'model': 'order.OrderTicket', 'label': 'Билеты в заказах 🔗 '},
+            {'model': 'order.OrderTicket', 'label': '└─ Билеты в заказах 🔗 '},
         )
 
     },
@@ -222,7 +224,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'menu.Menu', 'label': 'Меню'},
-            {'model': 'menu.MenuItem', 'label': 'Пункты меню 🔗 '},
+            {'model': 'menu.MenuItem', 'label': '└─ Пункты меню 🔗 '},
         )
     },
     {
@@ -230,7 +232,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'banner.BannerGroup', 'label': 'Группы баннеров'},
-            {'model': 'banner.BannerGroupItem', 'label': 'Баннеры 🔗 '},
+            {'model': 'banner.BannerGroupItem', 'label': '└─ Баннеры 🔗 '},
         )
     },
     {
@@ -239,7 +241,7 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'auth.Group', 'label': 'Группы пользователей'},
-            {'model': 'auth.User', 'label': 'Пользователи'},
+            {'model': 'auth.User', 'label': '└─ Пользователи'},
         )
     },
 )

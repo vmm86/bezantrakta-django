@@ -11,6 +11,7 @@ class EventContainerBinderInline(admin.TabularInline):  # SortableInlineAdminMix
     extra = 0
     fields = ('order', 'event', 'event_datetime_localized', 'img', 'img_preview',)  # 'order_preview'
     readonly_fields = ('event', 'event_datetime_localized', 'img_preview',)
+    template = 'admin/tabular_custom.html'
 
     @queryset_filter('Domain', 'event__domain__slug')
     def get_queryset(self, request):
