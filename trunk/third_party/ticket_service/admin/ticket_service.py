@@ -14,8 +14,19 @@ from ..models import TicketService, TicketServiceSchemeVenueBinder
 class TicketServiceSchemeVenueBinderInline(admin.TabularInline):
     model = TicketServiceSchemeVenueBinder
     extra = 0
-    fields = ('ticket_service', 'ticket_service_scheme_id', 'ticket_service_scheme_title', 'event_venue',)
-    readonly_fields = ('ticket_service', 'ticket_service_scheme_id', 'ticket_service_scheme_title',)
+    fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'event_venue', 'ticket_service',)
+    readonly_fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'ticket_service',)
+    show_change_link = True
+    template = 'admin/tabular_custom.html'
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """В списке залов выводятся только залы в этом городе."""
+        if db_field.name == 'event_venue':
+            city_filter = request.COOKIES.get('bezantrakta_admin_city', None)
+            kwargs['queryset'] = EventVenue.objects.filter(
+                city__slug=city_filter
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def has_add_permission(self, request):
         return False
@@ -74,11 +85,11 @@ class TicketServiceAdmin(admin.ModelAdmin):
     def activate_or_deactivate_items(self, request, queryset):
         """Пакетная включение или отключение сервисов продажи билетов."""
         for item in queryset:
-            if item.is_active:
-                item.is_active = False
-            else:
-                item.is_active = True
+            item.is_active = False if item.is_active else True
             item.save(update_fields=['is_active'])
+
+            get_or_set_cache(item.id, reset=True)
+
     activate_or_deactivate_items.short_description = _('event_admin_activate_or_deactivate_items')
 
     def ticket_service_schemes_count(self, obj):

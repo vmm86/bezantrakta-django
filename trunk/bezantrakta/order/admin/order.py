@@ -16,6 +16,8 @@ class OrderTicketInline(admin.TabularInline):
     extra = 0
     fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id',)
     readonly_fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id',)
+    show_change_link = True
+    template = 'admin/tabular_custom.html'
 
     def has_add_permission(self, request):
         return False

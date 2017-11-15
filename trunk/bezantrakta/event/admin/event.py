@@ -26,8 +26,9 @@ class ListEventGroupBinderInline(admin.TabularInline):
     model = EventGroupBinder
     extra = 0
     fk_name = 'group'
-    fields = ['event', 'caption', ]
-    readonly_fields = ['event', ]
+    fields = ('event', 'caption',)
+    readonly_fields = ('event',)
+    template = 'admin/tabular_custom.html'
 
     today = timezone_now()
 
@@ -69,6 +70,7 @@ class EventLinkBinderInline(admin.TabularInline):
     extra = 0
     fields = ('order', 'event_link', 'href', 'img_preview',)
     readonly_fields = ('img_preview',)
+    template = 'admin/tabular_custom.html'
 
 
 class EventContainerBinderInline(admin.TabularInline):
@@ -77,6 +79,7 @@ class EventContainerBinderInline(admin.TabularInline):
     fields = ('order', 'event_container', 'img', 'img_preview',)
     readonly_fields = ('img_preview',)
     radio_fields = {'event_container': admin.VERTICAL, }
+    template = 'admin/tabular_custom.html'
 
 
 @admin.register(Event)

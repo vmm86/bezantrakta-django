@@ -9,12 +9,10 @@ from ..models import EventVenue
 class TicketServiceSchemeVenueBinderInline(admin.TabularInline):
     model = TicketServiceSchemeVenueBinder
     extra = 0
-    fields = ('ticket_service', 'ticket_service_scheme_id', 'ticket_service_scheme_title', 'event_venue',)
-    readonly_fields = ('ticket_service', 'ticket_service_scheme_id', 'ticket_service_scheme_title',)
-
-    # @queryset_filter('Domain', 'ticket_service__ticketservicedomainbinder__domain__slug')
-    # def get_queryset(self, request):
-    #     return super(TicketServiceSchemeVenueBinderInline, self).get_queryset(request)
+    fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'event_venue', 'ticket_service',)
+    readonly_fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'event_venue', 'ticket_service',)
+    show_change_link = True
+    template = 'admin/tabular_custom.html'
 
     def has_add_permission(self, request):
         return False

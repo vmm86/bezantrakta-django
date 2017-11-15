@@ -878,7 +878,14 @@ p.file-upload {
 }
 
 .inline-group .tabular td.original p {
-    display: none;
+    position: static;
+    font-size: 14px;
+    height: auto;
+}
+
+.changelink, .inlinechangelink {
+    padding-left:  16px;
+    background: url(../img/icon-changelink.svg) 0 0 no-repeat;
 }
 
 div.inline-group table.ui-sortable tr.form-row.has_original td.drag {

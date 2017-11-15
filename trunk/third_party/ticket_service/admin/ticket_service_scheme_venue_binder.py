@@ -9,7 +9,8 @@ from ..models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
 class TicketServiceSchemeSectorInline(admin.TabularInline):
     model = TicketServiceSchemeSector
     extra = 0
-    fields = ('ticket_service_sector_id', 'ticket_service_sector_title', 'sector',)
+    fields = ('ticket_service_sector_title', 'ticket_service_sector_id', 'sector',)
+    template = 'admin/tabular_custom.html'
 
 
 @admin.register(TicketServiceSchemeVenueBinder)
