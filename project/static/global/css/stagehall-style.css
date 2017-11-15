@@ -83,11 +83,9 @@ html {
     font-weight: bold;
 }
 
-.box { display: inline-block; width: 14px; height: 14px; border: 1px solid #000; vertical-align: -1px;}
+.box          { display: inline-block; width: 14px; height: 14px; border: 1px solid #000; vertical-align: -1px;}
 
-.free         { color: #ECEFF1; text-shadow: 0.0625rem 0.09rem 0 #000; }
-.free:hover,
-.selected     { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
+.free         { color: #FFF; text-shadow: 0.0625rem 0.09rem 0 #000; }
 
 .free.color1  { background-color: #F44336; } /* red 500 */
 .free.color2  { background-color: #4CAF50; } /* green 500 */
@@ -110,10 +108,44 @@ html {
 .free.color19 { background-color: #004D40; } /* teal 900 */
 .free.color20 { background-color: #1A237E; } /* indigo 900 */
 
+.free:hover,
+.selected     { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
+
 .stagehall .bt {border-top:    2px solid #000 !important;}
 .stagehall .br {border-right:  2px solid #000 !important;}
 .stagehall .bb {border-bottom: 2px solid #000 !important;}
 .stagehall .bl {border-left:   2px solid #000 !important;}
+
+/* Для мест, расположение которых в пространстве не важно (фан-зона, танцпол, входной билет и т.п.) */
+
+.stagehall ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0;
+    margin: 0;
+}
+.stagehall ul.horizontal {
+    flex-direction: row;
+}
+.stagehall ul.vertical {
+    flex-direction: column;
+}
+.stagehall li.seat {
+    list-style-type: none;
+    padding: 0.1rem 0.131rem;
+    margin: 0.1rem 0.1rem;
+    min-width: 1.5rem;
+}
+
+.stagehall .seat.one {
+    padding-left: 0.163rem;
+}
+
+/* Блок-слайдер для показа выбранного сектора в больших залах */
 
 .stagehall .sector-button {
     display: table;
