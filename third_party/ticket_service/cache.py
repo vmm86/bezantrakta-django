@@ -1,4 +1,3 @@
-# import logging
 import simplejson as json
 
 from django.core.cache import cache
@@ -24,7 +23,6 @@ def ticket_service_cache(ticket_service_id, reset=False):
 
     if reset:
         cache.delete(cache_key)
-        # logger.info('\nПринудительное удаление (reset)')
 
     if not cache_value or reset:
         try:
