@@ -119,7 +119,7 @@ def checkout(request):
     context['courier_price'] = str(courier_price)
     context['order_total_plus_courier_price'] = str(order_total_plus_courier_price)
 
-    context['commission'] = commission
+    context['commission'] = str(commission)
     context['order_total_plus_commission'] = str(order_total_plus_commission)
 
     context['checkout_form_action'] = build_absolute_url(request.domain_slug, '/afisha/order/')
