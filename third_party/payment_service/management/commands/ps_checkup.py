@@ -8,16 +8,12 @@ from django.db.models import F
 
 from project.shortcuts import timezone_now
 
-from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
-
+from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
 
-from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
-from third_party.payment_service.cache import payment_service_instance
-
-from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.cache import ticket_service_instance
+from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
+from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 class Command(BaseCommand):
@@ -108,7 +104,7 @@ ______________________________________________________________________________
 
                 # Экземпляр класса сервиса онлайн-оплаты
                 payment_service = {}
-                payment_service['info'] = get_or_set_payment_service_cache(order['payment_service_id'])
+                payment_service['info'] = payment_service_cache(order['payment_service_id'])
                 ps = payment_service_instance(order['payment_service_id'])
 
                 # Получение таймаута на оплату в минутах
@@ -130,9 +126,9 @@ ______________________________________________________________________________
 
                     self.log('\nПроверка статуса оплаты...')
 
-                    # информаци о событии из кэша
+                    # Информация о событии из кэша
                     event = {}
-                    event['info'] = get_or_set_event_cache(order['event_uuid'], 'event')
+                    event['info'] = event_or_group_cache(order['event_uuid'], 'event')
 
                     # Получение реквизитов покупателя
                     customer = {}
@@ -144,7 +140,7 @@ ______________________________________________________________________________
 
                     # Экземпляр класса сервиса продажи билетов
                     ticket_service = {}
-                    ticket_service['info'] = get_or_set_ticket_service_cache(order['ticket_service_id'])
+                    ticket_service['info'] = ticket_service_cache(order['ticket_service_id'])
                     ts = ticket_service_instance(order['ticket_service_id'])
 
                     # Проверка статуса оплаты

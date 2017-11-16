@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 
 from project.shortcuts import timezone_now
 
-from ..cache import get_or_set_cache as get_or_set_event_cache
+from ..cache import event_or_group_cache
 from ..models import Event
 
 
@@ -44,7 +44,7 @@ def search(request):
         if events_found:
             for event in events_found:
                 # Получение информации о каждом размещённом событии из кэша
-                event.update(get_or_set_event_cache(event['uuid'], 'event'))
+                event.update(event_or_group_cache(event['uuid'], 'event'))
 
         context = {
             'title': 'Поиск',

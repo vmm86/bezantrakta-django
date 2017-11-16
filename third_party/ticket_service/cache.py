@@ -7,7 +7,7 @@ from third_party.ticket_service.models import TicketService
 from third_party.ticket_service.ticket_service_abc import ticket_service_factory
 
 
-def get_or_set_cache(ticket_service_id, reset=False):
+def ticket_service_cache(ticket_service_id, reset=False):
     """Кэширование параметров сервиса продажи билетов для последующего использования без запросов в БД.
 
     Args:
@@ -21,8 +21,6 @@ def get_or_set_cache(ticket_service_id, reset=False):
 
     cache_key = 'ticket_service.{ticket_service_id}'.format(ticket_service_id=ticket_service_id)
     cache_value = cache.get(cache_key)
-
-    # logger.info('\nИсходный кэш:\n{}'.format(cache_value['settings']['order_description']['email_online']))
 
     if reset:
         cache.delete(cache_key)
@@ -51,12 +49,9 @@ def get_or_set_cache(ticket_service_id, reset=False):
             )
 
             cache_value = {k: v for k, v in ts.items()}
-            # logger.info('\nНовый кэш:\n{}'.format(cache_value['settings']['order_description']['email_online']))
             cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
-            # logger.info('\nПерезапись кэша')
     else:
-        cache_value = json.loads(cache.get(cache_key))
-        # logger.info('\nИмеющийся кэш без перезаписи:\n{}'.format(cache_value['settings']['order_description']['email_online']))
+        cache_value = json.loads(cache_value)
 
     return cache_value
 

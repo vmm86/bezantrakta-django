@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 from project.shortcuts import timezone_now
 
-from ..cache import get_or_set_cache as get_or_set_event_cache
+from ..cache import event_or_group_cache
 from ..models import Event, EventCategory
 
 
@@ -40,7 +40,7 @@ def category(request, slug):
     if category_events:
         for event in category_events:
             # Получение информации о каждом размещённом событии из кэша
-            event.update(get_or_set_event_cache(event['event_uuid'], 'event'))
+            event.update(event_or_group_cache(event['event_uuid'], 'event'))
 
     # Получение событий во всех категориях или фильтр по конкретной категории
     if slug == settings.BEZANTRAKTA_CATEGORY_ALL:

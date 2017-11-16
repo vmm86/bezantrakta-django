@@ -11,16 +11,12 @@ from django.shortcuts import redirect
 
 from project.shortcuts import message, render_messages, timezone_now
 
-from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
-
+from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
 
-from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
-from third_party.payment_service.cache import payment_service_instance
-
-from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.cache import ticket_service_instance
+from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
+from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 def order(request):
@@ -39,20 +35,20 @@ def order(request):
         # Получение параметров события
         event = {}
         event['uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_event_uuid', None))
-        event['info'] = get_or_set_event_cache(event['uuid'], 'event')
+        event['info'] = event_or_group_cache(event['uuid'], 'event')
         event['id'] = event['info']['ticket_service_event']
 
         # Экземпляр класса сервиса продажи билетов
         ticket_service = {}
         ticket_service['id'] = event['info']['ticket_service_id']
-        ticket_service['info'] = get_or_set_ticket_service_cache(ticket_service['id'])
+        ticket_service['info'] = ticket_service_cache(ticket_service['id'])
 
         ts = ticket_service_instance(ticket_service['id'])
 
         # Экземпляр сервиса онлайн-оплаты (с указанием URL завершения удачной или НЕудачной оплаты)
         payment_service = {}
         payment_service['id'] = event['info']['payment_service_id']
-        payment_service['info'] = get_or_set_payment_service_cache(payment_service['id'])
+        payment_service['info'] = payment_service_cache(payment_service['id'])
 
         ps = payment_service_instance(payment_service['id'], domain_slug=request.domain_slug)
 

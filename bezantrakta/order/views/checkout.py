@@ -6,15 +6,11 @@ from django.shortcuts import redirect, render
 
 from project.shortcuts import build_absolute_url, message, render_messages
 
-from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
-
+from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.settings import ORDER_TYPE
 
-from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
-from third_party.payment_service.cache import payment_service_instance
-
-from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.cache import ticket_service_instance
+from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
+from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 def checkout(request):
@@ -24,7 +20,7 @@ def checkout(request):
     event_id = int(request.COOKIES.get('bezantrakta_event_id', 0))
 
     # Информация о событии из кэша
-    event = get_or_set_event_cache(event_uuid, 'event')
+    event = event_or_group_cache(event_uuid, 'event')
     if event is None:
         # Сообщение об ошибке
         msgs = [
@@ -41,7 +37,7 @@ def checkout(request):
         return redirect('error')
 
     # Информация о сервисе продажи билетов
-    ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+    ticket_service = ticket_service_cache(event['ticket_service_id'])
 
     # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
     ticket_service_defaults = {
@@ -55,7 +51,7 @@ def checkout(request):
             ticket_service['settings'][param] = value
 
     # Информация о сервисе онлайн-оплаты
-    payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
+    payment_service = payment_service_cache(event['payment_service_id'])
 
     # Экземпляр класса сервиса продажи билетов
     ts = ticket_service_instance(event['ticket_service_id'])
