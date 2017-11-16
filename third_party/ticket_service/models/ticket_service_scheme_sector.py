@@ -63,7 +63,7 @@ class TicketServiceSchemeSector(models.Model):
         )
 
     def __str__(self):
-        return 'Сектор {sector_id}: : {sector_title} в схеме {scheme_id}: {scheme_title}'.format(
+        return 'Сектор {sector_id}: {sector_title} в схеме {scheme_id}: {scheme_title}'.format(
             sector_id=self.ticket_service_sector_id,
             sector_title=self.ticket_service_sector_title,
             scheme_id=self.scheme.ticket_service_scheme_id,
