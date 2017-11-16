@@ -46,7 +46,17 @@
                         {% endfor %}
                         </ul>
                     </p>
+            {% if order.delivery == "courier" %}
+                {% if order.courier_price > 0 %}
+                    <h3 id="overall-header">Всего с учётом доставки курьером</h3>
+                {% endif %}
+            {% elif order.payment == "online" %}
+                {% if order.commission > 0 %}
+                    <h3 id="overall-header">Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
+                {% endif %}
+            {% else %}
                     <h3 id="overall-header">Всего</h3>
+            {% endif %}
                     <p id="overall">
                         <span id="overall-text">Билетов <span id="count-chosen">{{ order.count }}</span> на сумму <span id="total-sum">{{ order.total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
                     </p>
