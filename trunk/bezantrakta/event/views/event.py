@@ -9,12 +9,11 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 from project.shortcuts import build_absolute_url, message, render_messages, timezone_now
 
-from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
-
-from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
+from third_party.ticket_service.cache import ticket_service_cache
 from third_party.ticket_service.models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
+from third_party.payment_service.cache import payment_service_cache
 
-from ..cache import get_or_set_cache as get_or_set_event_cache
+from ..cache import event_or_group_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
 
 
@@ -90,7 +89,7 @@ def event(request, year, month, day, hour, minute, slug):
     # Событие существует в БД
     else:
         # Получение информации о событии из кэша
-        event = get_or_set_event_cache(event['event_uuid'], 'event')
+        event = event_or_group_cache(event['event_uuid'], 'event')
 
         # Событие предстоит или уже прошло
         today = timezone_now()
@@ -101,7 +100,7 @@ def event(request, year, month, day, hour, minute, slug):
 
             if event['ticket_service_id']:
                 # Получение настроек сервиса продажи билетов из кэша
-                ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+                ticket_service = ticket_service_cache(event['ticket_service_id'])
 
                 # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
                 ticket_service_defaults = {
@@ -118,11 +117,12 @@ def event(request, year, month, day, hour, minute, slug):
             else:
                 ticket_service = None
 
-            if event['payment_service_id']:
-                # Получение настроек сервиса онлайн-оплаты билетов из кэша
-                payment_service = get_or_set_payment_service_cache(event['payment_service_id'])
-            else:
-                payment_service = None
+            # Получение настроек сервиса онлайн-оплаты билетов из кэша
+            payment_service = (
+                payment_service_cache(event['payment_service_id']) if
+                event['payment_service_id'] else
+                None
+            )
 
             context = {}
 

@@ -12,11 +12,10 @@ from django.db.utils import IntegrityError
 from project.shortcuts import datetime_localize_or_utc, timezone_now
 from project.urlify import urlify
 
-from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
+from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.event.models import Event, EventGroupBinder
 
-from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.cache import ticket_service_instance
+from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
 from third_party.ticket_service.models import TicketService, TicketServiceSchemeVenueBinder
 
 
@@ -133,7 +132,7 @@ ______________________________________________________________________________
             )
 
             for ats in active_ticket_services:
-                ticket_service = get_or_set_ticket_service_cache(ats['id'])
+                ticket_service = ticket_service_cache(ats['id'])
                 ticket_service['timezone'] = ats['city_timezone']
 
                 # Формирование кэша текущего задания в памяти
@@ -342,7 +341,7 @@ ______________________________________________________________________________
 
                 if upd > 0:
                     # Обновить кэш группы при обновлении её данных
-                    get_or_set_event_cache(group_uuid, 'group', reset=True)
+                    event_or_group_cache(group_uuid, 'group', reset=True)
                     self.stdout.write(
                         '    Обновлён кэш группы {group_id}: {group_title}'.format(
                             group_id=group['group_id'],
@@ -384,7 +383,7 @@ ______________________________________________________________________________
                     self.group_id_uuid_mapping[group['group_id']] = group_uuid
 
                     # В любом случае обновить кэш группы
-                    get_or_set_event_cache(group_uuid, 'group')
+                    event_or_group_cache(group_uuid, 'group')
                     self.stdout.write(
                         '    Создан кэш группы {group_id}: {group_title}'.format(
                             group_id=group['group_id'],
@@ -455,7 +454,7 @@ ______________________________________________________________________________
 
                 if upd > 0:
                     # Обновить кэш события при обновлении его данных
-                    get_or_set_event_cache(event_uuid, 'event', reset=True)
+                    event_or_group_cache(event_uuid, 'event', reset=True)
                     self.stdout.write(
                         '    Обновлён кэш события {event_id}: {event_title}'.format(
                             event_id=event['event_id'],
@@ -508,7 +507,7 @@ ______________________________________________________________________________
                     except IntegrityError:
                         pass
                     else:
-                        group_info = get_or_set_event_cache(self.group_id_uuid_mapping[event['group_id']], 'group')
+                        group_info = event_or_group_cache(self.group_id_uuid_mapping[event['group_id']], 'group')
                         self.log(
                             'Событие {event_id}: {event_title} привязано к группе {group_id}: {group_title}'.format(
                                     event_id=event['event_id'],
@@ -519,7 +518,7 @@ ______________________________________________________________________________
                         )
 
                         # Создать кэш нового события в БД
-                        get_or_set_event_cache(event_uuid, 'event')
+                        event_or_group_cache(event_uuid, 'event')
                         self.stdout.write(
                             '    Создан кэш события {event_id}: {event_title}'.format(
                                 event_id=event['event_id'],

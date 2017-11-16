@@ -3,7 +3,7 @@ from django.db.models import Case, OuterRef, Subquery, F, Q, When
 
 from project.shortcuts import base_template_context_processor, timezone_now
 
-from .cache import get_or_set_cache as get_or_set_event_cache
+from .cache import event_or_group_cache
 from .models import EventCategory, EventContainerBinder, EventGroupBinder
 
 
@@ -71,7 +71,7 @@ def big_containers(request):
             if container:
                 for event in container:
                     # Получение информации о каждом размещённом событии из кэша
-                    event_cache = get_or_set_event_cache(event['event_uuid'], 'event')
+                    event_cache = event_or_group_cache(event['event_uuid'], 'event')
                     event.update(event_cache)
 
         return {

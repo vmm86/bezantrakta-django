@@ -9,18 +9,13 @@ from django.shortcuts import redirect
 
 from project.shortcuts import message, render_messages, timezone_now
 
-from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
-
+from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
-
 from bezantrakta.eticket.shortcuts import render_eticket
 
-from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
-from third_party.payment_service.cache import payment_service_instance
-
-from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-from third_party.ticket_service.cache import ticket_service_instance
+from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
+from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 def payment_success(request):
@@ -33,7 +28,7 @@ def payment_success(request):
     logger.info('\n----------Обработка успешной оплаты заказа {order_uuid}----------'.format(order_uuid=order_uuid))
 
     event = {}
-    event['info'] = get_or_set_event_cache(event_uuid, 'event')
+    event['info'] = event_or_group_cache(event_uuid, 'event')
     event['id'] = event['info']['ticket_service_event']
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     logger.info('Событие')
@@ -110,14 +105,14 @@ def payment_success(request):
         # Экземпляр класса сервиса продажи билетов
         ticket_service = {}
         ticket_service['id'] = event['info']['ticket_service_id']
-        ticket_service['info'] = get_or_set_ticket_service_cache(ticket_service['id'])
+        ticket_service['info'] = ticket_service_cache(ticket_service['id'])
 
         ts = ticket_service_instance(ticket_service['id'])
 
         # Экземпляр класса сервиса онлайн-оплаты
         payment_service = {}
         payment_service['id'] = event['info']['payment_service_id']
-        payment_service['info'] = get_or_set_payment_service_cache(payment_service['id'])
+        payment_service['info'] = payment_service_cache(payment_service['id'])
 
         ps = payment_service_instance(payment_service['id'])
 

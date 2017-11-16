@@ -5,13 +5,10 @@ from django.shortcuts import redirect, render
 
 from project.shortcuts import message, render_messages
 
-from bezantrakta.event.cache import get_or_set_cache as get_or_set_event_cache
+from bezantrakta.event.cache import event_or_group_cache
 
-from third_party.payment_service.cache import get_or_set_cache as get_or_set_payment_service_cache
-from third_party.payment_service.cache import payment_service_instance
-
-from third_party.ticket_service.cache import get_or_set_cache as get_or_set_ticket_service_cache
-# from third_party.ticket_service.cache import ticket_service_instance
+from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
+from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 from ..models import Order, OrderTicket
 from ..settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
@@ -76,10 +73,10 @@ def confirmation(request, order_uuid):
             return redirect('error')
         else:
             # Информация о событии из кэша
-            event = get_or_set_event_cache(order['event_uuid'], 'event')
+            event = event_or_group_cache(order['event_uuid'], 'event')
 
             # # Информация о сервисе продажи билетов
-            # ticket_service = get_or_set_ticket_service_cache(event['ticket_service_id'])
+            # ticket_service = ticket_service_cache(event['ticket_service_id'])
 
             # # Экземпляр класса сервиса онлайн-оплаты
             # ps = payment_service_instance(event['payment_service_id'])

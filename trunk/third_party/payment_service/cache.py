@@ -10,7 +10,7 @@ from third_party.payment_service.payment_service_abc import payment_service_fact
 from third_party.payment_service.payment_service_abc.abc import PaymentService as PaymentServiceABC
 
 
-def get_or_set_cache(payment_service_id, reset=False):
+def payment_service_cache(payment_service_id, reset=False):
     """Кэширование параметров сервиса онлайн-оплаты для последующего использования без запросов в БД.
 
     Args:
@@ -58,7 +58,7 @@ def get_or_set_cache(payment_service_id, reset=False):
             cache_value = {k: v for k, v in ps.items()}
             cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
     else:
-        cache_value = json.loads(cache.get(cache_key))
+        cache_value = json.loads(cache_value)
 
     return cache_value
 

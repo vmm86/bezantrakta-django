@@ -12,7 +12,7 @@ from project.shortcuts import build_absolute_url, timezone_now
 
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 
-from ..cache import get_or_set_cache
+from ..cache import event_or_group_cache
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
@@ -206,7 +206,7 @@ class EventAdmin(admin.ModelAdmin):
             item.save(update_fields=['is_published'])
 
             event_or_group = 'group' if item.is_group else 'event'
-            get_or_set_cache(item.id, event_or_group, reset=True)
+            event_or_group_cache(item.id, event_or_group, reset=True)
 
     publish_or_unpublish_items.short_description = _('event_admin_publish_or_unpublish_items')
 
@@ -220,7 +220,7 @@ class EventAdmin(admin.ModelAdmin):
         event_or_group = 'group' if obj.is_group else 'event'
 
         if change and obj._meta.pk.name not in form.changed_data:
-            get_or_set_cache(obj.id, event_or_group, reset=True)
+            event_or_group_cache(obj.id, event_or_group, reset=True)
 
             # Если обновляется кэш группы - принудительно обновить кэш всех её актуальных событий
             if event_or_group == 'group':
@@ -230,13 +230,13 @@ class EventAdmin(admin.ModelAdmin):
                 ).values_list('event_id', flat=True)
 
                 for group_event_uuid in group_events:
-                    get_or_set_cache(group_event_uuid, 'event', reset=True)
+                    event_or_group_cache(group_event_uuid, 'event', reset=True)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
         for item in queryset:
             event_or_group = 'group' if item.is_group else 'event'
-            get_or_set_cache(item.id, event_or_group, reset=True)
+            event_or_group_cache(item.id, event_or_group, reset=True)
     batch_set_cache.short_description = _('event_admin_batch_set_cache')
 
     def group_count(self, obj):

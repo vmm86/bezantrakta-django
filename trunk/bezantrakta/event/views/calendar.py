@@ -5,7 +5,7 @@ from django.contrib.humanize.templatetags.humanize import naturalday
 from django.db.models import F
 from django.shortcuts import render
 
-from ..cache import get_or_set_cache as get_or_set_event_cache
+from ..cache import event_or_group_cache
 from ..models import Event
 
 
@@ -101,7 +101,7 @@ def calendar(request, year, month, day):
     if events_on_date:
         for event in events_on_date:
             # Получение информации о каждом размещённом событии из кэша
-            event.update(get_or_set_event_cache(event['uuid'], 'event'))
+            event.update(event_or_group_cache(event['uuid'], 'event'))
 
     context = {
         'title': 'События на {naturalday}'.format(naturalday=naturalday(calendar_date_localized)),
