@@ -601,6 +601,21 @@ class Radario(TicketService):
 
         return price_groups
 
+    def prices(self, **kwargs):
+        """Список цен на билеты по возрастанию для легенды схемы зала.
+
+        Args:
+            event_id (int): Идентификатор события.
+
+        Returns:
+            list: Список цен по возрастанию.
+        """
+        price_groups = self.price_groups(event_id=kwargs['event_id'])
+
+        prices = sorted([pg['price'] for pg in price_groups])
+
+        return prices
+
     def seats(self, **kwargs):
         """Доступные для продажи места в конкретном событии.
 
@@ -611,10 +626,13 @@ class Radario(TicketService):
         Returns:
             list: Список словарей с информацией о доступных к заказу местах.
         """
+        response = {}
+
         price_groups = self.price_groups(event_id=kwargs['event_id'])
         print('price_groups: ', price_groups, '\n')
         seats = []
         prices = sorted([pg['price'] for pg in price_groups])
+        response['prices'] = prices
 
         scheme = self.scheme(scheme_id=kwargs['scheme_id'])
         print('scheme: ', scheme, '\n')
@@ -661,23 +679,9 @@ class Radario(TicketService):
                     seats.append(seat)
 
         seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
+        response['seats'] = seats
 
-        return seats
-
-    def prices(self, **kwargs):
-        """Список цен на билеты по возрастанию для легенды схемы зала.
-
-        Args:
-            event_id (int): Идентификатор события.
-
-        Returns:
-            list: Список цен по возрастанию.
-        """
-        price_groups = self.price_groups(event_id=kwargs['event_id'])
-
-        prices = sorted([pg['price'] for pg in price_groups])
-
-        return prices
+        return response
 
     def reserve(self, **kwargs):
         """Добавление или удаление места в предварительном резерве мест (корзина заказа).

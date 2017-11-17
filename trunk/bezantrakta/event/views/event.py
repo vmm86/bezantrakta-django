@@ -181,12 +181,6 @@ def event(request, year, month, day, hour, minute, slug):
 
             # Если событие привязано к сервису продажи билетов
             if event['ticket_service_event']:
-                # Цены на билеты в событии по возрастанию
-                prices = json.loads(event['ticket_service_prices'], parse_float=Decimal)
-                # Цены преобразуются в строки, если дробная часть нулевая - выводятся как целые
-                prices = [str(p).split('.')[0] if p % 1 == 0 else str(p) for p in prices]
-                context['prices'] = prices
-
                 # Схема зала из БД
                 try:
                     venue_scheme = TicketServiceSchemeVenueBinder.objects.values_list('scheme', flat=True).get(

@@ -19,12 +19,13 @@ class TicketServiceSchemeSectorAdmin(admin.ModelAdmin):
             }
         ),
     )
-    list_display = ('ticket_service_sector_title', 'ticket_service_sector_id',
+    list_display = ('ticket_service_sector_title', 'ticket_service_sector_id_short_description',
                     'if_sector_exists', 'scheme',)
     list_filter = (
         ('scheme', RelatedOnlyFieldDropdownFilter),
     )
     list_per_page = 20
+    search_fields = ('ticket_service_sector_title',)
 
     @queryset_filter('Domain', 'scheme__ticket_service__domain__slug')
     def get_queryset(self, request):
@@ -45,3 +46,8 @@ class TicketServiceSchemeSectorAdmin(admin.ModelAdmin):
 
         return _boolean_icon(True) if obj.sector != '' else _boolean_icon(False)
     if_sector_exists.short_description = _('ticketserviceschemesector_if_sector_exists')
+
+    def ticket_service_sector_id_short_description(self, obj):
+        """Короткая подпись для ID сектора при выводе списка в ``list_display``."""
+        return obj.ticket_service_sector_id
+    ticket_service_sector_id_short_description.short_description = _('ID')

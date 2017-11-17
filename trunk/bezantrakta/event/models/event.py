@@ -49,7 +49,6 @@ class Event(models.Model):
         event_link (ManyToManyField): Привязка к внешним ссылкам с иконками.
         ticket_service (ForeignKey): Привязка к сервису продажи билетов.
         ticket_service_event (PositiveIntegerField): Идентификатор события в сервисе продажи билетов.
-        ticket_service_prices (TextField): Список цен на билеты в событии по возрастанию из сервиса продажи билетов.
         ticket_service_scheme (PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
     """
     objects = EventManager()
@@ -177,12 +176,6 @@ class Event(models.Model):
         null=True,
         db_column='ticket_service_event_id',
         verbose_name=_('event_ticket_service_event'),
-    )
-    ticket_service_prices = models.TextField(
-        max_length=200,
-        blank=True,
-        null=True,
-        verbose_name=_('event_ticket_service_prices'),
     )
     ticket_service_scheme = models.PositiveIntegerField(
         blank=True,

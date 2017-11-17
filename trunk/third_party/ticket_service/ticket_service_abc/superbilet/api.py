@@ -631,6 +631,29 @@ class SuperBilet(TicketService):
 
         return sectors
 
+    def prices(self, **kwargs):
+        """Список цен на билеты по возрастанию для легенды схемы зала.
+
+        Args:
+            event_id (int): Идентификатор события.
+
+        Returns:
+            list: Список цен по возрастанию.
+        """
+        seats = self.seats(event_id=kwargs['event_id'])
+        prices = []
+
+        # Группировка мест по ценам билетов
+        if type(seats) is list:
+            seats_by_prices = defaultdict(list)
+            for s in seats:
+                seats_by_prices[(s['price'])].append(s)
+
+            # Сортировка цен
+            prices = sorted([p for p in seats_by_prices])
+
+        return prices
+
     def seats(self, **kwargs):
         """Доступные для продажи места в конкретном событии.
 
@@ -666,6 +689,8 @@ class SuperBilet(TicketService):
         sectors = self.sectors(event_id=kwargs['event_id'])
         seats = self.request(method, input_mapping, data, output_mapping)
 
+        response = {}
+
         # Группировка мест по ценам билетов
         if type(seats) is list:
             seats_by_prices = defaultdict(list)
@@ -673,6 +698,7 @@ class SuperBilet(TicketService):
                 seats_by_prices[(s['price'])].append(s)
 
             prices = sorted([p for p in seats_by_prices])
+            response['prices'] = prices
 
             for s in seats:
                 if s['result_code'] == 0:
@@ -690,8 +716,9 @@ class SuperBilet(TicketService):
                     del seats[s]
 
             seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
+            response['seats'] = seats
 
-        return seats
+        return response
 
     def sector_seats(self, **kwargs):
         """Доступные места в конкретном секторе в конкретном событии.
@@ -730,29 +757,6 @@ class SuperBilet(TicketService):
         sector_seats = self.request(method, input_mapping, data, output_mapping)
 
         return sector_seats
-
-    def prices(self, **kwargs):
-        """Список цен на билеты по возрастанию для легенды схемы зала.
-
-        Args:
-            event_id (int): Идентификатор события.
-
-        Returns:
-            list: Список цен по возрастанию.
-        """
-        seats = self.seats(event_id=kwargs['event_id'])
-        prices = []
-
-        # Группировка мест по ценам билетов
-        if type(seats) is list:
-            seats_by_prices = defaultdict(list)
-            for s in seats:
-                seats_by_prices[(s['price'])].append(s)
-
-            # Сортировка цен
-            prices = sorted([p for p in seats_by_prices])
-
-        return prices
 
     def reserve(self, **kwargs):
         """Добавление или удаление места в предварительном резерве мест (корзина заказа).

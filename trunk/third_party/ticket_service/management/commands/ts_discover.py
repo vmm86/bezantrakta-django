@@ -367,7 +367,6 @@ ______________________________________________________________________________
                         is_group=True,
                         ticket_service_id=ticket_service['id'],
                         ticket_service_event=group['group_id'],
-                        ticket_service_prices=None,
                         ticket_service_scheme=None,
                     )
                 except IntegrityError:
@@ -449,7 +448,6 @@ ______________________________________________________________________________
                 ).update(
                     datetime=event['event_datetime'],
                     min_price=event['event_min_price'],
-                    ticket_service_prices=json.dumps(prices)
                 )
 
                 if upd > 0:
@@ -483,7 +481,6 @@ ______________________________________________________________________________
                         is_group=False,
                         ticket_service_id=ticket_service['id'],
                         ticket_service_event=event['event_id'],
-                        ticket_service_prices=json.dumps(prices),
                         ticket_service_scheme=event['scheme_id'],
                     )
                 except IntegrityError:

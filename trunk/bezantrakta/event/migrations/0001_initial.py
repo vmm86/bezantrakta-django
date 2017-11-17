@@ -34,9 +34,8 @@ class Migration(migrations.Migration):
                 ('min_age', models.PositiveSmallIntegerField(choices=[(0, '0+'), (6, '6+'), (12, '12+'), (16, '16+'), (18, '18+')], default=0, verbose_name='Возрастное ограничение')),
                 ('datetime', models.DateTimeField(verbose_name='Дата и время')),
                 ('is_group', models.BooleanField(default=False, verbose_name='Группа')),
-                ('ticket_service_event', models.PositiveIntegerField(blank=True, db_column='ticket_service_event_id', null=True, verbose_name='ID в сервисе продажи билетов')),
-                ('ticket_service_prices', models.TextField(blank=True, max_length=200, null=True, verbose_name='Цены в сервисе продажи билетов')),
-                ('ticket_service_scheme', models.PositiveIntegerField(blank=True, db_column='ticket_service_scheme_id', null=True, verbose_name='ID схемы зала в сервисе продажи билетов')),
+                ('ticket_service_event', models.PositiveIntegerField(blank=True, db_column='ticket_service_event_id', null=True, verbose_name='ID события или группы')),
+                ('ticket_service_scheme', models.PositiveIntegerField(blank=True, db_column='ticket_service_scheme_id', null=True, verbose_name='ID схемы зала')),
                 ('domain', models.ForeignKey(db_column='domain_id', on_delete=django.db.models.deletion.CASCADE, to='location.Domain', verbose_name='Сайт')),
             ],
             options={
