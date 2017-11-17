@@ -93,7 +93,7 @@ class EventAdmin(admin.ModelAdmin):
                 'fields': ('title', 'slug', 'description', 'keywords', 'text',
                            'is_published', 'is_on_index', 'min_price', 'min_age',
                            'datetime', 'event_category', 'event_venue', 'domain', 'is_group',
-                           'ticket_service', 'ticket_service_event', 'ticket_service_scheme', 'ticket_service_prices',),
+                           'ticket_service', 'ticket_service_event', 'ticket_service_scheme',),
             }
         ),
     )
@@ -103,7 +103,7 @@ class EventAdmin(admin.ModelAdmin):
         EventLinkBinderInline,
         EventContainerBinderInline,
     )
-    list_display = ('title', 'ticket_service_event', 'is_published', 'is_on_index', 'is_group',
+    list_display = ('title', 'ticket_service_event_short_description', 'is_published', 'is_on_index', 'is_group',
                     'datetime', 'event_category', 'event_venue',
                     'group_count', 'link_count', 'container_count',
                     'ticket_service', 'domain',)
@@ -164,14 +164,12 @@ class EventAdmin(admin.ModelAdmin):
         # например, если они по каким-то причинам НЕ исмпортировались из сервиса продажи билетов.
         if request.user.is_superuser:
             if obj is not None and obj.ticket_service is not None:
-                return ['ticket_service', 'ticket_service_event',
-                        'ticket_service_scheme', 'ticket_service_prices',
+                return ['ticket_service', 'ticket_service_event', 'ticket_service_scheme',
                         'is_group', 'domain', ]
             return []
         # Обычные администраторы в любом случае НЕ могут изменить информацию, относящуюся к сервису продажи билетов.
         else:
-            ro_fields = ['ticket_service', 'ticket_service_event',
-                         'ticket_service_scheme', 'ticket_service_prices',
+            ro_fields = ['ticket_service', 'ticket_service_event', 'ticket_service_scheme',
                          'is_group', 'event_venue', 'domain', ]
             if obj is not None and obj.ticket_service is not None and not obj.is_group:
                     ro_fields.append('datetime')
@@ -261,3 +259,13 @@ class EventAdmin(admin.ModelAdmin):
             )
         ).count()
     container_count.short_description = _('event_container_count')
+
+    def ticket_service_event_short_description(self, obj):
+        """Короткая подпись для ID события или группы при выводе списка в ``list_display``."""
+        return obj.ticket_service_event
+    ticket_service_event_short_description.short_description = _('ID')
+
+    def ticket_service_scheme_short_description(self, obj):
+        """Короткая подпись для ID схемы зала при выводе списка в ``list_display``."""
+        return obj.ticket_service_scheme
+    ticket_service_scheme_short_description.short_description = _('ID')

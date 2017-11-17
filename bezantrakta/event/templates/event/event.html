@@ -92,9 +92,7 @@
 
                     <div id="legend-prices">
                         <ul id="legend-extension">
-                        {% for price in prices %}
-                            <li><a class="box free color{{ forloop.counter }}"></a> {{ price }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</li>
-                        {% endfor %}
+                            {# Цены добавляются/удаляются в браузере при AJAX-запросах свободных мест в событии #}
                         </ul>
                     </div>
 

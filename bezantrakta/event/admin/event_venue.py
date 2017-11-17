@@ -27,6 +27,7 @@ class EventVenueAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
+    search_fields = ('title',)
 
     @queryset_filter('City', 'city__slug')
     def get_queryset(self, request):

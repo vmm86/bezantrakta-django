@@ -77,7 +77,8 @@ window.seat_timeout = {{ ticket_service.settings.seat_timeout }};
     window.order_timeout = window.seat_timeout * 60 * 1000;
 {% endif %}
 
-{# Кэш запрошенных ранее свободных мест для сравнения с вновь пришедшими свободными местами #}
+{# Кэш запрошенных ранее списка цен и свободных мест для сравнения с вновь пришедшими свободными местами #}
+window.prices_cache = [];
 window.seats_cache = [];
 
 function prepare_order_onload() {
@@ -375,11 +376,41 @@ function stop_heartbeat() {
 {# Фильтрация из вновь полученного списка только тех мест, состояние которых изменилось (выбраны или освобождены). #}
 function seats_success(response, status, xhr) {
     if (response) {
+        {# Вывод списка цен в легенде #}
+        if (_.isEqual(window.prices_cache, response['prices']) === false) {
+            var prices_prev = window.prices_cache;
+            var prices_next = response['prices'];
+            var prices_prev_size = _.isEmpty(prices_prev) ? 0 : _.size(prices_prev);
+            var prices_next_size = _.size(prices_next);
+            {% if debug %}
+            console.log('prices_prev_size: ', prices_prev_size);
+            console.log('prices_next_size: ', prices_next_size);
+            {% endif %}
+
+            {# Получаем разницу между последующим и предыдущим списком цен: #}
+
+            {# 1. Число цен уменьшилось #}
+            {# Убираем НЕактуальные цены #}
+            if (prices_prev_size > prices_next_size) {
+                var prices_diff = _.differenceWith(prices_prev, prices_next, _.isEqual);
+                legend_update('less', prices_diff);
+            {# 2. Число цен увеличилось #}
+            {# Добавляем актуальные цены #}
+            } else if (prices_prev_size < prices_next_size) {
+                var prices_diff = _.differenceWith(prices_next, prices_prev, _.isEqual);
+                legend_update('more', prices_diff);
+            }
+
+            {# Обновление кэша списка мест в памяти #}
+            window.prices_cache = prices_next;
+            {% if debug %}console.log('prices_cache set');{% endif %}
+        }
+
         {# Храним последний предыдущий список мест в кэше в памяти #}
         {# Перерисовываем места на схеме зала, только если последующий список мест отличается от предыдущего #}
-        if (_.isEqual(window.seats_cache, response) === false) {
+        if (_.isEqual(window.seats_cache, response['seats']) === false) {
             var seats_prev = window.seats_cache;
-            var seats_next = response;
+            var seats_next = response['seats'];
             var seats_prev_size = _.isEmpty(seats_prev) ? 0 : _.size(seats_prev);
             var seats_next_size = _.size(seats_next);
             {% if debug %}
@@ -413,14 +444,32 @@ function seats_success(response, status, xhr) {
                 $('#tickets-preloader').delay(1000).fadeOut(500);
             }
 
-            {# Обновление кэша мест в памяти #}
+            {# Обновление кэша свободных мест в памяти #}
             window.seats_cache = seats_next;
             {% if debug %}console.log('seats_cache set');{% endif %}
-        } else {
-            return false;
         }
+{% if debug %}
     } else {
-        {% if debug %}console.log('Error: ', response);{% endif %}
+        console.log('Error: ', response);
+    }
+{% endif %}
+}
+
+function legend_update(prices_diff_state, prices_diff) {
+    console.log('prices_diff: ', prices_diff)
+    for (var p = 1; p < prices_diff.length + 1; p++) {
+        {# Если мест пришло больше, чем раньше - включаем освободившиеся места #}
+        if (prices_diff_state == 'more') {
+            $('#legend-extension').append(
+                '<li id="price-' + p + '">' +
+                    '<span class="box free color' + p + '"></span> ' + (prices_diff[p - 1] * 1) + ' ' +
+                    '<img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">&nbsp;' +
+                '</li>'
+            );
+        {# Если мест пришло меньше, чем раньше - отключаем занятые места #}
+        } else if (prices_diff_state == 'less') {
+            $('#legend-extension #price-' + p).remove();
+        }
     }
 }
 
