@@ -448,11 +448,9 @@ function seats_success(response, status, xhr) {
             window.seats_cache = seats_next;
             {% if debug %}console.log('seats_cache set');{% endif %}
         }
-{% if debug %}
     } else {
         console.log('Error: ', response);
     }
-{% endif %}
 }
 
 function legend_update(prices_diff_state, prices_diff) {
@@ -531,14 +529,12 @@ function scheme_update(seats_diff_state, seats_diff) {
 
 {# Очищение свободных мест на схеме зала при ошибке запроса `ts_seats` #}
 function seats_error(xhr, status, error) {
-    {% if debug %}
     console.log(
         'ts_scheme error!', '\n',
         'xhr',    xhr,      '\n',
         'status', status,   '\n',
         'error',  error
     );
-    {% endif %}
 
     {# Обнулить кэш запрошенных ранее свободных мест #}
     window.seats_cache = [];
@@ -835,14 +831,12 @@ function reserve_success(response, status, xhr) {
 }
 
 function reserve_error(xhr, status, error) {
-    {% if debug %}
     console.log(
         'ts_reserve_error!', '\n',
         'xhr',    xhr,       '\n',
         'status', status,    '\n',
         'error',  error
     );
-    {% endif %}
 
     {% if active == 'step1' %}
         {# Прелоадер с прогресс-баром #}
