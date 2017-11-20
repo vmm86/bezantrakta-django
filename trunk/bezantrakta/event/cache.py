@@ -85,7 +85,6 @@ def event_or_group_cache(event_uuid, event_or_group, reset=False):
                 'ticket_service_id',
                 'ticket_service_event',
                 'ticket_service_scheme',
-                'ticket_service_prices',  # => удалить
 
                 'payment_service_id',
 
