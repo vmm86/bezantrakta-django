@@ -454,7 +454,7 @@ function seats_success(response, status, xhr) {
 }
 
 function legend_update(prices_diff_state, prices_diff) {
-    console.log('prices_diff: ', prices_diff)
+    {% if debug %}console.log('prices_diff: ', prices_diff);{% endif %}
     for (var p = 1; p < prices_diff.length + 1; p++) {
         {# Если мест пришло больше, чем раньше - включаем освободившиеся места #}
         if (prices_diff_state == 'more') {
@@ -525,6 +525,12 @@ function scheme_update(seats_diff_state, seats_diff) {
             $(seat_selector).removeClass(class_f);
         }
     }
+
+    {# Оставить только актуальные кликабельные билеты без мест, если они выводятся в маркированных списках #}
+    if ('li.seat:not(.free, .selected)'.length) {
+        $('li.seat:not(.free, .selected)').remove();
+    }
+
 }
 
 {# Очищение свободных мест на схеме зала при ошибке запроса `ts_seats` #}
@@ -917,7 +923,7 @@ function order_cookies_init() {
 
 {# Сохранение или обновление cookies для заказа билетов #}
 function order_cookies_update(cookies_list) {
-    console.log('order_cookies_update...');
+    {% if debug %}console.log('order_cookies_update...');{% endif %}
     var cookie_prefix = 'bezantrakta_';
     var order_cookies = {
         'ticket_service_id': window.ticket_service_id,
@@ -936,7 +942,7 @@ function order_cookies_update(cookies_list) {
                 var cookie_value = order_cookies[cookie];
 
                 window.cookies.set(cookie_prefix + cookie, cookie_value, {domain: window.domain});
-                console.log('cookie `' + cookie_title + '`: ', cookie_value);
+                {% if debug %}console.log('cookie `' + cookie_title + '`: ', cookie_value);{% if debug %}
             }
         }
     }
