@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'rangefilter',
 
     'django.contrib.admin',
-    # 'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.humanize',
@@ -85,7 +84,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'admin_reorder.middleware.ModelAdminReorder',
 
-    # 'django.contrib.admindocs.middleware.XViewMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
