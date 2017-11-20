@@ -24,7 +24,6 @@ urlpatterns = [
     url(r'^error(?:/(?P<http_code>\d+))?/$', error, name='error'),
 
     url(r'^simsim/', admin.site.urls),
-    # url(r'^simsim/doc/', include('django.contrib.admindocs.urls')),
 
     url(r'', include('third_party.ticket_service.urls')),
     url(r'', include('third_party.payment_service.urls')),
