@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+{% load i18n static tz compress %}
+
+{% block head_title %}
+    {% if event.event_title %}{{ request.domain_settings.domain.title }}: {{ event.event_title }}{% else %}{{ request.domain_settings.domain.title }}{% endif %}
+{% endblock %}
+
+{% block head_description %}
+    {{ event.event_description }}
+{% endblock %}
+
+{% block head_keywords %}
+    {{ event.event_keywords }}
+{% endblock %}
+
+{% block head_stylesheet %}
+    {# Общие CSS-файлы - загружаются в любом случае #}
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq-order.css" %}">
+    {# Общие CSS-файлы - загружаются в любом случае #}
+
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/lightbox.min.css" %}">
+{% endblock %}
+
+{% block body %}
+    <div class="body">
+        <main class="content">
+
+        {% if event.ticket_service_event and event.is_coming %}
+            {% include "order/order_progress.html" with active="step1" %}
+        {% endif %}
+
+            {% include "event/event_title_date_time.html" with active="step1" event=event %}
+
+        {% if event.is_coming %}
+            <div class="order-header">
+                <div id="basket-container">
+
+                {# События в группе выводятся, только если их больше одного #}
+                {% if group_events and group_events|length > 1 %}
+                    <div class="group-events-container">
+                        <h3 id="group-events-header">Билеты на другую дату</h3>
+                        <ul id="group-events">
+                    {% for event in group_events %}
+                    {% localtime on %}
+                        {% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
+                        {% if event_url == request.url_path %}
+                            <li class="group-event-chosen">
+                                {% if event.caption %}
+                                    {{ event.caption }}
+                                {% else %}
+                                    {{ event.datetime|date:"d.m.Y G:i" }}
+                                {% endif %}
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="">
+                                {% if event.caption %}
+                                    {{ event.caption }}
+                                {% else %}
+                                    {{ event.datetime|date:"d.m.Y G:i" }}
+                                {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endlocaltime %}
+                    {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {# Корзина заказа билетов и легенда #}
+                {% if event.ticket_service_event %}
+                    <h3 id="chosen-tickets-header">Выбранные места</h3>
+                    <ul id="chosen-tickets">
+                        <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
+                    </ul>
+
+                    <h3 id="overall-header">Всего</h3>
+                    <p id="overall">
+                        <span id="no-overall">пока ничего не выбрано</span>
+                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
+                    </p>
+                    <br>
+
+                    <div id="legend-general">
+                        <p><a class="box selected"></a> выбрано вами</p>
+                        <p><a class="box free"></a> недоступно</p>
+                    </div>
+                    <br>
+
+                    <div id="legend-prices">
+                        <ul id="legend-extension">
+                            {# Цены добавляются/удаляются в браузере при AJAX-запросах свободных мест в событии #}
+                        </ul>
+                    </div>
+
+                    {# Описание процесса заказа билетов #}
+                    {% include "order/legend_text.html" with ticket_service=ticket_service %}
+                {% endif %}
+
+                {# Ссылки, добавленные к событию #}
+                {% if links %}
+                    <div class="links-container">
+                        <h3 id="links-header">Билеты</h3>
+                        <ul id="links">
+                        {% for link in links %}
+                            <li>
+                                {% if link.href != "" %}
+                                <a href="{{ link.href }}" title="{{ link.title }}" target="_blank">
+                                {% endif %}
+                                    <img class="link-checkbox" border="0">
+                                    <img class="link-banner" src="{% get_media_prefix %}{{ link.img }}" alt="{{ link.title }}">
+                                {% if link.href != "" %}
+                                </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                </div>
+
+            {# Схема зала в сервисе продажи билетов #}
+            {% if event.ticket_service_event %}
+                {% spaceless %}
+                <div id="tickets">
+                {% if venue_sectors %}
+                    <b>Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</b>
+                    <br>
+                    <br>
+                {% endif %}
+                    {{ venue_scheme|safe }}
+
+                {# Опциональное включение схем отдельных секторов, #}
+                {# если к общей схеме зала в БД добавлен хотя бы один сектор #}
+                {% if venue_sectors %}
+                    <div class="sectors-slider">
+                    {% for sector in venue_sectors %}
+                        <div class="sectors sector-{{ sector.sector_id }}">
+                            <p class="sector-title">{{ sector.sector_title }}</p>
+                            <br>
+                            {{ sector.sector_scheme|safe }}
+                        </div>
+                    {% endfor%}
+                    </div>
+                {% endif %}
+
+                </div>
+                {% endspaceless %}
+
+            {% else %}
+                <div id="tickets">
+                    <div class="ticket-message">
+                        <img class="ticket-message-checkbox" border="0" style="border: 0; border-style: none">
+                        <span>Продажа электронных билетов на это событие скоро будет открыта.</span>
+                    </div>
+                </div>
+            {% endif %}
+
+            </div>
+
+            {% if event.ticket_service_event %}
+                <div class="order-buttons">
+                    <div class="button-prev">
+                        <a id="back" class="step1" href="javascript: history.go(-1)">Назад</a>
+                    </div>
+
+                    <div class="button-next">
+                        <a id="buy-tickets-inactive">Оформить</a>
+                        <a id="buy-tickets" href="{{ checkout_url }}">Оформить</a>
+                    </div>
+                </div>
+            {% endif %}
+
+        {% endif %}
+
+            <div class="description-header">
+                <div class="description">
+                    <div id="info-poster" class="event-poster">
+                        <div class="event-poster-body">
+                            <img rel="image_src" src="{% get_media_prefix %}{{ event.poster }}" alt="{{ event.event_datetime }} {{ event.event_title }} {{ event.event_venue_title }}">
+                        </div>
+                    </div>
+
+                    <div id="info" class="event-description">
+                        {{ event.event_text|safe }}
+                    </div>
+                </div>
+
+            {% if event.is_coming %}
+                <div class="share-help">
+                {% include "share_help.html" %}
+                </div>
+            {% endif %}
+
+            </div>
+
+        {% if event.ticket_service_event %}
+            <div id="tickets-preloader" class="modal">
+                <div>
+                    <div class="modal-body">
+                        <div>
+                            <p><img src="{% static "global/ani/striped-progress.gif" %}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if debug %}
+        <br><br>
+        event: <pre>{{ event|pprint }}</pre>
+        <br><br>
+        group_events: <pre>{{ group_events|pprint }}</pre>
+        <br><br>
+        ticket_service: <pre>{{ ticket_service|pprint }}</pre>
+        <br><br>
+        payment_service: <pre>{{ payment_service|pprint }}</pre>
+        <br><br>
+        venue_sectors: <pre>{{ venue_sectors|pprint }}</pre>
+        {% endif %}
+
+        </main>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# Общие скрипты для оформления страницы, даже если событие НЕ привязано к сервису продажи билетов #}
+    {% compress js inline %}
+    <script type="text/javascript" defer>
+    $(document).ready(function() {
+        {% if event.ticket_service_event %}$('#tickets-preloader').hide();{% endif %}
+
+        {# Добавление паддинга к блоку "Место проведения события" #}
+        {# Этот блок становится соразмерным по высоте блоку "Название события/дата/время" (костыль) #}
+        var event_title_height = $('#event-title-date-time').height() / 28.75;
+        $('#event-venue').css('padding-top', event_title_height + 'rem');
+        $('#event-venue').css('padding-bottom', event_title_height + 'rem');
+
+        {# временное сообщение #}
+        var links_height = $('#links').height() + 16;
+        if (links_height > 16) {
+            $('.ticket-message').css('min-height', links_height);
+        }
+        {# временное сообщение #}
+    });
+    </script>
+    {% endcompress %}
+
+{# Скрипты для работы с заказом билетов #}
+{% if event.ticket_service_event %}
+    <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/lodash/lodash.min.js" %}"></script>
+
+    {% compress js inline %}
+    <script type="text/javascript">
+    {# Базовый функционал процесса заказа билетов #}
+    $(document).ready(function() {
+        {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_sectors=venue_sectors %}
+        prepare_order_onload();
+        start_heartbeat();
+    });
+    </script>
+    {% endcompress %}
+
+    {% if not debug %}
+    {% compress js inline %}
+    <script type="text/javascript">
+        {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
+        {% include "seo/order_counter_events.js" with active="step1" %}
+    </script>
+    {% endcompress %}
+    {% endif %}
+{% endif %}
+
+{% endblock %}
