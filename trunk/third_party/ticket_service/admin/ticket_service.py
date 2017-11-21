@@ -61,6 +61,7 @@ class TicketServiceAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'id': ('title',),
     }
+    radio_fields = {'slug': admin.VERTICAL, }
 
     def get_queryset(self, request):
         return super(TicketServiceAdmin, self).get_queryset(request)

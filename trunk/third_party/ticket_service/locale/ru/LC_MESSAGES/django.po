@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-25 08:16+0000\n"
+"POT-Creation-Date: 2017-11-20 08:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/ticket_service.py:44
+#: admin/ticket_service.py:56
 msgid "ticket_service_help_text"
 msgstr ""
 "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от "
@@ -75,31 +75,36 @@ msgstr ""
 "минутах, по истечении которого автоматически снимается предварительный "
 "резерв мест на схеме зала (по умолчанию - 15).</li></ul>"
 
-#: admin/ticket_service.py:70
+#: admin/ticket_service.py:82
 msgid "ticket_service_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных сервисов продажи билетов"
 
-#: admin/ticket_service.py:80
+#: admin/ticket_service.py:92
 msgid "event_admin_activate_or_deactivate_items"
 msgstr "Включить или отключить сервисы продажи билетов"
 
-#: admin/ticket_service.py:85
+#: admin/ticket_service.py:97
 msgid "ticket_service_admin_ticket_service_schemes_count"
 msgstr "Схем залов"
 
-#: admin/ticket_service.py:91
+#: admin/ticket_service.py:103
 msgid "ticket_service_admin_is_payment_service_added"
 msgstr "Оплата"
 
-#: admin/ticket_service_scheme_sector.py:36
+#: admin/ticket_service_scheme_sector.py:48
 msgid "ticketserviceschemesector_if_sector_exists"
 msgstr "Сектор"
 
-#: admin/ticket_service_scheme_venue_binder.py:45
+#: admin/ticket_service_scheme_sector.py:53
+#: admin/ticket_service_scheme_venue_binder.py:62
+msgid "ID"
+msgstr "ID"
+
+#: admin/ticket_service_scheme_venue_binder.py:50
 msgid "ticketservicevenuebinder_if_scheme_exists"
 msgstr "Схема зала"
 
-#: admin/ticket_service_scheme_venue_binder.py:52
+#: admin/ticket_service_scheme_venue_binder.py:57
 msgid "ticketservicevenuebinder_if_sectors_exist"
 msgstr "Секторы"
 
@@ -111,43 +116,43 @@ msgstr "Идентификатор"
 msgid "ticketservice_title"
 msgstr "Название"
 
-#: models/ticket_service.py:42
-msgid "ticketservice_slug_help_text"
-msgstr ""
-"<p>Псевдоним должен совпадать с атрибутом <strong>slug</strong> класса "
-"соответствующего билетного сервиса.</p><p><ul><li><strong>superbilet</"
-"strong> для СуперБилет,</li><li><strong>radario</strong> для Радарио.</li></"
-"ul></p>"
+#: models/ticket_service.py:44
+msgid "ticketservice_slug_superbilet"
+msgstr "СуперБилет"
 
-#: models/ticket_service.py:43
+#: models/ticket_service.py:45
+msgid "ticketservice_slug_radario"
+msgstr "Радарио"
+
+#: models/ticket_service.py:54
 msgid "ticketservice_slug"
-msgstr "Псевдоним"
+msgstr "Сервис продажи билетов"
 
-#: models/ticket_service.py:47
+#: models/ticket_service.py:58
 msgid "ticketservice_is_active"
 msgstr "Работает"
 
-#: models/ticket_service.py:51
+#: models/ticket_service.py:62
 msgid "ticketservice_settings"
 msgstr "Настройки в JSON"
 
-#: models/ticket_service.py:57
+#: models/ticket_service.py:68
 msgid "ticketservice_domain"
 msgstr "Сайт"
 
-#: models/ticket_service.py:64
+#: models/ticket_service.py:75
 msgid "ticketservice_schemes"
 msgstr "Схемы залов"
 
-#: models/ticket_service.py:72
+#: models/ticket_service.py:83
 msgid "ticketservice_payment_service"
 msgstr "Сервис онлайн-оплаты"
 
-#: models/ticket_service.py:78
+#: models/ticket_service.py:89
 msgid "ticketservice"
 msgstr "сервис продажи билетов"
 
-#: models/ticket_service.py:79
+#: models/ticket_service.py:90
 msgid "ticketservices"
 msgstr "сервисы продажи билетов"
 
