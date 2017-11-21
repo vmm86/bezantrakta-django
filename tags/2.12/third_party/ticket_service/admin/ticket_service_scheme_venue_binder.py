@@ -43,6 +43,9 @@ class TicketServiceSchemeVenueBinderAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super(TicketServiceSchemeVenueBinderAdmin, self).get_queryset(request)
 
+    def has_add_permission(self, request):
+        return False
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """В списке залов выводятся только залы в этом городе."""
         if db_field.name == 'event_venue':
