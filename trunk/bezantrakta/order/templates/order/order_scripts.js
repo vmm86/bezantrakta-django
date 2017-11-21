@@ -527,8 +527,8 @@ function scheme_update(seats_diff_state, seats_diff) {
     }
 
     {# Оставить только актуальные кликабельные билеты без мест, если они выводятся в маркированных списках #}
-    if ('li.seat:not(.free, .selected)'.length) {
-        $('li.seat:not(.free, .selected)').remove();
+    if ('.no-fixed-seats .seat:not(.free, .selected)'.length) {
+        $('.no-fixed-seats .seat:not(.free, .selected)').hide();
     }
 
 }
