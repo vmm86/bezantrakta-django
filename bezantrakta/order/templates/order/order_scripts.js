@@ -942,7 +942,7 @@ function order_cookies_update(cookies_list) {
                 var cookie_value = order_cookies[cookie];
 
                 window.cookies.set(cookie_prefix + cookie, cookie_value, {domain: window.domain});
-                {% if debug %}console.log('cookie `' + cookie_title + '`: ', cookie_value);{% if debug %}
+                {% if debug %}console.log('cookie `' + cookie_title + '`: ', cookie_value);{% endif %}
             }
         }
     }
