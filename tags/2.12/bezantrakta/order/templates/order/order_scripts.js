@@ -107,7 +107,7 @@ function prepare_order_onload() {
             var ticket_title = seat['sector_title'] + ',\n' +
                     'ряд '   + seat['row_id']       + ',\n' +
                     'место ' + seat['seat_title']   + ',\n' +
-                    'цена '  + seat['price'];
+                    'цена '  + seat['price'] * 1;
 
             var seat_timeout_output = window.seat_timeout < 10 ? '0' + window.seat_timeout : window.seat_timeout;
             $('#chosen-tickets').append(
@@ -502,7 +502,7 @@ function scheme_update(seats_diff_state, seats_diff) {
         var ticket_title = seat['sector_title'] + ',\n' +
                 'ряд '   + seat['row_id']       + ',\n' +
                 'место ' + seat['seat_title']   + ',\n' +
-                'цена '  + seat['price'];
+                'цена '  + seat['price'] * 1;
 
         {# Если мест пришло больше, чем раньше - включаем освободившиеся места #}
         if (seats_diff_state == 'more') {
@@ -745,7 +745,7 @@ function reserve_success(response, status, xhr) {
     var ticket_title = seat['sector_title'] + ',\n' +
             'ряд '   + seat['row_id']       + ',\n' +
             'место ' + seat['seat_title']   + ',\n' +
-            'цена '  + seat['price'];
+            'цена '  + seat['price'] * 1;
 
     {% if debug %}
     console.log(
