@@ -14,29 +14,34 @@ $(window).scroll(function(){
 $(document).ready(function() {
     {# Сохранение данных выбранного для фильтрации сайта в cookie #}
     $('#choose_domain').change(function() {
-        var value = $('#choose_domain option:selected').val();
-        var city = $('#choose_domain option:selected').data('city');
-        var timezone = $('#choose_domain option:selected').data('timezone');
+        var selected = $('#choose_domain option:selected');
+        var domain_slug = selected.val();
+        var domain_id = selected.data('domain-id');
+        var city_slug = selected.data('city-slug');
+        var city_id = selected.data('city-id');
+        var timezone = selected.data('timezone');
         {# Адрес главного сайта, к которому могут добавляться поддомены #}
         var domain = '.{{ request.root_domain }}';
         {# Период действия куки (год) #}
         var expires = new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 366);
         {# Запись в cookie выбранного домена для фильтрации админки #}
-        Cookies.set('bezantrakta_admin_domain', value, {expires: expires, domain: domain});
+        Cookies.set('bezantrakta_admin_domain', domain_slug, {expires: expires, domain: domain});
+        Cookies.set('bezantrakta_admin_domain_id', domain_id, {expires: expires, domain: domain});
         {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
-        Cookies.set('bezantrakta_admin_city', city, {expires: expires, domain: domain});
+        Cookies.set('bezantrakta_admin_city', city_slug, {expires: expires, domain: domain});
+        Cookies.set('bezantrakta_admin_city_id', city_id, {expires: expires, domain: domain});
         {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
         Cookies.set('bezantrakta_admin_timezone', timezone, {expires: expires, domain: domain});
         location.reload();
     });
 
     {# При создании новых записей #}
-    {# var city_id = {{ bezantrakta_admin_city_id }}; #}
-    var domain_id = {{ bezantrakta_admin_domain_id }};
+    var city_id = Cookies.get('bezantrakta_admin_city_id');
+    var domain_id = Cookies.get('bezantrakta_admin_domain_id');
     if (domain_id !== 0) {
         $('.object-tools .addlink').attr('href', function(i, h) {
             var qs = h + (h.indexOf('?') != -1 ? '&' : '?');
-            return qs + 'domain=' + domain_id; {# + '&city=' + city_id; #}
+            return qs + 'domain=' + domain_id + '&city=' + city_id;
         });
     }
 
