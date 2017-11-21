@@ -37,10 +37,17 @@ class TicketService(models.Model):
         max_length=64,
         verbose_name=_('ticketservice_title'),
     )
-    slug = models.SlugField(
+    SLUG_SUPERBILET = 'superbilet'
+    SLUG_RADARIO = 'radario'
+    SLUG_CHOICES = (
+        (SLUG_SUPERBILET, _('ticketservice_slug_superbilet')),
+        (SLUG_RADARIO, _('ticketservice_slug_radario')),
+    )
+    slug = models.CharField(
+        choices=SLUG_CHOICES,
+        blank=False,
         max_length=32,
-        help_text=_('ticketservice_slug_help_text'),
-        verbose_name=_('ticketservice_slug'),
+        verbose_name=_('ticketservice_slug')
     )
     is_active = models.BooleanField(
         default=False,

@@ -38,6 +38,7 @@ class PaymentServiceAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'id': ('title',),
     }
+    radio_fields = {'slug': admin.VERTICAL, }
 
     def save_model(self, request, obj, form, change):
         """Пересоздать кэш:

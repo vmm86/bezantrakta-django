@@ -23,9 +23,17 @@ class PaymentService(models.Model):
         max_length=64,
         verbose_name=_('paymentservice_title'),
     )
-    slug = models.SlugField(
+    SLUG_SBERBANK = 'sberbank'
+    SLUG_SNGB = 'sngb'
+    SLUG_CHOICES = (
+        (SLUG_SBERBANK, _('paymentservice_slug_sberbank')),
+        (SLUG_SNGB, _('paymentservice_slug_sngb')),
+    )
+    slug = models.CharField(
+        choices=SLUG_CHOICES,
+        blank=False,
         max_length=32,
-        verbose_name=_('paymentservice_slug'),
+        verbose_name=_('paymentservice_slug')
     )
     is_active = models.BooleanField(
         default=False,

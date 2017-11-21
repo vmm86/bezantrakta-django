@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.SlugField(max_length=32, primary_key=True, serialize=False, verbose_name='Идентификатор')),
                 ('title', models.CharField(max_length=64, verbose_name='Название')),
-                ('slug', models.SlugField(help_text='<p>Псевдоним должен совпадать с атрибутом <strong>slug</strong> класса соответствующего билетного сервиса.</p><p><ul><li><strong>superbilet</strong> для СуперБилет,</li><li><strong>radario</strong> для Радарио.</li></ul></p>', max_length=32, verbose_name='Псевдоним')),
+                ('slug', models.CharField(choices=[('superbilet', 'СуперБилет'), ('radario', 'Радарио')], max_length=32, verbose_name='Сервис продажи билетов')),
                 ('is_active', models.BooleanField(default=False, verbose_name='Работает')),
                 ('settings', models.TextField(default='{}', verbose_name='Настройки в JSON')),
                 ('domain', models.ForeignKey(db_column='domain_id', on_delete=django.db.models.deletion.CASCADE, to='location.Domain', verbose_name='Сайт')),

@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.SlugField(max_length=32, primary_key=True, serialize=False, verbose_name='Идентификатор')),
                 ('title', models.CharField(max_length=64, verbose_name='Название')),
-                ('slug', models.SlugField(max_length=32, verbose_name='Псевдоним')),
+                ('slug', models.CharField(choices=[('sberbank', 'Сбербанк'), ('sngb', 'СургутНефтеГазБанк')], max_length=32, verbose_name='Сервис онлайн-оплаты')),
                 ('is_active', models.BooleanField(default=False, verbose_name='Работает')),
                 ('is_production', models.BooleanField(default=False, help_text='<ul><li>Если включено - оплата настоящими деньгами.</li><li>Если отключено - тестовая оплата НЕнастоящими деньгами.</li></ul>', verbose_name='Оплата настоящими деньгами')),
                 ('settings', models.TextField(default='{}', verbose_name='Настройки')),
