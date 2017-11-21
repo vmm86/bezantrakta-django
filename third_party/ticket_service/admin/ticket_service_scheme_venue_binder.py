@@ -3,6 +3,7 @@ from django.utils.translation import ugettext as _
 
 from project.decorators import queryset_filter
 
+from bezantrakta.event.models import EventVenue
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 
 from ..models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
@@ -41,6 +42,15 @@ class TicketServiceSchemeVenueBinderAdmin(admin.ModelAdmin):
     @queryset_filter('Domain', 'ticket_service__domain__slug')
     def get_queryset(self, request):
         return super(TicketServiceSchemeVenueBinderAdmin, self).get_queryset(request)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """В списке залов выводятся только залы в этом городе."""
+        if db_field.name == 'event_venue':
+            city_filter = request.COOKIES.get('bezantrakta_admin_city', None)
+            kwargs['queryset'] = EventVenue.objects.filter(
+                city__slug=city_filter
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def if_scheme_exists(self, obj):
         """Иконка обозначает, заполнена ли схема зала."""
