@@ -97,16 +97,7 @@ class TicketService(ABC):
         pass
 
     @abstractmethod
-    def prices(self):
-        """Список цен на билеты (Decimal), упорядоченный по возрастанию.
-
-        Returns:
-            list: Список цен на билеты.
-        """
-        pass
-
-    @abstractmethod
-    def seats(self):
+    def seats_and_prices(self):
         """Доступные для продажи места в событии (упорядоченные по цене, сектору, ряду, месту) и список цен на билеты.
 
         Args:
