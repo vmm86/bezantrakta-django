@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+{% load i18n static tz compress %}
+
+{% block head_title %}
+    {% if title and title != "" %}{{ request.domain_settings.domain.title }}: {{ title }}{% else %}{{ request.domain_settings.domain.title }}{% endif %}
+{% endblock %}
+
+{% block head_description %}
+    {{ request.domain_settings.domain.description }}
+{% endblock %}
+
+{% block head_keywords %}
+    {{ request.domain_settings.domain.keywords }}
+{% endblock %}
+
+{% block head_stylesheet %}
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/fullcalendar/fullcalendar.min.css" %}">
+
+    {# Общие CSS-файлы - загружаются в любом случае #}
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/bxslider.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/template.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq.css" %}">
+    {# Общие CSS-файлы - загружаются в любом случае #}
+
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/lightbox.min.css" %}">
+{% endblock %}
+
+{% block body %}
+    <div class="top">
+        <div class="top-left">
+            {# Вывод города текущего сайта #}
+            <div id="choose-city-button" class="choose-city-button">
+            {% with city_icon="global/svg/city/"|add:request.city_slug|add:".svg" %}
+                <img class="icon" src="{% static city_icon %}">
+            {% endwith %}
+                <span class="title" title="Выбрать город">{{ request.city_title }}</span>
+            </div>
+        </div>
+        <div class="top-right">&nbsp;</div>
+    </div>
+
+    {# Большие вертикальные афиши (слева) #}
+    <div class="poster-big-vertical-left">
+    {% if big_vertical_left or banner_group_items.banner_big_vertical_left %}
+        <div class="bannergroup">
+        {# Баннеры #}
+        {% for banner in banner_group_items.banner_big_vertical_left %}
+            <div class="banneritem">
+                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+            </div>
+        {% endfor %}
+        {# Афиши #}
+        {% for item in big_vertical_left %}
+            <div class="banneritem">
+            {% localtime on %}
+                {% include "event/big_posters.html" with item=item %}
+            {% endlocaltime %}
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+
+    {# Большие вертикальные афиши (справа) #}
+    <div class="poster-big-vertical-right">
+    {% if big_vertical_right or banner_group_items.banner_big_vertical_right %}
+        <div class="bannergroup">
+        {# Баннеры #}
+        {% for banner in banner_group_items.banner_big_vertical_right %}
+            <div class="banneritem">
+                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+            </div>
+        {% endfor %}
+        {# Афиши #}
+        {% for item in big_vertical_right %}
+            <div class="banneritem">
+            {% localtime on %}
+                {% include "event/big_posters.html" with item=item %}
+            {% endlocaltime %}
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+    </div>
+
+    <div class="body">
+
+        <header class="header">
+
+            <span class="hamburger"></span>
+
+            <div class="header-left">
+
+                {# Фильтр событий по календарю #}
+                <div class="calendar"></div>
+
+                <div class="top-menu">
+                {% if menu_items.top_menu %}
+                    <ul>
+                    {% for item in menu_items.top_menu %}
+                        <li{% if item.url == request.url_path %} class="active"{% endif %}>
+                            <a href="{{ item.url }}" title="{{ item.title }}">{{ item.title }}</a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                </div>
+
+                <a href="/"><img class="bzlogo" alt="Безантракта" src="{% static "global/svg/bzlogo.svg" %}"></a>
+            </div>
+
+            <div class="header-right">
+
+                    <div class="search">
+                        {# Фильтр событий по поиску #}
+                        <div class="modul">
+                            <div class="mod_top">
+                                <form action="/search" method="GET">
+                                    <input name="text" id="search" alt="Поиск" class="inputbox" type="text" size="20" value="{% if request.GET.text and request.GET.text != "" %}{{ request.GET.text }}{% endif %}">
+                                    <input type="submit" value="Поиск" class="button">
+                                </form>
+                            </div>
+                            <div class="mod_bot"></div>
+                        </div>
+                        {# Поиск #}
+                    </div>
+
+                    {# Большие горизонтальные баннеры или афиши #}
+                    <div class="poster-big-horizontal-body">
+                    {% if big_horizontal or banner_group_items.banner_big_horizontal %}
+                        <ul class="slider">
+                        {# Баннеры #}
+                        {% for banner in banner_group_items.banner_big_horizontal %}
+                            <li class="slide">
+                                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+                            </li>
+                        {% endfor %}
+                        {# Афиши #}
+                        {% for item in big_horizontal %}
+                            <li class="slide">
+                            {% localtime on %}
+                                {% include "event/big_posters.html" with item=item %}
+                            {% endlocaltime %}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                    </div>
+
+            </div>
+
+        </header>
+
+        {# Фильтр событий по категориям #}
+        <div class="events-menu">
+            {% if categories %}
+                <ul>
+                {% for category in categories %}
+                    {% url 'event:category' slug=category.slug as category_url %}
+                    <li id="category_{{ category.slug }}" {% if category_url == request.url_path %}class="active"{% endif %}>
+                        <a href="{{ category_url }}">{{ category.title }}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        {# Категории событий #}
+
+        <main class="content">
+            {% block content_header %}{% endblock %}
+            {% block content_body %}{% endblock %}
+        {% if debug %}
+            <hr>
+            <br>
+            <p>domain_slug: {{ request.domain_slug }}</p>
+            <p>domain_id: {{ request.domain_id }}</p>
+            <br>
+            <p>city_title: {{ request.city_title }}</p>
+            <p>city_slug: {{ request.city_slug }}</p>
+            <p>city_timezone: {{ request.city_timezone }}</p>
+            <p>TIME_ZONE: {{ TIME_ZONE }}</p>
+            <p>cities: <pre>{{ request.cities|pprint }}</pre></p>
+            <br>
+            <p>url_domain: {{ request.url_domain }}</p>
+            <p>url_path: {{ request.url_path }}</p>
+            <p>url_protocol_domain: {{ request.url_protocol_domain }}</p>
+            <p>url_full: {{ request.url_full }}</p>
+            <br>
+            <hr>
+            <br>
+            <p>settings: <pre>{{ request.domain_settings|pprint }}</pre></p>
+            <br>
+            <p>banner_group: <pre>{{ banner_group|pprint }}</pre></p>
+            <p>banner_group_items: <pre>{{ banner_group_items|pprint }}</pre></p>
+        {% endif %}
+        </main>
+
+        <div class="bottom-menu">
+        {% if menu_items.bottom_menu %}
+            <ul>
+            {% for item in menu_items.bottom_menu %}
+                <li>
+                    <a href="{{ item.url|default_if_none:"" }}" class="mainlevel" title="{{ item.title }}">
+                        {{ item.title }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        </div>
+
+        <div class="banners-body">
+
+            {# Нижние баннеры (слева) - Мы в сети #}
+            {% if banner_group_items.banner_social %}
+            <div class="banners banners-left">
+                <div class="bannergroup">
+                    <div class="bannerheader">{{ banner_group.banner_social }}</div>
+                    {% for banner in banner_group_items.banner_social %}
+                        <div class="banneritem">
+                            {% if banner.href %}
+                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                            {% endif %}
+                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
+                            {% if banner.href %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {# Нижние баннеры (центр) - Наши партнёры #}
+            {% if banner_group_items.banner_partners %}
+            <div class="banners banners-center">
+                <div class="bannergroup">
+                    <div class="bannerheader">{{ banner_group.banner_partners }}</div>
+                    {% for banner in banner_group_items.banner_partners %}
+                        <div class="banneritem">
+                            {% if banner.href %}
+                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                            {% endif %}
+                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
+                            {% if banner.href %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {# Нижние баннеры (справа) - Наши партнёры #}
+            {% if banner_group_items.banner_payment %}
+            <div class="banners banners-right">
+                <div class="bannergroup">
+                    <div class="bannerheader">{{ banner_group.banner_payment }}</div>
+                    {% for banner in banner_group_items.banner_payment %}
+                        <div class="banneritem">
+                            {% if banner.href %}
+                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                            {% endif %}
+                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
+                            {% if banner.href %}
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {# "Карусель" больших горизонтальных афиш #}
+    <script type="text/javascript" src="{% static "global/js/bxslider/jquery.bxslider.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/bxslider/carousel.js" %}"></script>
+    {# "Карусель" больших горизонтальных афиш #}
+
+    {# Подключение календаря событий #}
+    <script type="text/javascript" src="{% static "global/js/fullcalendar/lib/moment.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/fullcalendar/fullcalendar.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/fullcalendar/locale-all.js" %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function(e) {
+        calendar_date = '{{ request.calendar_date|date:"Y-m-d" }}';
+        $('.calendar').fullCalendar({
+            now: '{{ request.calendar_date|date:"Y-m-d" }}',
+            locale: 'ru',
+            timezone: '{{ request.city_timezone }}',
+            firstDay: 1,
+            showNonCurrentDates: false,
+            editable: false,
+            header: {
+                left:   'prev',
+                center: 'title',
+                right:  'next'
+            },
+            buttonIcons: {
+                prev: 'left-single-arrow',
+                next: 'right-single-arrow'
+            },
+            dayClick: function() {
+                data_date = $(this).data('date').split('-');
+                day_url = [
+                    '{{ request.url_protocol_domain }}',
+                    'afisha',
+                    data_date[0],
+                    data_date[1],
+                    data_date[2],
+                    ''
+                ].join('/');
+                window.location.href = day_url;
+            }
+        });
+    });
+    </script>
+    {# Подключение календаря событий #}
+
+    {# Кастомный лайтбокс для выбора городов #}
+    <script type="text/javascript" src="{% static "global/js/cities.js" %}" defer></script>
+    <div id="choose-city-modal" class="modal" style="display: none;">
+        <div>
+            <div class="modal-body">
+            {# <span class="close">&times;</span> #}
+                <div>
+                    <img class="bzlogo" src="{% static "global/svg/bzlogo.svg" %}">
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+
+                {% comment %}
+                {% if debug%}
+                    <p>cities: {{ request.cities }}</p>
+                    <br><br>
+                    <p>cookies['bezantrakta_city']: {{ request.bezantrakta_city }}</p>
+                {% endif %}
+                {% endcomment %}
+
+                    <ul id="choose-city-list" class="choose-city-list">
+                    {% for city in request.cities %}
+                {% if city.slug != "adm" %}
+                    {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
+                    {% if request.bezantrakta_city == city.slug %}
+                        <li class="{{ city.status }} chosen" data-city="{{ city.slug }}">
+                    {% else %}
+                        <li class="{{ city.status }}" data-city="{{ city.slug }}">
+                    {% endif %}
+                        {% with city_icon="global/svg/city/"|add:city.slug|add:".svg" %}
+                            <img class="city-icon" src="{% static city_icon %}">
+                        {% endwith %}
+                            <span class="city-name">{{ city.title }}</span>
+                        {% if city.state == None %}
+                            <span class="city-status-text">скоро открытие</span>
+                        {% endif %}
+                        </li>
+                {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Кастомный лайтбокс для выбора городов #}
+
+    <script type="text/javascript">
+    {# Скрытие меню на небольших экранах #}
+    function menuToggle() {
+        if (window.innerWidth <= 480) {
+            $('.top-menu').hide();
+            $('.hamburger').click(function(event) {
+                $('.top-menu').toggle();
+            });
+        } else {
+            $('.top-menu').show();
+        }
+    }
+
+    $(document).ready(menuToggle());
+    $(window).on('orientationchange', menuToggle());
+    $(window).on('resize', menuToggle());
+    </script>
+{% endblock %}
