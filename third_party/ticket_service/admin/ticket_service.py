@@ -18,15 +18,6 @@ class TicketServiceSchemeVenueBinderInline(admin.TabularInline):
     show_change_link = True
     template = 'admin/tabular_custom.html'
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """В списке залов выводятся только залы в этом городе."""
-        if db_field.name == 'event_venue':
-            city_filter = request.COOKIES.get('bezantrakta_admin_city', None)
-            kwargs['queryset'] = EventVenue.objects.filter(
-                city__slug=city_filter
-            )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
-
     def has_add_permission(self, request):
         return False
 
