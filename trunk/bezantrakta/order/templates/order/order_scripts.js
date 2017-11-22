@@ -518,6 +518,10 @@ function scheme_update(seats_diff_state, seats_diff) {
             $(seat_selector).attr('title', ticket_title + ' ₽');
 
             $(seat_selector).addClass(class_f);
+
+            {% if ticket_service.hide_sold_non_fixed_seats %}
+                $(seat_selector).show();
+            {% endif %}
         {# Если мест пришло меньше, чем раньше - отключаем занятые места #}
         } else if (seats_diff_state == 'less') {
             $(seat_selector).removeAttr('title');
@@ -526,11 +530,12 @@ function scheme_update(seats_diff_state, seats_diff) {
         }
     }
 
-    {# Оставить только актуальные кликабельные билеты без мест, если они выводятся в маркированных списках #}
-    if ('.no-fixed-seats .seat:not(.free, .selected)'.length) {
-        $('.no-fixed-seats .seat:not(.free, .selected)').hide();
-    }
-
+    {% if ticket_service.hide_sold_non_fixed_seats %}
+        {# Оставить только актуальные кликабельные билеты без мест, если они выводятся в маркированных списках #}
+        if ('.non-fixed-seats .seat:not(.free, .selected)'.length) {
+            $('.non-fixed-seats .seat:not(.free, .selected)').hide();
+        }
+    {% endif %}
 }
 
 {# Очищение свободных мест на схеме зала при ошибке запроса `ts_seats` #}
