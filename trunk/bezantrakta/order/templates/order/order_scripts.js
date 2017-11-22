@@ -283,21 +283,21 @@ function sectors_handler() {
 
 {# AJAX-запрос к внутреннему API сервисов продажи билетов #}
 {# Периодическое получение списка доступных для продажи билетов в событии из сервиса продажи билетов. #}
-function ts_seats() {
+function ts_seats_and_prices() {
     {% if debug %}
     if (window.seats_id !== undefined) {console.log('ts_seats: ', window.seats_id);}
     {% endif %}
 
     $.ajax({
-        url: '/api/ts/seats/',
+        url: '/api/ts/seats_and_prices/',
         type: 'GET',
         data: {
             'ticket_service_id': window.ticket_service_id,
             'event_id':          window.event_id,
             'scheme_id':         window.scheme_id
         },
-        success: seats_success,
-        error: seats_error
+        success: seats_and_prices_success,
+        error: seats_and_prices_error
     });
 }
 
@@ -339,10 +339,10 @@ function start_heartbeat() {
         $('#tickets-preloader').show();
 
         {# Первый запрос свободных для продажи мест при загрузке страницы #}
-        ts_seats();
+        ts_seats_and_prices();
 
         {# Периодические запросы свободных для продажи мест в событии #}
-        window.seats_id = setInterval(ts_seats, window.heartbeat_timeout * 1000);
+        window.seats_id = setInterval(ts_seats_and_prices, window.heartbeat_timeout * 1000);
         {% if debug %}console.log('started heartbeat ' + window.seats_id);{% endif %}
 
         {# Добавлять и убирать в предварительном резерве можно только доступные к заказу места #}
@@ -351,7 +351,7 @@ function start_heartbeat() {
         {# Селектор `#tickets`, к которому применяется `.on()`, НЕ должен генерироваться уже после загрузки страницы, будучи при этом родителем для вновь генерируемых элементов #}
 
         {# Отключение запроса мест при переходе на шаг 2 #}
-        {# (чтобы очередной запуск `ts_seats` не мог бы завершился с ошибкой) #}
+        {# (чтобы очередной запуск `ts_seats_and_prices` не мог бы завершился с ошибкой) #}
         $('#buy-tickets').on('click', stop_heartbeat);
     {% elif active == 'step2' %}
         {# Отключение проверки состояния мест при уходе назад на шаг 1 или при подтверждении заказа #}
@@ -366,7 +366,7 @@ function start_heartbeat() {
 function stop_heartbeat() {
     {% if active == 'step1' %}
         clearInterval(window.seats_id);
-        {% if debug %}console.log('stopped seats ' + window.seats_id);{% endif %}
+        {% if debug %}console.log('stopped seats_and_prices ' + window.seats_id);{% endif %}
     {% endif %}
 
     clearInterval(window.countdown_id);
@@ -374,7 +374,7 @@ function stop_heartbeat() {
 }
 
 {# Фильтрация из вновь полученного списка только тех мест, состояние которых изменилось (выбраны или освобождены). #}
-function seats_success(response, status, xhr) {
+function seats_and_prices_success(response, status, xhr) {
     if (response) {
         {# Вывод списка цен в легенде #}
         if (_.isEqual(window.prices_cache, response['prices']) === false) {
@@ -539,7 +539,7 @@ function scheme_update(seats_diff_state, seats_diff) {
 }
 
 {# Очищение свободных мест на схеме зала при ошибке запроса `ts_seats` #}
-function seats_error(xhr, status, error) {
+function seats_and_prices_error(xhr, status, error) {
     console.log(
         'ts_scheme error!', '\n',
         'xhr',    xhr,      '\n',

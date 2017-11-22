@@ -98,10 +98,8 @@ py_result = ts.discover_events()
 
 # SECTORS
 # py_result = ts.sectors(event_id=event_id)
-# SEATS
-# py_result = ts.seats(event_id=event_id)
-# PRICES
-# py_result = ts.prices(event_id=event_id)
+# SEATS AND PRICES
+# py_result = ts.seats_and_prices(event_id=event_id)
 
 # SCHEME
 # py_result = ts.scheme(event_id=event_id)

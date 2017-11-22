@@ -631,30 +631,7 @@ class SuperBilet(TicketService):
 
         return sectors
 
-    def prices(self, **kwargs):
-        """Список цен на билеты по возрастанию для легенды схемы зала.
-
-        Args:
-            event_id (int): Идентификатор события.
-
-        Returns:
-            list: Список цен по возрастанию.
-        """
-        seats = self.seats(event_id=kwargs['event_id'])
-        prices = []
-
-        # Группировка мест по ценам билетов
-        if type(seats) is list:
-            seats_by_prices = defaultdict(list)
-            for s in seats:
-                seats_by_prices[(s['price'])].append(s)
-
-            # Сортировка цен
-            prices = sorted([p for p in seats_by_prices])
-
-        return prices
-
-    def seats(self, **kwargs):
+    def seats_and_prices(self, **kwargs):
         """Доступные для продажи места в конкретном событии.
 
         Args:

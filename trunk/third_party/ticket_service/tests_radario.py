@@ -49,12 +49,10 @@ py_result = ts.places()
 
 # SECTORS
 # py_result = ts.sectors(scheme_id=scheme_id)
-# SEATS
-# py_result = ts.seats(event_id=event_id, scheme_id=scheme_id)
+# SEATS AND PRICES
+# py_result = ts.seats_and_prices(event_id=event_id, scheme_id=scheme_id)
 # PRICE_GROUPS
 # py_result = ts.price_groups(event_id=event_id)
-# PRICES
-# py_result = ts.prices(event_id=event_id)
 
 # RESERVE (ADD OR REMOVE)
 # action = 'add'
