@@ -1,11 +1,12 @@
-<h1 id="event-title-date-time" class="{{ active }}">
-    <span id="event-title">{{ event.event_title }} ({{ event.event_min_age }}+)</span>
-    <span id="event-date">{{ event.event_date }}</span>
-    <span id="event-time">{{ event.event_time }}</span>
-</h1>
+<header class="event-header">
+    <h1 id="event-title-date-time" class="{{ active }}">
+        <span id="event-title">{{ event.event_title }} ({{ event.event_min_age }}+)</span>
+        <span id="event-date-time">{{ event.event_date }} {{ event.event_time }}</span>
+    </h1>
 
-<h2 id="event-venue">
-    <span id="stagehall_name">
-        {{ event.event_venue_title }}{% if event.event_venue_city %} ({{ event.event_venue_city }}){% endif %}
-    </span>
-</h2>
+    <h2 id="event-venue" class="{{ active }}">
+        <span id="stagehall_name">
+            {{ event.event_venue_title }}{% if event.event_venue_city %} ({{ event.event_venue_city }}){% endif %}
+        </span>
+    </h2>
+</header>

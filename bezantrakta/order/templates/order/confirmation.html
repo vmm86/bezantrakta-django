@@ -25,7 +25,7 @@
 
 {% block body %}
     <div class="body">
-        <main class="content">
+        <main class="content step3">
 
 
             {% include "order/order_progress.html" with active="step3" %}
@@ -69,19 +69,17 @@
                     </ul>
                 </div>
 
-                <div id="success-message">
-                    <br>
-                    <br>
-                    <p>Заказ успешно завершён.</p>
-                    <p>На введённый Вами email отправлена информация о заказанных Вами билетах.</p>
-                </div>
+            </div>
 
-                <div class="order-buttons step3">
-                    <div class="button-tomain">
-                        <a id="tomain" href="/">На главную</a>
-                    </div>
-                </div>
+            <div id="success-message">
+                <p>Заказ успешно завершён.</p>
+                <p>На введённый Вами email отправлена информация о заказанных Вами билетах.</p>
+            </div>
 
+            <div class="order-buttons step3">
+                <div class="button-tomain">
+                    <a id="tomain" href="/">На главную</a>
+                </div>
             </div>
 
             {% if debug %}

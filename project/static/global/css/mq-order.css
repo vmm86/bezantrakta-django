@@ -10,7 +10,7 @@
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
 
-    padding: 0.75rem 1rem 0.75rem 1rem;
+    padding: 0.75rem 1rem;
 
     margin: 0;
 
@@ -35,47 +35,42 @@
 /* Пошаговый прогресс заказа билетов */
 
 .order-progress {
-    display: table;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
 
-    margin: 0.25rem 0;
+    margin: 0.5rem 0;
 
-    width: 93vw;
+    width: 100%;
 }
 .order-progress-step1,
 .order-progress-step2,
 .order-progress-step3 {
-    display: table-cell;
-
     color: #FFF;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
     font-weight: bold;
     text-align: center;
-    vertical-align: middle;
     text-transform: uppercase;
-
-    width: 33%;
-}
-.order-progress-step1 {
-    text-align: left;
-}
-.order-progress-step2 {
-    text-align: center;
-}
-.order-progress-step3 {
-    text-align: right;
 }
 .order-progress-step1-body,
 .order-progress-step2-body,
 .order-progress-step3-body {
-    display: inline-block;
-
     background: url(/static/global/svg/order-next-button.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
-
-    padding: 0.7rem 4.5rem 0.7rem 1rem;
+}
+.order-progress-step1-body {
+    padding: 0.75rem 3rem 0.75rem 1rem;
+}
+.order-progress-step2-body {
+    padding: 0.75rem 3.5rem 0.75rem 1rem;
+}
+.order-progress-step3-body {
+    padding: 0.75rem 4.5rem 0.75rem 1rem;
 }
 .order-progress-step1-body.active,
 .order-progress-step2-body.active,
@@ -89,6 +84,14 @@
 }
 
 /* Заголовок события */
+
+.event-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
 
 h1, h2 {
     display: inline-block;
@@ -115,8 +118,16 @@ h1, h2 {
 }
 
 #event-title-date-time {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+
     font-size: 1.5rem;
-    vertical-align: middle;
+
+    padding-left: 2.75rem;
+    padding-right: 2.75rem;
 
     width: -webkit-calc(30vw - 2rem);
     width:    -moz-calc(30vw - 2rem);
@@ -129,10 +140,6 @@ h1, h2 {
 
     padding-right: 1rem;
 }
-#event-date {
-/*    padding-left:  1rem;*/
-    padding-right: 1rem;
-}
 
 #event-venue {
     background: url(/static/global/svg/background-grey.svg) no-repeat;
@@ -141,7 +148,6 @@ h1, h2 {
     -webkit-background-size: 100% 100%;
 
     color: #FFF;
-    vertical-align: middle;
 
     padding: 1.75rem 2.75rem;
 
@@ -155,25 +161,14 @@ h1, h2 {
     text-transform: uppercase;
 }
 
-#header-fail {
-    background: url(/static/global/svg/background-black.svg) no-repeat;
-    background-size: 100% 100%;
-    -moz-background-size: 100% 100%;
-    -webkit-background-size: 100% 100%;
-
-    color: #FFF;
-    font-size: 1.5rem;
-}
-
 .order-header,
 .description-header,
 .order-buttons {
-    display: table;
-}
-
-.description-header,
-.order-buttons {
-    width: 96vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
 }
 
 /* Выбранные билеты и список цен */
@@ -358,6 +353,15 @@ h1, h2 {
     font-weight: bold;
 }
 
+#legend-general ul,
+#legend-prices ul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 #legend-text {
     font-weight: bold;
 }
@@ -448,24 +452,10 @@ h1, h2 {
 }
 
 #tickets {
-    display: table-cell;
-
-    text-align: center;
-    vertical-align: top; /* временно */
-
     padding: 0;
-    margin-left: auto;
-    margin-right: auto;
 
-    width: 70%;
-    width: -webkit-calc(70vw - 3rem);
-    width:    -moz-calc(70vw - 3rem);
-    width:         calc(70vw - 3rem);
-
-    max-width: 70%;
-    max-width: -webkit-calc(70vw - 3rem);
-    max-width:    -moz-calc(70vw - 3rem);
-    max-width:         calc(70vw - 3rem);
+    max-width: 60vw;
+    width: 60vw;
 }
 
 .stagehall {
@@ -586,6 +576,11 @@ h1, h2 {
 
 /* Блок-слайдер для показа выбранного сектора в больших залах */
 
+.sectors-caption {
+    font-weight: bold;
+    text-align: center;
+}
+
 .stagehall .sector-button {
     display: table;
     width:  100%;
@@ -632,11 +627,17 @@ h1, h2 {
 
     padding: 1rem 0;
 
+    max-width: 100%;
+
     overflow-x: auto;
+
+    position: relative;
+    height: auto;
 }
 
 .sectors-slider .sector-title {
     font-weight: bold;
+    text-align: center;
     text-transform: uppercase;
 }
 .sectors-slider .stagehall {
@@ -653,35 +654,23 @@ h1, h2 {
 
 /* Кнопки Вперёд / Назад */
 
-#buy-tickets, #no-tickets {
+#buy-tickets,
+#no-tickets {
     display: none;
 }
 
 .order-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+
     margin-top: 2rem;
 }
 .order-buttons .button-prev,
 .order-buttons .button-next {
-    display: inline-block;
-
     padding: 0 1%;
-}
-.order-buttons .button-prev {
-    text-align: right;
-
-    width: 50%;
-
-    float: left;
-}
-.order-buttons .button-next {
-    text-align: left;
-
-    width: 50%;
-
-    float: left;
-}
-.order-buttons .button-tomain {
-    text-align: center;
 }
 
 .order-buttons .button-prev a,
@@ -699,21 +688,13 @@ h1, h2 {
 
 .order-buttons .button-prev a,
 .order-buttons #back {
-/*    font-size: 0.95rem;*/
-
     padding: 0.5rem 1rem 0.5rem 3rem;
-
-/*    position: relative;
-    top: 0.2rem;*/
 }
 
 .order-buttons #back.step1 {
     font-size: 0.95rem;
 
     padding: 0.75rem 1rem 0.75rem 3rem;
-
-    position: relative;
-    top: 0.3rem;
 }
 
 .order-buttons #back {
@@ -765,10 +746,22 @@ h1, h2 {
 /* Описание события */
 
 .description-header {
-    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    margin-top: 2rem;
 }
 
 .description {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
     background: url(/static/global/svg/event-description.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -776,39 +769,22 @@ h1, h2 {
 
     font-size: 1rem;
 
-    width: 97vw;
-
     padding: 2.25rem 2rem 2rem 3rem;
 }
 
 .event-poster {
-    display: inline-block;
-
-    text-align: center;
-
-    padding: 0 10px 10px 0;
-
-    width: 218px;
-
-    position: relative;
-
-    z-index: 5;
+    padding: 0;
 }
-.event-poster-body {
-    display: inline-block;
 
-}
 .event-poster-body img {
-    width: 100%;
+    width: 218px;
     height: auto;
 }
 
 .event-description {
-    display: inline-block;
-
     font-size: 0.95rem;
 
-    vertical-align: top;
+    padding-left: 0.5rem;
 
     width:     -webkit-calc(100% - 228px);
     width:        -moz-calc(100% - 228px);
@@ -816,10 +792,6 @@ h1, h2 {
     max-width: -webkit-calc(100% - 228px);
     max-width:    -moz-calc(100% - 228px);
     max-width:         calc(100% - 228px);
-
-/*    position: relative;
-    top:   0.5rem;
-    left: -3.5rem;*/
 }
 
 .event-description img {
@@ -835,7 +807,11 @@ h1, h2 {
 }
 
 .share-help {
-    width: 90vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .share {
@@ -887,29 +863,20 @@ h1, h2 {
 
 /* Шаг 2 - Ввод контактной информации и выбор способа получения билетов */
 
-.order-progress.step2,
-p.input-body.step2,
-.ticket-offices-contacts.step2,
-.customer-address.step2,
-.online-info.step2 {
-    margin-left: 3rem;
+.content.step2 {
+    padding-left: 3rem;
 }
 
-.order-progress.step2 {
-    width: -webkit-calc(94.5vw - 3rem);
-    width:    -moz-calc(94.5vw - 3rem);
-    width:         calc(94.5vw - 3rem);
+#event-title-date-time.step2 {
+    min-width: 45rem;
 }
 
-#event-title-date-time.step2,
 .order-header.step2 {
-    margin-left: 3rem;
-
-    width: 45.75rem;
+    width: 45rem;
     width: -webkit-calc(40vw - 5rem);
     width:    -moz-calc(40vw - 5rem);
     width:         calc(40vw - 5rem);
-    min-width: 45.75rem;
+    min-width: 45rem;
 }
 
 #basket-container.step2 {
@@ -928,8 +895,22 @@ textarea {
     border: none;
 }
 
-.input-body {
+.input-container {
     margin: 0.25rem 0;
+}
+
+.agree-container {
+    display: inline-block;
+    margin-left: 0;
+    width: unset;
+    max-width: 43.5rem;
+}
+.agree-text {
+    padding-left: 1rem;
+    
+    position: relative;
+    left: 0;
+    top: -3rem;
 }
 
 #customer-name-label,
@@ -947,8 +928,6 @@ textarea {
     text-decoration: none;
     text-transform: uppercase;
     letter-spacing: 0.05rem;
-
-    padding: 1rem 2.5rem;
 
     width: 18rem;
     width: -webkit-calc(19vw - 5rem);
@@ -971,16 +950,16 @@ textarea {
     font-weight: bold;
     letter-spacing: 0.05rem;
 
-    padding: 0.2rem 2.25rem;
+    padding: 0 2rem 0 3rem;
 
     position: relative;
-    left: -2rem;
+    left: -2.5rem;
 
-    width: 29rem;
+    width: 28rem;
     width: -webkit-calc(28vw - 5rem);
     width:    -moz-calc(28vw - 5rem);
     width:         calc(28vw - 5rem);
-    min-width: 29rem;
+    min-width: 28rem;
 
     height: 3rem;
 }
@@ -1000,39 +979,18 @@ textarea {
    color:    #FFF;
 }
 
-.input-body-left {
+.input-container-left {
     display: inline-block;
 
     padding: 0;
-    margin-right: 0.5rem;
 
     vertical-align: top;
-
-    width: 28rem;
 }
-/*.input-body-right {
-    display: inline-block;
-
-    vertical-align: top;
-
-    width: 45%;
-}*/
 
 .order-buttons.step2 {
-/*    display: table-cell;
-    vertical-align: bottom;
-    padding: 0 2rem;
-    margin: 0;
-    width: 69%;
-    top: 0;*/
-
-    margin-top: 0;
-
-    width: 100vw;
-
-    position: relative;
-    top: -2.6rem;
-    left: -4rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: 43rem;
 }
 .order-buttons.step2 .button-prev,
 .order-buttons.step2 .button-next {
@@ -1042,12 +1000,9 @@ textarea {
     font-size: 0.95rem;
 
     padding: 0.75rem 1rem 0.75rem 3rem;
-
-    position: relative;
-    top: 0.75rem;
 }
 
-label.customer-delivery {
+.customer-delivery {
     background: url(/static/global/svg/background-yellow.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
@@ -1059,17 +1014,16 @@ label.customer-delivery {
     font-weight: bold;
     letter-spacing: -0.001rem;
 
-    padding: 0.75rem 1.5rem 0.75rem 3.5rem;
+    padding: 1rem 1.5rem 1rem 2.5rem;
 
-    width: 46.75rem;
-    height: 3.5rem;
+    width: 44rem;
 
     position: absolute;
     left: 3.75rem;
 
     z-index: 1;
 }
-label.customer-delivery a {
+.customer-delivery a {
     color: #000;
 }
 
@@ -1092,7 +1046,7 @@ input[type=checkbox] {
     width: 3rem;
 
     position: relative;
-    left: -0.5rem;
+    left: -3rem;
 
     z-index: 100;
 }
@@ -1116,7 +1070,7 @@ input[type=checkbox] + img {
     width: 3.5rem;
 
     position: relative;
-    left: -3.75rem;
+    left: -6.5rem;
     top: 0.3rem;
 
     z-index: 2;
@@ -1133,37 +1087,19 @@ input[type=checkbox]:disabled + img {
     background-size: 100% 100%;
 }
 
-#get-tickets .hint {
-    font-weight: bold;
-    text-align: right;
-    width: 100px;
-    white-space: nowrap;
-}
-#get-tickets .left.field {
-    text-align: right;
-}
-#get-tickets .field input[type=text] {
-    width: 100%;
-    border: thin solid #aaa;
-}
-#get-tickets .submit {
-    text-align: center;
-}
-#get-tickets .submit input {
-    border: thin solid #aaa;
-} 
-/*#and-delivery, 
-#customer-address-input,
-#online-info {
-    display: none;
-}
-*/
-.input-body.eticket .input-body-right {
+.input-container.eticket .input-container-right {
     padding-top: 0.5rem;
 }
 
+.order-options-description {
+    position: relative;
+    top: -0.5rem;
+}
+
+
 .customer-address p {
     font-size: 1rem;
+    font-weight: bold;
 
     margin-left: 18rem;
 }
@@ -1173,6 +1109,12 @@ input[type=checkbox]:disabled + img {
 .online-info p,
 .online-info ul li {
     font-size: 0.85rem;
+}
+
+.payment-info.step2,
+.eticket-info.step2 {
+    text-align: justify;
+    width: 43rem;
 }
 
     /* Баннеры соцсетей на шаге 2 */
@@ -1296,31 +1238,8 @@ input[type=checkbox]:disabled + img {
 
 /* Шаг 3 - Варианты завершения заказа в зависимости от способа получения билетов */
 
-.order-progress, 
-#basket-container, 
-p.input-body, 
-.customer-address, 
-.online-info, 
-#order-result-header, 
-.order-result, 
-#goodluck {
-    margin-left: 0;
-}
-
-#event-title-date-time.step3,
-.order-header.step3,
-#basket-container.step3,
-#order-result-header.step3,
-#header-fail.step3,
-.order-result,
-#goodluck {
-    margin-left: 3rem;
-
-    width: 45.75rem;
-    width: -webkit-calc(40vw - 5rem);
-    width:    -moz-calc(40vw - 5rem);
-    width:         calc(40vw - 5rem);
-    min-width: 45.75rem;
+.order-header.step3 {
+    flex-direction: column;
 }
 
 #basket-container.step3 {
@@ -1337,203 +1256,107 @@ p.input-body,
 
 #success-message {
     font-weight: bold;
+
+    margin-top: 2rem;
 }
 
 /* Адаптивность */
 
-@media all and (max-width: 1900px) {
-    .order-buttons.step2 {
-        position: relative;
-        top: 1.25rem;
-
-        z-index: 10;
-    }
-}
-
-@media all and (max-width: 1600px) {
-    #event-title-date-time {
-        margin-bottom: 0;
-    }
-
-    #event-venue {
-        position: static;
-        margin-top: -0.75rem;
-        margin-left: 3rem;
-    }
-}
-
 @media all and (max-width: 1520px) {
 
     .share-help {
-        margin-bottom: 0 !important;
+        flex-direction: column;
     }
     .share {
         text-align: center;
-
-        width: 96vw;
-
-        left: 0 !important;
+        width: auto;
+        left: 0;
     }
     .order-telephone {
-        display: block !important;
-
-        position: static !important;
+        position: static;
+        width: auto;
+        top: 0;
     }
 
 }
 
 @media all and (max-width: 1440px) {
 
-    .input-body-right.order-buttons {
-        display: table;
-        margin: 2rem 0;
-        width: 100%;
-    }
-
-}
-
-@media all and (max-width: 1366px) {
-}
-
-@media all and (max-width: 1280px) {
-}
-
-@media all and (max-width: 1150px) {
-
-    .order-progress-step1,
-    .order-progress-step2,
-    .order-progress-step3 {
-        font-size: 0.68rem;
-    }
-
-    #customer-name, 
-    #customer-email, 
-    #customer-phone,
-    #customer-address {
-        display: block;
+    #event-venue.step2 {
+        min-width: 45rem;
         left: 0;
     }
 
-    #customer-name-label, 
-    #customer-email-label, 
-    #customer-phone-label, 
-    #customer-delivery-self-label, 
-    #customer-delivery-courier-label, 
-    #online-info {
-        width: 45.75rem;
+    #tickets {
+/*        width: 100%;*/
+        max-width: 100%;
     }
-    #customer-name, 
-    #customer-email, 
-    #customer-phone, 
-    #customer-address {
-        width: 45.75rem;
-    }
+
+}
+
+@media all and (max-width: 1150px) {
 
     .customer-address p {
         margin-left: 2.25rem;
     }
 
-    .help, 
-    .help-contact,
-    .share span {
-        font-size: 0.75rem !important;
-    }
-
 }
 
-@media all and (max-width: 960px) {
-
-/*    .order-buttons a#back {
-        padding: 0.5rem 1rem 0.5rem 3rem;
-    }
-    .order-buttons a#buy-tickets-inactive,
-    .order-buttons a#buy-tickets,
-    .order-buttons a#isubmit {
-        padding: 0.5rem 3rem 0.5rem 1rem;
-    }
-    .order-buttons input#back {
-        padding: 0.5rem 1rem 1rem 3rem;
-    }
-    .order-buttons input#isubmit {
-        padding: 0.5rem 3rem 1rem 1rem;
-    }*/
+@media all and (max-width: 1080px) {
 
     .body {
-        font-size: 0.8rem;
-
-        padding: 0.75rem 3rem 0.75rem 0.5rem;
+        padding: 1rem;
     }
-    .stagehall td {
+
+    .order-progress {
+        justify-content: space-around;
+    }
+
+    .order-progress-step1,
+    .order-progress-step2,
+    .order-progress-step3 {
         font-size: 0.75rem;
     }
 
-/*    #customer-name, 
-    #customer-email, 
-    #customer-phone,
-    #customer-address {
-        width: 100%;
-
-        position: relative;
-        left: 0;
-    }*/
-
-/*    .help, 
-    .help-contact {
-        font-size: 0.65rem;
-    }*/
-
-/*    #event-venue {
-        width: 75vw;
-
-        top: 1.5rem;
-        left: -70vw;
-    }*/
-
-    #event-title {
-        display: inline-block;
+    .order-header.step2 {
+        width: auto;
+        min-width: unset;
     }
+
+    #event-title-date-time,
     #event-venue {
-        display: block;
-
-        margin-bottom: -1.5rem;
-
-        min-width: 33rem;
-
-        left: 0;
-        top: -1.5rem;
+        width: 50%;
     }
 
-    .order-header,
-    #basket-container,
-    #tickets {
-        display: block;
-
-        width: 100%;
+    #event-title-date-time.step2,
+    #event-venue.step2 {
+        min-width: unset;
     }
 
     .order-header {
-        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
     }
 
     #basket-container {
-        width: 50vw;
+        width: 92vw;
+        max-width: 92vw;
     }
 
-    #tickets { 
-        clear: both;
-        padding-top:   2em;
-        margin-bottom: 2em;
+    #tickets {
+        padding-top: 1rem;
+        margin: 0;
+
+        width: 92vw;
+        max-width: 92vw;
     }
 
-    #legend-general p,
-    #legend-prices p {
-        display: inline-block;
-
-        padding: 0 0.1rem;
-    }
-
-    .description-header {
-        width: 100vw;
+    #legend-general ul,
+    #legend-prices ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
     }
 
     .event-poster {
@@ -1543,186 +1366,112 @@ p.input-body,
     }
 
     .description {
-        width: 92vw;
-
-        padding: 2.5rem 1.5rem;
+        padding: 2rem;
     }
 
     .event-description {
         display: block;
+        padding-left: 0;
         width: 100%;
         max-width: 100%;
     }
 
-    .event-description .share,
-    .event-description .share .input {
+    .agree-container {
+        max-width: unset;
+    }
+
+    #customer-name-label,
+    #customer-name,
+    #customer-email-label,
+    #customer-email,
+    #customer-phone-label,
+    #customer-phone,
+    #customer-delivery-self-label,
+    #customer-address {
+        display: block;
+
+        padding-left: 2rem;
+
+        width: 100%;
+
         left: 0;
     }
 
-    .event-description .description {
-        padding: 2rem 1rem 1rem 1rem;
+    #customer-delivery-self-label,
+    #customer-delivery-courier-label,
+    #online-info,
+    #customer-name,
+    .payment-info.step2,
+    .eticket-info.step2 {
+        width: 100%;
+    }
+
+    .customer-delivery {
+        width: 92%;
+        width: -webkit-calc(100% - 5rem);
+        width:    -moz-calc(100% - 5rem);
+        width:         calc(100% - 5rem);
+    }
+
+    .order-buttons.step2 {
+        width: 100%;
     }
 
 }
 
-@media all and (max-width: 600px) {
+@media all and (max-width: 800px) {
 
-    .order-progress-step1,
-    .order-progress-step2,
-    .order-progress-step3 {
-        display: block;
-
-        padding: 0.1rem 0;
-
+    .event-header {
+        flex-direction: column;
+    }
+    #event-title-date-time {
+        margin-bottom: 0;
         width: 100%;
     }
-    .order-progress-step1-body,
-    .order-progress-step2-body,
-    .order-progress-step3-body {
-        padding: 0.5rem 3rem 0.5rem 0.75rem;
-    }
-    .order-progress-step1 {
-        text-align: center;
-    }
-    .order-progress-step2 {
-        text-align: center;
-    }
-    .order-progress-step3 {
-        text-align: center;
-    }
-
-    h1, h2 {
-        font-size: 0.95rem;
-
-/*        padding: 0.5rem 1rem;*/
-    }
-
-    #event-title-date-time {
-        display: block;
-    }
     #event-venue {
-        display: inline-block;
+        margin-top: 0;
+        width: 100%;
+        max-width: unset;
+        top: -0.9rem;
+        left: 0;
     }
 
-    #event-title-date-time,
-    #event-venue,
-    #group-events-header, 
-    #chosen-tickets-header,
-    #chosen-tickets,
-    #overall-header,
-    #overall-header-courier,
-    #overall,
-    #customer-name-label, 
-    #customer-email-label, 
-    #customer-phone-label, 
-    #customer-name, 
-    #customer-email, 
-    #customer-phone, 
-    .customer-delivery, 
-    #customer-address,
-    .online-info,
-    #order-result-header,
-    .order-result,
-    #header-fail {
-        width:     95vw !important;
-        min-width: 95vw !important;
-    }
-
-    #event-title-date-time.step2,
-    #chosen-tickets-header.step2,
-    #chosen-tickets.step2,
-    #overall-header.step2,
-    #overall-header-courier.step2,
-    #overall.step2,
-    #customer-name-label.step2, 
-    #customer-email-label.step2, 
-    #customer-phone-label.step2, 
-    #customer-name.step2, 
-    #customer-email.step2, 
-    #customer-phone.step2,
-    .customer-delivery.step2, 
-    #customer-address.step2,
-    .online-info.step2 {
-        width:     88vw !important;
-        min-width: 88vw !important;
-    }
-
-    label.customer-delivery {
-        padding-left: 1.75rem;
-    }
-
-    #basket-container h3, 
-    #basket-container-full h3 {
-        font-size: 0.75rem;
+    .customer-delivery {
+        padding-left: 2rem;
     }
 
     #basket-container #group-events-header + p {
         display: none;
     }
 
-    .order-buttons .button-prev {
-        width: 40%;
-    }
-    .order-buttons .button-next {
-        width: 60%;
-    }
-
-/*    .help, 
-    .help-contact,
-    .share span {
-        padding: 1rem 1.15rem;
-
-        min-width: 0 !important;
-    }*/
-
-    .help, .help-contact {
-        padding: 0.5rem 1.5rem;
-    }
     .help, .help-contact, .share span, .bannerheader {
-        font-size: 0.55rem;
         padding: 0.5rem 1.25rem;
 
-        min-width: 0;
+        min-width: unset;
     }
     .banners.step2 .bannerheader {
         font-size: inherit;
         padding: inherit;
     }
-    .share span {
-        padding: 1rem 1.25rem;
-    }
+
     .bzlogo-mask {
         width:  2.5rem;
         height: 3rem;
     }
 
-}
-
-@media all and (max-width: 480px) {
-
-/*    .order-buttons #back,
-    .order-buttons #buy-tickets-inactive, 
-    .order-buttons #buy-tickets, 
-    .order-buttons #isubmit {
-        font-size: 0.65rem;
-    }*/
-
-    .description {
-        width: 88vw;
-    }
-
-    .help, 
-    .help-contact {
-        padding: 1rem;
-
-        min-width: 0;
-    }
-    .bzlogo-mask {
-        width: 3.75rem;
-        height: 4.5rem;
+    .share .share-text {
+        min-width: unset;
     }
 
 }
 
-@media all and (max-width: 360px) {
+
+@media all and (max-width: 640px) {
+
+    .order-progress-step1,
+    .order-progress-step2,
+    .order-progress-step3 {
+        width: 100%;
+    }
+
 }
