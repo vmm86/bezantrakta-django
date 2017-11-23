@@ -348,7 +348,7 @@ STATICFILES_FINDERS = [
 ]
 STATICFILES_DIRS = [
     # Общая статика для всего проекта
-    ('global', os.path.join(BASE_DIR, 'project', 'static', 'global')),
+    ('global', os.path.join(BASE_DIR, 'project', 'static')),
     # Статика кастомной админ-панели
     ('admin', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'admin')),
 ]
