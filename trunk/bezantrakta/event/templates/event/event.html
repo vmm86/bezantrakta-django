@@ -25,7 +25,7 @@
 
 {% block body %}
     <div class="body">
-        <main class="content">
+        <main class="content step1">
 
         {% if event.ticket_service_event and event.is_coming %}
             {% include "order/order_progress.html" with active="step1" %}
@@ -85,8 +85,10 @@
                     <br>
 
                     <div id="legend-general">
-                        <p><a class="box selected"></a> выбрано вами</p>
-                        <p><a class="box free"></a> недоступно</p>
+                        <ul>
+                            <li><span class="box selected"></span> <span>выбрано вами</span> &nbsp;</li>
+                            <li><span class="box free"></span> <span>недоступно</span> &nbsp;</li>
+                        </ul>
                     </div>
                     <br>
 
@@ -128,7 +130,7 @@
                 {% spaceless %}
                 <div id="tickets">
                 {% if venue_sectors %}
-                    <b>Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</b>
+                    <p class="sectors-caption">Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</p>
                     <br>
                     <br>
                 {% endif %}
@@ -234,12 +236,6 @@
     $(document).ready(function() {
         {% if event.ticket_service_event %}$('#tickets-preloader').hide();{% endif %}
 
-        {# Добавление паддинга к блоку "Место проведения события" #}
-        {# Этот блок становится соразмерным по высоте блоку "Название события/дата/время" (костыль) #}
-        var event_title_height = $('#event-title-date-time').height() / 28.75;
-        $('#event-venue').css('padding-top', event_title_height + 'rem');
-        $('#event-venue').css('padding-bottom', event_title_height + 'rem');
-
         {# временное сообщение #}
         var links_height = $('#links').height() + 16;
         if (links_height > 16) {
@@ -262,6 +258,18 @@
         {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_sectors=venue_sectors %}
         prepare_order_onload();
         start_heartbeat();
+
+        // {# Фиксированное позиционирование легенды заказа и кнопок "Назад"/"Оформить" при прокручивании страницы #}
+        // $(window).scroll(function(){
+        //     console.log('scroll:', $(window).scrollTop());
+        //     legend_position = $('#basket-container').position().top;
+        //     if ($(window).scrollTop() >= legend_position) {
+        //         $('#basket-container').css('position', 'fixed');
+        //     } else {
+        //         $('#basket-container').css('position', 'static');
+        //     }
+        // });
+
     });
     </script>
     {% endcompress %}
