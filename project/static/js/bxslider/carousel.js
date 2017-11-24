@@ -15,7 +15,6 @@ $(document).ready(function(){
         auto: true,
         autoStart: true,
         autoDirection: 'next',
-        autoHover: true,
         minSlides: 1,
         slideWidth: 822,
         onSliderLoad: function() {
