@@ -559,6 +559,26 @@ button {
     position: absolute;
     top: 4%;
     left: 6%;
+}
 
-/*    box-shadow: 0.1rem 0.1rem black;*/
+/* Lightbox2 */
+
+#lightboxOverlay {
+    background-color: #999;
+}
+
+.lightbox {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.lb-outerContainer {
+    order: 2;
+}
+
+.lb-container {
+    order: 1;
 }

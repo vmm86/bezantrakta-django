@@ -14,17 +14,17 @@
 {% endblock %}
 
 {% block head_stylesheet %}
-    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/fullcalendar/fullcalendar.min.css" %}">
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/fullcalendar/3.4.0/fullcalendar.min.css" %}">
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/2.9.0/lightbox.min.css" %}">
 
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/normalize.css" %}">
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/main.css" %}">
-    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/bxslider.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/js/bxslider/4.2.12/jquery.bxslider.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/js/bxslider/carousel.css" %}">
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/template.css" %}">
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq.css" %}">
     {# Общие CSS-файлы - загружаются в любом случае #}
-
-    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/lightbox.min.css" %}">
 {% endblock %}
 
 {% block body %}
@@ -280,14 +280,14 @@
 
 {% block scripts %}
     {# "Карусель" больших горизонтальных афиш #}
-    <script type="text/javascript" src="{% static "global/js/bxslider/jquery.bxslider.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/bxslider/4.2.12/jquery.bxslider.min.js" %}"></script>
     <script type="text/javascript" src="{% static "global/js/bxslider/carousel.js" %}"></script>
     {# "Карусель" больших горизонтальных афиш #}
 
     {# Подключение календаря событий #}
-    <script type="text/javascript" src="{% static "global/js/fullcalendar/lib/moment.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "global/js/fullcalendar/fullcalendar.min.js" %}"></script>
-    <script type="text/javascript" src="{% static "global/js/fullcalendar/locale-all.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/fullcalendar/3.4.0/lib/moment.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/fullcalendar/3.4.0/fullcalendar.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/fullcalendar/3.4.0/locale-all.js" %}"></script>
     <script type="text/javascript">
     $(document).ready(function(e) {
         calendar_date = '{{ request.calendar_date|date:"Y-m-d" }}';

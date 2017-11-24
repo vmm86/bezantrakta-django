@@ -1,17 +1,21 @@
 {% load i18n %}
-{# Фиксированное позиционирование кнопок для сохранения/удаления в форме редактирования при прокручивании вниз #}
-$(window).scroll(function(){
-    start_height = $('body::before').height() + $('#header').height() + $('#breadcrumbs').height();
-    if ($(window).scrollTop() >= start_height) {
-        $('.submit-row').css('position', 'fixed');
-        $('#content').css('padding-bottom', '40px');
-    } else {
-        $('.submit-row').css('position', 'static');
-        $('#content').css('padding-bottom', '20px');
-    }
-});
-
 $(document).ready(function() {
+    {# Фиксированное позиционирование кнопок для сохранения/удаления в форме редактирования при прокручивании вниз #}
+    if ($('.submit-row').length) {
+        var waypoint = new Waypoint({
+            element: $('.submit-row')[0],
+            handler: function(direction) {
+                if (direction == 'down') {
+                    $('.submit-row').css('position', 'fixed');
+                    $('#content').css('padding-bottom', '40px');
+                } else if (direction == 'up') {
+                    $('.submit-row').css('position', 'static');
+                    $('#content').css('padding-bottom', '20px');
+                }
+            }
+        });
+    }
+
     {# Сохранение данных выбранного для фильтрации сайта в cookie #}
     $('#choose_domain').change(function() {
         var selected = $('#choose_domain option:selected');
