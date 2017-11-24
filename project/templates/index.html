@@ -276,6 +276,51 @@
         </div>
 
     </div>
+
+    {# Кастомный лайтбокс для выбора городов #}
+    <div id="choose-city-modal" class="modal" style="display: none;">
+        <div>
+            <div class="modal-body">
+            {# <span class="close">&times;</span> #}
+                <div>
+                    <img class="bzlogo" src="{% static "global/svg/bzlogo.svg" %}">
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+
+                {% comment %}
+                {% if debug%}
+                    <p>cities: {{ request.cities }}</p>
+                    <br><br>
+                    <p>cookies['bezantrakta_city']: {{ request.bezantrakta_city }}</p>
+                {% endif %}
+                {% endcomment %}
+
+                    <ul id="choose-city-list" class="choose-city-list">
+                    {% for city in request.cities %}
+                {% if city.slug != "adm" %}
+                    {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
+                    {% if request.bezantrakta_city == city.slug %}
+                        <li class="{{ city.status }} chosen" data-city="{{ city.slug }}">
+                    {% else %}
+                        <li class="{{ city.status }}" data-city="{{ city.slug }}">
+                    {% endif %}
+                        {% with city_icon="global/svg/city/"|add:city.slug|add:".svg" %}
+                            <img class="city-icon" src="{% static city_icon %}">
+                        {% endwith %}
+                            <span class="city-name">{{ city.title }}</span>
+                        {% if city.state == None %}
+                            <span class="city-status-text">скоро открытие</span>
+                        {% endif %}
+                        </li>
+                {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {# Кастомный лайтбокс для выбора городов #}
 {% endblock %}
 
 {% block scripts %}
@@ -324,51 +369,13 @@
     </script>
     {# Подключение календаря событий #}
 
-    {# Кастомный лайтбокс для выбора городов #}
-    <script type="text/javascript" src="{% static "global/js/cities.js" %}" defer></script>
-    <div id="choose-city-modal" class="modal" style="display: none;">
-        <div>
-            <div class="modal-body">
-            {# <span class="close">&times;</span> #}
-                <div>
-                    <img class="bzlogo" src="{% static "global/svg/bzlogo.svg" %}">
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
+    <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
 
-                {% comment %}
-                {% if debug%}
-                    <p>cities: {{ request.cities }}</p>
-                    <br><br>
-                    <p>cookies['bezantrakta_city']: {{ request.bezantrakta_city }}</p>
-                {% endif %}
-                {% endcomment %}
-
-                    <ul id="choose-city-list" class="choose-city-list">
-                    {% for city in request.cities %}
-                {% if city.slug != "adm" %}
-                    {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
-                    {% if request.bezantrakta_city == city.slug %}
-                        <li class="{{ city.status }} chosen" data-city="{{ city.slug }}">
-                    {% else %}
-                        <li class="{{ city.status }}" data-city="{{ city.slug }}">
-                    {% endif %}
-                        {% with city_icon="global/svg/city/"|add:city.slug|add:".svg" %}
-                            <img class="city-icon" src="{% static city_icon %}">
-                        {% endwith %}
-                            <span class="city-name">{{ city.title }}</span>
-                        {% if city.state == None %}
-                            <span class="city-status-text">скоро открытие</span>
-                        {% endif %}
-                        </li>
-                {% endif %}
-                    {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    {# Кастомный лайтбокс для выбора городов #}
+    {% compress js inline %}
+    <script type="text/javascript">
+        {% include "cities.js" %}
+    </script>
+    {% endcompress %}
 
     <script type="text/javascript">
     {# Скрытие меню на небольших экранах #}
