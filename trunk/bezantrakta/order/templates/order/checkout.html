@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq-order.css" %}">
     {# Общие CSS-файлы - загружаются в любом случае #}
 
-    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/lightbox.min.css" %}">
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/2.9.0/lightbox.min.css" %}">
 {% endblock %}
 
 {% block body %}
@@ -102,7 +102,7 @@
 
 {% block scripts %}
 {# Скрипты для работы с заказом билетов #}
-    <script type="text/javascript" src="{% static "global/js/cookie/js.cookie.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
 
 
     {% compress js inline %}

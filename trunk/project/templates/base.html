@@ -100,10 +100,10 @@
     {% endif %}
 </footer>
 
-<script type="text/javascript" src="{% static "global/js/jquery/jquery-1.9.1.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/jquery/3.2.1/jquery-3.2.1.min.js" %}"></script>
 
 {# Подключение лайтбоксов для изображений #}
-<script type="text/javascript" src="{% static "global/js/lightbox2/lightbox.min.js" %}"></script>
+<script type="text/javascript" src="{% static "global/js/lightbox2/2.9.0/lightbox.min.js" %}"></script>
 <script type="text/javascript">
 lightbox.option({
     'alwaysShowNavOnTouchDevices': true,
@@ -115,8 +115,8 @@ lightbox.option({
 </script>
 {# Подключение лайтбоксов для изображений #}
 
-{# Вывод размеров viewport в dev-версии сайта #}
 {% if debug %}
+{# Вывод размеров viewport в dev-версии сайта #}
 <script type="text/javascript">
 $(document).ready(function(e) {
     $('body').prepend('<span class="viewport" style="background: #FFF; border: 2px dotted #000; border-radius: 1rem; font-weight: bold; padding: 0.5rem; position: fixed; bottom: 0; right: 0; z-index: 10000;"></span>');
@@ -132,8 +132,8 @@ function showViewportSize() {
 
 }
 </script>
-{% endif %}
 {# Вывод размеров viewport в dev-версии сайта #}
+{% endif %}
 
 {% block scripts %}{% endblock %}
 
