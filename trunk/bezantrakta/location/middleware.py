@@ -3,7 +3,7 @@ import simplejson as json
 from django.conf import settings
 from django.db.models import CharField, Case, When, Value, Q
 from django.http.request import split_domain_port
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 
@@ -15,6 +15,7 @@ from .models import City, Domain
 class CurrentLocationMiddleware(MiddlewareMixin):
     """Получение информации о текущем городе и домене и её добавление в ``request``."""
     def process_request(self, request):
+        http_or_https = 'https://' if settings.BEZANTRAKTA_IS_SECURE else 'http://'
         host = request.get_host()
         url_domain, url_port = split_domain_port(host)
         root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
@@ -28,6 +29,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
         # Полный URL без опциональных GET-параметров (query string)
         path = request.get_full_path().split('?')[0]
 
+        request.http_or_https = http_or_https
         request.root_domain = settings.BEZANTRAKTA_ROOT_DOMAIN
         request.url_domain = url_domain
         request.url_path = path
