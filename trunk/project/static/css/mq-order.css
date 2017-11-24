@@ -1323,9 +1323,19 @@ input[type=checkbox]:disabled + img {
         min-width: unset;
     }
 
-    #event-title-date-time,
+    .event-header {
+        flex-direction: column;
+    }
+    #event-title-date-time {
+        margin-bottom: 0;
+        width: 100%;
+    }
     #event-venue {
-        width: 50%;
+        margin-top: 0;
+        width: 100%;
+        max-width: unset;
+        top: -0.9rem;
+        left: 0;
     }
 
     #event-title-date-time.step2,
@@ -1348,8 +1358,8 @@ input[type=checkbox]:disabled + img {
         padding-top: 1rem;
         margin: 0;
 
-        width: 92vw;
-        max-width: 92vw;
+        width: auto;
+        max-width: unset;
     }
 
     #legend-general ul,
@@ -1420,21 +1430,6 @@ input[type=checkbox]:disabled + img {
 }
 
 @media all and (max-width: 800px) {
-
-    .event-header {
-        flex-direction: column;
-    }
-    #event-title-date-time {
-        margin-bottom: 0;
-        width: 100%;
-    }
-    #event-venue {
-        margin-top: 0;
-        width: 100%;
-        max-width: unset;
-        top: -0.9rem;
-        left: 0;
-    }
 
     .customer-delivery {
         padding-left: 2rem;
