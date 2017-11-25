@@ -72,10 +72,6 @@
         height: 4rem;
     }
 
-    .poster-small-vertical a {
-        letter-spacing: -0.05rem;
-    }
-
 }
 
 @media all and (max-width: 1080px) {
@@ -100,40 +96,55 @@
 
 }
 
-@media all and (max-width: 980px) {
+@media all and (max-width: 1024px) {
 
-    html {
-        font-size: 13px;
+    h1 {
+        font-size: 1.25rem;
+    }
+
+    .choose-city-list {
+        height: auto;
+    }
+
+    .choose-city-list li {
+        width: 100%;
+    }
+
+    .poster-small-vertical-body.vip .poster-small-vertical-min_price {
+        left: 0;
+    }
+
+    .poster-small-vertical-price {
+        flex-wrap: wrap;
+    }
+
+    .poster-small-vertical-date a {
+        letter-spacing: 0;
+        text-align: center;
+
+        width: 100%;
+    }
+
+    .poster-small-vertical-min_price {
+        left: 0;
+        top: -0.33rem;
+    }
+
+    .poster-small-vertical-min_price a {
+        letter-spacing: 0;
     }
 
     .share-help {
         flex-direction: column;
-    }
 
-}
-
-@media all and (max-width: 900px) {
-
-    .events-menu {
-        top: -0.1rem;
+        margin-top: 1rem;
     }
-
-    .poster-small-vertical {
-        width: 14.8%;
-    }
-    .poster-small-vertical-date a,
-    .poster-small-vertical-min_price a {
-        letter-spacing: -0.085rem;
-    }
-    .poster-small-vertical-min_price a {
-    }
-
-    .poster-small-horizontal {
-        width: 10.6%;
-    }
-
-    h1 {
-        font-size: 1.25rem;
+    .share,
+    .order-telephone,
+    .belcanto-banner {
+        flex: 0 1 100%;
+        text-align: center;
+        width: 100%;
     }
 
     .banners-left,
@@ -154,96 +165,98 @@
 
 }
 
-@media all and (max-width: 800px) {
-
-    html {
-        font-size: 12px;
-    }
-
-    .choose-city-list {
-        height: auto;
-    }
-
-    .choose-city-list li {
-        width: 100%;
-    }
+@media all and (max-width: 900px) {
 
     .header-left .bzlogo {
-        width: auto;
-        height: 5rem;
-
-        position: absolute;
-        top: -5.5rem;
-        left: 120%;
-    }
-
-    .poster-small-vertical-body.vip .poster-small-vertical-min_price {
-        left: 0;
-    }
-
-    .poster-small-vertical-price {
-        height: 4rem;
-    }
-
-    .poster-small-vertical-date {
-        display: block;
-
-        width: 100%;
-        height: 50%;
-    }
-    .poster-small-vertical-date a {
-        letter-spacing: 0;
-        text-align: center;
-
-        width: 100%;
-
-        top: 0.5rem;
-    }
-    .poster-small-vertical-min_price {
-        display: block;
-
-        width: 100%;
-        height: 50%;
-
-        left: -0.2rem;
-        top: -0.75rem;
-    }
-    .poster-small-vertical-min_price a {
-        letter-spacing: 0.025rem;
-        
-        top: 0.25rem;
-    }
-
-    .share-help {
-        flex-direction: column;
-    }
-    .share,
-    .order-telephone,
-    .belcanto-banner {
-        flex: 0 1 100%;
-        text-align: center;
-        width: 100%;
+        display: none;
     }
 
 }
 
-@media all and (max-width: 560px) {
+@media all and (max-width: 800px) {
 
-    html {
-        font-size: 11px;
+    .poster-small-vertical-body.vip:before,
+    .poster-small-vertical-body.vip::before {
+        font-size: 1.25rem;
+
+        top: 2%;
+        left: 2.5%;
     }
 
-/*    .search form {
-        height: 1.6rem;
-    }*/
+    .poster-small-vertical {
+        padding: 2rem 0.25rem 0 0.25rem;
+
+        flex: 0 0 25%;
+    }
+
+}
+
+@media all and (max-width: 600px) {
+
+    .top {
+        justify-content: center;
+
+        background: url(/static/global/svg/panorama-top.svg) 13% center no-repeat;
+        background-size: 160% 100%;
+        -moz-background-size: 160% 100%;
+        -webkit-background-size: 160% 100%;
+
+        height: 4rem;
+    }
+
+    .top-left {
+        padding: 0;
+
+        width: auto;
+    }
+
+    #choose-city-button {
+        padding: 0;
+    }
+
+    .top-right {
+        display: none;
+    }
 
     .choose-city-button .icon {
         max-width: 25%;
     }
 
-    .poster-small-vertical-date a,
-    .poster-small-vertical-min_price a {
-        letter-spacing: -0.085rem;
+    .header {
+        flex-direction: column;
+    }
+
+    .header-right {
+        width: 100%;
+
+        order: 1;
+    }
+
+    .header-left {
+        flex-direction: row;
+        align-items: flex-start;
+
+        width: 100%;
+
+        order: 2;
+    }
+
+    .calendar {
+        margin-bottom: 0;
+
+        width: 50%;
+
+        position: static;
+    }
+
+    .top-menu {
+        width: 50%;
+
+        position: static;
+    }
+
+    .events-menu {
+        top: 0;
     }
 
 }
@@ -254,105 +267,16 @@
         margin-bottom: -4rem;
     }
 
-    .panorama {
-        background-size: 90% 70%;
-        -moz-background-size: 90% 70%;
-        -webkit-background-size: 90% 70%;
-
-        height: 2.5rem;
-    }
-
-    .header,
-    .header-left,
-    .header-right {
-        padding: 1% 0;
-    }
-
-    .hamburger {
-        display: inline-block;
-
-        cursor: pointer;
-
-        background: url(/static/global/svg/hamburger.svg), #FFF;
-        background-size: 100% 100%;
-        -moz-background-size: 100% 100%;
-        -webkit-background-size: 100% 100%;
-
-        border-radius: 0 0 0 1rem;
-
-        width:  4rem;
-        height: 4rem;
-
-        position: absolute;
-        top: 0;
-        right: 0;
-
-        z-index: 5;
+    .modal .modal-body .bzlogo {
+        width: 75%;
     }
 
     .header-left {
-        background: transparent;
-
-        width: 100%;
-        height: 25rem;
-
-        position: absolute;
-        top: 5rem;
-    }
-
-    .top-menu {
-        z-index: 7;
-    }
-
-    .calendar {
-        display: none;
-    }
-
-    .top-menu {
-        background: url(/static/global/svg/header-left.svg);
-        background-size: 100% 100%;
-        -moz-background-size: 100% 100%;
-        -webkit-background-size: 100% 100%;
-
-        padding: 2%;
-
-        width:  100%;
-        height: 100%;
-
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-    .top-menu > ul {
-        display: flex;
         flex-direction: column;
-        flex-wrap: nowrap;
-        justify-content: space-around;
-        align-items: stretch;
-
-        height: 100%;
-    }
-    .top-menu > ul > li > a:hover,
-    .top-menu > ul > li > #active_menu {
-        background: url(/static/global/svg/events-menu-active.svg) no-repeat;
-        background-size: 100% 100%;
-        -moz-background-size: 100% 100%;
-        -webkit-background-size: 100% 100%;
-
-        color: #000;
     }
 
-    .header-left .bzlogo {
-        top: -4.75rem;
-        left: 35%;
-    }
-
-    .header-right {
+    .calendar, .top-menu {
         width: 100%;
-    }
-
-    .modal .modal-body .bzlogo {
-        width: 75%;
     }
 
     .search {
@@ -365,28 +289,8 @@
         height: 1.6rem;
     }
 
-    .bx-wrapper {
-        width: 96%;
-    }
-
-    .banners-body {
-        display: none;
-    }
-
     .events-menu {
-        display: block;
-
         padding: 0;
-
-        position: relative;
-        top: -0.15rem;
-        left: 0;
-    }
-    .events-menu > ul {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
     }
 
     .label,
@@ -398,31 +302,8 @@
         left: 0;
     }
 
-    .poster-small-vertical-body.order1 {
-        background-position: 50% 80%, top left;
-        background-size: 98% 92%, 100% 100%;
-        padding: 2rem 0.5rem 1rem 0.5rem;
-    }
-
-    .poster-small-vertical-body.order1 .poster-small-vertical-min_price {
-        left: -0.25rem;
-    }
-
     .poster-small-vertical {
-        display: inline-block;
-
-        margin: 2rem 0.25rem 0 0.25rem;
-
-        width: 29.25%;
-    }
-
-    .poster-small-vertical-date a,
-    .poster-small-vertical-min_price a {
-        letter-spacing: -0.01rem;
-    }
-
-    .poster-small-horizontal {
-        width: 22.5%;
+        flex: 0 0 33%;
     }
 
     .share,
@@ -435,14 +316,12 @@
     }
     .share > span,
     .order-telephone > span {
-        display: block;
-
-        font-size: 1rem !important;
+        font-size: 1rem;
 
         position: static;
     }
     .bzlogo-mask {
-        display: none !important;
+        display: none;
     }
 
     .share span {
@@ -478,19 +357,11 @@
 @media all and (max-width: 380px) {
 
     html {
-        font-size: 10px;
+        font-size: 12px;
     }
 
     .modal .modal-body .bzlogo {
         width: 95%;
-    }
-
-    .poster-small-vertical {
-        width: 28.7%;
-    }
-
-    .poster-small-horizontal {
-        width: 22.25%;
     }
 
     .bottom-menu {

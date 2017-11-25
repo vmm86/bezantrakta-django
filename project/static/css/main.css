@@ -544,6 +544,8 @@ button {
     cursor: pointer;
 }
 
+/* Блоки, накладывающиеся оверлеем на афиши */
+
 .debug-info {
     display: block;
     background: url(/static/global/svg/search-input.svg) no-repeat;
@@ -559,6 +561,16 @@ button {
     position: absolute;
     top: 4%;
     left: 6%;
+}
+
+.cancelled {
+    background-color: red;
+    font-size: 1.25rem;
+    transform: rotate(-45deg);
+    width: 100%;
+    position: absolute;
+    top: 10%;
+    left: -33%;
 }
 
 /* Lightbox2 */

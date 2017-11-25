@@ -1369,20 +1369,13 @@ input[type=checkbox]:disabled + img {
         flex-wrap: wrap;
     }
 
-    .event-poster {
-        text-align: center;
-
-        width: 100%;
-    }
-
     .description {
         padding: 2rem;
     }
 
     .event-description {
         display: block;
-        padding-left: 0;
-        width: 100%;
+
         max-width: 100%;
     }
 
@@ -1466,7 +1459,7 @@ input[type=checkbox]:disabled + img {
     .order-progress-step1,
     .order-progress-step2,
     .order-progress-step3 {
-        width: 100%;
+        flex: 1 0 auto;
     }
 
 }
