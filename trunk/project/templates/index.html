@@ -89,8 +89,6 @@
 
         <header class="header">
 
-            <span class="hamburger"></span>
-
             <div class="header-left">
 
                 {# Фильтр событий по календарю #}
@@ -376,22 +374,4 @@
         {% include "cities.js" %}
     </script>
     {% endcompress %}
-
-    <script type="text/javascript">
-    {# Скрытие меню на небольших экранах #}
-    function menuToggle() {
-        if (window.innerWidth <= 480) {
-            $('.top-menu').hide();
-            $('.hamburger').click(function(event) {
-                $('.top-menu').toggle();
-            });
-        } else {
-            $('.top-menu').show();
-        }
-    }
-
-    $(document).ready(menuToggle());
-    $(window).on('orientationchange', menuToggle());
-    $(window).on('resize', menuToggle());
-    </script>
 {% endblock %}
