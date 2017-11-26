@@ -29,16 +29,6 @@
         display: none;
     }
 
-    .panorama {
-        background-size: 100% 85%;
-        -moz-background-size: 100% 85%;
-        -webkit-background-size: 100% 85%;
-
-        background-position: center top;
-
-        width: 100%;
-    }
-
     .top,
     .body {
         width: 100%;
@@ -56,20 +46,18 @@
         font-size: 15px;
     }
 
+    .modal .modal-body .bzlogo {
+        margin-left: 6vw;
+
+        width: 100%;
+    }
+
     .choose-city-list {
         height: 150vh;
     }
 
     .choose-city-list li {
         width: 50%;
-    }
-
-    .panorama {
-        background-size: 100% 75%;
-        -moz-background-size: 100% 75%;
-        -webkit-background-size: 100% 75%;
-
-        height: 4rem;
     }
 
 }
