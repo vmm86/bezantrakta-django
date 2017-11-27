@@ -20,20 +20,22 @@ def render_eticket(context):
 
     Args:
         context (dict): Информация, необходимая для генерации файла билета.
-            'url' (str):          URL станицы события на сайте.
-            'event_title' (str):  Название события.
-            'venue_title' (str):  Название зала.
-            'min_age' (int):      Ограничение по возрасту (по умолчанию - ``0``).
-            'poster' (str):       Относительный путь к файлу афиши ``small_vertical`` внутри папки ``MEDIA``.
+            'url' (str):               URL станицы события на сайте.
+            'event_title' (str):       Название события.
+            'event_venue_title' (str): Название зала.
+            'event_date' (str):        Человекопонятная дата события.
+            'event_time' (str):        Человекопонятное время события.
+            'event_min_age' (int):     Ограничение по возрасту (по умолчанию - ``0``).
+            'poster' (str):            Относительный путь к файлу афиши ``small_vertical`` внутри папки ``MEDIA``.
 
-            'order_id' (int):     Идентификатор заказа в сервисе продажи билетов.
-            'ticket_id' (int)     Идентификатор билета в БД.
-            'bar_code' (str):     Штрих-код.
+            'ticket_service_order' (int): Идентификатор заказа в сервисе продажи билетов.
 
-            'sector_title' (str): Название сектора.
-            'row_id' (int):       Идентификатор ряда.
-            'seat_title' (str):   Название места.
-            'price' (Decimal):    Цена билета.
+            'ticket_id' (uuid.UUID): Идентификатор билета в БД.
+            'bar_code' (str):        Штрих-код.
+            'sector_title' (str):    Название сектора.
+            'row_id' (int):          Идентификатор ряда.
+            'seat_title' (str):      Название места.
+            'price' (Decimal):       Цена билета.
 
     Returns:
         str: Полный путь к сгенерированному файлу билета.
@@ -58,6 +60,12 @@ def render_eticket(context):
         context['sector_title'], width=sector_max_chars, placeholder='...'
     )
 
+    context['event_min_age'] = (
+        '{min_age}+'.format(min_age=context['event_min_age']) if
+        context['event_min_age'] else
+        '0+'
+    )
+
     context['price'] = int(context['price']) if context['price'] % 1 == 0 else context['price']
 
     # Полный путь к файлу афиши `small vertical` на сервере
@@ -75,7 +83,10 @@ def render_eticket(context):
     context['bar_code_v_base64'] = bar_code_to_base64('code128', context['bar_code'], 588, 125)
 
     # Генерация и сохранение файла билета
-    output_name = '{order_id}_{ticket_id}.pdf'.format(order_id=context['ticket_service_order'], ticket_id=context['id'])
+    output_name = '{order_id}_{ticket_id}.pdf'.format(
+        order_id=context['ticket_service_order'],
+        ticket_id=context['ticket_id']
+    )
     full_output_path = os.path.join(
         settings.BEZANTRAKTA_ETICKET_PATH,
         context['domain_slug'],

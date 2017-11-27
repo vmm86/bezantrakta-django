@@ -4,9 +4,8 @@ from django.utils.translation import ugettext as _
 
 from jsoneditor.forms import JSONEditor
 
-from bezantrakta.event.models import EventVenue
+from project.cache import cache_factory
 
-from ..cache import ticket_service_cache
 from ..models import TicketService, TicketServiceSchemeVenueBinder
 
 
@@ -65,12 +64,12 @@ class TicketServiceAdmin(admin.ModelAdmin):
         super(TicketServiceAdmin, self).save_model(request, obj, form, change)
 
         if change and obj._meta.pk.name not in form.changed_data:
-            ticket_service_cache(obj.id, reset=True)
+            cache_factory('ticket_service', obj.id, reset=False)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
         for item in queryset:
-            ticket_service_cache(item.id, reset=True)
+            cache_factory('ticket_service', item.id, reset=False)
     batch_set_cache.short_description = _('ticket_service_admin_batch_set_cache')
 
     def activate_or_deactivate_items(self, request, queryset):
@@ -79,7 +78,7 @@ class TicketServiceAdmin(admin.ModelAdmin):
             item.is_active = False if item.is_active else True
             item.save(update_fields=['is_active'])
 
-            ticket_service_cache(item.id, reset=True)
+            cache_factory('ticket_service', item.id, reset=False)
 
     activate_or_deactivate_items.short_description = _('event_admin_activate_or_deactivate_items')
 

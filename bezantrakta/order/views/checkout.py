@@ -1,16 +1,12 @@
 import simplejson as json
 import uuid
 
-from django.conf import settings
 from django.shortcuts import redirect, render
 
+from project.cache import cache_factory
 from project.shortcuts import build_absolute_url, message, render_messages
 
-from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.settings import ORDER_TYPE
-
-from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
-from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 def checkout(request):
@@ -20,7 +16,7 @@ def checkout(request):
     event_id = int(request.COOKIES.get('bezantrakta_event_id', 0))
 
     # Информация о событии из кэша
-    event = event_or_group_cache(event_uuid, 'event')
+    event = cache_factory('event', event_uuid)
     if event is None:
         # Сообщение об ошибке
         msgs = [
@@ -36,27 +32,15 @@ def checkout(request):
         render_messages(request, msgs)
         return redirect('error')
 
-    # Информация о сервисе продажи билетов
-    ticket_service = ticket_service_cache(event['ticket_service_id'])
-
-    # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
-    ticket_service_defaults = {
-        # Таймаут для повторения запроса списка мест в событии в секундах
-        'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
-        # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
-        'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
-    }
-    for param, value in ticket_service_defaults.items():
-        if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
-            ticket_service['settings'][param] = value
+    # Информация о сервисе продажи билетов и экземпляр класса сервиса продажи билетов
+    ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
+    # Экземпляр класса сервиса продажи билетов
+    ts = ticket_service['instance']
 
     # Информация о сервисе онлайн-оплаты
-    payment_service = payment_service_cache(event['payment_service_id'])
-
-    # Экземпляр класса сервиса продажи билетов
-    ts = ticket_service_instance(event['ticket_service_id'])
+    payment_service = cache_factory('payment_service', event['payment_service_id'])
     # Экземпляр класса сервиса онлайн-оплаты
-    ps = payment_service_instance(event['payment_service_id'])
+    ps = payment_service['instance']
 
     # Описание процесса онлайн-оплаты из атрибута класса онлайн-оплаты
     payment_service['settings']['description'] = ps.description

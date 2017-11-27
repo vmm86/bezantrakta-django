@@ -9,14 +9,11 @@ from django.core.mail.backends.smtp import EmailBackend
 from django.db.utils import IntegrityError
 from django.shortcuts import redirect
 
+from project.cache import cache_factory
 from project.shortcuts import message, render_messages, timezone_now
 
-from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
-
-from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
-from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 def order(request):
@@ -33,24 +30,30 @@ def order(request):
 
     if request.method == 'POST':
         # Получение параметров события
-        event = {}
-        event['uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_event_uuid', None))
-        event['info'] = event_or_group_cache(event['uuid'], 'event')
-        event['id'] = event['info']['ticket_service_event']
+        event_uuid = uuid.UUID(request.COOKIES.get('bezantrakta_event_uuid', None))
+        event = cache_factory('event', event_uuid)
+        if event is None:
+            # Сообщение об ошибке
+            msgs = [
+                message('error', 'К сожалению, такого события не существует. 😞'),
+                message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
+            ]
+            render_messages(request, msgs)
+            return redirect('error')
+        event['id'] = event['ticket_service_event']
 
+        # Настройки сервиса продажи билетов
+        ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
         # Экземпляр класса сервиса продажи билетов
-        ticket_service = {}
-        ticket_service['id'] = event['info']['ticket_service_id']
-        ticket_service['info'] = ticket_service_cache(ticket_service['id'])
+        ts = ticket_service['instance']
 
-        ts = ticket_service_instance(ticket_service['id'])
-
+        # Настройки сервиса онлайн-оплаты
+        payment_service = cache_factory(
+            'payment_service', event['payment_service_id'],
+            domain_slug=request.domain_slug
+        )
         # Экземпляр сервиса онлайн-оплаты (с указанием URL завершения удачной или НЕудачной оплаты)
-        payment_service = {}
-        payment_service['id'] = event['info']['payment_service_id']
-        payment_service['info'] = payment_service_cache(payment_service['id'])
-
-        ps = payment_service_instance(payment_service['id'], domain_slug=request.domain_slug)
+        ps = payment_service['instance']
 
         # Получение реквизитов покупателя
         customer = {}
@@ -75,7 +78,7 @@ def order(request):
             msgs = [
                 message('error', 'При оформлении получен неправильный уникальный номер заказа! 😞'),
                 message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                        event_url=event['info']['url'])
+                        event_url=event['url'])
                         ),
             ]
             render_messages(request, msgs)
@@ -87,7 +90,7 @@ def order(request):
 
             # При доставке курьером - общая сумма заказа плюс стоимость доставки курьером
             if customer['delivery'] == 'courier':
-                order['total'] += ps.decimal_price(ticket_service['info']['settings']['courier_price'])
+                order['total'] += ps.decimal_price(ticket_service['settings']['courier_price'])
             # При онлайн-оплате - общая сумма заказа с комиссией сервиса онлайн-оплаты
             if customer['payment'] == 'online':
                 order['total'] = ps.total_plus_commission(order['total'])
@@ -107,16 +110,16 @@ def order(request):
 
             logger.info('Сайт: {title} ({id})'.format(title=domain['title'], id=domain['id']))
             logger.info('Сервис продажи билетов: {title} ({id})'.format(
-                    title=ticket_service['info']['title'],
+                    title=ticket_service['title'],
                     id=ticket_service['id']
                 )
             )
 
-            logger.info('UUID события: {event_uuid}'.format(event_uuid=event['uuid']))
+            logger.info('UUID события: {event_uuid}'.format(event_uuid=event['event_uuid']))
             logger.info('Идентификатор события: {event_id}'.format(event_id=event['id']))
 
             logger.info('\nСобытие')
-            logger.info(event['info'])
+            logger.info(event)
 
             logger.info('\nРеквизиты покупателя')
             logger.info('Получение билетов: {delivery}'.format(delivery=ORDER_DELIVERY[customer['delivery']]))
@@ -145,7 +148,7 @@ def order(request):
                     msgs = [
                         message('error', 'К сожалению, произошла ошибка резерва билетов 😞'),
                         message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                                event_url=event['info']['url'])
+                                event_url=event['url'])
                                 ),
                     ]
                     render_messages(request, msgs)
@@ -162,7 +165,7 @@ def order(request):
                 msgs = [
                     message('error', 'Бронь на все места в заказе истекла - заказ отменён! 😞'),
                     message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                            event_url=event['info']['url'])
+                            event_url=event['url'])
                             ),
                 ]
                 render_messages(request, msgs)
@@ -223,7 +226,7 @@ def order(request):
                         id=order['order_uuid'],
                         ticket_service_id=ticket_service['id'],
                         ticket_service_order=order['order_id'],
-                        event_id=event['uuid'],
+                        event_id=event['event_uuid'],
                         ticket_service_event=event['id'],
                         datetime=now,
                         name=customer['name'],
@@ -245,7 +248,7 @@ def order(request):
                     msgs = [
                         message('warning', 'Такой заказ уже был создан ранее! 😞'),
                         message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                                event_url=event['info']['url'])
+                                event_url=event['url'])
                                 ),
                     ]
                     render_messages(request, msgs)
@@ -294,8 +297,8 @@ def order(request):
 
                         # Отправка email администратору и покупателю
                         from_email = {}
-                        from_email['user'] = ticket_service['info']['settings']['order_email']['user']
-                        from_email['pswd'] = ticket_service['info']['settings']['order_email']['pswd']
+                        from_email['user'] = ticket_service['settings']['order_email']['user']
+                        from_email['pswd'] = ticket_service['settings']['order_email']['pswd']
                         from_email['connection'] = EmailBackend(
                             host=settings.EMAIL_HOST,
                             port=settings.EMAIL_PORT,
@@ -306,9 +309,9 @@ def order(request):
 
                         email_context = {
                             'domain': domain,
-                            'event': event['info'],
-                            'ticket_service': ticket_service['info'],
-                            'payment_service': payment_service['info'],
+                            'event': event,
+                            'ticket_service': ticket_service,
+                            'payment_service': payment_service,
                             'order': order,
                             'customer': customer
                         }
@@ -337,7 +340,7 @@ def order(request):
                     elif customer['payment'] == 'online':
                         # Создание новой онлайн-оплаты
                         payment_create = ps.payment_create(
-                            event_uuid=event['uuid'],
+                            event_uuid=event['event_uuid'],
                             customer=customer,
                             order=order
                         )
@@ -395,7 +398,7 @@ def order(request):
                                 message(
                                     'info',
                                     '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                                        event_url=event['info']['url'])
+                                        event_url=event['url'])
                                 ),
                             ]
                             render_messages(request, msgs)
@@ -432,7 +435,7 @@ def order(request):
                 msgs = [
                     message('error', 'Ошибка при создании заказа! 😞'),
                     message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                        event_url=event['info']['url'])
+                        event_url=event['url'])
                     ),
                 ]
                 render_messages(request, msgs)
