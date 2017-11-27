@@ -4,8 +4,8 @@ from django.conf import settings
 
 from project.cache import ProjectCache
 
-from third_party.ticket_service.models import TicketService
-from third_party.ticket_service.ticket_service_abc import ticket_service_factory
+from ..models import TicketService
+from ..ticket_service_abc import ticket_service_factory
 
 
 class TicketServiceCache(ProjectCache):

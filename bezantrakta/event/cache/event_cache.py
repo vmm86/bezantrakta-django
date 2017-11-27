@@ -8,7 +8,7 @@ from django.urls.base import reverse
 from project.cache import ProjectCache
 from project.shortcuts import build_absolute_url, debug_console, humanize_date
 
-from .models import Event
+from ..models import Event
 
 
 class EventCache(ProjectCache):
