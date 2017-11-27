@@ -5,9 +5,9 @@ from django.conf import settings
 from project.cache import ProjectCache
 from project.shortcuts import build_absolute_url
 
-from third_party.payment_service.models import PaymentService
-from third_party.payment_service.payment_service_abc import payment_service_factory
-from third_party.payment_service.payment_service_abc.abc import PaymentService as PaymentServiceABC
+from ..models import PaymentService
+from ..payment_service_abc import payment_service_factory
+from ..payment_service_abc.abc import PaymentService as PaymentServiceABC
 
 
 class PaymentServiceCache(ProjectCache):
