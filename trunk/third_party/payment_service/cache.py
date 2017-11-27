@@ -1,8 +1,8 @@
 import simplejson as json
 
 from django.conf import settings
-from django.core.cache import cache
 
+from project.cache import ProjectCache
 from project.shortcuts import build_absolute_url
 
 from third_party.payment_service.models import PaymentService
@@ -10,25 +10,12 @@ from third_party.payment_service.payment_service_abc import payment_service_fact
 from third_party.payment_service.payment_service_abc.abc import PaymentService as PaymentServiceABC
 
 
-def payment_service_cache(payment_service_id, reset=False):
-    """Кэширование параметров сервиса онлайн-оплаты для последующего использования без запросов в БД.
+class PaymentServiceCache(ProjectCache):
+    entities = ('payment_service', )
+    model = PaymentService
 
-    Args:
-        payment_service_id (str): ID сервиса онлайн-оплаты в БД.
-        reset (bool, optional): В любом случае пересоздать кэш, даже если он имеется.
-
-    Returns:
-        cache: Кэш параметров сервиса онлайн-оплаты.
-    """
-    cache_key = 'payment_service.{payment_service_id}'.format(payment_service_id=payment_service_id)
-    cache_value = cache.get(cache_key)
-
-    if reset:
-        cache.delete(cache_key)
-
-    if not cache_value or reset:
-        try:
-            ps = dict(PaymentService.objects.values(
+    def get_model_object(self, object_id):
+        return PaymentService.objects.values(
                 'id',
                 'title',
                 'slug',
@@ -36,55 +23,36 @@ def payment_service_cache(payment_service_id, reset=False):
                 'is_production',
                 'settings'
             ).get(
-                id=payment_service_id,
-            ))
-        except PaymentService.DoesNotExist:
-            return None
-        else:
-            # Получение настроек сервиса онлайн-оплаты
-            ps['settings'] = (
-                json.loads(ps['settings']) if ps['settings'] is not None else None
+                id=object_id,
             )
 
-            # Тип оплаты помещается в init в виде строки `test` или `prod`,
-            # чтобы затем использоваться при инстанцировании класса
-            ps['settings']['init']['mode'] = 'prod' if ps['is_production'] else 'test'
+    def cache_preprocessing(self, **kwargs):
+        # Получение настроек сервиса онлайн-оплаты
+        self.value['settings'] = (
+            json.loads(self.value['settings']) if self.value['settings'] is not None else None
+        )
 
-            # Общие параметры, лежащие вне init, помещаются в него,
-            # чтобы затем использоваться при инстанцировании класса
-            for gp in PaymentServiceABC.GENERAL_PARAMS:
-                ps['settings']['init'][gp] = ps['settings'][gp]
+        # Тип оплаты помещается в `init` в виде строки 'test' или 'prod',
+        # чтобы затем использоваться при инстанцировании класса
+        self.value['settings']['init']['mode'] = 'prod' if self.value['is_production'] else 'test'
 
-            cache_value = {k: v for k, v in ps.items()}
-            cache.set(cache_key, json.dumps(cache_value, ensure_ascii=False))
-    else:
-        cache_value = json.loads(cache_value)
+        # Общие параметры, лежащие вне `init`, помещаются в него,
+        # чтобы затем использоваться при инстанцировании класса
+        for gp in PaymentServiceABC.GENERAL_PARAMS:
+            self.value['settings']['init'][gp] = self.value['settings'][gp]
 
-    return cache_value
+    def cache_postprocessing(self, **kwargs):
+        # URL для завершения заказа после удачной или НЕудачной оплаты
+        domain_slug = (
+            kwargs['domain_slug'] if
+            'domain_slug' in kwargs and kwargs['domain_slug'] is not None else
+            settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG
+        )
+        self.value['settings']['init']['success_url'] = build_absolute_url(domain_slug, '/api/ps/success/')
+        self.value['settings']['init']['error_url'] = build_absolute_url(domain_slug, '/api/ps/error/')
 
-
-def payment_service_instance(payment_service_id, domain_slug=None):
-    """Получение экземпляра класса сервиса продажи билетов с использованием параметров из его кэша.
-
-    Args:
-        payment_service_id (str): ID сервиса онлайн-оплаты в БД.
-        domain_slug (str, optional): Псевдоним (поддомен) текущего сайта для URL завершения онлайн-оплаты.
-
-    Returns:
-        PaymentService: Экземпляр класса конкретного сервиса онлайн-оплаты.
-    """
-    cache_key = 'payment_service.{payment_service_id}'.format(payment_service_id=payment_service_id)
-    cache_value = json.loads(cache.get(cache_key))
-
-    # URL для завершения заказа после удачной или НЕудачной оплаты
-    domain_slug = domain_slug if domain_slug is not None else settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG
-    cache_value['settings']['init']['success_url'] = build_absolute_url(domain_slug, '/api/ps/success/')
-    cache_value['settings']['init']['error_url'] = build_absolute_url(domain_slug, '/api/ps/error/')
-
-    # Экземпляр класса сервиса продажи билетов
-    ps = payment_service_factory(
-        cache_value['slug'],
-        cache_value['settings']['init'],
-    )
-
-    return ps
+        # Получение экземпляра класса сервиса онлайн-оплаты с использованием параметров из его ранее полученного кэша
+        self.value['instance'] = payment_service_factory(
+            self.value['slug'],
+            self.value['settings']['init'],
+        )

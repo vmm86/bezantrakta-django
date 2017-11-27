@@ -7,15 +7,12 @@ from django.core.mail.backends.smtp import EmailBackend
 from django.db.models import F
 from django.shortcuts import redirect
 
+from project.cache import cache_factory
 from project.shortcuts import message, render_messages, timezone_now
 
-from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
 from bezantrakta.eticket.shortcuts import render_eticket
-
-from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
-from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 def payment_success(request):
@@ -27,12 +24,19 @@ def payment_success(request):
 
     logger.info('\n----------Обработка успешной оплаты заказа {order_uuid}----------'.format(order_uuid=order_uuid))
 
-    event = {}
-    event['info'] = event_or_group_cache(event_uuid, 'event')
-    event['id'] = event['info']['ticket_service_event']
+    event = cache_factory('event', event_uuid)
+    if event is None:
+        # Сообщение об ошибке
+        msgs = [
+            message('error', 'К сожалению, такого события не существует. 😞'),
+            message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
+        ]
+        render_messages(request, msgs)
+        return redirect('error')
+    event['id'] = event['ticket_service_event']
     # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     logger.info('Событие')
-    logger.info(event['info'])
+    logger.info(event)
 
     # Получение параметров заказа из БД
     try:
@@ -59,13 +63,28 @@ def payment_success(request):
         ))
         # Получение билетов в заказе
         try:
-            order['tickets'] = list(OrderTicket.objects.filter(order_id=order_uuid).values())
+            order['tickets'] = list(OrderTicket.objects.annotate(
+                ticket_id=F('id'),
+            ).values(
+                'ticket_id',
+                'ticket_service_order',
+                'bar_code',
+                'sector_id',
+                'sector_title',
+                'row_id',
+                'seat_id',
+                'seat_title',
+                'price_group_id',
+                'price'
+            ).filter(
+                order_id=order_uuid
+            ))
         except OrderTicket.DoesNotExist:
             # Сообщение об ошибке
             msgs = [
                 message('error', 'К сожалению, в заказе нет ни одного билета - бронь на билеты истекла. 😞'),
                 message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                        event_url=event['info']['url'])
+                        event_url=event['url'])
                         ),
             ]
             render_messages(request, msgs)
@@ -75,7 +94,7 @@ def payment_success(request):
         msgs = [
             message('error', 'К сожалению, такой заказ ещё не был создан. 😞'),
             message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                    event_url=event['info']['url'])
+                    event_url=event['url'])
                     ),
         ]
         render_messages(request, msgs)
@@ -102,19 +121,15 @@ def payment_success(request):
         customer['email'] = order['email']
         customer['phone'] = order['phone']
 
+        # Настройки сервиса продажи билетов
+        ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
         # Экземпляр класса сервиса продажи билетов
-        ticket_service = {}
-        ticket_service['id'] = event['info']['ticket_service_id']
-        ticket_service['info'] = ticket_service_cache(ticket_service['id'])
+        ts = ticket_service['instance']
 
-        ts = ticket_service_instance(ticket_service['id'])
-
+        # Настройки сервиса онлайн-оплаты
+        payment_service = cache_factory('payment_service', event['payment_service_id'])
         # Экземпляр класса сервиса онлайн-оплаты
-        payment_service = {}
-        payment_service['id'] = event['info']['payment_service_id']
-        payment_service['info'] = payment_service_cache(payment_service['id'])
-
-        ps = payment_service_instance(payment_service['id'])
+        ps = payment_service['instance']
 
         # Проверка статуса оплаты
         payment_status = ps.payment_status(payment_id=order['payment_id'])
@@ -161,8 +176,8 @@ def payment_success(request):
 
             # Отправка email администратору и покупателю
             from_email = {}
-            from_email['user'] = ticket_service['info']['settings']['order_email']['user']
-            from_email['pswd'] = ticket_service['info']['settings']['order_email']['pswd']
+            from_email['user'] = ticket_service['settings']['order_email']['user']
+            from_email['pswd'] = ticket_service['settings']['order_email']['pswd']
             from_email['connection'] = EmailBackend(
                 host=settings.EMAIL_HOST,
                 port=settings.EMAIL_PORT,
@@ -173,9 +188,9 @@ def payment_success(request):
 
             email_context = {
                 'domain': domain,
-                'event': event['info'],
-                'ticket_service': ticket_service['info'],
-                'payment_service': payment_service['info'],
+                'event': event,
+                'ticket_service': ticket_service,
+                'payment_service': payment_service,
                 'order': order,
                 'customer': customer
             }
@@ -198,7 +213,7 @@ def payment_success(request):
             # Опциональная генерация электронных билетов и их вложение в письмо покупателю
             if customer['delivery'] == 'email':
                 for t in order['tickets']:
-                    t.update(event['info'])
+                    t.update(event)
                     # logger.info('\nКонтекст билета')
                     # logger.info(t)
                     pdf_ticket_file = render_eticket(t)
@@ -238,7 +253,7 @@ def payment_success(request):
                         message=payment_status['message'])
                         ),
                 message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
-                        event_url=event['info']['url'])
+                        event_url=event['url'])
                         ),
             ]
             render_messages(request, msgs)

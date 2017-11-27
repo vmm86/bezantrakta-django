@@ -6,14 +6,11 @@ from django.core.mail.backends.smtp import EmailBackend
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import F
 
+from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from bezantrakta.event.cache import event_or_group_cache
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
-
-from third_party.ticket_service.cache import ticket_service_cache, ticket_service_instance
-from third_party.payment_service.cache import payment_service_cache, payment_service_instance
 
 
 class Command(BaseCommand):
@@ -103,9 +100,8 @@ ______________________________________________________________________________
                     continue
 
                 # Экземпляр класса сервиса онлайн-оплаты
-                payment_service = {}
-                payment_service['info'] = payment_service_cache(order['payment_service_id'])
-                ps = payment_service_instance(order['payment_service_id'])
+                payment_service = cache_factory('payment_service', order['payment_service_id'])
+                ps = payment_service['instance']
 
                 # Получение таймаута на оплату в минутах
                 timeout = ps.timeout
@@ -127,8 +123,7 @@ ______________________________________________________________________________
                     self.log('\nПроверка статуса оплаты...')
 
                     # Информация о событии из кэша
-                    event = {}
-                    event['info'] = event_or_group_cache(order['event_uuid'], 'event')
+                    event = cache_factory('event', order['event_uuid'])
 
                     # Получение реквизитов покупателя
                     customer = {}
@@ -139,9 +134,8 @@ ______________________________________________________________________________
                     customer['phone'] = order['phone']
 
                     # Экземпляр класса сервиса продажи билетов
-                    ticket_service = {}
-                    ticket_service['info'] = ticket_service_cache(order['ticket_service_id'])
-                    ts = ticket_service_instance(order['ticket_service_id'])
+                    ticket_service = cache_factory('ticket_service', order['ticket_service_id'])
+                    ts = ticket_service['instance']
 
                     # Проверка статуса оплаты
                     payment_status = ps.payment_status(payment_id=order['payment_id'])

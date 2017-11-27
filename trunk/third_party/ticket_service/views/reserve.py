@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from third_party.ticket_service.cache import ticket_service_instance
+from project.cache import cache_factory
 
 
 def reserve(request):
@@ -35,7 +35,8 @@ def reserve(request):
             #         pass
 
         # Экземпляр класса сервиса продажи билетов
-        ts = ticket_service_instance(ticket_service_id)
+        ticket_service = cache_factory('ticket_service', ticket_service_id)
+        ts = ticket_service['instance']
 
         # Универсальный метод для работы с предварительным резервом мест
         reserve = ts.reserve(**params)

@@ -1,12 +1,10 @@
-import uuid
-
 from django.conf import settings
 from django.db.models import F, Q
 from django.shortcuts import render
 
+from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from ..cache import event_or_group_cache
 from ..models import Event, EventCategory
 
 
@@ -40,7 +38,7 @@ def category(request, slug):
     if category_events:
         for event in category_events:
             # Получение информации о каждом размещённом событии из кэша
-            event.update(event_or_group_cache(event['event_uuid'], 'event'))
+            event.update(cache_factory('event', event['event_uuid']))
 
     # Получение событий во всех категориях или фильтр по конкретной категории
     if slug == settings.BEZANTRAKTA_CATEGORY_ALL:

@@ -1,9 +1,9 @@
 from django.db.models import F, Q
 from django.shortcuts import redirect, render
 
+from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from ..cache import event_or_group_cache
 from ..models import Event
 
 
@@ -44,7 +44,7 @@ def search(request):
         if events_found:
             for event in events_found:
                 # Получение информации о каждом размещённом событии из кэша
-                event.update(event_or_group_cache(event['uuid'], 'event'))
+                event.update(cache_factory('event', event['uuid']))
 
         context = {
             'title': 'Поиск',

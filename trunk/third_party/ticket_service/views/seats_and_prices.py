@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 
-from third_party.ticket_service.cache import ticket_service_instance
+from project.cache import cache_factory
 
 
 def seats_and_prices(request):
@@ -15,7 +15,8 @@ def seats_and_prices(request):
         event_id = request.GET.get('event_id')
         venue_id = request.GET.get('venue_id')
 
-        ts = ticket_service_instance(ticket_service_id)
+        ticket_service = cache_factory('ticket_service', ticket_service_id)
+        ts = ticket_service['instance']
 
         seats = ts.seats_and_prices(
             event_id=event_id,

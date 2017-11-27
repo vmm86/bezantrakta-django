@@ -1,19 +1,14 @@
 import datetime
-import simplejson as json
-from decimal import Decimal
 
-from django.conf import settings
 from django.db.models import F
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from project.cache import cache_factory
 from project.shortcuts import build_absolute_url, message, render_messages, timezone_now
 
-from third_party.ticket_service.cache import ticket_service_cache
 from third_party.ticket_service.models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
-from third_party.payment_service.cache import payment_service_cache
 
-from ..cache import event_or_group_cache
 from ..models import Event, EventGroupBinder, EventLinkBinder
 
 
@@ -88,8 +83,8 @@ def event(request, year, month, day, hour, minute, slug):
 
     # Событие существует в БД
     else:
-        # Получение информации о событии из кэша
-        event = event_or_group_cache(event['event_uuid'], 'event')
+        # Информация о событии из кэша
+        event = cache_factory('event', event['event_uuid'])
 
         # Событие предстоит или уже прошло
         today = timezone_now()
@@ -98,28 +93,16 @@ def event(request, year, month, day, hour, minute, slug):
         # Событие опубликовано
         if event['is_published']:
 
-            if event['ticket_service_id']:
-                # Получение настроек сервиса продажи билетов из кэша
-                ticket_service = ticket_service_cache(event['ticket_service_id'])
+            # Настройки сервиса продажи билетов
+            ticket_service = (
+                cache_factory('ticket_service', event['ticket_service_id']) if
+                event['ticket_service_id'] else
+                None
+            )
 
-                # Проверка настроек, которые при отсутствии значений выставляются по умолчанию
-                ticket_service_defaults = {
-                    # Максимальное число билетов в заказе
-                    'max_seats_per_order': settings.BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER,
-                    # Таймаут для повторения запроса списка мест в событии в секундах
-                    'heartbeat_timeout': settings.BEZANTRAKTA_DEFAULT_HEARTBEAT_TIMEOUT,
-                    # Таймаут для выделения места в минутах, по истечении которого место автоматически освобождается
-                    'seat_timeout': settings.BEZANTRAKTA_DEFAULT_SEAT_TIMEOUT,
-                }
-                for param, value in ticket_service_defaults.items():
-                    if param not in ticket_service['settings'] or ticket_service['settings'][param] is None:
-                        ticket_service['settings'][param] = value
-            else:
-                ticket_service = None
-
-            # Получение настроек сервиса онлайн-оплаты билетов из кэша
+            # Настройки сервиса онлайн-оплаты билетов
             payment_service = (
-                payment_service_cache(event['payment_service_id']) if
+                cache_factory('payment_service', event['payment_service_id']) if
                 event['payment_service_id'] else
                 None
             )
