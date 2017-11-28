@@ -1,3 +1,0 @@
-from .ticket_service import TicketServiceAdmin
-from .ticket_service_scheme_venue_binder import TicketServiceSchemeVenueBinderAdmin
-from .ticket_service_scheme_sector import TicketServiceSchemeSectorAdmin
