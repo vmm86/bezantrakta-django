@@ -1,0 +1,366 @@
+@charset "utf-8";
+
+/* Отключение боковых баннеров для нешироких экранов */
+
+@media all and (min-width: 1px) and (max-width: 1500px) {
+
+    html {
+        font-size: 16px;
+    }
+
+    .choose-city-list {
+        height: 100vh;
+    }
+
+    .choose-city-list li {
+        width: 33.3%;
+    }
+
+    .events-menu {
+        text-align: center;
+
+        left: 0;
+
+        width: 100%;
+    }
+
+    .poster-big-vertical-left, .poster-big-vertical-right,
+    .bottom-left-logo, .bottom-right-logo {
+        display: none;
+    }
+
+    .top,
+    .body {
+        width: 100%;
+    }
+
+    .bottom-menu {
+        width: 100%;
+    }
+
+}
+
+@media all and (max-width: 1180px) {
+
+    html {
+        font-size: 15px;
+    }
+
+    .modal .modal-body .bzlogo {
+        margin-left: 6vw;
+
+        width: 100%;
+    }
+
+    .choose-city-list {
+        height: 150vh;
+    }
+
+    .choose-city-list li {
+        width: 50%;
+    }
+
+}
+
+@media all and (max-width: 1080px) {
+
+    html {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .share {
+        flex: 0 1 40%;
+    }
+    .order-telephone {
+        flex: 0 1 45%;
+    }
+    .belcanto-banner {
+        flex: 0 1 15%;
+    }
+
+}
+
+@media all and (max-width: 1024px) {
+
+    h1 {
+        font-size: 1.25rem;
+    }
+
+    .choose-city-list {
+        height: auto;
+    }
+
+    .choose-city-list li {
+        width: 100%;
+    }
+
+    .poster-small-vertical-body.vip .poster-small-vertical-min_price {
+        left: 0;
+    }
+
+    .poster-small-vertical-price {
+        flex-wrap: wrap;
+    }
+
+    .poster-small-vertical-date a {
+        letter-spacing: 0;
+        text-align: center;
+
+        width: 100%;
+    }
+
+    .poster-small-vertical-min_price {
+        left: 0;
+        top: -0.33rem;
+    }
+
+    .poster-small-vertical-min_price a {
+        letter-spacing: 0;
+    }
+
+    .share-help {
+        flex-direction: column;
+
+        margin-top: 1rem;
+    }
+    .share,
+    .order-telephone,
+    .belcanto-banner {
+        flex: 0 1 100%;
+        text-align: center;
+        width: 100%;
+    }
+
+    .banners-left,
+    .banners-center,
+    .banners-right {
+        width: 33%;
+    }
+
+    .banners-left  .banneritem {
+        flex: 0 1 auto;
+    }
+    .banners-center .banneritem {
+        flex: 0 1 33%;
+    }
+    .banners-right .banneritem {
+        flex: 0 1 50%;
+    }
+
+}
+
+@media all and (max-width: 900px) {
+
+    .header-left .bzlogo {
+        display: none;
+    }
+
+}
+
+@media all and (max-width: 800px) {
+
+    .poster-small-vertical-body.vip:before,
+    .poster-small-vertical-body.vip::before {
+        font-size: 1.25rem;
+
+        top: 2%;
+        left: 2.5%;
+    }
+
+    .poster-small-vertical {
+        padding: 2rem 0.25rem 0 0.25rem;
+
+        flex: 0 0 25%;
+    }
+
+}
+
+@media all and (max-width: 600px) {
+
+    .top {
+        justify-content: center;
+
+        background: url(/static/global/svg/panorama-top.svg) 13% center no-repeat;
+        background-size: 160% 100%;
+        -moz-background-size: 160% 100%;
+        -webkit-background-size: 160% 100%;
+
+        height: 4rem;
+    }
+
+    .top-left {
+        padding: 0;
+
+        width: auto;
+    }
+
+    #choose-city-button {
+        padding: 0;
+    }
+
+    .top-right {
+        display: none;
+    }
+
+    .choose-city-button .icon {
+        max-width: 25%;
+    }
+
+    .header {
+        flex-direction: column;
+    }
+
+    .header-right {
+        width: 100%;
+
+        order: 1;
+    }
+
+    .header-left {
+        flex-direction: row;
+        align-items: flex-start;
+
+        width: 100%;
+
+        order: 2;
+    }
+
+    .calendar {
+        margin-bottom: 0;
+
+        width: 50%;
+
+        position: static;
+    }
+
+    .top-menu {
+        width: 50%;
+
+        position: static;
+    }
+
+    .events-menu {
+        top: 0;
+    }
+
+}
+
+@media all and (max-width: 480px) {
+
+    .body {
+        margin-bottom: -4rem;
+    }
+
+    .modal .modal-body .bzlogo {
+        width: 75%;
+    }
+
+    .header-left {
+        flex-direction: column;
+    }
+
+    .calendar, .top-menu {
+        width: 100%;
+    }
+
+    .search {
+        padding: 0 2vw;
+
+        height: auto;
+    }
+
+    .search form {
+        height: 1.6rem;
+    }
+
+    .events-menu {
+        padding: 0;
+    }
+
+    .label,
+    .input {
+        padding: 1rem 1rem 1rem 2rem;
+
+        width: 98%;
+
+        left: 0;
+    }
+
+    .poster-small-vertical {
+        flex: 0 0 33%;
+    }
+
+    .share,
+    .order-telephone {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        width: 100%;
+    }
+    .share > span,
+    .order-telephone > span {
+        font-size: 1rem;
+
+        position: static;
+    }
+    .bzlogo-mask {
+        display: none;
+    }
+
+    .share span {
+        padding: 1.25rem;
+    }
+
+    .banners-body,
+    .banners {
+        display: block;
+
+        width: 100%;
+    }
+
+    .banners {
+        padding: 4%;
+    }
+
+    .bannerheader {
+        padding: 0.5rem 0;
+        margin-bottom: 0 !important;
+    }
+
+    .banners .banneritem {
+        text-align: center;
+    }
+
+    .banners .banneritem img {
+        width: 80%;
+    }
+
+}
+
+@media all and (max-width: 380px) {
+
+    html {
+        font-size: 12px;
+    }
+
+    .modal .modal-body .bzlogo {
+        width: 95%;
+    }
+
+    .bottom-menu {
+        display: block;
+
+        margin: 1rem 0;
+    }
+    .bottom-menu > ul > li {
+        display: block;
+
+        width: 100%;
+    }
+
+}
