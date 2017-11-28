@@ -6,6 +6,8 @@ from jsoneditor.forms import JSONEditor
 
 from project.cache import cache_factory
 
+from bezantrakta.event.models import EventVenue
+
 from ..models import TicketService, TicketServiceSchemeVenueBinder
 
 
@@ -19,6 +21,16 @@ class TicketServiceSchemeVenueBinderInline(admin.TabularInline):
 
     def has_add_permission(self, request):
         return False
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        """В списке залов выводятся только залы в этом городе."""
+        if db_field.name == 'event_venue':
+            city_filter = request.COOKIES.get('bezantrakta_admin_city', None)
+            if city_filter is not None:
+                kwargs['queryset'] = EventVenue.objects.filter(
+                    city__slug=city_filter
+                )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(TicketService)
@@ -64,12 +76,12 @@ class TicketServiceAdmin(admin.ModelAdmin):
         super(TicketServiceAdmin, self).save_model(request, obj, form, change)
 
         if change and obj._meta.pk.name not in form.changed_data:
-            cache_factory('ticket_service', obj.id, reset=False)
+            cache_factory('ticket_service', obj.id, reset=True)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
         for item in queryset:
-            cache_factory('ticket_service', item.id, reset=False)
+            cache_factory('ticket_service', item.id, reset=True)
     batch_set_cache.short_description = _('ticket_service_admin_batch_set_cache')
 
     def activate_or_deactivate_items(self, request, queryset):
@@ -78,7 +90,7 @@ class TicketServiceAdmin(admin.ModelAdmin):
             item.is_active = False if item.is_active else True
             item.save(update_fields=['is_active'])
 
-            cache_factory('ticket_service', item.id, reset=False)
+            cache_factory('ticket_service', item.id, reset=True)
 
     activate_or_deactivate_items.short_description = _('event_admin_activate_or_deactivate_items')
 

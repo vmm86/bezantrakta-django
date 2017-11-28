@@ -12,9 +12,8 @@ from ..payment_service_abc.abc import PaymentService as PaymentServiceABC
 
 class PaymentServiceCache(ProjectCache):
     entities = ('payment_service', )
-    model = PaymentService
 
-    def get_model_object(self, object_id):
+    def get_model_object(self, object_id, **kwargs):
         return PaymentService.objects.values(
                 'id',
                 'title',

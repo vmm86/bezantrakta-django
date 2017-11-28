@@ -165,34 +165,12 @@ def event(request, year, month, day, hour, minute, slug):
             # Если событие привязано к сервису продажи билетов
             if event['ticket_service_event']:
                 # Схема зала из БД
-                try:
-                    venue_scheme = TicketServiceSchemeVenueBinder.objects.values_list('scheme', flat=True).get(
-                        ticket_service__domain_id=request.domain_id,
-                        ticket_service_scheme_id=event['ticket_service_scheme'],
-                    )
-                except TicketServiceSchemeVenueBinder.DoesNotExist:
-                    pass
-                else:
-                    context['venue_scheme'] = venue_scheme
-
+                context['venue_scheme'] = cache_factory(
+                    'ticket_service_scheme', event['ticket_service_scheme'],
+                    ticket_service_id=event['ticket_service_id']
+                )
                 # Опциональные секторы в схеме зала из БД
-                try:
-                    venue_sectors = TicketServiceSchemeSector.objects.filter(
-                        scheme__ticket_service__domain_id=request.domain_id,
-                        scheme__ticket_service_scheme_id=event['ticket_service_scheme'],
-                    ).annotate(
-                        sector_id=F('ticket_service_sector_id'),
-                        sector_title=F('ticket_service_sector_title'),
-                        sector_scheme=F('sector'),
-                    ).values(
-                        'sector_id',
-                        'sector_title',
-                        'sector_scheme',
-                    )
-                except TicketServiceSchemeVenueBinder.DoesNotExist:
-                    pass
-                else:
-                    context['venue_sectors'] = list(venue_sectors)
+                context['venue_scheme_sectors'] = context['venue_scheme']['sectors']
 
             context['event'] = event
             context['ticket_service'] = ticket_service

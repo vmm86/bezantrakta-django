@@ -175,6 +175,8 @@ ADMIN_REORDER = (
         'models':
         (
             {'model': 'ticket_service.TicketService', 'label': 'Сервисы продажи билетов 🔗 '},
+            {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': '└─ Схемы залов 🔗 '},
+            {'model': 'ticket_service.TicketServiceSchemeSector', 'label': '      └─ Секторы в схемах залов 🔗 '},
         )
 
     },

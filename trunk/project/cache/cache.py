@@ -24,33 +24,46 @@ class ProjectCache(ABC):
         """Конструктор класса.
 
         Args:
+            entity (str): Название модели или другой сущности для создания кэша.
             object_id (int|str|uuid.UUID): Идентификатор записи в БД.
             reset (bool, optional): В любом случае пересоздать кэш, даже если он имеется.
+            **kwargs: Description
+
+        Returns:
+            dict|None: Обработанное значение кэша для вывода, если вывод требуется.
         """
         super().__init__()
 
-        self.key = '{entity}.{object_id}'.format(entity=entity, object_id=object_id)
+        self.set_cache_key(entity, object_id, **kwargs)
         self.value = cache.get(self.key)
         debug_console('cache_key:', self.key)
-        debug_console('cache_value_postprocessed:', self.value, type(self.value))
 
+        # При явном инвалидировании кэша сначала удаляется его старое значение
         if reset:
             cache.delete(self.key)
 
+        # Если кэш отсутствует или присутствует, но явно инвалидируется
         if not self.value or reset:
+            # Получаем значение из БД
             try:
-                self.value = dict(self.get_model_object(object_id))
+                self.value = dict(self.get_model_object(object_id, **kwargs))
             except ObjectDoesNotExist:
+                debug_console('return None')
                 return None
             else:
+                # При необходимости обрабатываем полученные из БД данные
                 self.cache_preprocessing(**kwargs)
+                debug_console('cache_value_preprocessed:', self.value, type(self.value))
 
+                # Записываем полученные данные в кэш
                 cache.set(self.key, json.dumps(self.value, ensure_ascii=False, default=json_serializer))
+                debug_console('cache_value_set')
         else:
+            # Получаем данные из имеющейся в кэше JSON-строки
             self.value = json.loads(self.value)
+            # При необходимости обрабатываем полученные из кэша данные
             self.cache_postprocessing(**kwargs)
-
-        debug_console('cache_value_postprocessed:', self.value, type(self.value))
+            debug_console('cache_value_postprocessed:', self.value, type(self.value))
 
     def __str__(self):
         return '{cls}({key})'.format(
@@ -58,12 +71,25 @@ class ProjectCache(ABC):
             key=self.key,
         )
 
+    def set_cache_key(self, entity, object_id, **kwargs):
+        """Формирование ключа для сохранения нового или получения имеющегося кэша.
+
+        Метод можно переопределить в дочернем классе для формирования заведомо уникального сочентания данных в ключе.
+
+        Args:
+            entity (str): Название модели или другой сущности для создания кэша.
+            object_id (int|str|uuid.UUID): Идентификатор записи в БД.
+            **kwargs: Дополнительные параметры, которые могут понадобится при формировании ключа для получения кэша.
+        """
+        self.key = '{entity}.{object_id}'.format(entity=entity, object_id=object_id)
+
     @abstractmethod
-    def get_model_object(self, object_id):
+    def get_model_object(self, object_id, **kwargs):
         """Получение объекта необходимой модели в БД запросом к ``self.model``.
 
         Args:
             object_id (int|str|uuid.UUID): Идентификатор записи в БД.
+            **kwargs: Дополнительные параметры, которые могут понадобится при получении данных из БД.
 
         Returns:
             django.db.models.query.QuerySet: Объект конкретной модели в БД.
@@ -75,7 +101,7 @@ class ProjectCache(ABC):
         """Предобработка значения кэша перед его сохранением.
 
         Args:
-            **kwargs: Дополнительные параметры, коотрые могут понадобится при обработке получаемого кэша.
+            **kwargs: Дополнительные параметры, которые могут понадобится при обработке получаемого из БД значения.
 
         No Longer Returned:
             dict: Обработанное значение для сохранения в кэш.
@@ -87,7 +113,7 @@ class ProjectCache(ABC):
         """Постобработка ранее полученного значения кэша перед его возвращением.
 
         Args:
-            **kwargs: Дополнительные параметры, коотрые могут понадобится при обработке получаемого кэша.
+            **kwargs: Дополнительные параметры, которые могут понадобится при обработке получаемого кэша.
 
         No Longer Returned:
             dict: Обработанное значение кэша для возвращения.
