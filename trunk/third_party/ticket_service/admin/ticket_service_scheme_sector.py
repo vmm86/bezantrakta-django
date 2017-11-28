@@ -63,7 +63,7 @@ class TicketServiceSchemeSectorAdmin(admin.ModelAdmin):
                 'ticket_service_scheme', item.scheme.ticket_service_scheme_id, reset=True,
                 ticket_service_id=item.scheme.ticket_service_id
             )
-    batch_set_cache.short_description = _('ticketservicevenuebinder_admin_batch_set_cache')
+    batch_set_cache.short_description = _('ticketserviceschemesector_admin_batch_set_cache')
 
     def if_sector_exists(self, obj):
         """Иконка обозначает, заполнена ли схема сектора."""

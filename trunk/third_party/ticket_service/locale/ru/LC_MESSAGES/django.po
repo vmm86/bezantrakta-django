@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-20 08:00+0000\n"
+"POT-Creation-Date: 2017-11-28 08:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/ticket_service.py:56
+#: admin/ticket_service.py:58
 msgid "ticket_service_help_text"
 msgstr ""
 "<ul><li>{ <strong>init</strong> } - параметры для подключения (зависят от "
@@ -73,41 +73,49 @@ msgstr ""
 "вновь запрашивается список доступных к продаже мест на схеме зала (по "
 "умолчанию - 10).</li><li>number <strong>seat_timeout</strong> - время в "
 "минутах, по истечении которого автоматически снимается предварительный "
-"резерв мест на схеме зала (по умолчанию - 15).</li>"
-"<li>boolean <strong>hide_sold_non_fixed_seats</strong> - "
-"скрывать на схеме зала проданные места в секторах без фиксированной рассадки "
-"(маркированные списки <em>ul</em> с классом <em>non_fixed_seats</em>).</li></ul>"
+"резерв мест на схеме зала (по умолчанию - 15).</li><li>boolean "
+"<strong>hide_sold_non_fixed_seats</strong> - скрывать на схеме зала "
+"проданные места в секторах без фиксированной рассадки (маркированные списки "
+"<em>ul</em> с классом <em>non_fixed_seats</em>).</li></ul>"
 
-#: admin/ticket_service.py:82
+#: admin/ticket_service.py:85
 msgid "ticket_service_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных сервисов продажи билетов"
 
-#: admin/ticket_service.py:92
+#: admin/ticket_service.py:95
 msgid "event_admin_activate_or_deactivate_items"
 msgstr "Включить или отключить сервисы продажи билетов"
 
-#: admin/ticket_service.py:97
+#: admin/ticket_service.py:100
 msgid "ticket_service_admin_ticket_service_schemes_count"
 msgstr "Схем залов"
 
-#: admin/ticket_service.py:103
+#: admin/ticket_service.py:106
 msgid "ticket_service_admin_is_payment_service_added"
 msgstr "Оплата"
 
-#: admin/ticket_service_scheme_sector.py:48
+#: admin/ticket_service_scheme_sector.py:66
+msgid "ticketserviceschemesector_admin_batch_set_cache"
+msgstr "Пересоздать кэш выбранных секторов"
+
+#: admin/ticket_service_scheme_sector.py:73
 msgid "ticketserviceschemesector_if_sector_exists"
 msgstr "Сектор"
 
-#: admin/ticket_service_scheme_sector.py:53
-#: admin/ticket_service_scheme_venue_binder.py:62
+#: admin/ticket_service_scheme_sector.py:78
+#: admin/ticket_service_scheme_venue_binder.py:100
 msgid "ID"
 msgstr "ID"
 
-#: admin/ticket_service_scheme_venue_binder.py:50
+#: admin/ticket_service_scheme_venue_binder.py:81
+msgid "ticketservicevenuebinder_admin_batch_set_cache"
+msgstr "Пересоздать кэш выбранных схем"
+
+#: admin/ticket_service_scheme_venue_binder.py:88
 msgid "ticketservicevenuebinder_if_scheme_exists"
 msgstr "Схема зала"
 
-#: admin/ticket_service_scheme_venue_binder.py:57
+#: admin/ticket_service_scheme_venue_binder.py:95
 msgid "ticketservicevenuebinder_if_sectors_exist"
 msgstr "Секторы"
 
@@ -119,43 +127,43 @@ msgstr "Идентификатор"
 msgid "ticketservice_title"
 msgstr "Название"
 
-#: models/ticket_service.py:44
+#: models/ticket_service.py:43
 msgid "ticketservice_slug_superbilet"
 msgstr "СуперБилет"
 
-#: models/ticket_service.py:45
+#: models/ticket_service.py:44
 msgid "ticketservice_slug_radario"
 msgstr "Радарио"
 
-#: models/ticket_service.py:54
+#: models/ticket_service.py:50
 msgid "ticketservice_slug"
 msgstr "Сервис продажи билетов"
 
-#: models/ticket_service.py:58
+#: models/ticket_service.py:54
 msgid "ticketservice_is_active"
 msgstr "Работает"
 
-#: models/ticket_service.py:62
+#: models/ticket_service.py:58
 msgid "ticketservice_settings"
 msgstr "Настройки в JSON"
 
-#: models/ticket_service.py:68
+#: models/ticket_service.py:64
 msgid "ticketservice_domain"
 msgstr "Сайт"
 
-#: models/ticket_service.py:75
+#: models/ticket_service.py:71
 msgid "ticketservice_schemes"
 msgstr "Схемы залов"
 
-#: models/ticket_service.py:83
+#: models/ticket_service.py:79
 msgid "ticketservice_payment_service"
 msgstr "Сервис онлайн-оплаты"
 
-#: models/ticket_service.py:89
+#: models/ticket_service.py:85
 msgid "ticketservice"
 msgstr "сервис продажи билетов"
 
-#: models/ticket_service.py:90
+#: models/ticket_service.py:86
 msgid "ticketservices"
 msgstr "сервисы продажи билетов"
 
@@ -223,10 +231,10 @@ msgstr ""
 "strong> - идентификатор ряда,</li><li><strong>data-seat-id</strong> - "
 "идентификатор места.</li></ul></li></ul><p>Остальные data-атрибуты "
 "подгружаются к каждому доступному для заказа месту при обновлении схемы зала "
-"на 1-м шаге заказа билетов.</p>"
-"<p>Группе мест без фиксированной рассадки можно присвоить класс <strong>no-fixed-seats</strong>. "
-"В этом случае после загрузки страницы видимымии останутся только свободные места в продаже "
-"(все места без возможности продажи в этом секторе будут скрыты).</p>"
+"на 1-м шаге заказа билетов.</p><p>Группе мест без фиксированной рассадки "
+"можно присвоить класс <strong>no-fixed-seats</strong>. В этом случае после "
+"загрузки страницы видимымии останутся только свободные места в продаже (все "
+"места без возможности продажи в этом секторе будут скрыты).</p>"
 
 #: models/ticket_service_scheme_venue_binder.py:64
 msgid "ticketserviceschemevenuebinder_scheme"
