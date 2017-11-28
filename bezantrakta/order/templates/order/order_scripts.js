@@ -137,7 +137,7 @@ function prepare_order_onload() {
     html_basket_update();
 
     {# Работа с секторами в больших или составных залах #}
-    {% if active == 'step1' and venue_sectors %}
+    {% if active == 'step1' and venue_scheme_sectors %}
         {# Показ выбранного сектора и скрытие всех НЕвыбранных секторов при переключении радиокнопок #}
         $('input[name="sectors"]').change(sectors_handler);
         $('input[name="sectors"]').trigger('change');

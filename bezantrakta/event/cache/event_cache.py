@@ -13,9 +13,8 @@ from ..models import Event
 
 class EventCache(ProjectCache):
     entities = ('event', 'group', )
-    model = Event
 
-    def get_model_object(self, object_id):
+    def get_model_object(self, object_id, **kwargs):
         return Event.objects.select_related(
                 'event_venue',
                 'domain'

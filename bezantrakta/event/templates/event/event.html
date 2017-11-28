@@ -129,22 +129,22 @@
             {% if event.ticket_service_event %}
                 {% spaceless %}
                 <div id="tickets">
-                {% if venue_sectors %}
+                {% if venue_scheme_sectors %}
                     <p class="sectors-caption">Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</p>
                     <br>
                     <br>
                 {% endif %}
-                    {{ venue_scheme|safe }}
+                    {{ venue_scheme.scheme|safe }}
 
                 {# Опциональное включение схем отдельных секторов, #}
                 {# если к общей схеме зала в БД добавлен хотя бы один сектор #}
-                {% if venue_sectors %}
+                {% if venue_scheme_sectors %}
                     <div class="sectors-slider">
-                    {% for sector in venue_sectors %}
+                    {% for sector in venue_scheme_sectors %}
                         <div class="sectors sector-{{ sector.sector_id }}">
                             <p class="sector-title">{{ sector.sector_title }}</p>
                             <br>
-                            {{ sector.sector_scheme|safe }}
+                            {{ sector.sector|safe }}
                         </div>
                     {% endfor%}
                     </div>
@@ -222,7 +222,7 @@
         <br><br>
         payment_service: <pre>{{ payment_service|pprint }}</pre>
         <br><br>
-        venue_sectors: <pre>{{ venue_sectors|pprint }}</pre>
+        venue_scheme: <pre>{{ venue_scheme|pprint }}</pre>
         {% endif %}
 
         </main>
@@ -255,7 +255,7 @@
     <script type="text/javascript">
     {# Базовый функционал процесса заказа билетов #}
     $(document).ready(function() {
-        {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_sectors=venue_sectors %}
+        {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_scheme_sectors=venue_scheme_sectors %}
         prepare_order_onload();
         start_heartbeat();
 

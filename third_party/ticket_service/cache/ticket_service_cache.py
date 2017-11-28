@@ -10,9 +10,8 @@ from ..ticket_service_abc import ticket_service_factory
 
 class TicketServiceCache(ProjectCache):
     entities = ('ticket_service', )
-    model = TicketService
 
-    def get_model_object(self, object_id):
+    def get_model_object(self, object_id, **kwargs):
         return TicketService.objects.select_related(
                 'domain',
             ).values(
