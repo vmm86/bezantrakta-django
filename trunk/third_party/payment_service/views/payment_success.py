@@ -22,7 +22,9 @@ def payment_success(request):
     event_uuid = uuid.UUID(request.GET.get('event_uuid'))
     order_uuid = uuid.UUID(request.GET.get('order_uuid'))
 
+    now = timezone_now()
     logger.info('\n----------Обработка успешной оплаты заказа {order_uuid}----------'.format(order_uuid=order_uuid))
+    logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
 
     event = cache_factory('event', event_uuid)
     if event is None:

@@ -5,7 +5,7 @@ from django.db.models import F
 from django.shortcuts import redirect
 
 from project.cache import cache_factory
-from project.shortcuts import message, render_messages
+from project.shortcuts import message, render_messages, timezone_now
 
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
@@ -18,7 +18,9 @@ def payment_error(request):
     event_uuid = uuid.UUID(request.GET.get('event_uuid'))
     order_uuid = uuid.UUID(request.GET.get('order_uuid'))
 
+    now = timezone_now()
     logger.info('\n----------Обработка НЕуспешной оплаты заказа {order_uuid}----------'.format(order_uuid=order_uuid))
+    logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
 
     event = cache_factory('event', event_uuid)
     if event is None:
