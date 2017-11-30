@@ -22,15 +22,15 @@ class TicketServiceSchemeVenueBinderInline(admin.TabularInline):
     def has_add_permission(self, request):
         return False
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """В списке залов выводятся только залы в этом городе."""
-        if db_field.name == 'event_venue':
-            city_filter = request.COOKIES.get('bezantrakta_admin_city', None)
-            if city_filter is not None:
-                kwargs['queryset'] = EventVenue.objects.filter(
-                    city__slug=city_filter
-                )
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    # def formfield_for_foreignkey(self, db_field, request, **kwargs):
+    #     """В списке залов выводятся только залы в этом городе."""
+    #     if db_field.name == 'event_venue':
+    #         city_filter = request.COOKIES.get('bezantrakta_admin_city', None)
+    #         if city_filter is not None:
+    #             kwargs['queryset'] = EventVenue.objects.filter(
+    #                 city__slug=city_filter
+    #             )
+    #     return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(TicketService)
