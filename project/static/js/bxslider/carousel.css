@@ -74,7 +74,15 @@ ul.bxslider {
 .bx-wrapper .bx-controls-auto {
     position: absolute;
     top: 0;
-    width: 100%;
+    width: auto;
+}
+
+.bx-controls {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: nowrap;
 }
 
 .bx-wrapper .bx-pager .bx-pager-item,
