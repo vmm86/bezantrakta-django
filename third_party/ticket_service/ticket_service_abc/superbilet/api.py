@@ -465,13 +465,13 @@ class SuperBilet(TicketService):
         for e in events:
             events_by_groups[(e['group_id'])].append(e)
         # Для сохранения в БД остаются только группы, содержащие более одного события
-        # Единственное событие в группе рассматривается как самомтоятельное событие.
+        # Единственное событие в группе рассматривается как самостоятельное событие без включения в группу.
         for i in list(events_by_groups):
             if len(events_by_groups[i]) <= 1:
                 del events_by_groups[i]
         groups[:] = [g for g in groups if g['group_id'] in events_by_groups.keys() and g['result_code'] == 0]
 
-        # Добавление в группу недостающей информации из самого раннего входящего в неё события
+        # Добавление в группу недостающей информации из самого раннего на данный момент входящего в неё события
         for g in groups:
             del g['result_code']
             for e in events:
