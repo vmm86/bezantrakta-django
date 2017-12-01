@@ -17,6 +17,15 @@ BEZANTRAKTA_ROOT_DOMAIN_SLUG = 'vrn'
 
 # Значения по умолчанию
 
+# Реквизиты организатора
+BEZANTRAKTA_DEFAULT_PROMOTER_TITLE = 'ООО "Бельканто"'
+BEZANTRAKTA_DEFAULT_PROMOTER_INN = '3662243480'
+BEZANTRAKTA_DEFAULT_PROMOTER_OGRN_IP = ''
+# Реквизиты продавца
+BEZANTRAKTA_DEFAULT_SELLER_TITLE = 'ИП Карюков Игорь Леонидович'
+BEZANTRAKTA_DEFAULT_SELLER_INN = '366202613092'
+BEZANTRAKTA_DEFAULT_SELLER_OGRN_IP = '313366803500228'
+
 # Максимальное число билетов в заказе
 BEZANTRAKTA_DEFAULT_MAX_SEATS_PER_ORDER = 7
 # Таймаут для повторения запроса списка мест в событии в секундах
