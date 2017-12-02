@@ -97,11 +97,8 @@ class EventAdmin(admin.ModelAdmin):
         ),
     )
     filter_horizontal = ('event_container',)
-    inlines = (
-        ListEventGroupBinderInline, AddEventGroupBinderInline,
-        EventLinkBinderInline,
-        EventContainerBinderInline,
-    )
+    group_inlines = (ListEventGroupBinderInline, AddEventGroupBinderInline, EventContainerBinderInline,)
+    event_inlines = (EventLinkBinderInline, EventContainerBinderInline,)
     list_display = ('title', 'ticket_service_event_short_description', 'is_published', 'is_on_index', 'is_group',
                     'datetime', 'event_category', 'event_venue',
                     'group_count', 'link_count', 'container_count',
@@ -173,6 +170,15 @@ class EventAdmin(admin.ModelAdmin):
             if obj is not None and obj.ticket_service is not None and not obj.is_group:
                     ro_fields.append('datetime')
             return ro_fields
+
+    def get_form(self, request, obj=None, **kwargs):
+        """Инлайн-формы показываются в зависимости от того, событие это или группа.
+
+        Добавление событий в группе работает только для группы.
+        Добавление ссылок работает только для событий.
+        """
+        self.inlines = self.group_inlines if obj.is_group else self.event_inlines
+        return super(EventAdmin, self).get_form(request, obj, **kwargs)
 
     def has_delete_permission(self, request, obj=None):
         """Импортируемые из сервисов продажи билетов события нельзя удалить,

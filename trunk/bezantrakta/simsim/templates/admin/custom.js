@@ -109,24 +109,6 @@ $(document).ready(function() {
         })
     });
 
-    {# Добавление событий в группе работает только для группы #}
-    {# Добавление ссылок доступно только в событиях и в группе не работает #}
-    function show_hide_add_group_link(){
-        if (
-            $('#id_is_group').prop('checked') === true || $('.field-is_group .readonly img').attr('alt') === 'True'
-        ) {
-            $('#groups-group .tabular table .add-row a').show();
-            $('#eventlinkbinder_set-group .tabular table .add-row a').hide();
-        } else {
-            $('#groups-group .tabular table .add-row a').hide();
-            $('#eventlinkbinder_set-group .tabular table .add-row a').show();
-        }
-    }
-    show_hide_add_group_link();
-    $('#id_is_group').click(function(){
-        show_hide_add_group_link();
-    });
-
     {# Справка по работе с позициями афиш в конейнерах #}
     $('#eventcontainerbinder_set-group table').after('{% trans "eventcontainerbinder_order_help_text" %}');
 
