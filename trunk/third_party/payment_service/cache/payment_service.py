@@ -55,3 +55,6 @@ class PaymentServiceCache(ProjectCache):
             self.value['slug'],
             self.value['settings']['init'],
         )
+
+        # Описание процесса онлайн-оплаты из атрибута класса онлайн-оплаты
+        self.value['settings']['description'] = self.value['instance'].description
