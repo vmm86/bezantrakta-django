@@ -7,10 +7,7 @@ from django.utils.translation import ugettext as _
 
 
 def img_path(instance, filename):
-    if instance.domain is None:
-        domain = 'global'
-    else:
-        domain = instance.domain.slug
+    domain = instance.domain.slug if instance.domain is not None else 'global'
 
     name, dot, extension = filename.rpartition('.')
     # Относительный путь до файла
