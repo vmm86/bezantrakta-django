@@ -1,11 +1,10 @@
-from django.db.models import DateTimeField, UUIDField
-from django.db.models import Case, OuterRef, Subquery, F, Q, When
+from django.db.models import F
 from django.shortcuts import render
 
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from ..models import EventContainerBinder, EventGroupBinder
+from ..models import EventContainerBinder
 
 
 def events_on_index(request):
@@ -16,69 +15,46 @@ def events_on_index(request):
     """
     today = timezone_now()
 
-    # Поиск опубликованных событий или групп на главной, привязанных к текущему домену
-    group_min_datetime = EventGroupBinder.objects.values('event__datetime').filter(
-        group_id=OuterRef('event__id'),
-        event__is_published=True,
-        event__datetime__gt=today,
-    ).order_by('event__datetime')[:1]
-
-    items_on_index = EventContainerBinder.objects.select_related(
-        'event',
-        'event_container',
-    ).annotate(
-        event_uuid=Case(
-            When(event__is_group=True, then=F('event__event_group__id')),
-            default=F('event__id'),
-            output_field=UUIDField()
-        ),
-        event_datetime=Case(
-            When(event__is_group=True, then=F('event__event_group__datetime')),
-            default=F('event__datetime'),
-            output_field=DateTimeField()
-        ),
+    items_on_index = EventContainerBinder.objects.annotate(
+        uuid=F('event__id'),
+        datetime=F('event__datetime'),
         is_group=F('event__is_group'),
         container=F('event_container__slug'),
-        container_mode=F('event_container__mode')
+        container_mode=F('event_container__mode'),
     ).values(
-        'event_uuid',
-        'event_datetime',
+        'uuid',
+        'datetime',
         'is_group',
         'container',
         'order',
     ).filter(
-        Q(event__is_published=True) &
-        Q(event__is_on_index=True) &
-        Q(container_mode='small_vertical') &
-        Q(order__gt=0) &
-        Q(event__domain_id=request.domain_id) &
-        Q(
-            Q(
-                Q(is_group=True) &
-                Q(event_datetime=Subquery(group_min_datetime))
-            ) |
-            Q(
-                Q(is_group=False) &
-                Q(event_datetime__gt=today)
-            )
-        )
+        container_mode='small_vertical',
+        order__gt=0,
+        event__is_published=True,
+        event__is_on_index=True,
+        # datetime__gt=today,
+        event__domain_id=request.domain_id,
     ).order_by(
         'container',
         'order',
-        'event_datetime',
+        'datetime',
     )
 
-    # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     small_vertical_vip = list(items_on_index.filter(container='small_vertical_vip'))
-    # Получение ссылок на маленькие вертикальные афиши либо заглушек по умолчанию
     small_vertical = list(items_on_index.filter(container='small_vertical'))
 
     for container in (small_vertical, small_vertical_vip):
         if container:
-            for event in container:
+            for item in container:
                 # Получение информации о каждом размещённом событии из кэша
-                event_cache = cache_factory('event', event['event_uuid'])
-                event.update(event_cache)
+                item_cache = (
+                    cache_factory('group', item['uuid']) if
+                    item['is_group'] else
+                    cache_factory('event', item['uuid'])
+                )
+                item.update(item_cache)
+            # Удаляем из списка группы без актуальных на данный момент событий
+            container[:] = [i for i in container if not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group'])]
 
     context = {
         'title': '',

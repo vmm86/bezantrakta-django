@@ -331,22 +331,21 @@ ______________________________________________________________________________
                 )
 
                 # Обновление информации в добавленной ранее группе событий
-                upd = Event.objects.filter(
+                Event.objects.filter(
                     id=self.group_id_uuid_mapping[group['group_id']],
                     # datetime__gt=today
                 ).update(
                     datetime=group['group_datetime']
                 )
 
-                if upd > 0:
-                    # Обновить кэш группы при обновлении её данных
-                    cache_factory('group', group_uuid, reset=True)
-                    self.stdout.write(
-                        '    Обновлён кэш группы {group_id}: {group_title}'.format(
-                            group_id=group['group_id'],
-                            group_title=group['group_title']
-                        )
+                # Обновить кэш группы при обновлении её данных
+                cache_factory('group', self.group_id_uuid_mapping[group['group_id']], reset=True)
+                self.stdout.write(
+                    '    Обновлён кэш группы {group_id}: {group_title}'.format(
+                        group_id=group['group_id'],
+                        group_title=group['group_title']
                     )
+                )
             # Добавление новой группы в БД
             else:
                 try:
@@ -380,7 +379,7 @@ ______________________________________________________________________________
 
                     self.group_id_uuid_mapping[group['group_id']] = group_uuid
 
-                    # В любом случае обновить кэш группы
+                    # Создать кэш новой группы
                     cache_factory('group', group_uuid)
                     self.stdout.write(
                         '    Создан кэш группы {group_id}: {group_title}'.format(
@@ -439,7 +438,7 @@ ______________________________________________________________________________
                 )
 
                 # Обновление информации в добавленном ранее событии
-                upd = Event.objects.filter(
+                Event.objects.filter(
                     id=self.event_id_uuid_mapping[event['event_id']],
                     datetime__gt=today
                 ).update(
@@ -447,15 +446,14 @@ ______________________________________________________________________________
                     min_price=event['event_min_price'],
                 )
 
-                if upd > 0:
-                    # Обновить кэш события при обновлении его данных
-                    cache_factory('event', event_uuid, reset=True)
-                    self.stdout.write(
-                        '    Обновлён кэш события {event_id}: {event_title}'.format(
-                            event_id=event['event_id'],
-                            event_title=event['event_title']
-                        )
+                # Обновить кэш события при обновлении его данных
+                cache_factory('event', self.event_id_uuid_mapping[event['event_id']], reset=True)
+                self.stdout.write(
+                    '    Обновлён кэш события {event_id}: {event_title}'.format(
+                        event_id=event['event_id'],
+                        event_title=event['event_title']
                     )
+                )
             # Добавление нового события в БД
             else:
                 # Уникальный идентификатор нового события
@@ -511,7 +509,7 @@ ______________________________________________________________________________
                             ), level='SUCCESS'
                         )
 
-                        # Создать кэш нового события в БД
+                        # Создать кэш нового события
                         cache_factory('event', event_uuid)
                         self.stdout.write(
                             '    Создан кэш события {event_id}: {event_title}'.format(

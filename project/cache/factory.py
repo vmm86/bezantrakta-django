@@ -21,5 +21,4 @@ def cache_factory(entity, object_id, reset=False, **kwargs):
     for cls in CACHE_CLASSES:
         if entity in cls.entities:
             cache = cls(entity, object_id, reset, **kwargs)
-            # Если кэш явно НЕ инвалидировался - получаем его значение
-            return cache.value if not reset else None
+            return cache.value

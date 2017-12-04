@@ -53,11 +53,17 @@ class AddEventGroupBinderInline(admin.TabularInline):
         return False
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """Для добавления в группу выводятся только привязанные к выбранному домену актуальные события."""
+        """Фильтр события для добавления в группу.
+
+        Для добавления в группу выводятся только актуальные события,
+        привязанные к выбранному домену и ещё не добавленные в группу
+        (одно событие нельзя добавить более чем в одну группу!).
+        """
         if db_field.name == 'event':
             domain_filter = request.COOKIES.get('bezantrakta_admin_domain', None)
             kwargs['queryset'] = Event.objects.filter(
                 is_group=False,
+                event_groups__isnull=True,
                 datetime__gt=self.today,
                 domain__slug=domain_filter
             )
@@ -204,12 +210,12 @@ class EventAdmin(admin.ModelAdmin):
 
     def publish_or_unpublish_items(self, request, queryset):
         """Пакетная публикация или снятие с публикации групп/событий с последующим пересозданием кэша."""
-        for item in queryset:
-            item.is_published = False if item.is_published else True
-            item.save(update_fields=['is_published'])
+        for obj in queryset:
+            obj.is_published = False if obj.is_published else True
+            obj.save(update_fields=['is_published'])
 
-            event_or_group = 'group' if item.is_group else 'event'
-            cache_factory(event_or_group, item.id, reset=True)
+            # Обновить кэш группы (и всех его актуальных событий) или события (и его группы, если она имеется)
+            self.update_event_or_group_cache(obj)
 
     publish_or_unpublish_items.short_description = _('event_admin_publish_or_unpublish_items')
 
@@ -220,26 +226,16 @@ class EventAdmin(admin.ModelAdmin):
         """
         super(EventAdmin, self).save_model(request, obj, form, change)
 
-        event_or_group = 'group' if obj.is_group else 'event'
-
         if change and obj._meta.pk.name not in form.changed_data:
-            cache_factory(event_or_group, obj.id, reset=True)
-
-            # Если обновляется кэш группы - принудительно обновить кэш всех её актуальных событий
-            if event_or_group == 'group':
-                group_events = EventGroupBinder.objects.filter(
-                    group_id=obj.id,
-                    event__datetime__gt=self.today,
-                ).values_list('event_id', flat=True)
-
-                for group_event_uuid in group_events:
-                    cache_factory('event', group_event_uuid, reset=True)
+            # Обновить кэш группы (и всех его актуальных событий) или события (и его группы, если она имеется)
+            self.update_event_or_group_cache(obj)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
-        for item in queryset:
-            event_or_group = 'group' if item.is_group else 'event'
-            cache_factory(event_or_group, item.id, reset=True)
+        for obj in queryset:
+            # Обновить кэш группы (и всех его актуальных событий) или события (и его группы, если она имеется)
+            self.update_event_or_group_cache(obj)
+
     batch_set_cache.short_description = _('event_admin_batch_set_cache')
 
     def group_count(self, obj):
@@ -274,3 +270,18 @@ class EventAdmin(admin.ModelAdmin):
         """Короткая подпись для ID схемы зала при выводе списка в ``list_display``."""
         return obj.ticket_service_scheme
     ticket_service_scheme_short_description.short_description = _('ID')
+
+    def update_event_or_group_cache(self, obj):
+        """Обновить кэш группы (и всех его актуальных событий) или события (и его группы, если она имеется)."""
+        # Если обновляется кэш группы - принудительно обновить кэш всех её актуальных событий
+        if obj.is_group:
+            group = cache_factory('group', obj.id, reset=True)
+
+            if group['events_in_group']:
+                for event_uuid in group['events_in_group']:
+                    cache_factory('event', event_uuid, reset=True)
+        # Если обновляется кэш события - принудительно обновить кэш его группы, если событие в неё входит
+        elif obj.event_groups:
+            event = cache_factory('event', obj.id, reset=True)
+
+            cache_factory('group', event['group_uuid'], reset=True)

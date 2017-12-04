@@ -6,7 +6,7 @@
         <a href="{{ item_url }}" title="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
             {% if debug %}
                 <span class="debug-info">
-                    {{ item.is_in_group|yesno:'группа,событие' }} {{ item.ticket_service_event }}
+                    {{ item.is_group|yesno:'группа,событие' }} {{ item.ticket_service_event }}
                     <br>{{ item.event_datetime }}
                     <br>{% if item.order >= 0 %}# {{ item.order }}{% endif %}
                     <br>{% if item.event_category_title %}{{ item.event_category_title }}{% endif %}
