@@ -22,9 +22,9 @@ def category(request, slug):
         'event_venue',
         'domain'
     ).annotate(
-        event_uuid=F('id'),
+        uuid=F('id'),
     ).values(
-        'event_uuid',
+        'uuid',
     ).filter(
         Q(is_group=False) &
         Q(is_published=True) &
@@ -38,7 +38,7 @@ def category(request, slug):
     if category_events:
         for event in category_events:
             # Получение информации о каждом размещённом событии из кэша
-            event.update(cache_factory('event', event['event_uuid']))
+            event.update(cache_factory('event', event['uuid']))
 
     # Получение событий во всех категориях или фильтр по конкретной категории
     if slug == settings.BEZANTRAKTA_CATEGORY_ALL:

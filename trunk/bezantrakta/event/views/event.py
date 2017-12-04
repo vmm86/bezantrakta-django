@@ -7,8 +7,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from project.cache import cache_factory
 from project.shortcuts import build_absolute_url, message, render_messages, timezone_now
 
-from third_party.ticket_service.models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
-
 from ..models import Event, EventGroupBinder, EventLinkBinder
 
 
