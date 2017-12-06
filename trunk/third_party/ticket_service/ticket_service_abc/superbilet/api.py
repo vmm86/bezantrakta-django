@@ -775,7 +775,7 @@ class SuperBilet(TicketService):
         }
         reserve = self.request(method, input_mapping, data, output_mapping)
 
-        print('reserve: ', reserve)
+        # print('reserve: ', reserve)
 
         response = {}
         response['action'] = kwargs['action']
@@ -784,8 +784,8 @@ class SuperBilet(TicketService):
             response['success'] = True if reserve[0]['result_code'] == 0 else False
         except KeyError:
             response['success'] = False
-            response['code'] = reserve['code']
-            response['message'] = reserve['message']
+            response['error_code'] = reserve['error_code']
+            response['error_message'] = reserve['error_message']
 
         return response
 
@@ -1014,8 +1014,8 @@ class SuperBilet(TicketService):
                         else:
                             continue
                 else:
-                    response['code'] = o['result_code']
-                    response['message'] = self.RESPONSE_CODES[response['code']]
+                    response['error_code'] = o['result_code']
+                    response['error_message'] = self.RESPONSE_CODES[response['code']]
         else:
             return order
 

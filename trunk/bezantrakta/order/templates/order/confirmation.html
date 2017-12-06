@@ -49,10 +49,14 @@
             {% if order.delivery == "courier" %}
                 {% if order.courier_price > 0 %}
                     <h3 id="overall-header">Всего с учётом доставки курьером</h3>
+                {% else %}
+                    <h3 id="overall-header">Всего</h3>
                 {% endif %}
             {% elif order.payment == "online" %}
                 {% if order.commission > 0 %}
                     <h3 id="overall-header">Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
+                {% else %}
+                    <h3 id="overall-header">Всего</h3>
                 {% endif %}
             {% else %}
                     <h3 id="overall-header">Всего</h3>
@@ -84,13 +88,15 @@
 
             {% if debug %}
             <br><br>
-            order_tickets: <pre>{{ order.tickets|pprint }}</pre>
+            order: <pre>{{ order|pprint }}</pre>
             <br><br>
             order_count: <pre>{{ order.count|pprint }}</pre>
             <br><br>
             order_total: <pre>{{ order.total|pprint }}</pre>
             <br><br>
             order_total_plus_commission: <pre>{{ order_total_plus_commission|pprint }}</pre>
+            <br><br>
+            order_tickets: <pre>{{ order.tickets|pprint }}</pre>
             <br><br>
             event: <pre>{{ event|pprint }}</pre>
             <br><br>

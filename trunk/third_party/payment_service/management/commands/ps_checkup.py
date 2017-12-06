@@ -139,6 +139,7 @@ ______________________________________________________________________________
 
                     # Проверка статуса оплаты
                     payment_status = ps.payment_status(payment_id=order['payment_id'])
+                    self.log('\npayment_status: {payment_status}'.format(payment_status=payment_status))
 
                     # Если оплата прошла НЕуспешно
                     if not payment_status['success']:
