@@ -56,7 +56,7 @@ class AddEventGroupBinderInline(admin.TabularInline):
         """Фильтр события для добавления в группу.
 
         Для добавления в группу выводятся только актуальные события,
-        привязанные к выбранному домену и ещё не добавленные в группу
+        привязанные к выбранному домену и ЕЩЁ НЕ добавленные в группу
         (одно событие нельзя добавить более чем в одну группу!).
         """
         if db_field.name == 'event':
@@ -284,4 +284,5 @@ class EventAdmin(admin.ModelAdmin):
         elif obj.event_groups:
             event = cache_factory('event', obj.id, reset=True)
 
-            cache_factory('group', event['group_uuid'], reset=True)
+            if event['group_uuid']:
+                cache_factory('group', event['group_uuid'], reset=True)

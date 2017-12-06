@@ -53,7 +53,7 @@ def big_containers(request):
                     )
                     item.update(item_cache)
             # Удаляем из списка группы без актуальных на данный момент событий
-            container[:] = [i for i in container if not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group'])]
+            container[:] = [i for i in container if i['event_datetime'] >= today and (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))]
 
         return {
             'big_vertical_left':  big_vertical_left,
