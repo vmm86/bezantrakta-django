@@ -1,2 +1,3 @@
-from .payment_success import payment_success
-from .payment_error import payment_error
+from .payment_handler import payment_handler
+
+from .sngb_proxy import sngb_proxy

@@ -127,16 +127,10 @@ class Sberbank(PaymentService):
         data['userName'] = self.__user
         data['password'] = self.__pswd
 
-        print('request: ', data)
-
         if method == 'GET':
             response = requests.get(url_path, params=data)
         elif method == 'POST':
             response = requests.post(url_path, data=data)
-        else:
-            pass
-
-        # print('response: ', response.json(), '\n')
 
         # Если тестируем работу метода - получаем JSON-ответ без обработки
         if test:
@@ -191,7 +185,7 @@ class Sberbank(PaymentService):
         return (
             iterable if
             response_success else
-            {'success': False, 'code': response_code, 'message': response_message, }
+            {'success': False, 'error_code': response_code, 'error_message': response_message, }
         )
 
     def humanize_with_type_casting(self, iterable, output_mapping):
@@ -289,7 +283,6 @@ class Sberbank(PaymentService):
         # Полная сумма заказа с комиссией в копейках (целое число)
         data['amount'] = int(kwargs['order']['total'] * 100)
         # URL возврата после успешной оплаты
-        print('self.__success_url: ', self.__success_url, '\n')
         data['returnUrl'] = '{url}?event_uuid={event_uuid}&order_uuid={order_uuid}'.format(
             url=str(self.__success_url),
             event_uuid=kwargs['event_uuid'],
@@ -322,8 +315,8 @@ class Sberbank(PaymentService):
         create['success'] = True if 'payment_url' in create else False
 
         if not create['success']:
-            create['code'] = create.pop('errorcode')
-            create['message'] = create.pop('errormessage')
+            create['error_code'] = create.pop('errorcode')
+            create['error_message'] = create.pop('errormessage')
 
         return create
 
@@ -394,16 +387,13 @@ class Sberbank(PaymentService):
             else:
                 status['success'] = False
 
-            status['code'] = status.pop('action_code')
-            status['message'] = status.pop('action_message')
+            status['error_code'] = status.pop('action_code')
+            status['error_message'] = status.pop('action_message')
 
         return status
 
     def payment_refund(self, **kwargs):
         """Возврат суммы по ранее успешно завершённой оплате.
-
-        Может не требоваться для работы по API проводиться вручную в личном кабинете сервиса онлайн-оплаты.
-        Выполняется, если необходимо отметить возврат синхронно и в сервисе продажи билетов, и в сервисе онлайн-оплаты.
 
         Args:
             payment_id (str): Идентификатор оплаты.

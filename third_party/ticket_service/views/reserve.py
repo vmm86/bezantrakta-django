@@ -41,6 +41,8 @@ def reserve(request):
         # Универсальный метод для работы с предварительным резервом мест
         reserve = ts.reserve(**params)
 
+        # print('reserve: ', reserve)
+
         # Формирование ответа
         response = {}
 
@@ -50,7 +52,7 @@ def reserve(request):
         response['success'] = True if reserve['success'] else False
 
         if not reserve['success']:
-            response['code'] = reserve['code']
-            response['message'] = reserve['message']
+            response['error_code'] = reserve['code']
+            response['error_message'] = reserve['message']
 
         return JsonResponse(response, safe=False)

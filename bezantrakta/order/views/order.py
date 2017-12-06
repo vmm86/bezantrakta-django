@@ -341,6 +341,7 @@ def order(request):
                         # Создание новой онлайн-оплаты
                         payment_create = ps.payment_create(
                             event_uuid=event['event_uuid'],
+                            event_id=event['id'],
                             customer=customer,
                             order=order
                         )
