@@ -3,10 +3,10 @@ import uuid
 
 
 def json_serializer(obj):
-    """Сериализация JSON с учётом специфических типов данных (``datetime``, ``UUID``).
+    """Сериализация объекта в JSON с учётом специфических типов данных (``datetime.datetime``, ``uuid.UUID``).
 
     Args:
-        obj (_): Объект на входе.
+        obj (str|None): Объект на входе.
     """
     if isinstance(obj, (datetime.datetime, datetime.date)):
         obj = obj.isoformat()

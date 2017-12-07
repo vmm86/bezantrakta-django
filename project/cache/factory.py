@@ -3,7 +3,11 @@ from third_party.ticket_service.cache import TicketServiceCache, TicketServiceSc
 from third_party.payment_service.cache import PaymentServiceCache
 
 
-CACHE_CLASSES = (EventCache, TicketServiceCache, TicketServiceSchemeSectorCache, PaymentServiceCache, )
+CACHE_CLASSES = (
+    EventCache,
+    TicketServiceCache, TicketServiceSchemeSectorCache,
+    PaymentServiceCache,
+)
 
 
 def cache_factory(entity, object_id, reset=False, **kwargs):

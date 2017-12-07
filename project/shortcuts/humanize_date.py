@@ -15,7 +15,14 @@ MONTH_NAMES = {
 
 
 def humanize_date(input_date):
-    """Получение человекопонятной даты с русскоязычным месяцем в родительном падеже."""
+    """Получение человекопонятной даты с русскоязычным месяцем в родительном падеже.
+
+    Args:
+        input_date (datetime.datetime): Исходная дата/время.
+
+    Returns:
+        str: Человекопонятная дата с русскоязычным месяцем в родительном падеже.
+    """
     humanized_date = '{day} {genitive_month} {year} г.'.format(
         day=input_date.strftime('%-d'),
         genitive_month=MONTH_NAMES[int(input_date.strftime('%-m'))],

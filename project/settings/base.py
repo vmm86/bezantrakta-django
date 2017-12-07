@@ -1,4 +1,5 @@
 import os
+
 from django.conf.locale.ru import formats as ru_formats
 
 

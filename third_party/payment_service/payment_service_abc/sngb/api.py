@@ -119,7 +119,6 @@ class SurgutNefteGazBank(PaymentService):
         )
         self.timeout = init['timeout'] if 'timeout' in init and init['timeout'] > 0 else 15
         self.description = """
-        <p><strong>В сумму заказа включена комиссия платёжной системы</strong>.</p>
         <p>Оплата проводится с использованием услуг Интернет-эквайринга <strong>Акционерного общества «Сургутнефтегазбанк» (АО БАНК «СНГБ»)</strong> с использованием банковских карт платёжных систем:
         <ul>
             <li><img src="/media/global/banner/banner_payment/type-mir.png" width="43" height="25" style="vertical-align: middle;"> <strong>МИР</strong></li>
