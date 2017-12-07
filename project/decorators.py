@@ -1,14 +1,14 @@
 def queryset_filter(model_name, field_name):
     """
-    Фильтрация записей в админке по специфическому полю field_name модели model_name,
+    Фильтрация записей в админ-панели по специфическому полю *field_name* модели *model_name*,
     связанной с исходной моделью по соответствующему внешнему ключу.
 
     Args:
-        model_name (str): Название модели для фильтрации по его полю
-        field_name (str): Поле модели для фильтрации
+        model_name (str): Название модели для фильтрации по его полю.
+        field_name (str): Поле модели для фильтрации.
 
     Returns:
-        function: Результаты исходного запроса с фильтрацией или без
+        function: Результаты исходного запроса с фильтрацией или без.
     """
     def queryset_filter_wrapper(get_queryset):
         def wrapper(self, request):

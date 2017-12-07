@@ -19,7 +19,12 @@ def timezone_offset_humanized(timezone):
     seconds = offset.seconds
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    sign = '+' if offset >= datetime.timedelta(0) else '-'
+    if offset > datetime.timedelta(0):
+        sign = '+'
+    elif offset == datetime.timedelta(0):
+        sign = '±'
+    elif offset < datetime.timedelta(0):
+        sign = '−'
 
     return '{sign}{hours}:{minutes}'.format(
         sign=sign,
