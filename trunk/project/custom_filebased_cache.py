@@ -16,6 +16,13 @@ except ImportError:
 
 
 class FileBasedCache(BaseCache):
+    """Кастомизированный стандартный файловым кэш Django 1.11.
+
+    Изменения касаются пути сохранения файлов кэша - не в корень папки кэша, а в подпапки по имени первого подключа.
+
+    Attributes:
+        cache_suffix (str): Расширение файлов кэша.
+    """
     cache_suffix = 'djcache'
 
     def __init__(self, dir, params):
