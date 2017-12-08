@@ -1,0 +1,118 @@
+/* Общие стили */
+
+*, *:before, *:after,
+html, html:before, html:after,
+body, body:before, body:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    color: #111;
+}
+
+h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend {
+    color: #333;
+}
+
+a {
+    color: #111;
+}
+
+a:visited {
+    color: #999;
+}
+
+/* Заголовок */
+
+.wy-nav-side {
+    background: #999;
+    border-right: 1px solid #999;
+    padding-bottom: 0;
+}
+
+.wy-side-nav-search {
+    background-color: #999;
+    color: #fff;
+}
+
+.wy-side-nav-search > a,
+.wy-side-nav-search .wy-dropdown > a {
+    color: #fff;
+    text-shadow: 0px 1px 0 #111;
+}
+
+.wy-side-nav-search > div.version {
+    color: #fff;
+    text-shadow: 0px 1px 0 #111;
+}
+
+.wy-side-nav-search input[type="text"] {
+    border: none;
+}
+
+/* Левое меню */
+
+.wy-menu-vertical header,
+.wy-menu-vertical p.caption {
+    background: #fc0;
+    color: #111;
+    text-shadow: 0px 1px 0px #fff;
+    line-height: 34px;
+}
+
+.toctree-l1,
+.toctree-l2,
+.toctree-l3,
+.toctree-l4,
+.toctree-l5 {
+    background: #fff;
+}
+
+.wy-menu-vertical a,
+.wy-menu-vertical li.current a {
+    color: #111;
+}
+
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current a:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0px 1px 0px #fff;
+}
+
+.wy-menu-vertical li.on a, .wy-menu-vertical li.current > a {
+    background: #f0f0f0;
+}
+
+.wy-menu-vertical li code,
+.wy-menu-vertical li .rst-content tt,
+.rst-content .wy-menu-vertical li tt {
+    color: #E74C3C;
+}
+
+/* Содержимое страницы */
+
+.wy-nav-content {
+    border-right: 1px solid #999;
+    padding: 1.5em 2em;
+}
+
+code,
+.rst-content tt,
+.rst-content code {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 90%;
+    font-weight: bold;
+    margin: 0 0.25rem;
+}
+
+.rst-content dl:not(.docutils) dt {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
