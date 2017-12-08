@@ -8,6 +8,14 @@ from .models import City, timezone_offset_humanized
 
 
 def timezones_with_offsets(timezones):
+    """Вывод текстового списка часовых поясов в Российской Федерации с указанием разницы во времени с ``UTC``.
+
+    Args:
+        timezones (TYPE): Список часовых поясов ``pytz``.
+
+    Returns:
+        str: Текстовый списока часовых поясов РФ с разницей во времени с ``UTC``.
+    """
     offsets = ''
     for tz in timezones:
         offsets += '<br>{offset} {timezone}'.format(
@@ -18,6 +26,12 @@ def timezones_with_offsets(timezones):
 
 
 class CityForm(forms.ModelForm):
+    """Форма для выбора часовых поясов в выпадающем списке с автозаполнением.
+
+    Attributes:
+        timezone_list (list): Список часовых поясов ``pytz``.
+        timezone (dal.autocomplete.Select2ListChoiceField): Поле модели с переопределением его виджета.
+    """
     timezone_list = [tz for tz in pytz.country_timezones('ru')]
     timezone = autocomplete.Select2ListChoiceField(
         choice_list=timezone_list,

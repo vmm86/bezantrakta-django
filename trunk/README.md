@@ -2,52 +2,60 @@
 
 ## Структура проекта
 
-Содержимое модулей проекта документируется в docstings, а содержимое docstings, в свою очередь, используется при создании HTML-документации с помощью Sphinx из исходных .rst-файлов, находящихся в дереве проекта и автодокументирующих соответствующие модули.
+Содержимое модулей проекта документируется в *docstrings* и в построчных комментариях, а содержимое *docstings*, в свою очередь, используется при автоматизированном создании HTML-документации из исходных ``*.rst``-файлов, находящихся в дереве проекта и документирующих соответствующие модули.
 
-Документация для разработчиков находится в папке `docs_dev`.
+Документация для разработчиков генерируется с помощью **Sphinx** выполнением команды ``make html`` в корне проекта. Сгенетированная документация для разработчиков находится в папке `docs`.
 
 Документация для администраторов включена в страницы админ-панели.
 
-## Разработка и production deployment
+## Разработка и *production deployment*
 
-Тестовая разработка - либо с помощью встроенного локального мини-веб-сервера на порту `8000`, либо на локальном веб-сервере (настройки идентичны roduction deployment). Встроенный локальный мини-веб-сервер, в частности, позволяет не собирать статику при любом её изменении - обслуживание статики происходит автоматически.
+Тестовая разработка - либо с помощью встроенного локального мини-веб-сервера на порту `8000`, либо на локальном веб-сервере (настройки идентичны *production deployment*). Встроенный локальный мини-веб-сервер, в частности, настроен таким образом, что позволяет НЕ собирать статику при любом её изменении - обслуживание статики происходит автоматически.
 
-Production deployment - на базе `nginx` как проксирующего веб-сервера и `uwsgi` как универсального сервера приложений, взаимодействующего с модулем `wsgi` в пакете `project`.
+*Production deployment* - на базе `nginx` как проксирующего веб-сервера и `uwsgi` как универсального сервера приложений, взаимодействующего с модулем `wsgi` в пакете `project`.
 
-## Этапы production deployment
+## Этапы *production deployment*
 
-* Установка ОС на виртуальной машине (`Debian 9`).
+* Установка операционной системы (`Debian 9`) на виртуальной машине.
 
-* Настройка ОС (установка русской локали).
+* Настройка ОС.
 
 ```bash
 sudo su || su
+# Установка русской локали
 dpkg-reconfigure locales
+# Установка часового пояса в `UTC`
+dpkg-reconfigure tzdata
 ```
 
-* Установка необходимых системных пакетов - `Python 3`, `PHP` для `phpMyAdmin`, `MySQL` или `MariaDB`, `nginx`, `uWSGI`, `SVN`. Если `PHP` вытянет за собой `Apache`, его нужно будет затем удалить за ненадобностью.
+* Установка необходимых системных пакетов - `Python 3`, `PHP` для `phpMyAdmin`, `MySQL` или `MariaDB`, `nginx`, `uWSGI`, `SVN` или `Git`. Если `PHP` вытянет за собой `Apache`, его нужно будет затем удалить за ненадобностью.
 
 ```bash
 sudo su || su
 apt-get install g++ gcc build-essential automake autoconf gettext
 apt-get install python3 python3-pip python-virtualenv virtualenv python-pkg-resources python3-virtualenv python3-dev libpython3-dev python-imaging libjpeg-dev python3-lxml python3-dev libffi-dev
 apt-get install php php-mbstring php-mysqli zip unzip
+# ИЛИ MySQL, ИЛИ MariaDB
 apt-get install (mysql-server libmysqlclient-dev) || (mariadb-server libmariadbclient-dev)
 apt-get install nginx
 apt-get install uwsgi uwsgi-plugin-python3 uwsgi-plugin-php
-apt-get install subversion
+# ИЛИ SVN, ИЛИ Git
+apt-get install (subversion) || (git)
 ```
 
-* Настрока сервера баз данных и создание базы данных.
+* Настройка сервера баз данных и создание БД (на примере `MariaDB`).
 
 ```mysql
 nano "/etc/mysql/mariadb.conf.d/50-server"
-# [mysqld]
-# init_connect='SET collation_connection = utf8_general_ci'
-# init_connect='SET NAMES utf8'
-# character-set-server=utf8
-# collation-server=utf8_general_ci
-
+```
+```ini
+[mysqld]
+init_connect='SET collation_connection = utf8_general_ci'
+init_connect='SET NAMES utf8'
+character-set-server=utf8
+collation-server=utf8_general_ci
+```
+```mysql
 mysql
 
 CREATE USER 'belcanto'@'localhost' IDENTIFIED BY '************';
@@ -55,14 +63,14 @@ CREATE DATABASE belcanto_bezantrakta_django CHARACTER SET utf8 COLLATE utf8_gene
 GRANT ALL PRIVILEGES ON belcanto_bezantrakta_django.* TO 'belcanto'@'localhost';
 ```
 
-* Получение актуальной версии `SVN`-репозитория.
+* Получение актуальной версии репозитория (на примере `SVN`).
 
 ```bash
 cd /var/www
 mkdir bezantrakta-django
 cd bezantrakta-django
 mkdir media static log
-svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y.Z bezantrakta_latest
+svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y bezantrakta_latest
 ```
 
 * Создание и активация виртуального окружения `Python 3`, установка необходимых Python-пакетов, синхронизация с БД.
@@ -71,6 +79,7 @@ svn export http://svn.rterm.ru/bezantrakta-django/tags/X.Y.Z bezantrakta_latest
 cd /opt
 mkdir bezantrakta-django
 
+# В зависимости от реализации virtual environment
 (virtualenv -p /usr/bin/python3 venv || pyvenv venv)
 source venv/bin/activate
 
@@ -85,7 +94,6 @@ source venv/bin/activate
 ```bash
 touch /etc/uwsgi/sites-available/bezantrakta.ini
 ```
-
 ```ini
 [uwsgi]
 project = /var/www/bezantrakta-django/bezantrakta_latest
@@ -102,17 +110,15 @@ cheaper = 1
 idle = 8
 vacuum = 1
 ```
-
 ```bash
 ln -s /etc/uwsgi/apps-available/bezantrakta.ini /etc/uwsgi/apps-enabled/
 ```
 
-* Создание виртуального хоста `nginx`, взаимодействующего с сокетом uWSGI-приложения.
+* Создание виртуального хоста `nginx`, взаимодействующего с сокетом `uWSGI`-приложения.
 
 ```bash
 touch /etc/nginx/sites-available/bezantrakta.conf
 ```
-
 ```nginx
 server {
     listen 80;
@@ -144,7 +150,6 @@ server {
     }
 }
 ```
-
 ```bash
 ln -s /etc/nginx/sites-available/bezantrakta.conf /etc/nginx/sites-enabled/
 ```
@@ -167,7 +172,6 @@ mv config.sample.inc.php config.inc.php
 ```bash
 touch /etc/uwsgi/sites-available/pma.ini
 ```
-
 ```ini
 [uwsgi]
 project = /var/www/pma
@@ -185,17 +189,15 @@ idle    = 30
 vacuum  = 1
 buffer-size = 65535
 ```
-
 ```bash
 ln -s /etc/uwsgi/apps-available/pma.ini /etc/uwsgi/apps-enabled/
 ```
 
-10. Создание виртуального хоста `nginx` для `phpMyAdmin`.
+* Создание виртуального хоста `nginx` для `phpMyAdmin`.
 
 ```bash
 touch /etc/nginx/sites-available/pma.conf
 ```
-
 ```nginx
 server {
     listen 80;
@@ -224,14 +226,13 @@ server {
 
 }
 ```
-
 ```bash
 ln -s /etc/nginx/sites-available/pma.conf /etc/nginx/sites-enabled/
 ```
 
-11. Указывать в `hosts` все адреса сайтов, работающих локально на этой виртуальной машине, не нужно, если это настроено на уровне DNS (рекомендуется).
+* Указывать в `hosts` все адреса сайтов, работающих локально на этой виртуальной машине, не нужно, если это настроено на уровне `DNS` (*рекомендуется*).
 
-12. Перезапуск nginx и uWSGI, проверка работоспособности виртуального хоста.
+* Перезапуск nginx и `uWSGI`, проверка работоспособности виртуального хоста.
 
 ```bash
 service nginx configtest
@@ -240,11 +241,11 @@ service nginx restart
 service uwsgi restart
 ```
 
-13. Для подсветки кода в редакторе `CKEditor` нужно распаковать содержимое архива `ckeditor_plugins/codemirror_1.15.zip` из репозитория в виртуальное окружение в папку `lib/python3.X/site-packages/ckeditor/static/ckeditor/ckeditor/plugins`, иначе редактор не будет работать. Если подсветка не нужна - закомментировать параметр `extraPlugins`.
+* Для подсветки кода в редакторе `CKEditor` нужно распаковать содержимое архива `ckeditor_plugins/codemirror_1.15.zip` из репозитория в виртуальное окружение в папку `lib/python3.X/site-packages/ckeditor/static/ckeditor/ckeditor/plugins`, иначе редактор не будет работать. Если подсветка не нужна - закомментировать параметр `extraPlugins`.
 
 ## Разработка и поддержка
 
-После любого изменения py-файлов в проекте:
+После любого изменения `*.py`-файлов в проекте:
 
 ```bash
 service uwsgi restart
@@ -266,7 +267,9 @@ service uwsgi restart
 При добавлении новых строк `_('some_translation')` для файлов локализации:
 
 ```bash
+# Создание строк для локализации в файлах локализации в папках `locale/ru/LC_MESSAGES/django.po`
 [ venv ] python manage.py makemessages
-# Заполнение строк локализации в папках `locale/ru/LC_MESSAGES/django.po`
+# Заполнение строк для локализации
+# Генерация новых бинарных файлов локализации из текстовых исходников
 [ venv ] python manage.py compilemessages
 ```

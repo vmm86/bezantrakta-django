@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 
 
 def get_default_domain_settings():
-    """Получение настроек сайта по умолчанию из файла JSON."""
+    """Получение настроек сайта по умолчанию из файла JSON при создании новых сайтов."""
     domain_settings_file = os.path.join(
         settings.BASE_DIR,
         'bezantrakta',
@@ -19,6 +19,7 @@ def get_default_domain_settings():
 
 
 class DomainManager(models.Manager):
+    """Менеджер модели ``Domain``."""
     def get_queryset(self):
         return super(DomainManager, self).get_queryset().select_related('city')
 
@@ -27,13 +28,13 @@ class Domain(models.Model):
     """Сайты Безантракта, работающие в разных городах России.
 
     Attributes:
-        objects (DomainManager): Менеджер модели.
-        id (IntegerField): Идентификатор.
-        title (CharField): Название.
-        slug (SlugField): Псевдоним.
-        is_published (BooleanField): Работает (``True``) или не работает ("ведутся технические работы") (``False``).
-        city (ForeignKey): Привязка к городу, в котором работает сайт.
-        settings (TextField): Настройки в JSON.
+        objects (django.db.models.DomainManager): Менеджер модели.
+        id (django.db.models.IntegerField): Идентификатор.
+        title (django.db.models.CharField): Название.
+        slug (django.db.models.SlugField): Псевдоним.
+        is_published (django.db.models.BooleanField): Работает или НЕ работает ("ведутся технические работы").
+        city (django.db.models.ForeignKey): Привязка к городу, в котором работает сайт.
+        settings (django.db.models.TextField): Настройки в JSON.
     """
     objects = DomainManager()
 

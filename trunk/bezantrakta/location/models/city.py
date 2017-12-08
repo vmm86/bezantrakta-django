@@ -7,10 +7,10 @@ from timezone_field import TimeZoneField
 
 
 def timezone_offset_humanized(timezone):
-    """Вывод человекопонятной разницы часовых поясов с UTC.
+    """Вывод человекопонятной разницы часовых поясов с ``UTC``.
 
     Args:
-        timezone (timezone): Часовой пояс.
+        timezone (timezone): Часовой пояс из ``pytz``.
 
     Returns:
         str: Разница часового пояса с UTC в формате ``±ЧАСОВ:МИНУТ``.
@@ -37,16 +37,16 @@ class City(models.Model):
     """Города России, в которых могут работать сайты Безантракта.
 
     Attributes:
-        id (IntegerField): Идентификатор (телефонный код города).
-        title (CharField): Название.
-        slug (SlugField): Псевдоним (не более 5-7 знаков, наиболее употребимое сокращение название города в Интернете).
-        timezone (TimeZoneField): Часовой пояс города.
-        state (NullBooleanField): Состояние города, берущееся из ``STATE_CHOICES``.
+        id (django.db.models.IntegerField): Идентификатор (телефонный код города).
+        title (django.db.models.CharField): Название.
+        slug (django.db.models.SlugField): Псевдоним (не более 3-5 символов).
+        timezone (django.db.models.TimeZoneField): Часовой пояс города.
+        state (django.db.models.NullBooleanField): Состояние города, берущееся из ``STATE_CHOICES``.
 
             Содержимое ``STATE_CHOICES`` (кортеж из кортежей "значение" / "подпись").
-                    * **STATE_DISABLED** (bool): Выключен (``False``).
-                    * **STATE_PROGRESS** (None): В процессе подготовки ("скоро открытие") (``None``).
-                    * **STATE_ENABLED** (bool):  Включен (``True``).
+                * **STATE_DISABLED** (bool): Выключен (``False``).
+                * **STATE_PROGRESS** (None): В процессе подготовки ("скоро открытие") (``None``).
+                * **STATE_ENABLED** (bool): Включен (``True``).
     """
     id = models.IntegerField(
         primary_key=True,
@@ -92,6 +92,11 @@ class City(models.Model):
         return '{title} - {slug}'.format(title=self.title, slug=self.slug)
 
     def state_icons(self):
+        """Вывод иконок для обозначения статуса города в списке записей в админ-панели.
+
+        Returns:
+            str: HTML-разметка для вывода иконки статуса.
+        """
         from django.contrib.admin.templatetags.admin_list import _boolean_icon
 
         if self.state is False:
@@ -103,6 +108,11 @@ class City(models.Model):
     state_icons.short_description = _('city_state_icons')
 
     def timezone_offset(self):
+        """Вывод разницы во времени с ``UTC`` у часового пояса города.
+
+        Returns:
+            str: Строка с указанием разницы во времени.
+        """
         return '{offset} {timezone}'.format(
             offset=timezone_offset_humanized(self.timezone),
             timezone=self.timezone,

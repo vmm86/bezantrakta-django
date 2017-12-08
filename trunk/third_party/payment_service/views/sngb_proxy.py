@@ -10,7 +10,7 @@ from project.shortcuts import build_absolute_url, timezone_now
 
 @csrf_exempt
 def sngb_proxy(request):
-    """Предобработка успешной или НЕуспешной оплаты в СНГБ."""
+    """Предобработка успешной или НЕуспешной оплаты в СургутНефтеГазБанке."""
     now = timezone_now()
     logger = logging.getLogger('bezantrakta.order')
     logger.info('\n----Предоработка оплаты в СНГБ----')
