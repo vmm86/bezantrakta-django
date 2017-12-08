@@ -10,8 +10,7 @@ from django.db.models import F, Q
 from django.db.utils import IntegrityError
 
 from project.cache import cache_factory
-from project.shortcuts import datetime_localize_or_utc, timezone_now
-from project.urlify import urlify
+from project.shortcuts import datetime_localize_or_utc, timezone_now, urlify
 
 from bezantrakta.event.models import Event, EventGroupBinder
 

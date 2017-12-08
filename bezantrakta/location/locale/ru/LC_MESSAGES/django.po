@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-11 20:09+0000\n"
+"POT-Creation-Date: 2017-12-08 13:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,90 +20,105 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/domain.py:37
+#: admin/domain.py:41
 msgid "domain_settings_help_text"
 msgstr ""
-"<ul><li>{ <strong>domain</strong> } - информация о сайте в целом:"
-"<ul><li>string <strong>title</strong> - название сайта в теге `title`,</"
-"li><li>string <strong>description</strong> - метатег `description` для всего "
-"сайта,</li><li>string <strong>keywords</strong> - метатег `keywords` для "
-"всего сайта.</li></ul></li><li>{ <strong>webmaster</strong> } - регистрация "
-"в инструментах для вебмастеров:<ul><li>string <strong>yandex</strong> - "
-"Яндекс.Вебмастер,</li><li>string <strong>google</strong> - Google."
-"SearchConsole.</li></ul></li><li>{ <strong>counter</strong> } - регистрация "
-"в счётчиках, собирающих информацию о посетителях сайта:<ul><li>string "
-"<strong>yandex</strong> - Яндекс.Метрика,</li><li>string <strong>google</"
-"strong> - Google.Analytics,</li><li>string <strong>uptolike</strong> - "
-"UpToLike (кнопки 'Поделиться в соцсетях' и др.),</li><li>string "
-"<strong>vkontakte</strong> - пиксель ВКонтакте.</li></ul></"
-"li><li>[ <strong>telephone</strong> ] - список телефонов для 'Справок и "
-"бронирования':<ul><li>string телефоны в формате +7 (473) 210-01-02.</li></"
-"ul></li><li>[ <strong>social</strong> ] - список учётных записей сайта в "
-"соцсетях:<ul><li>{ учётные записи в соцсетях }<ul><li>string <strong>title</"
-"strong> - название соцсети,</li><li>string <strong>slug</strong> - псевдоним "
-"соцсети,</li><li>string <strong>href</strong> - ссылка на страницу в соцсети."
-"</li></ul></li></ul></li></ul>"
+"<ul><li><strong>domain</strong> { словарь 'ключ': 'значение' } - информация "
+"о сайте в целом:<ul><li><strong>title</strong> строка - название сайта в "
+"теге <em>title</em>.</li><li><strong>description</strong> строка - метатег "
+"<em>description</em> для всего сайта.</li><li><strong>keywords</strong> "
+"строка - метатег <em>keywords</em> для всего сайта.</li></ul></"
+"li><li><strong>webmaster</strong> { словарь 'ключ': 'значение' } - "
+"регистрация в инструментах для вебмастеров:<ul><li><strong>yandex</strong> "
+"строка - <a href='https://webmaster.yandex.ru/sites/' target='_blank'>Яндекс."
+"Вебмастер</a>.</li><li><strong>google</strong> строка - <a href='https://www."
+"google.com/webmasters/tools/home' target='_blank'>Google.SearchConsole</a>.</"
+"li></ul></li><li><strong>counter</strong> { словарь 'ключ': 'значение' } - "
+"регистрация в счётчиках, собирающих информацию о посетителях сайта:"
+"<ul><li><strong>yandex</strong> строка - <a href='https://metrika.yandex.ru/"
+"list/' target='_blank'>Яндекс.Метрика</a>.</li><li><strong>google</strong> "
+"строка - <a href='https://analytics.google.com/analytics/web/' "
+"target='_blank'>Google.Analytics</a>.</li><li><strong>uptolike</strong> "
+"строка - <a href='http://uptolike.ru/cabinet/dashboard' "
+"target='_blank'>UpToLike</a> (кнопки 'Поделиться в соцсетях' и др.).</"
+"li><li><strong>vkontakte</strong> строка - <a href='https://vk.com/ads?"
+"act=office_help&oid=-19542789&p=%D0%A7%D0%B0%D1%81%D1%82%D1%8B%D0%B5_"
+"%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B_%D0%BF%D0%BE_"
+"%D1%80%D0%B5%D1%82%D0%B0%D1%80%D0%B3%D0%B5%D1%82%D0%B8%D0%BD%D0%B3%D1%83' "
+"target='_blank'>пиксель ВКонтакте</a>.</li></ul></li><li><strong>telephone</"
+"strong> [ список ] - телефоны для блока 'Справки и бронирование':"
+"<ul><li>строка - телефон в формате <em>+7 (473) 210-01-02</em>.</li></ul></"
+"li><li><strong>social</strong> [ список ] - учётные записи сайта в соцсетях:"
+"<ul><li>{ словарь 'ключ': 'значение' } - учётные записи в соцсетях."
+"<ul><li><strong>title</strong> строка - название соцсети.</"
+"li><li><strong>slug</strong> строка - псевдоним соцсети.</"
+"li><li><strong>href</strong> строка - ссылка на страницу в соцсети.</li></"
+"ul></li></ul></li></ul>"
 
-#: admin/domain.py:47
+#: admin/domain.py:64
 msgid "domain_admin_publish_or_unpublish_items"
 msgstr "Опубликовать или снять с публикации"
 
-#: models/city.py:48
+#: admin/domain.py:82
+msgid "domain_admin_batch_set_cache"
+msgstr "Пересоздать кэш выбранных сайтов"
+
+#: models/city.py:53
 msgid "city_id_help_text"
 msgstr "Идентификатор города - его телефонный код."
 
-#: models/city.py:49
+#: models/city.py:54
 msgid "city_id"
 msgstr "Идентификатор"
 
-#: models/city.py:53
+#: models/city.py:58
 msgid "city_title"
 msgstr "Название"
 
-#: models/city.py:57
+#: models/city.py:62
 msgid "city_slug"
 msgstr "Псевдоним"
 
-#: models/city.py:61 models/city.py:105
+#: models/city.py:66 models/city.py:120
 msgid "city_timezone"
 msgstr "Часовой пояс"
 
-#: models/city.py:67
+#: models/city.py:72
 msgid "city_state_disabled"
 msgstr "отключен"
 
-#: models/city.py:68
+#: models/city.py:73
 msgid "city_state_progress"
 msgstr "подготовка"
 
-#: models/city.py:69
+#: models/city.py:74
 msgid "city_state_enabled"
 msgstr "включен"
 
-#: models/city.py:75
+#: models/city.py:80
 msgid "city_state_help_text"
 msgstr ""
 "<ul><li>отключен - НЕ виден в списке городов и НЕ работает;</"
 "li><li>подготовка - виден в списке городов, но НЕ доступен для выбора (скоро "
 "открытие);</li><li>включен - виден в списке городов и работает.</li></ul>"
 
-#: models/city.py:76
+#: models/city.py:81
 msgid "city_state"
 msgstr "Состояние"
 
-#: models/city.py:82
+#: models/city.py:87
 msgid "city"
 msgstr "город"
 
-#: models/city.py:83
+#: models/city.py:88
 msgid "cities"
 msgstr "города"
 
-#: models/city.py:98
+#: models/city.py:108
 msgid "city_state_icons"
 msgstr "Состояние"
 
-#: models/domain.py:42
+#: models/domain.py:43
 msgid "domain_id_help_text"
 msgstr ""
 "Идентификатор сайта - число из 3-х цифр.<br>Первые 2 цифры - автомобильный "
@@ -112,15 +127,15 @@ msgstr ""
 "Поиск автомобильного кода региона</a><br>Третья цифра - порядковый номер от "
 "0 до 9."
 
-#: models/domain.py:43
+#: models/domain.py:44
 msgid "domain_id"
 msgstr "Идентификатор"
 
-#: models/domain.py:47
+#: models/domain.py:48
 msgid "domain_title"
 msgstr "Название"
 
-#: models/domain.py:51
+#: models/domain.py:52
 msgid "domain_slug_help_text"
 msgstr ""
 "<ul><li>Чтобы создать основной сайт в выбранном городе:<ul><li>псевдоним "
@@ -130,32 +145,32 @@ msgstr ""
 "сайта может быть любым,</li><li>последняя цифра идентификатора сайта - от 1 "
 "до 9.</li></ul></li></ul>"
 
-#: models/domain.py:52
+#: models/domain.py:53
 msgid "domain_slug"
 msgstr "Псевдоним"
 
-#: models/domain.py:56
+#: models/domain.py:57
 msgid "domain_is_published_help_text"
 msgstr ""
 "<ul><li>опубликован - включен и работает;</li><li>НЕ опубликован - отключен "
 "(сайт недоступен, проводятся технические работы).</li></ul>"
 
-#: models/domain.py:57
+#: models/domain.py:58
 msgid "domain_is_published"
 msgstr "Публикация"
 
-#: models/domain.py:63
+#: models/domain.py:64
 msgid "domain_city"
 msgstr "Город"
 
-#: models/domain.py:67
+#: models/domain.py:68
 msgid "domain_settings"
 msgstr "Настройки в JSON"
 
-#: models/domain.py:73
+#: models/domain.py:74
 msgid "domain"
 msgstr "сайт"
 
-#: models/domain.py:74
+#: models/domain.py:75
 msgid "domains"
 msgstr "сайты"

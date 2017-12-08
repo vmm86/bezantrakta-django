@@ -1,10 +1,12 @@
 from bezantrakta.event.cache import EventCache
+from bezantrakta.location.cache import DomainCache
 from third_party.ticket_service.cache import TicketServiceCache, TicketServiceSchemeSectorCache
 from third_party.payment_service.cache import PaymentServiceCache
 
 
 CACHE_CLASSES = (
     EventCache,
+    DomainCache,
     TicketServiceCache, TicketServiceSchemeSectorCache,
     PaymentServiceCache,
 )
