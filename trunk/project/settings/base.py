@@ -363,7 +363,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/1.11/topics/cache/
 CACHES = {
     'default': {
-        'BACKEND': 'project.custom_filebased_cache.FileBasedCache',
+        'BACKEND': 'project.cache.FileBasedCache',
         'LOCATION': os.path.join(PARENT_DIR, 'cache'),
         'TIMEOUT': None,
     }
