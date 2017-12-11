@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from django.db.models import F
 from django.shortcuts import render
 
@@ -62,6 +64,7 @@ def events_on_index(request):
                 i['event_datetime'] >= today and
                 (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))
             ]
+            container = sorted(container, key=itemgetter('event_datetime'))
 
     context = {
         'title': '',
