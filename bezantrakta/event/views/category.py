@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db.models import F, Q
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
@@ -45,8 +45,13 @@ def category(request, slug):
         category_title = 'Все события'
         category_events[:] = [ce for ce in category_events if ce['event_category_slug'] is not None]
     else:
-        category_title = EventCategory.objects.values_list('title', flat=True).get(slug=slug)
-        category_events[:] = [ce for ce in category_events if ce['event_category_slug'] == slug]
+        # Если категория не найдена - редирект на главную
+        try:
+            category_title = EventCategory.objects.values_list('title', flat=True).get(slug=slug)
+        except EventCategory.DoesNotExist:
+            return redirect('/')
+        else:
+            category_events[:] = [ce for ce in category_events if ce['event_category_slug'] == slug]
 
     context = {
         'title': category_title,

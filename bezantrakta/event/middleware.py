@@ -1,6 +1,7 @@
 import datetime
 
 from django.http.request import split_domain_port
+from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.deprecation import MiddlewareMixin
 from django.urls import resolve, Resolver404
@@ -19,13 +20,18 @@ class EventCalendarMiddleware(MiddlewareMixin):
 
             if resolved_view.view_name == 'event:calendar':
                 current_timezone = request.city_timezone
-                calendar_date = current_timezone.localize(
-                    datetime.datetime(
-                        year=int(resolved_view.kwargs['year']),
-                        month=int(resolved_view.kwargs['month']),
-                        day=int(resolved_view.kwargs['day']),
+                # Если дата в URL задана НЕкорректно - редирект на главную
+                try:
+                    calendar_date = current_timezone.localize(
+                        datetime.datetime(
+                            year=int(resolved_view.kwargs['year']),
+                            month=int(resolved_view.kwargs['month']),
+                            day=int(resolved_view.kwargs['day']),
+                        )
                     )
-                )
+                except ValueError:
+                    return redirect('/')
+
             else:
                 calendar_date = timezone.now().date
         except Resolver404:
