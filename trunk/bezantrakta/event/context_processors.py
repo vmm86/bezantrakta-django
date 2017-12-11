@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from django.db.models import F
 
 from project.cache import cache_factory
@@ -58,6 +60,7 @@ def big_containers(request):
                 i['event_datetime'] >= today and
                 (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))
             ]
+            container = sorted(container, key=itemgetter('event_datetime'))
 
         return {
             'big_vertical_left':  big_vertical_left,
