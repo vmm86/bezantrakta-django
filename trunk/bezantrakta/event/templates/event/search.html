@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content_body %}
+{% if events_found %}
 <div class="poster-small-vertical-body">
 {% for item in events_found %}
 {% localtime on %}
@@ -13,6 +14,9 @@
 {% endlocaltime %}
 {% endfor %}
 </div>
+{% else %}
+    <p>К сожалению, при поиске подходящих событий не найдено 😞.</p>
+{% endif %}
 
 {% if debug %}
 <br><br>
