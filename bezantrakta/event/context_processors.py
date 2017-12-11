@@ -22,7 +22,7 @@ def big_containers(request):
             container_mode=F('event_container__mode')
         ).values(
             'uuid',
-            'datetime',
+            # 'datetime',
             'is_group',
             'container',
             'order',
@@ -30,7 +30,7 @@ def big_containers(request):
         ).filter(
             container_mode__startswith='big_',
             event__is_published=True,
-            # datetime__gt=today,
+            datetime__gt=today,
             event__domain_id=request.domain_id,
         ).order_by(
             'container',
@@ -45,15 +45,19 @@ def big_containers(request):
         for container in (big_vertical_left, big_vertical_right, big_horizontal):
             if container:
                 for item in container:
-                    # Получение информации о каждом размещённом событии из кэша
+                    # Получение информации о каждом размещённом событии/группе из кэша
                     item_cache = (
                         cache_factory('group', item['uuid']) if
                         item['is_group'] else
                         cache_factory('event', item['uuid'])
                     )
                     item.update(item_cache)
-            # Удаляем из списка группы без актуальных на данный момент событий
-            container[:] = [i for i in container if i['event_datetime'] >= today and (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))]
+            # Оставляем в списке ВСЕ события и удаляем группы БЕЗ актуальных на данный момент событий
+            container[:] = [
+                i for i in container if
+                i['event_datetime'] >= today and
+                (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))
+            ]
 
         return {
             'big_vertical_left':  big_vertical_left,
