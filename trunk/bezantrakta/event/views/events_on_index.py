@@ -15,7 +15,10 @@ def events_on_index(request):
     """
     today = timezone_now()
 
-    items_on_index = EventContainerBinder.objects.annotate(
+    items_on_index = EventContainerBinder.objects.select_related(
+        'event',
+        'event_container',
+    ).annotate(
         uuid=F('event__id'),
         datetime=F('event__datetime'),
         is_group=F('event__is_group'),
@@ -23,7 +26,7 @@ def events_on_index(request):
         container_mode=F('event_container__mode'),
     ).values(
         'uuid',
-        'datetime',
+        # 'datetime',
         'is_group',
         'container',
         'order',
@@ -32,7 +35,7 @@ def events_on_index(request):
         order__gt=0,
         event__is_published=True,
         event__is_on_index=True,
-        # datetime__gt=today,
+        datetime__gt=today,
         event__domain_id=request.domain_id,
     ).order_by(
         'container',
@@ -46,15 +49,19 @@ def events_on_index(request):
     for container in (small_vertical, small_vertical_vip):
         if container:
             for item in container:
-                # Получение информации о каждом размещённом событии из кэша
+                # Получение информации о каждом размещённом событии/группе из кэша
                 item_cache = (
                     cache_factory('group', item['uuid']) if
                     item['is_group'] else
                     cache_factory('event', item['uuid'])
                 )
                 item.update(item_cache)
-            # Удаляем из списка группы без актуальных на данный момент событий
-            container[:] = [i for i in container if i['event_datetime'] >= today and (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))]
+            # Оставляем в списке ВСЕ события и удаляем группы БЕЗ актуальных на данный момент событий
+            container[:] = [
+                i for i in container if
+                i['event_datetime'] >= today and
+                (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))
+            ]
 
     context = {
         'title': '',
