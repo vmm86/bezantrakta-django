@@ -1,0 +1,1494 @@
+@charset "utf-8";
+
+/* Общие стили для заказа билетов */
+
+.body {
+    display: table;
+
+    background: url(/static/global/svg/content-body.svg) center center no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    padding: 0.75rem 1rem;
+
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+}
+
+.content {
+    padding: 0;
+}
+
+#tickets-preloader .modal-body > div {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    height: 100%;
+}
+
+/* Пошаговый прогресс заказа билетов */
+
+.order-progress {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    margin: 0.5rem 0;
+
+    width: 100%;
+}
+.order-progress-step1,
+.order-progress-step2,
+.order-progress-step3 {
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+}
+.order-progress-step1-body,
+.order-progress-step2-body,
+.order-progress-step3-body {
+    background: url(/static/global/svg/order-next-button.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+}
+.order-progress-step1-body {
+    padding: 0.75rem 3rem 0.75rem 1rem;
+}
+.order-progress-step2-body {
+    padding: 0.75rem 3.5rem 0.75rem 1rem;
+}
+.order-progress-step3-body {
+    padding: 0.75rem 4.5rem 0.75rem 1rem;
+}
+.order-progress-step1-body.active,
+.order-progress-step2-body.active,
+.order-progress-step3-body.active {
+    background: url(/static/global/svg/order-next-button-active.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #000;
+}
+
+/* Заголовок события */
+
+.event-header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+h1, h2 {
+    display: inline-block;
+
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: left;
+    text-transform: uppercase;
+
+    padding: 1rem 2rem;
+    margin: 0.5rem 0 1% 0;
+}
+
+#event-title-date-time,
+#order-result-header {
+    background: url(/static/global/svg/background-gold.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #000;
+    font-size: 1.5rem;
+}
+
+#event-title-date-time {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+
+    font-size: 1.5rem;
+
+    padding-left: 2.75rem;
+    padding-right: 2.75rem;
+
+    width: -webkit-calc(30vw - 2rem);
+    width:    -moz-calc(30vw - 2rem);
+    width:         calc(30vw - 2rem);
+    min-width: 33rem;
+}
+
+#event-title {
+    display: block;
+
+    padding-right: 1rem;
+}
+
+#event-venue {
+    background: url(/static/global/svg/background-grey.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #FFF;
+
+    padding: 1.75rem 2.75rem;
+
+    max-width: 50vw;
+
+    position: relative;
+    left: -1.5rem;
+}
+#stagehall_name {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+}
+
+.order-header,
+.description-header,
+.order-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+/* Выбранные билеты и список цен */
+
+#basket-container {
+    font-size: 0.95rem;
+    text-align: left;
+    vertical-align: top;
+
+    width: -webkit-calc(30vw - 2rem);
+    width:    -moz-calc(30vw - 2rem);
+    width:         calc(30vw - 2rem);
+    min-width: 33rem;
+}
+#basket-container-full {
+    width: 100%;
+}
+
+#group-events-header,
+#links-header,
+#chosen-tickets-header,
+#overall-header,
+#overall-courier h3,
+#overall-online h3,
+#order-info-header {
+    display: block;
+
+    background: url(/static/global/svg/background-grey.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    padding: 1.75rem 2rem;
+
+    width: 100%;
+}
+
+#basket-container #chosen-tickets,
+#basket-container-full #chosen-tickets,
+#basket-container #overall,
+#basket-container-full #overall,
+#overall-courier p,
+#overall-online p,
+#order-info {
+    display: block;
+
+    background: url(/static/global/svg/background-yellow.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    font-size: 0.95rem;
+    font-weight: bold;
+    text-transform: lowercase;
+
+    padding: 0.5rem 2rem;
+}
+
+#basket-container #chosen-tickets li,
+#basket-container-full #chosen-tickets li,
+#basket-container #overall,
+#basket-container-full #overall,
+#order-info li,
+.ticket-message {
+    font-size: 0.95rem;
+    font-weight: bold;
+    text-transform: lowercase;
+}
+
+#basket-container #chosen-tickets li .countdown {
+    color: #F44336;
+}
+
+#basket-container ul li,
+#basket-container-full ul li {
+    list-style: none;
+}
+
+#basket-container #group-events {
+    display: table;
+
+    background: transparent;
+}
+
+#basket-container #group-events li {
+    display: table;
+
+    background: url(/static/global/svg/group-event.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    padding: 0.1rem;
+    margin: 0.5rem 0 0.5rem 2rem;
+
+    position: relative;
+}
+
+#basket-container #group-events li:before,
+#basket-container #group-events li::before {
+    display: inline-block;
+
+    content: '';
+
+    background: url(/static/global/svg/order-checkbox.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    width: 3rem;
+    height: 2.5rem;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#basket-container #group-events li.group-event-chosen {
+    display: table;
+
+    background: url(/static/global/svg/group-event-chosen.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #000;
+
+    padding: 0.25rem 1.75rem 0.25rem 4.5rem !important;
+}
+
+#basket-container #group-events li.group-event-chosen:before,
+#basket-container #group-events li.group-event-chosen::before {
+    background: url(/static/global/svg/order-checkbox-selected.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+}
+
+#basket-container #group-events li a {
+    color: #FFF;
+    text-decoration: none;
+
+    display: inline-block;
+    width: 100% !important;
+    padding: 0.25rem 1.75rem 0.25rem 4.25rem !important;
+}
+
+.ruble-sign {
+    vertical-align: baseline;
+    width: 0.563rem;
+}
+
+#links-header {
+}
+
+#links,
+/* временное сообщение */
+.ticket-message {
+    display: block;
+
+    background: url(/static/global/svg/links.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    margin-top: 0.25rem;
+    padding: 0.5rem 2rem;
+}
+
+#links li {
+    margin: 1rem 0;
+}
+
+#links li a {
+    text-decoration: none;
+}
+
+#links li .link-checkbox {
+    display: inline-block;
+
+    background: url(/static/global/svg/order-checkbox-selected.svg) center center no-repeat;
+    background-size: 100% 100%;
+
+    border: none;
+    border-style: none;
+    outline: none;
+
+    padding: 0;
+    margin-right: 1rem;
+
+    vertical-align: 0.5rem;
+
+    height: 3rem;
+    width: 3.5rem;
+}
+
+#legend-general,
+#legend-prices {
+    font-weight: bold;
+}
+
+#legend-general ul,
+#legend-prices ul {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#legend-text {
+    font-weight: bold;
+}
+
+#legend-text .highlight {
+    color: #F44336;
+}
+
+/* временное сообщение */
+.ticket-message {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    text-align: left !important;
+    padding: 1.5rem 3rem !important;
+}
+
+/* временное сообщение */
+.ticket-message .ticket-message-checkbox {
+    display: inline-block;
+
+    background: url(/static/global/svg/order-checkbox.svg) center center no-repeat;
+    background-size: 100% 100%;
+
+    border: none;
+    border-style: none;
+    outline: none;
+
+    padding: 0;
+    margin-right: 1rem;
+
+    height: 3rem;
+    width: 3.5rem;
+
+    float: left;
+}
+
+/* Шаг 1 - Выбор билетов по схеме зала и описание события */
+
+.ticket-counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ticket-counter-input {
+    background: transparent;
+    border: 3px solid #999;
+    border-radius: 1rem;
+    font-size: 1.7rem;
+    text-align: center;
+    margin-right: 0.25rem;
+    width: 4rem;
+    height: 2.25rem;
+}
+.ticket-counter-input:disabled {
+    background: #EDEDED;
+    color: #999;
+}
+.ticket-counter-label {
+    background: transparent;
+    color: #000;
+}
+.plus-button, .minus-button {
+    cursor: pointer;
+    display: inline-block;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 0 0.5rem;
+    margin: 0;
+    width: 2.25rem;
+}
+.plus-button {
+    background: #FFCC00;
+    color: #000;
+    border-radius: 0 6rem 6rem 0;
+    position: relative;
+    left: -0.25rem;
+}
+.minus-button {
+    background: #999;
+    color: #FFF;
+    border-radius: 6rem 0 0 6rem;
+}
+.minus-button > span {
+    display: inline-block;
+    transform: scale(0.85,1.25);
+    position: relative; top: -0.25rem;
+}
+
+#tickets {
+    padding: 0;
+
+    max-width: 60vw;
+    width: 60vw;
+}
+
+.stagehall {
+    border-collapse: collapse;
+
+    background-color: #fff;
+
+    width: 100%;
+}
+
+.stagehall td {
+    text-align: center;
+    vertical-align: middle;
+
+    padding: 0.1rem;
+}
+.stage,
+.sector,
+.row, 
+.rows,
+.seat {
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0;
+    height: 100%;
+}
+.stage {
+    border: 2px solid #000;
+    font-size: 1.5rem;
+    letter-spacing: 0.5rem;
+}
+.seat  {
+    background: #ECEFF1;
+    border: 1px solid #000;
+    color: #999;
+    font-size: 1rem;
+    font-weight: normal;
+
+    width: *;
+    min-width: 11px;
+    height: *;
+    min-height: 11px;
+}
+
+.free,
+.selected {
+    cursor:pointer;
+
+    font-weight: bold;
+}
+
+.box          { display: inline-block; width: 14px; height: 14px; border: 1px solid #000; vertical-align: -1px;}
+
+.free         { color: #FFF; text-shadow: 0.0625rem 0.09rem 0 #000; }
+
+.free.color1  { background-color: #F44336; } /* red 500 */
+.free.color2  { background-color: #4CAF50; } /* green 500 */
+.free.color3  { background-color: #2196F3; } /* blue 500 */
+.free.color4  { background-color: #E91E63; } /* pink 500 */
+.free.color5  { background-color: #00bcd4; } /* cyan 700 */
+.free.color6  { background-color: #9C27B0; } /* purple 500 */
+.free.color7  { background-color: #795548; } /* brown 500 */
+.free.color8  { background-color: #512da8; } /* deep purple 700 */
+.free.color9  { background-color: #009688; } /* teal 500*/
+.free.color10 { background-color: #3F51B5; } /* indigo 500 */
+.free.color11 { background-color: #B71C1C; } /* red 900 */
+.free.color12 { background-color: #1B5E20; } /* green 900 */
+.free.color13 { background-color: #0D47A1; } /* blue 900 */
+.free.color14 { background-color: #880E4F; } /* pink 900 */
+.free.color15 { background-color: #006064; } /* cyan 900 */
+.free.color16 { background-color: #4A148C; } /* purple 900*/
+.free.color17 { background-color: #3E2723; } /* brown 900 */
+.free.color18 { background-color: #311B92; } /* deep purple 900 */
+.free.color19 { background-color: #004D40; } /* teal 900 */
+.free.color20 { background-color: #1A237E; } /* indigo 900 */
+
+.free:hover,
+.selected     { background-color: #FFEB3B; color: #000; text-shadow: 0.0625rem 0.09rem 0 #FFF; } /* yellow 500 */
+
+.box.free:hover {background-color: inherit;}
+
+.bt {border-top:    2px solid #000;}
+.br {border-right:  2px solid #000;}
+.bb {border-bottom: 2px solid #000;}
+.bl {border-left:   2px solid #000;}
+
+/* Для мест, расположение которых в пространстве не важно (фан-зона, танцпол, входной билет и т.п.) */
+
+.stagehall ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0;
+    margin: 0;
+}
+.stagehall ul.horizontal {
+    flex-direction: row;
+}
+.stagehall ul.vertical {
+    flex-direction: column;
+}
+.stagehall li.seat {
+    list-style-type: none;
+    padding: 0.1rem 0.131rem;
+    margin: 0.1rem 0.1rem;
+    min-width: 1.5rem;
+}
+
+.stagehall .seat.one {
+    padding-left: 0.163rem;
+    padding-right: 0.163rem;
+}
+
+/* Блок-слайдер для показа выбранного сектора в больших залах */
+
+.sectors-caption {
+    font-weight: bold;
+    text-align: center;
+}
+
+.stagehall .sector-button {
+    display: table;
+    width:  100%;
+    height: 100%;
+    transition: background 0.5s linear 0s;
+}
+.stagehall .sector-button:hover label {
+    cursor: pointer;
+    background: #FFCC00;
+    color: #000;
+    transition: background 0.5s linear 0s;
+}
+
+.stagehall .sector-button label {
+    display: table-cell;
+    background: #FFE57F;
+    color: #000;
+    font-weight: bold;
+    vertical-align: middle;
+    transition: background 0.5s linear 0s;
+}
+
+.stagehall .sector-button span {
+    display: table-cell;
+    background: #E1E1E1;
+    color: #000;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.stagehall .sector-button input {
+    display: none;
+}
+.stagehall .sector-button input:checked + label {
+    background: #FFCC00;
+    color: #000;
+}
+
+.sectors-slider {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+
+    padding: 1rem 0;
+
+    max-width: 100%;
+
+    overflow-x: auto;
+
+    position: relative;
+    height: auto;
+}
+
+.sectors-slider .sector-title {
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+}
+.sectors-slider .stagehall {
+    margin: 0 auto;
+    width: auto;
+}
+
+.sectors-slider_close {
+    display: inline-block;
+    width:  2rem;
+    height: 2rem;
+    color: #000;
+}
+
+/* Кнопки Вперёд / Назад */
+
+#buy-tickets,
+#no-tickets {
+    display: none;
+}
+
+.order-buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 2rem;
+}
+.order-buttons .button-prev,
+.order-buttons .button-next {
+    padding: 0 1%;
+}
+
+.order-buttons .button-prev a,
+.order-buttons .button-next a,
+.order-buttons #back,
+.order-buttons #isubmit,
+.order-buttons #tomain {
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.order-buttons .button-prev a,
+.order-buttons #back {
+    padding: 0.5rem 1rem 0.5rem 3rem;
+}
+
+.order-buttons #back.step1 {
+    font-size: 0.95rem;
+
+    padding: 0.75rem 1rem 0.75rem 3rem;
+}
+
+.order-buttons #back {
+    background: url(/static/global/svg/order-prev-button-inactive.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+}
+.order-buttons #buy-tickets-inactive,
+.order-buttons #buy-tickets:disabled,
+.order-buttons #isubmit:disabled {
+    background: url(/static/global/svg/order-next-button.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #FFF;
+}
+.order-buttons #buy-tickets,
+.order-buttons #isubmit {
+    background: url(/static/global/svg/order-next-button-active.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #000;
+}
+
+.order-buttons a#buy-tickets-inactive,
+.order-buttons a#buy-tickets,
+.order-buttons a#isubmit {
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+}
+.order-buttons input#back {
+    padding: 0.5rem 1rem 2rem 4rem;
+}
+.order-buttons input#isubmit {
+    padding: 0.5rem 2.5rem 2rem 1rem;
+}
+.order-buttons #tomain {
+    background: url(/static/global/svg/order-main-button.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    padding: 0.75rem 2rem;
+}
+
+/* Описание события */
+
+.description-header {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    margin-top: 2rem;
+}
+
+.description {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    background: url(/static/global/svg/event-description.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    font-size: 1rem;
+
+    padding: 2.25rem 2rem 2rem 3rem;
+}
+
+.event-poster {
+    padding: 0;
+}
+
+.event-poster-body img {
+    width: 218px;
+    height: auto;
+}
+
+.event-description {
+    font-size: 0.95rem;
+
+    padding-left: 0.5rem;
+
+    width:     -webkit-calc(100% - 228px);
+    width:        -moz-calc(100% - 228px);
+    width:             calc(100% - 228px);
+    max-width: -webkit-calc(100% - 228px);
+    max-width:    -moz-calc(100% - 228px);
+    max-width:         calc(100% - 228px);
+}
+
+.event-description img {
+    width: 100%;
+    height: auto;
+    max-width: -moz-fit-content;
+
+    float: none !important;
+}
+
+.event-description iframe {
+    float: left;
+}
+
+.share-help {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.share {
+    display: inline-block;
+
+    position: relative;
+    left: 2.5rem;
+
+    width: 30%;
+}
+
+.share .share-text {
+    color: #FFF;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    width: auto;
+
+    min-width: 220px;
+}
+
+.share .share-icons {
+    padding: 0.5rem 2rem 0.5rem 3rem;
+
+    width: auto;
+}
+
+.share .pluso div .pluso-wrap .pluso-more {
+    display: none;
+}
+
+.order-telephone {
+    display: inline-block;
+
+    text-align: center;
+
+    width: 96vw;
+
+    position: relative;
+    top: -4rem;
+}
+.help,
+.help-contact {
+    display: inline-block;
+
+    min-width: 14rem;
+}
+
+/* Шаг 2 - Ввод контактной информации и выбор способа получения билетов */
+
+.content.step2 {
+    padding-left: 3rem;
+}
+
+#event-title-date-time.step2 {
+    min-width: 45rem;
+}
+
+.order-header.step2 {
+    width: 45rem;
+    width: -webkit-calc(40vw - 5rem);
+    width:    -moz-calc(40vw - 5rem);
+    width:         calc(40vw - 5rem);
+    min-width: 45rem;
+}
+
+#basket-container.step2 {
+    width: 100%;
+}
+
+h2 span {
+    display: block;
+
+    font-size: 0.9rem;
+    text-transform: lowercase;
+}
+
+input,
+textarea {
+    border: none;
+}
+
+.input-container {
+    margin: 0.25rem 0;
+}
+
+.agree-container {
+    display: inline-block;
+    margin-left: 0;
+    width: unset;
+    max-width: 43.5rem;
+}
+.agree-text {
+    padding-left: 1rem;
+    
+    position: relative;
+    left: 0;
+    top: -3rem;
+}
+
+#customer-name-label,
+#customer-email-label,
+#customer-phone-label,
+#customer-delivery-self-label,
+#customer-delivery-courier-label,
+#online-info {
+    display: inline-block;
+
+    color: #000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+
+    width: 18rem;
+    width: -webkit-calc(19vw - 5rem);
+    width:    -moz-calc(19vw - 5rem);
+    width:         calc(19vw - 5rem);
+    min-width: 18rem;
+
+    position: relative;
+
+    z-index: 4;
+}
+#customer-name,
+#customer-email,
+#customer-phone,
+#customer-address {
+    display: inline-block;
+
+    color: #000;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: 0.05rem;
+
+    padding: 0 2rem 0 3rem;
+
+    position: relative;
+    left: -2.5rem;
+
+    width: 28rem;
+    width: -webkit-calc(28vw - 5rem);
+    width:    -moz-calc(28vw - 5rem);
+    width:         calc(28vw - 5rem);
+    min-width: 28rem;
+
+    height: 3rem;
+}
+
+.input.grey::-webkit-input-placeholder { /* WebKit browsers */
+    color:    #FFF;
+}
+.input.grey:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    #FFF;
+   opacity:  1;
+}
+.input.grey::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    #FFF;
+   opacity:  1;
+}
+.input.grey:-ms-input-placeholder { /* Internet Explorer 10+ */
+   color:    #FFF;
+}
+
+.input-container-left {
+    display: inline-block;
+
+    padding: 0;
+
+    vertical-align: top;
+}
+
+.order-buttons.step2 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: 43rem;
+}
+.order-buttons.step2 .button-prev,
+.order-buttons.step2 .button-next {
+    padding: 0 0.1%;
+}
+.order-buttons #back.step2 {
+    font-size: 0.95rem;
+
+    padding: 0.75rem 1rem 0.75rem 3rem;
+}
+
+.customer-delivery {
+    background: url(/static/global/svg/background-yellow.svg) no-repeat;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+
+    color: #000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: bold;
+    letter-spacing: -0.001rem;
+
+    padding: 1rem 1.5rem 1rem 2.5rem;
+
+    width: 44rem;
+
+    position: absolute;
+    left: 3.75rem;
+
+    z-index: 1;
+}
+.customer-delivery a {
+    color: #000;
+}
+
+input[type=radio],
+input[type=checkbox] {
+    -khtml-opacity: 0;
+    -webkit-opacity: 0;
+    -moz-opacity: 0;
+    filter: alpha(opacity=0);
+    -ms-opacity: 0;
+    opacity: 0;
+
+    border: none;
+    border: 0px !important;
+    outline:none;
+
+    vertical-align: middle;
+
+    height: 2.5rem;
+    width: 3rem;
+
+    position: relative;
+    left: -3rem;
+
+    z-index: 100;
+}
+input[type=radio] + img,
+input[type=checkbox] + img {
+    display: inline-block;
+
+    background: url(/static/global/svg/order-checkbox.svg) center center no-repeat;
+    background-size: 100% 100%;
+
+    border: none;
+    border-style: none;
+    outline: none;
+
+    padding: 0;
+    margin: 0;
+
+    vertical-align: middle;
+
+    height: 3rem;
+    width: 3.5rem;
+
+    position: relative;
+    left: -6.5rem;
+    top: 0.3rem;
+
+    z-index: 2;
+}
+input[type=radio]:checked + img,
+input[type=checkbox]:checked + img {
+    background: url(/static/global/svg/order-checkbox-selected.svg) center center no-repeat;
+    background-size: 100% 100%;
+}
+
+input[type=radio]:disabled + img,
+input[type=checkbox]:disabled + img {
+    background: url(/static/global/svg/order-checkbox-disabled.svg) center center no-repeat;
+    background-size: 100% 100%;
+}
+
+.input-container.eticket .input-container-right {
+    padding-top: 0.5rem;
+}
+
+.order-options-description {
+    position: relative;
+    top: -0.5rem;
+}
+
+
+.customer-address p {
+    font-size: 1rem;
+    font-weight: bold;
+
+    margin-left: 18rem;
+}
+
+.ticket-offices-contacts p,
+.ticket-offices-contacts ul li,
+.online-info p,
+.online-info ul li {
+    font-size: 0.85rem;
+}
+
+.payment-info.step2,
+.eticket-info.step2 {
+    text-align: justify;
+    width: 43rem;
+}
+
+    /* Баннеры соцсетей на шаге 2 */
+
+.banners {
+    display: table-cell;
+
+    text-align: left;
+    vertical-align: top;
+
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 5;
+}
+
+.banners-left {
+    width: 20%;
+}
+
+.banners .bannergroup {
+    display: table;
+    vertical-align: top;
+    width: 100%;
+
+    /* flexbox 2009 */
+    display: -webkit-box;
+    display:    -moz-box;
+    /* flexbox 2011 */
+    display: -ms-flexbox;
+    /* flexbox */
+    display: -webkit-flex;
+    display: flex;
+
+    /* flexbox 2009 */
+    -webkit-box-orient: horizontal;
+    -moz-box-orient:    horizontal;
+    -webkit-box-direction: normal;
+    -moz-box-direction:    normal;
+    /* flexbox 2011 */
+    -ms-flex-flow:     row wrap;
+    /* flexbox */
+    -webkit-flex-flow: row wrap;
+    -moz-flex-flow:    row wrap;
+    flex-flow:         row wrap;
+
+    /* flexbox 2009 */
+    -webkit-box-align: start;
+    -moz-box-align:   start;
+    /* flexbox 2011 */
+    -ms-align-items:     flex-start;
+    /* flexbox */
+    -webkit-align-items: flex-start;
+    -moz-align-items:    flex-start;
+    align-items:         flex-start;
+
+    width: 100%;
+    height: 100%;
+}
+
+.banners .bannergroup .bannerheader {
+    /* flexbox 2009 */
+    -webkit-box-flex: 1;
+    -moz-box-flex:    1;
+    width: 100%;
+    /* flexbox 2011 */
+    -ms-flex:     0 1 100%;
+    /* flexbox */
+    -webkit-flex: 0 1 100%;
+    -moz-flex:    0 1 100%;
+    flex:         0 1 100%;
+
+    color: #000;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    margin: 0.5rem 0 0.25rem 0;
+}
+.banners .bannergroup .banneritem {
+    margin: 0.25rem 0.1rem;
+
+    max-width: 3rem;
+}
+
+.banners .banneritem img {
+    margin: 0;
+    padding: 0 5%;
+
+    width: 100%;
+    height: auto;
+
+/*    vertical-align: middle;*/
+}
+.banners .banneritem img {
+    margin-top: 5% 0;
+}
+
+.banners-left .bannergroup .bannerheader {
+    margin-bottom: 1.15rem;
+}
+
+.banners-left .banneritem {
+    display: inline-block;
+    width: 25%;
+    height: auto;
+
+    /* flexbox 2009 */
+    -webkit-box-flex: 1;
+    -moz-box-flex:    1;
+    width: 25%;
+    /* flexbox 2011 */
+    -ms-flex:     0 1 25%;
+    /* flexbox */
+    -webkit-flex: 0 1 25%;
+    -moz-flex:    0 1 25%;
+    flex:         0 1 25%;
+}
+
+/* Шаг 3 - Варианты завершения заказа в зависимости от способа получения билетов */
+
+.order-header.step3 {
+    flex-direction: column;
+}
+
+#basket-container.step3 {
+    margin-left: 0;
+}
+
+#order-info {
+    padding: 1rem 2.5rem;
+}
+
+#order-info li {
+    text-transform: initial;
+}
+
+#success-message {
+    font-weight: bold;
+
+    margin-top: 2rem;
+}
+
+/* Адаптивность */
+
+@media all and (max-width: 1520px) {
+
+    .share-help {
+        flex-direction: column;
+    }
+    .share {
+        text-align: center;
+        width: auto;
+        left: 0;
+    }
+    .order-telephone {
+        position: static;
+        width: auto;
+        top: 0;
+    }
+
+}
+
+@media all and (max-width: 1440px) {
+
+    #event-venue.step2 {
+        min-width: 45rem;
+        left: 0;
+    }
+
+    #tickets {
+/*        width: 100%;*/
+        max-width: 100%;
+    }
+
+}
+
+@media all and (max-width: 1150px) {
+
+    .customer-address p {
+        margin-left: 2.25rem;
+    }
+
+}
+
+@media all and (max-width: 1080px) {
+
+    .body {
+        padding: 1rem;
+    }
+
+    .order-progress {
+        justify-content: space-around;
+    }
+
+    .order-progress-step1,
+    .order-progress-step2,
+    .order-progress-step3 {
+        font-size: 0.75rem;
+    }
+
+    .order-header.step2 {
+        width: auto;
+        min-width: unset;
+    }
+
+    .event-header {
+        flex-direction: column;
+    }
+    #event-title-date-time {
+        margin-bottom: 0;
+        width: 100%;
+    }
+    #event-venue {
+        margin-top: 0;
+        width: 100%;
+        max-width: unset;
+        top: -0.9rem;
+        left: 0;
+    }
+
+    #event-title-date-time.step2,
+    #event-venue.step2 {
+        min-width: unset;
+    }
+
+    .order-header {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+
+    #basket-container {
+        width: 92vw;
+        max-width: 92vw;
+    }
+
+    #tickets {
+        padding-top: 1rem;
+        margin: 0;
+
+        width: auto;
+        max-width: unset;
+    }
+
+    #legend-general ul,
+    #legend-prices ul {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .description {
+        padding: 2rem;
+    }
+
+    .event-description {
+        display: block;
+
+        max-width: 100%;
+    }
+
+    .agree-container {
+        max-width: unset;
+    }
+
+    #customer-name-label,
+    #customer-name,
+    #customer-email-label,
+    #customer-email,
+    #customer-phone-label,
+    #customer-phone,
+    #customer-delivery-self-label,
+    #customer-address {
+        display: block;
+
+        padding-left: 2rem;
+
+        width: 100%;
+
+        left: 0;
+    }
+
+    #customer-delivery-self-label,
+    #customer-delivery-courier-label,
+    #online-info,
+    #customer-name,
+    .payment-info.step2,
+    .eticket-info.step2 {
+        width: 100%;
+    }
+
+    .customer-delivery {
+        width: 92%;
+        width: -webkit-calc(100% - 5rem);
+        width:    -moz-calc(100% - 5rem);
+        width:         calc(100% - 5rem);
+    }
+
+    .order-buttons.step2 {
+        width: 100%;
+    }
+
+}
+
+@media all and (max-width: 800px) {
+
+    .customer-delivery {
+        padding-left: 2rem;
+    }
+
+    #basket-container #group-events-header + p {
+        display: none;
+    }
+
+    .help, .help-contact, .share span, .bannerheader {
+        padding: 0.5rem 1.25rem;
+
+        min-width: unset;
+    }
+    .banners.step2 .bannerheader {
+        font-size: inherit;
+        padding: inherit;
+    }
+
+    .bzlogo-mask {
+        width:  2.5rem;
+        height: 3rem;
+    }
+
+    .share .share-text {
+        min-width: unset;
+    }
+
+}
+
+
+@media all and (max-width: 640px) {
+
+    .order-progress-step1,
+    .order-progress-step2,
+    .order-progress-step3 {
+        flex: 1 0 auto;
+    }
+
+}
