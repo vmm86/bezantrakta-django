@@ -331,6 +331,11 @@ a.section:visited {
     padding: 20px 20px 0;
 }
 
+#content-main .module a:link,
+#content-main .module a:visited {
+    border-bottom: none;
+}
+
 #content-related {
     background: transparent;
     border-radius: 2rem 2rem 0 0;
