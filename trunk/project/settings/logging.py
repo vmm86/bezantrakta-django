@@ -31,11 +31,14 @@ for log_file in LOGGING_FILES.values():
     except FileNotFoundError:
         open(log_file, 'a').close()
 
+# Ротация логов ежедневно с хранением файлов за 15 последних дней (для более старых - открывать бэкапы)
+# Время в логах, как и на сервере, указывается в ``UTC``
 LOGGING_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 LOGGING_FORMATTER = 'default'
-LOGGING_CLASS = 'logging.handlers.RotatingFileHandler'
-LOGGING_MAX_BYTES = 1024 * 1024 * 5  # 5 MB
-LOGGING_BACKUP_COUNT = 7
+LOGGING_CLASS = 'logging.handlers.TimedRotatingFileHandler'
+LOGGING_WHEN = 'D'
+LOGGING_UTC = True
+LOGGING_BACKUP_COUNT = 15
 
 LOGGING = {
     'version': 1,
@@ -73,7 +76,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['DJANGO_DEFAULT'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   LOGGING_FORMATTER,
         },
@@ -81,7 +84,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['DJANGO_REQUEST'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   LOGGING_FORMATTER,
         },
@@ -89,7 +92,7 @@ LOGGING = {
             'level':       'WARNING',
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['DJANGO_SERVER'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   LOGGING_FORMATTER,
         },
@@ -97,7 +100,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['DJANGO_TEMPLATE'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   LOGGING_FORMATTER,
         },
@@ -105,7 +108,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['DJANGO_DATABASE'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   LOGGING_FORMATTER,
         },
@@ -113,7 +116,7 @@ LOGGING = {
             'level':       'WARNING',
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['DJANGO_SECURITY'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   LOGGING_FORMATTER,
         },
@@ -122,7 +125,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['BEZANTRAKTA_DEFAULT'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
@@ -130,7 +133,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['BEZANTRAKTA_ORDER'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
@@ -138,7 +141,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['PAYMENT_SERVICE_CHECKUP'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
@@ -146,7 +149,7 @@ LOGGING = {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['TICKET_SERVICE_DISCOVER'],
-            'maxBytes':    LOGGING_MAX_BYTES,
+            'when':        LOGGING_WHEN,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
