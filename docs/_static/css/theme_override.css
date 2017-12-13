@@ -97,6 +97,14 @@ a:visited {
 .wy-nav-content {
     border-right: 1px solid #999;
     padding: 1.5em 2em;
+    max-width: unset;
+}
+
+.wy-nav-content .document a{
+    color: #2980B9 !important;
+    font-weight: bold;
+    text-decoration: underline;
+    text-shadow: 1px 1px 0 #fff;
 }
 
 code,
@@ -115,4 +123,17 @@ code,
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
+}
+
+.wy-table thead th,
+.rst-content table.docutils thead th,
+.rst-content table.field-list thead th {
+    background-color: #e1e4e5;
+    border-bottom: 4px solid #e1e4e5;
+}
+
+.wy-table thead th p,
+.rst-content table.docutils thead th p,
+.rst-content table.field-list thead th p {
+    margin-bottom: 0;
 }
