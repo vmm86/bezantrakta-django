@@ -8,6 +8,8 @@ from rangefilter.filter import DateRangeFilter
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
 
+from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
+
 from ..models import Order, OrderTicket
 
 
@@ -60,7 +62,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = (
         ('datetime', DateRangeFilter),
         'status', 'delivery', 'payment',
-        ('event', admin.RelatedOnlyFieldListFilter),
+        ('event', RelatedOnlyFieldDropdownFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_per_page = 20
