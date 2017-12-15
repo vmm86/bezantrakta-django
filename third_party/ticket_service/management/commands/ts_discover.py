@@ -419,11 +419,11 @@ ______________________________________________________________________________
                 title=urlify(event['event_title'], num_chars=slug_num_chars),
                 id=event['event_id'],
             )
-            # Получение списка цен на билеты (для легенды схемы зала)
+            # Получение списка цен на билеты
             seats_and_prices = ts.seats_and_prices(event_id=event['event_id'])
             # Минимальная цена на билет берётся из списка цен,
-            # если список цен непустой и если минимальная цена отсутствует или равна 0
-            if len(seats_and_prices) > 0 and len(seats_and_prices['prices']) > 0 and event['event_min_price'] == 0:
+            # если 1) минимальная цена отсутствует или равна 0 и 2) список цен непустой
+            if event['event_min_price'] == 0 and len(seats_and_prices) > 0 and len(seats_and_prices['prices']) > 0:
                 event['event_min_price'] = seats_and_prices['prices'][0]
 
             # Если событие уже было добавлено ранее
