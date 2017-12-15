@@ -29,6 +29,9 @@ def order(request):
     logger = logging.getLogger('bezantrakta.order')
 
     if request.method == 'POST':
+        # Получение параметров сайта
+        domain = cache_factory('domain', request.domain_slug)
+
         # Получение параметров события
         event_uuid = uuid.UUID(request.COOKIES.get('bezantrakta_event_uuid', None))
         event = cache_factory('event', event_uuid)
@@ -50,7 +53,7 @@ def order(request):
         # Настройки сервиса онлайн-оплаты
         payment_service = cache_factory(
             'payment_service', event['payment_service_id'],
-            domain_slug=request.domain_slug
+            domain_slug=domain['domain_slug']
         )
         # Экземпляр сервиса онлайн-оплаты (с указанием URL завершения удачной или НЕудачной оплаты)
         ps = payment_service['instance']
@@ -95,15 +98,12 @@ def order(request):
             if customer['payment'] == 'online':
                 order['total'] = ps.total_plus_commission(order['total'])
 
-            # Получение параметров сайта
-            domain = cache_factory('domain', request.domain_slug)
-
             # Логирование базовой информации о заказе
             now = timezone_now()
             logger.info('\n----------Обработка заказа {order_uuid}----------'.format(order_uuid=order['order_uuid']))
             logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
 
-            logger.info('Сайт: {title} ({id})'.format(title=domain['title'], id=domain['id']))
+            logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
             logger.info('Сервис продажи билетов: {title} ({id})'.format(
                     title=ticket_service['title'],
                     id=ticket_service['id']
@@ -234,7 +234,7 @@ def order(request):
                         status=order['status'],
                         tickets_count=order['count'],
                         total=order['total'],
-                        domain_id=request.domain_id
+                        domain_id=domain['domain_id']
                     )
                 except IntegrityError:
                     logger.critical('Такой заказ уже был добавлен в базу данных ранее!')
@@ -267,7 +267,7 @@ def order(request):
                                 seat_title=t['seat_title'],
                                 price_group_id=t['price_group_id'],
                                 price=t['price'],
-                                domain_id=request.domain_id
+                                domain_id=domain['domain_id']
                             )
                         except IntegrityError:
                             logger.critical('Невозможно добавить билет в БД!')
