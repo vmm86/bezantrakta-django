@@ -4,6 +4,8 @@ import simplejson as json
 from datetime import datetime
 from decimal import Decimal
 
+from django.conf import settings
+
 from ..abc import PaymentService
 
 
@@ -221,7 +223,7 @@ class Sberbank(PaymentService):
                         elif internal.type is int and type(iterable[internal.key]) is not int:
                             iterable[internal.key] = int(iterable[internal.key])
                         elif internal.type is bool and type(iterable[internal.key]) is not bool:
-                            iterable[internal.key] = True if iterable[internal.key] in self.BOOLEAN_VALUES else False
+                            iterable[internal.key] = True if iterable[internal.key] in settings.BOOLEAN_VALUES else False
                         elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
                         elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
