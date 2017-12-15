@@ -180,7 +180,17 @@ class SuperBilet(TicketService):
             }
             # print('DATA:\n', data['Value'], '\n')
 
-        response = self.client.service[method](**data)
+        # Обработка возможных исключений в грёбаном СуперГовне
+        try:
+            response = self.client.service[method](**data)
+        except zeep.exceptions.Fault as error:
+            response = {}
+            response['success'] = False
+            response['actor'] = error.actor
+            response['code'] = error.code
+            response['subcodes'] = error.subcodes
+            response['message'] = error.message
+            response['detail'] = error.detail
 
         # print('XML:\n', response, '\n')
 
