@@ -1,7 +1,7 @@
 {% extends "mail_templated/base.tpl" %}
 
 {% block subject %}
-{{ domain.title }}: {% if order.order_id %}Заказ № {{ order.order_id }}{% else %}Заказ{% endif %} ({{ customer.delivery_description }}, {{ customer.payment_description }})
+{{ domain.domain_title }}: {% if order.order_id %}Заказ № {{ order.order_id }}{% else %}Заказ{% endif %} ({{ customer.delivery_description }}, {{ customer.payment_description }})
 {% endblock %}
 
 {% block html %}
@@ -16,7 +16,7 @@
 </head>
 <body bgcolor="ffffff" topmargin="10" leftmargin="10" marginwidth="10" marginheight="10" offset="0">
 
-    <h2>{{ domain.title }}: {% if order.order_id %}Заказ № &#8203;{{ order.order_id }}{% else %}Заказ{% endif %}</h2>
+    <h2>{{ domain.domain_title }}: {% if order.order_id %}Заказ № &#8203;{{ order.order_id }}{% else %}Заказ{% endif %}</h2>
 
     <h3>{{ event.event_date }} {{ event.event_title }}</h3>
     <h3>{{ event.event_venue_title }} {% if event.event_venue_city %}({{ event.event_venue_city }}){% endif %}</h3>
