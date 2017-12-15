@@ -48,11 +48,10 @@ class PaymentServiceAdmin(admin.ModelAdmin):
         """
         super(PaymentServiceAdmin, self).save_model(request, obj, form, change)
 
-        if change and obj._meta.pk.name not in form.changed_data:
-            cache_factory('payment_service', obj.id, reset=True)
+        cache_factory('payment_service', obj.id, reset=True)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
-        for item in queryset:
-            cache_factory('payment_service', item.id, reset=True)
+        for obj in queryset:
+            cache_factory('payment_service', obj.id, reset=True)
     batch_set_cache.short_description = _('payment_service_admin_batch_set_cache')
