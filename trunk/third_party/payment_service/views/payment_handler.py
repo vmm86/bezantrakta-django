@@ -17,14 +17,14 @@ def payment_handler(request):
     logger = logging.getLogger('bezantrakta.order')
 
     # Получение уникальных идентификаторов события и заказа из GET-парамеров
-    event_uuid = uuid.UUID(request.GET.get('event_uuid', None))
+    event_uuid = request.GET.get('event_uuid', None)
     if event_uuid is not None:
         try:
             event_uuid = uuid.UUID(event_uuid)
         except ValueError:
             event_uuid = None
 
-    order_uuid = uuid.UUID(request.GET.get('order_uuid', None))
+    order_uuid = request.GET.get('order_uuid', None)
     if order_uuid is not None:
         try:
             order_uuid = uuid.UUID(order_uuid)
