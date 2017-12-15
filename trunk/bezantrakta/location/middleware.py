@@ -57,7 +57,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
         request.city_state = domain['city_state']
 
         # URL сайта (прокотол + домен) без слэша в конце (для подстановки к относительным ссылкам)
-        request.url_protocol_domain = build_absolute_url(request.domain_slug)
+        request.url_protocol_domain = domain['url_protocol_domain']
         # Полный абсолютный URL текущей страницы
         request.url_full = build_absolute_url(request.domain_slug, path)
 
