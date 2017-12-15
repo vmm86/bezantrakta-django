@@ -96,12 +96,7 @@ def order(request):
                 order['total'] = ps.total_plus_commission(order['total'])
 
             # Получение параметров сайта
-            domain = {}
-            domain['id'] = request.domain_id
-            domain['title'] = request.domain_title
-            domain['slug'] = request.domain_slug
-            domain['url'] = request.url_domain
-            domain['settings'] = request.domain_settings
+            domain = cache_factory('domain', request.domain_slug)
 
             # Логирование базовой информации о заказе
             now = timezone_now()
