@@ -226,9 +226,8 @@ class EventAdmin(admin.ModelAdmin):
         """
         super(EventAdmin, self).save_model(request, obj, form, change)
 
-        if change and obj._meta.pk.name not in form.changed_data:
-            # Обновить кэш группы (и всех его актуальных событий) или события (и его группы, если она имеется)
-            self.update_event_or_group_cache(obj)
+        # Обновить кэш группы (и всех его актуальных событий) или события (и его группы, если она имеется)
+        self.update_event_or_group_cache(obj)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""

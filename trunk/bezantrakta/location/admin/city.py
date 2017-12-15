@@ -36,6 +36,6 @@ class CityAdmin(admin.ModelAdmin):
 
         # Обновить кэш всех связанных с городом сайтов, если они присутствуют
         city_domains = Domain.objects.filter(city_id=obj.id).values_list('slug', flat=True)
-        if change and obj._meta.pk.name not in form.changed_data and city_domains:
+        if city_domains:
             for domain_slug in city_domains:
                 cache_factory('domain', domain_slug, reset=True)

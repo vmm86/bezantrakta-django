@@ -65,18 +65,17 @@ class TicketServiceSchemeVenueBinderAdmin(admin.ModelAdmin):
         """
         super(TicketServiceSchemeVenueBinderAdmin, self).save_model(request, obj, form, change)
 
-        if change and obj._meta.pk.name not in form.changed_data:
-            cache_factory(
-                'ticket_service_scheme', obj.ticket_service_scheme_id, reset=True,
-                ticket_service_id=obj.ticket_service_id
-            )
+        cache_factory(
+            'ticket_service_scheme', obj.ticket_service_scheme_id, reset=True,
+            ticket_service_id=obj.ticket_service_id
+        )
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
-        for item in queryset:
+        for obj in queryset:
             cache_factory(
-                'ticket_service_scheme', item.ticket_service_scheme_id, reset=True,
-                ticket_service_id=item.ticket_service_id
+                'ticket_service_scheme', obj.ticket_service_scheme_id, reset=True,
+                ticket_service_id=obj.ticket_service_id
             )
     batch_set_cache.short_description = _('ticketservicevenuebinder_admin_batch_set_cache')
 

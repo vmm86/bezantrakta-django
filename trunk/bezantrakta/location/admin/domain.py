@@ -59,7 +59,6 @@ class DomainAdmin(admin.ModelAdmin):
             obj.is_published = False if obj.is_published else True
             obj.save(update_fields=['is_published'])
 
-            # Обновить кэш сайта
             cache_factory('domain', obj.slug, reset=True)
     publish_or_unpublish_items.short_description = _('domain_admin_publish_or_unpublish_items')
 
@@ -70,13 +69,10 @@ class DomainAdmin(admin.ModelAdmin):
         """
         super(DomainAdmin, self).save_model(request, obj, form, change)
 
-        if change and obj._meta.pk.name not in form.changed_data:
-            # Обновить кэш сайта
-            cache_factory('domain', obj.slug, reset=True)
+        cache_factory('domain', obj.slug, reset=True)
 
     def batch_set_cache(self, request, queryset):
         """Пакетное пересохранение кэша."""
         for obj in queryset:
-            # Обновить кэш сайта
             cache_factory('domain', obj.slug, reset=True)
     batch_set_cache.short_description = _('domain_admin_batch_set_cache')
