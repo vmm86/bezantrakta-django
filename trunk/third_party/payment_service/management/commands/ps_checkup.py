@@ -11,6 +11,7 @@ from project.shortcuts import timezone_now
 
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
+from bezantrakta.order.shortcuts import success_or_error
 
 
 class Command(BaseCommand):
@@ -63,6 +64,7 @@ ______________________________________________________________________________
             order_uuid=F('id'),
             order_id=F('ticket_service_order'),
             payment_service_id=F('ticket_service__payment_service_id'),
+            domain_slug=F('domain__slug'),
         ).values(
             'event_uuid',
             'event_id',
@@ -79,7 +81,8 @@ ______________________________________________________________________________
             'payment_id',
             'status',
             'tickets_count',
-            'total'
+            'total',
+            'domain_slug'
         ).filter(
             payment='online',
             status='ordered',
@@ -99,6 +102,9 @@ ______________________________________________________________________________
                     )
                     continue
 
+                # Получение параметров сайта
+                domain = cache_factory('domain', order['domain_slug'])
+
                 # Экземпляр класса сервиса онлайн-оплаты
                 payment_service = cache_factory('payment_service', order['payment_service_id'])
                 ps = payment_service['instance']
@@ -113,17 +119,15 @@ ______________________________________________________________________________
                 # Если таймаут на оплату уже прошёл
                 if now_minus_order_datetime > timedelta(minutes=timeout):
                     self.log('\nНезавершённая оплата: {order}'.format(order=order))
-
-                    self.log('\nТаймаут на оплату: {timeout}'.format(timeout=timeout))
-
-                    self.log('\nДата заказа: {:%Y-%m-%d %H:%M:%S}'.format(order['datetime']))
+                    self.log('Таймаут на оплату: {timeout}'.format(timeout=timeout))
+                    self.log('Дата заказа: {:%Y-%m-%d %H:%M:%S}'.format(order['datetime']))
                     self.log('Текущее время: {:%Y-%m-%d %H:%M:%S}'.format(now))
                     self.log('Разница во времени: {}'.format(now_minus_order_datetime))
 
                     self.log('\nПроверка статуса оплаты...')
 
                     # Информация о событии из кэша
-                    # event = cache_factory('event', order['event_uuid'])
+                    event = cache_factory('event', order['event_uuid'])
 
                     # Получение реквизитов покупателя
                     customer = {}
@@ -133,37 +137,19 @@ ______________________________________________________________________________
                     customer['email'] = order['email']
                     customer['phone'] = order['phone']
 
-                    # Экземпляр класса сервиса продажи билетов
-                    ticket_service = cache_factory('ticket_service', order['ticket_service_id'])
-                    ts = ticket_service['instance']
-
                     # Проверка статуса оплаты
                     payment_status = ps.payment_status(payment_id=order['payment_id'])
-                    self.log('\npayment_status: {payment_status}'.format(payment_status=payment_status))
+                    self.log('\nСтатус оплаты: {payment_status}'.format(payment_status=payment_status))
 
-                    # Если оплата прошла НЕуспешно
-                    if not payment_status['success']:
-                        self.log('\nОплата {payment_id} завершилась НЕуспешно'.format(
-                            payment_id=order['payment_id'])
-                        )
+                    # Обработка успешной или НЕуспешной оплаты
+                    result = success_or_error(domain, event, order, payment_status)
 
-                        # Отмена заказа в сервисе продажи билетов
-                        ts.order_delete(
-                            event_id=order['event_id'],
-                            order_uuid=order['order_uuid'],
-                            order_id=order['order_id'],
-                            tickets=order['tickets'],
-                        )
-                        self.log('Отмена заказа в сервисе продажи билетов...')
-
-                        # Отмена заказа в БД
-                        order['status'] = 'cancelled'
-                        self.log('Статус заказа: {status}'.format(
-                            status=ORDER_STATUS[order['status']]['description']),
-                            level='NOTICE'
-                        )
-
-                        Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
+                    # Если оплата завершилась успешно
+                    if result['success']:
+                        pass
+                    # Если оплата завершилась НЕуспешно - логирование информации об ошибке
+                    else:
+                        pass
 
         # Если в БД нет незавершённых оплат
         else:
