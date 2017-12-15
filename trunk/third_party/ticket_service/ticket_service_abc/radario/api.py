@@ -4,6 +4,8 @@ from datetime import datetime
 from decimal import Decimal
 from operator import itemgetter
 
+from django.conf import settings
+
 from ..abc import TicketService
 
 
@@ -173,7 +175,7 @@ class Radario(TicketService):
                         elif internal.type is int and type(iterable[internal.key]) is not int:
                             iterable[internal.key] = int(iterable[internal.key])
                         elif internal.type is bool and type(iterable[internal.key]) is not bool:
-                            iterable[internal.key] = True if iterable[internal.key] in self.BOOLEAN_VALUES else False
+                            iterable[internal.key] = True if iterable[internal.key] in settings.BOOLEAN_VALUES else False
                         elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
                         elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
@@ -835,7 +837,9 @@ class Radario(TicketService):
 
         Returns:
             dict: Информация об удалении заказа.
-                success (bool): Успешное или НЕуспешное удаление заказа.
+
+                Содержимое результата:
+                    * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
         """
         method = 'POST'
         url = '/orders/cancel'
@@ -856,6 +860,9 @@ class Radario(TicketService):
 
         Returns:
             dict: Информация об успешной или НЕуспешной оплате.
+
+                Содержимое результата:
+                    * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
         """
         method = 'POST'
         url = '/orders/approve'

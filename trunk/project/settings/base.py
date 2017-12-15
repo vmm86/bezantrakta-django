@@ -33,6 +33,9 @@ BEZANTRAKTA_ORDER_VIEWS = ('event', 'checkout', 'confirmation')
 # Путь для сохранения электронных билетов в формате PDF
 BEZANTRAKTA_ETICKET_PATH = os.path.join(PARENT_DIR, 'e_tickets')
 
+# Значения, которые можно приводить к булеву типу данных (например, в ответе запроса к API)
+BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
+
 # Application definition
 
 INSTALLED_APPS = [

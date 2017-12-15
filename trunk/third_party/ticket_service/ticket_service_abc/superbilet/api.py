@@ -1,14 +1,15 @@
 import dateutil.parser
 import logging
 import uuid
-import xmltodict
 import xml
+import xmltodict
 import zeep
 from collections import defaultdict
 from datetime import datetime
+from decimal import Decimal
 from operator import itemgetter
 
-from decimal import Decimal
+from django.conf import settings
 
 from ..abc import TicketService
 
@@ -293,7 +294,7 @@ class SuperBilet(TicketService):
                                 int(iterable[internal.key])
                             )
                         elif internal.type is bool and type(iterable[internal.key]) is not bool:
-                            iterable[internal.key] = True if iterable[internal.key] in self.BOOLEAN_VALUES else False
+                            iterable[internal.key] = True if iterable[internal.key] in settings.BOOLEAN_VALUES else False
                         elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
                         elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
@@ -681,7 +682,7 @@ class SuperBilet(TicketService):
                 if s['result_code'] == 0:
                     # Название сектора (если оно получено без ошибок)
                     s['sector_title'] = (
-                        sectors[s['sector_id']] if
+                        sectors.get(s['sector_id']) if
                         type(sectors) is dict and 'error' not in sectors else
                         ''
                     )
@@ -1029,14 +1030,17 @@ class SuperBilet(TicketService):
             order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             order_id (int): Идентификатор заказа.
             tickets (list): Список словарей с параметрами заказываемого места.
-            tickets[sector_id] (int): Идентификатор сектора.
-            tickets[row_id] (int): Идентификатор ряда.
-            tickets[seat_id] (int): Идентификатор места.
+
+                Содержимое ``tickets``:
+                    * **sector_id** (int): Идентификатор сектора.
+                    * **row_id** (int): Идентификатор ряда.
+                    * **seat_id** (int): Идентификатор места.
 
         Returns:
             dict: Информация об удалении заказа.
 
-            success (bool): Успешное или НЕуспешное удаление заказа.
+                Содержимое результата:
+                    * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
         """
         method = 'FreeReservation'
         input_mapping = {
@@ -1102,6 +1106,9 @@ class SuperBilet(TicketService):
 
         Returns:
             dict: Информация об успешной или НЕуспешной оплате.
+
+                Содержимое результата:
+                    * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
         """
         if self.__mode == 'agency':
             method = 'SetSold'  # SetSoldExt
