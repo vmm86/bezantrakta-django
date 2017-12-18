@@ -7,7 +7,7 @@ def debug_console(*args):
     Args:
         *args: Description
     """
-    if settings.DEBUG:
+    if settings.DEBUG and settings.BEZANTRAKTA_DEBUG_CONSOLE:
         for i in range(len(args)):
             print('\033[1;93m', args[i], '\033[0;0m', sep='', end=' ')
-    print('\n')
+        print('\n')
