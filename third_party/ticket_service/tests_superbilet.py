@@ -135,14 +135,14 @@ tickets = [
 ]
 # py_result = ts.order_create(event_id=event_id, order_uuid=order_uuid, customer=customer, tickets=tickets)
 
-# ORDER_DELETE
+# ORDER_CANCEL
 order_id = 39351
-# py_result = ts.order_delete(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
+# py_result = ts.order_cancel(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
 
-# ORDER_PAYMENT
+# ORDER_APPROVE
 # payment_id = '2d529111-1da0-455a-be55-3456eaf97055'
 # payment_datetime = datetime.now()
-# py_result = ts.order_payment(
+# py_result = ts.order_approve(
 #     event_id=event_id,
 #     order_uuid=order_uuid,
 #     payment_id=payment_id,

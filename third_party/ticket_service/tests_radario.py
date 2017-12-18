@@ -78,11 +78,11 @@ tickets = [
 order_id = 1880161
 # py_result = ts.order(order_id=order_id)
 
-# ORDER_DELETE
-# py_result = ts.order_delete(order_id=order_id)
+# ORDER_CANCEL
+# py_result = ts.order_cancel(order_id=order_id)
 
-# ORDER_PAYMENT
-# py_result = ts.order_payment(order_id=order_id)
+# ORDER_APPROVE
+# py_result = ts.order_approve(order_id=order_id)
 
 try:
     print(type(py_result))

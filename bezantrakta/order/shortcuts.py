@@ -58,7 +58,7 @@ def success_or_error(domain, event, order, payment_status):
 
         # Подтверждение оплаты в сервисе продажи билетов
         logger.info('Подтверждение оплаты заказа в сервисе продажи билетов...')
-        order_payment = ts.order_payment(
+        order_approve = ts.order_approve(
             event_id=event['id'],
             order_uuid=order['order_uuid'],
             order_id=order['order_id'],
@@ -67,7 +67,7 @@ def success_or_error(domain, event, order, payment_status):
             tickets=order['tickets'],
         )
         # Заказ успешно подтверждён как оплаченный в сервисе продажи билетов
-        if order_payment['success']:
+        if order_approve['success']:
             result['success'] = True
 
             logger.info('Заказ {order_id} в сервисе продажи билетов отмечен как оплаченный'.format(
@@ -157,7 +157,7 @@ def success_or_error(domain, event, order, payment_status):
 
         # Отмена заказа в сервисе продажи билетов
         logger.info('Отмена заказа в сервисе продажи билетов...')
-        order_delete = ts.order_delete(
+        order_cancel = ts.order_cancel(
             event_id=event['id'],
             order_uuid=order['order_uuid'],
             order_id=order['order_id'],
@@ -165,7 +165,7 @@ def success_or_error(domain, event, order, payment_status):
         )
 
         # Заказ успешно отмечен как отменённый в сервисе продажи билетов
-        if order_delete['success']:
+        if order_cancel['success']:
             logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
                 order_id=order['order_id']
                 )
