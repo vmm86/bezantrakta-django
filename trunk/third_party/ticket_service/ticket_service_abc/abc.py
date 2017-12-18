@@ -207,8 +207,8 @@ class TicketService(ABC):
         pass
 
     @abstractmethod
-    def order_delete(self, **kwargs):
-        """Удаление заказа.
+    def order_cancel(self, **kwargs):
+        """Отмена ранее созданного заказа.
 
         Args:
             event_id (int): Идентификатор события.
@@ -230,8 +230,8 @@ class TicketService(ABC):
         pass
 
     @abstractmethod
-    def order_payment(self, **kwargs):
-        """Отметка об оплате созданного ранее заказа.
+    def order_approve(self, **kwargs):
+        """Отметка о подтверждении онлайн-оплаты созданного ранее заказа.
 
         Args:
             event_id (int): Идентификатор события.

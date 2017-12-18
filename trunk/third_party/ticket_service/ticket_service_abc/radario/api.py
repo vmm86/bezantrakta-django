@@ -829,8 +829,8 @@ class Radario(TicketService):
         output_mapping = {}
         return self.request(method, url, data, output_mapping)
 
-    def order_delete(self, **kwargs):
-        """Удаление заказа.
+    def order_cancel(self, **kwargs):
+        """Отмена ранее созданного заказа.
 
         Args:
             order_id (int): Идентификатор заказа.
@@ -848,12 +848,12 @@ class Radario(TicketService):
         }
         output_mapping = {}
 
-        delete = self.request(method, url, data, output_mapping)
+        cancel = self.request(method, url, data, output_mapping)
 
-        return delete
+        return cancel
 
-    def order_payment(self, **kwargs):
-        """Отметка об оплате созданного ранее заказа.
+    def order_approve(self, **kwargs):
+        """Отметка о подтверждении онлайн-оплаты созданного ранее заказа.
 
         Args:
             order_id (int): Идентификатор заказа.
@@ -871,9 +871,9 @@ class Radario(TicketService):
         }
         output_mapping = {}
 
-        payment = self.request(method, url, data, output_mapping)
+        approved = self.request(method, url, data, output_mapping)
 
-        return payment
+        return approved
 
     def order_refund(self, **kwargs):
         """Возврат стоимости билетов (с удалением заказа и освобождением билетов для продажи).

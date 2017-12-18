@@ -1032,8 +1032,8 @@ class SuperBilet(TicketService):
 
         return response
 
-    def order_delete(self, **kwargs):
-        """Удаление заказа.
+    def order_cancel(self, **kwargs):
+        """Отмена ранее созданного заказа.
 
         Args:
             event_id (int): Идентификатор события.
@@ -1086,20 +1086,20 @@ class SuperBilet(TicketService):
             'reservdate':  None,
             'price':       None,
         }
-        delete = self.request(method, input_mapping, data, output_mapping)
+        cancel = self.request(method, input_mapping, data, output_mapping)
 
         response = {}
 
-        if type(delete) is list:
-            for d in delete:
-                response['success'] = True if d['result_code'] == 0 else False
+        if type(cancel) is list:
+            for c in cancel:
+                response['success'] = True if c['result_code'] == 0 else False
         else:
-            return delete
+            return cancel
 
         return response
 
-    def order_payment(self, **kwargs):
-        """Отметка об оплате созданного ранее заказа.
+    def order_approve(self, **kwargs):
+        """Отметка о подтверждении онлайн-оплаты созданного ранее заказа.
 
         Агентство вызывает обычный метод, а Театр вызывает Ext-метод с одними и теми же аргументами.
 
@@ -1167,12 +1167,12 @@ class SuperBilet(TicketService):
             'paymentdate':    None,
             'paymenttime':    None,
         }
-        payment = self.request(method, input_mapping, data, output_mapping)
+        approved = self.request(method, input_mapping, data, output_mapping)
 
         response = {}
 
-        for p in payment:
-            response['success'] = True if 'result_code' in p and p['result_code'] == 0 else False
+        for a in approved:
+            response['success'] = True if 'result_code' in a and a['result_code'] == 0 else False
 
         return response
 

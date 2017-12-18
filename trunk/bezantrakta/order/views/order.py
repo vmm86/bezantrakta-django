@@ -367,20 +367,33 @@ def order(request):
                             logger.info('\nСоздание новой онлайн-оплаты завершилось НЕуспешно')
 
                             # Отмена заказа в сервисе продажи билетов
-                            ts.order_delete(
+                            order_cancel = ts.order_cancel(
                                 event_id=event['id'],
                                 order_uuid=order['order_uuid'],
                                 order_id=order['order_id'],
                                 tickets=order['tickets'],
                             )
 
-                            # Отмена заказа в БД
-                            order['status'] = 'cancelled'
-                            logger.info('Статус заказа: {status}'.format(
-                                status=ORDER_STATUS[order['status']]['description'])
-                            )
+                            # Заказ успешно отмечен как отменённый в сервисе продажи билетов
+                            if order_cancel['success']:
+                                logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
+                                    order_id=order['order_id']
+                                    )
+                                )
 
-                            Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
+                                # Отмена заказа в БД
+                                order['status'] = 'cancelled'
+                                Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
+
+                                logger.info('Статус заказа: {status}'.format(
+                                    status=ORDER_STATUS[order['status']]['description'])
+                                )
+                            # Заказ НЕ удалось отметить как отменённый в сервисе продажи билетов
+                            else:
+                                logger.info('Заказ {order_id} НЕ удалось отменить в сервисе продажи билетов'.format(
+                                    order_id=order['order_id']
+                                    )
+                                )
 
                             # Сообщение об ошибке
                             msgs = [
