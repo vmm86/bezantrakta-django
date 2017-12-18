@@ -128,6 +128,7 @@ ______________________________________________________________________________
 
                     # Информация о событии из кэша
                     event = cache_factory('event', order['event_uuid'])
+                    event['id'] = event['ticket_service_event']
 
                     # Получение реквизитов покупателя
                     customer = {}
@@ -146,10 +147,18 @@ ______________________________________________________________________________
 
                     # Если оплата завершилась успешно
                     if result['success']:
-                        pass
+                        self.log('\nПодтверждён заказ {order_id} с успешной онлайн-оплатой {payment_id}'.format(
+                                order_id=order['order_id'],
+                                payment_id=order['payment_id']
+                            )
+                        )
                     # Если оплата завершилась НЕуспешно - логирование информации об ошибке
                     else:
-                        pass
+                        self.log('\nОтменён заказ {order_id} с НЕуспешной онлайн-оплатой {payment_id}'.format(
+                                order_id=order['order_id'],
+                                payment_id=order['payment_id']
+                            )
+                        )
 
         # Если в БД нет незавершённых оплат
         else:
