@@ -115,7 +115,6 @@ $(document).ready(function() {
     {# Стилизация строк в таблице заказов в зависимости от из статуса #}
     $('.model-order #result_list tbody tr').each(function(index, element) {
         status_description = $(this).children('.field-status').html();
-        console.log(index, element, status);
 
         if (status_description === 'создан') {
             if ($(this).hasClass('row1')) {
