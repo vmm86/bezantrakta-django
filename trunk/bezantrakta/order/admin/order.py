@@ -66,12 +66,9 @@ class OrderAdmin(admin.ModelAdmin):
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_per_page = 20
-    readonly_fields = ('order_uuid', 'ticket_service', 'ticket_service_order', 'event', 'ticket_service_event',
-                       'datetime',
-                       # 'name', 'phone', 'email',
-                       'delivery', 'payment', 'payment_id',
-                       'status', 'total', 'tickets_count',
-                       'domain',)
+    radio_fields = {
+        'status': admin.VERTICAL,
+    }
     search_fields = ('name', 'phone', 'email',)
 
     def view_on_site(self, obj):
@@ -81,6 +78,20 @@ class OrderAdmin(admin.ModelAdmin):
     @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):
         return super(OrderAdmin, self).get_queryset(request)
+
+    def get_readonly_fields(self, request, obj=None):
+        """Полномочия пользователей при редактировании имеющихся или создании новых событий/групп."""
+        # Суперадминистраторы при необходимости могут редактировать или создавать вручную события/группы,
+        # например, если они по каким-то причинам НЕ исмпортировались из сервиса продажи билетов.
+        ro_fields = [
+            'order_uuid', 'ticket_service', 'ticket_service_order', 'event', 'ticket_service_event',
+            'datetime',
+            'delivery', 'payment', 'payment_id',
+            'total', 'tickets_count',
+            'domain',
+        ]
+        if obj is not None:
+            return ro_fields if request.user.is_superuser else ro_fields + 'status'
 
     def has_add_permission(self, request):
         return False
