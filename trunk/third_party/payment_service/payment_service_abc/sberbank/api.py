@@ -414,10 +414,28 @@ class Sberbank(PaymentService):
         data['amount'] = int(kwargs['total'] * 100)
 
         output_mapping = {
-            'errorcode':    self.internal('code', int,),
-            'errormessage': self.internal('message', str, 'OK'),
+            'errorcode':    self.internal('action_code', int,),
+            'errormessage': self.internal('action_message', str, 'OK'),
         }
 
         refund = self.request(method, url, data, output_mapping)
+        print('refund:', refund)
+
+        # Успешный возврат
+        # {'success': True, 'action_code': 0, 'action_message': 'Успешно'}
+
+        # НЕуспешный возврат
+        # {'success': False, 'action_code': 7, 'action_message': 'Платёж должен быть в корректном состоянии'}
+
+        # Результат успешен, только если платёж был успешно возвращён
+        if (
+            # Успешный результат операции
+            refund['success'] and
+            # Код успешного завершения операции
+            refund['action_code'] == 0
+        ):
+            refund['success'] = True
+        else:
+            refund['success'] = False
 
         return refund
