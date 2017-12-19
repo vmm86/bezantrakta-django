@@ -41,7 +41,7 @@
         <div class="input-container">
                 <input id="customer-delivery-self" class="self_cash" type="radio" name="customer_order_type" value="self_cash">
                 <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-self" class="customer-delivery step2"> Забронировать и выкупить в кассе</label>
+                <label for="customer-delivery-self" class="customer-delivery step2"> Забронировать и выкупить в кассе {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
                 <br>
         </div>
     {% endif %}
@@ -51,7 +51,7 @@
                 <br>
                 <input id="customer-delivery-courier" class="courier_cash" type="radio" name="customer_order_type" value="courier_cash">
                 <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-courier" class="customer-delivery step2"> Доставка курьером</label>
+                <label for="customer-delivery-courier" class="customer-delivery step2"> Доставка курьером {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
                 <br>
         </div>
     {% endif %}
@@ -61,7 +61,7 @@
                 <br>
                 <input id="customer-delivery-payment" class="self_online" type="radio" name="customer_order_type" value="self_online">
                 <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-payment" class="customer-delivery step2"> Оплатить онлайн и получить в кассе</label>
+                <label for="customer-delivery-payment" class="customer-delivery step2"> Оплатить онлайн и получить в кассе {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
                 <br>
         </div>
     {% endif %}
