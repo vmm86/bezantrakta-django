@@ -31,25 +31,25 @@ class Order(models.Model):
         address (CharField): Адрес доставки (пустое поле, если доставка по адресу не требуется).
         delivery (CharField): Способ получения билетов.
 
-            Содержимое ``DELIVERY_CHOICES`` (кортеж из кортежей "значение" / "подпись").
+            Содержимое ``DELIVERY_CHOICES``:
                 * **DELIVERY_SELF** (str): Получение в кассе (``self``).
                 * **DELIVERY_COURIER** (str): Доставка курьером (``courier``).
                 * **DELIVERY_EMAIL** (str): Электронный билет на email (``email``).
 
         payment (CharField): Способ оплаты билетов.
 
-            Содержимое ``PAYMENT_CHOICES`` (кортеж из кортежей "значение" / "подпись").
-                * **PAYMENT_CASH** (str): Наличные (``cash``).
+            Содержимое ``PAYMENT_CHOICES``:
+                * **PAYMENT_CASH** (str): Наличные, фактически - любая оффлайн-оплата (``cash``).
                 * **PAYMENT_ONLINE** (str): Онлайн-оплата (``online``).
 
         payment_id (CharField): Идентификатор онлайн-оплаты.
         status (CharField): Статус заказа.
 
-            Содержимое ``STATUS_CHOICES`` (кортеж из кортежей "значение" / "подпись").
-                * **STATUS_ORDERED** (str): создан (``ordered``).
-                * **STATUS_CANCELLED** (str): отменён (``cancelled``).
-                * **STATUS_APPROVED** (str): успешно завершён (``approved``).
-                * **STATUS_REFUNDED** (str): возвращён (``refunded``).
+            Содержимое ``STATUS_CHOICES``:
+                * **STATUS_ORDERED** (str): Создан (``ordered``).
+                * **STATUS_CANCELLED** (str): Отменён (``cancelled``).
+                * **STATUS_APPROVED** (str): Подтверждён (``approved``).
+                * **STATUS_REFUNDED** (str): Возвращён (``refunded``).
 
         tickets_count (PositiveSmallIntegerField): Число билетов в заказе.
         total (DecimalField): Общая сумма заказа (со стоимостью доставки курьером или комиссией сервиса онлайн-оплаты).
