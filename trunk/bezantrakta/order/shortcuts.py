@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.mail.backends.smtp import EmailBackend
 
 from project.cache import cache_factory
-from project.shortcuts import timezone_now
+from project.shortcuts import build_absolute_url, timezone_now
 
 from bezantrakta.eticket.shortcuts import render_eticket
 
@@ -52,8 +52,6 @@ def success_or_error(domain, event, order, payment_status, logger):
 
     # Если оплата завершилась успешно
     if payment_status['success']:
-        ### ВРЕМЕННО
-
         logger.info('\nОплата {payment_id} завершилась успешно'.format(payment_id=order['payment_id']))
 
         # Подтверждение оплаты в сервисе продажи билетов
@@ -150,34 +148,32 @@ def success_or_error(domain, event, order, payment_status, logger):
 
             # Сообщения для вывода на странице или в лог-файле
             messages = [
-                {'level': 'error', 'message': 'К сожалению, заказ ещё не завершён. 😞'},
-                {'level': 'error', 'message': 'Заказ будет завершён в ближайшее время с уведомлением на ваш email.'},
-                {'level': 'info',  'message': '👉 <a href="/">Перейти на главную</a>.'.format(
-                    event_url=event['url']
-                )},
+                {
+                    'level': 'error',
+                    'message': 'К сожалению, ваш заказ {order_id} не смог завершиться успешно. 🙁'.format(
+                        order_id=order['order_id']
+                    )
+                },
+                {
+                    'level': 'info',
+                    'message': 'Заказ будет завершён в ближайшее время с отправкой уведомления на указанный вами email.'
+                },
+                {
+                    'level': 'info',
+                    'message': 'Если подтверждения не последует - <a href="{contacts_url}" target="_blank">свяжитесь с администратором сайта</a>.'.format(
+                        contacts_url=build_absolute_url(domain['domain_slug'], '/kontakty/')
+                    )
+                },
+                {
+                    'level': 'info',
+                    'message': '👉 <a href="/">Перейти на главную</a>.'.format(
+                        event_url=event['url']
+                    )
+                },
             ]
 
             for msg in messages:
                 result['messages'].append(msg)
-
-        ### ВРЕМЕННО
-
-        ###### ВРЕМЕННО
-        # result['success'] = False
-
-        # Сообщения для вывода на странице или в лог-файле
-        # messages = [
-        #     {'level': 'error', 'message': 'К сожалению, ваш заказ {order_id} не смог завершиться успешно. 😞'.format(order_id=order['order_id'])},
-        #     {'level': 'error', 'message': 'Заказ будет завершён в ближайшее время с отправкой уведомления на указанный вами email.'},
-        #     {'level': 'error', 'message': 'Если подтверждения не последует - <a href="/kontakty/" target="_blank">свяжитесь с администратором сайта</a>.'},
-        #     {'level': 'info',  'message': '👉 <a href="/">Перейти на главную</a>.'.format(
-        #         event_url=event['url']
-        #     )},
-        # ]
-
-        # for msg in messages:
-        #     result['messages'].append(msg)
-        ###### ВРЕМЕННО
 
         return result
     # Если оплата завершилась НЕуспешно
@@ -218,7 +214,7 @@ def success_or_error(domain, event, order, payment_status, logger):
 
         # Сообщения об ошибке для вывода на странице или в лог-файле
         messages = [
-            {'level': 'error', 'message': 'К сожалению, в процессе оплаты возникла ошибка. 😞'},
+            {'level': 'error', 'message': 'К сожалению, в процессе оплаты возникла ошибка. 🙁'},
             {'level': 'error', 'message': '{code} {message}'.format(
                 code=payment_status['error_code'],
                 message=payment_status['error_message']
