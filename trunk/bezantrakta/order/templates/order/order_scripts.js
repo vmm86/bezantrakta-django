@@ -211,7 +211,9 @@ function prepare_order_onload() {
 
         {# Блокировка повторной отправки формы при подтверждении заказа #}
         $('#checkout-form').submit(function() {
+            $('#tickets-preloader').show();
             $(this).find('#submit').prop('disabled', true);
+            return true;
         });
 
         {# Валидация полей формы с контактными данными на шаге 2 и запоминание их в cookie для будущих заказов #}
@@ -367,6 +369,7 @@ function stop_heartbeat() {
     {% if active == 'step1' %}
         clearInterval(window.seats_id);
         {% if debug %}console.log('stopped seats_and_prices ' + window.seats_id);{% endif %}
+        $('#tickets-preloader').show();
     {% endif %}
 
     clearInterval(window.countdown_id);
