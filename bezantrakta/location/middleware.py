@@ -38,9 +38,10 @@ class CurrentLocationMiddleware(MiddlewareMixin):
 
         # Если сайт НЕ существует - ошибка 500
         if domain is None:
+            request.domain_is_published = False
             # Сообщение об ошибке
             msgs = [
-                message('error', 'К сожалению, такого сайта у нас пока нет. 😞'),
+                message('error', 'К сожалению, такого сайта у нас пока нет. 🙁'),
             ]
             render_messages(request, msgs)
             return render(request, 'error.html', status=500)
@@ -65,7 +66,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
         if request.city_state is False:
             # Сообщение об ошибке
             msgs = [
-                message('error', 'К сожалению, этот город не доступен для посещения. 😞'),
+                message('error', 'К сожалению, этот город не доступен для посещения. 🙁'),
             ]
             render_messages(request, msgs)
             return render(request, 'error.html', status=500)
@@ -121,7 +122,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
             except City.DoesNotExist:
                 # Сообщение об ошибке
                 msgs = [
-                    message('error', 'К сожалению, ни один город пока не доступен для показа. 😞'),
+                    message('error', 'К сожалению, ни один город пока не доступен для показа. 🙁'),
                 ]
                 render_messages(request, msgs)
                 return render(request, 'error.html', status=500)

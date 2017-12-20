@@ -21,7 +21,7 @@ def confirmation(request, order_uuid):
     except (AttributeError, TypeError, ValueError):
         # Сообщение об ошибке
         msgs = [
-            message('error', 'Введён некорректный идентификатор заказа. 😞'),
+            message('error', 'Введён некорректный идентификатор заказа. 🙁'),
             message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
         ]
         render_messages(request, msgs)
@@ -54,7 +54,7 @@ def confirmation(request, order_uuid):
             except OrderTicket.DoesNotExist:
                 # Сообщение об ошибке
                 msgs = [
-                    message('error', 'В заказе нет ни одного билета. 😞'),
+                    message('error', 'В заказе нет ни одного билета. 🙁'),
                     message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
                 ]
                 render_messages(request, msgs)
@@ -62,7 +62,7 @@ def confirmation(request, order_uuid):
         except Order.DoesNotExist:
             # Сообщение об ошибке
             msgs = [
-                message('warning', 'К сожалению, такого заказа не существует. 😞'),
+                message('warning', 'К сожалению, такого заказа не существует. 🙁'),
                 message('info', '👉 <a href="/">Начните поиск с главной страницы</a>.'),
             ]
             render_messages(request, msgs)
