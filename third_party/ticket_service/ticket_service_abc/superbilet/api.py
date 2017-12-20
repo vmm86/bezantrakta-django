@@ -191,6 +191,7 @@ class SuperBilet(TicketService):
             response['subcodes'] = error.subcodes
             response['message'] = error.message
             response['detail'] = error.detail
+            return response
 
         # print('XML:\n', response, '\n')
 
