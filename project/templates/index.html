@@ -2,7 +2,11 @@
 {% load i18n static tz compress %}
 
 {% block head_title %}
-    {% if title and title != "" %}{{ request.domain_settings.domain.title }}: {{ title }}{% else %}{{ request.domain_settings.domain.title }}{% endif %}
+    {% if title and title != "" %}
+        {{ title }}: {{ request.domain_settings.domain.title }}
+    {% else %}
+        {{ request.domain_settings.domain.title }}
+    {% endif %}
 {% endblock %}
 
 {% block head_description %}

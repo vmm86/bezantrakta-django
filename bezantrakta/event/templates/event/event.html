@@ -2,7 +2,11 @@
 {% load i18n static tz compress %}
 
 {% block head_title %}
-    {% if event.event_title %}{{ request.domain_settings.domain.title }}: {{ event.event_title }}{% else %}{{ request.domain_settings.domain.title }}{% endif %}
+    {% if event.event_title %}
+        {{ event.event_title }} ({{ event.event_datetime|date:"d.m.Y G:i" }}, {{ event.event_venue_title }}, {{ event.event_venue_city }})
+    {% else %}
+        {{ request.domain_settings.domain.title }}
+    {% endif %}
 {% endblock %}
 
 {% block head_description %}
