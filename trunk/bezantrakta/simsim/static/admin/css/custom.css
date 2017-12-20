@@ -609,24 +609,43 @@ a.section:visited {
     padding: 2px 10px 3px 10px;
 }
 
+/* Статус заказа */
+
+.ordered {
+    background-color: #C8EDFD;
+}
+.approved {
+    background-color: #D6EDD8;
+}
+.cancelled {
+    background-color: #FFD2D8;
+}
+.refunded {
+    background-color: #DFD4EF;
+}
+
+.model-order #result_list tbody tr:hover {
+    background-color: #fff;
+}
+
 /* Кнопки для фильтрации по статусу заказа */
 #changelist-filter a[title="создан"] {
-    background-color: #b5c9df;
+    background-color: #C8EDFD;
     color: #111;
     text-shadow: 0 1px 0px #fff;
 }
 #changelist-filter a[title="подтверждён"] {
-    background-color: #c7e7c8;
+    background-color: #D6EDD8;
     color: #111;
     text-shadow: 0 1px 0px #fff;
 }
 #changelist-filter a[title="отменён"] {
-    background-color: #dfb7b5;
+    background-color: #FFD2D8;
     color: #111;
     text-shadow: 0 1px 0px #fff;
 }
 #changelist-filter a[title="возвращён"] {
-    background-color: #b6b5df;
+    background-color: #DFD4EF;
     color: #111;
     text-shadow: 0 1px 0px #fff;
 }
@@ -954,7 +973,7 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     line-height: initial;
 }
 
-/* Оформление двух инлайн-форм дополнительных инлайн-форме только для добавления данных */
+/* Оформление двух инлайн-форм (одна - для отображения добавленных данных, другая - только для добавления) */
 #groups-group {
     margin-bottom: 0;
 }

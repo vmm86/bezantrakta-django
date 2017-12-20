@@ -117,29 +117,13 @@ $(document).ready(function() {
         status_description = $(this).children('.field-status').html();
 
         if (status_description === 'создан') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#c7d6e7');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#b5c9df');
-            }
+            $(this).addClass('ordered');
         } else if (status_description === 'подтверждён') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#d9eeda');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#c7e7c8');
-            }
+            $(this).addClass('approved');
         } else if (status_description === 'отменён') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#e7c8c7');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#dfb7b5');
-            }
+            $(this).addClass('cancelled');
         } else if (status_description === 'возвращён') {
-            if ($(this).hasClass('row1')) {
-                $(this).css('background-color', '#c8c7e7');
-            } else if ($(this).hasClass('row2')) {
-                $(this).css('background-color', '#b6b5df');
-            }
+            $(this).addClass('refunded');
         }
 
     });
