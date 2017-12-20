@@ -1,4 +1,3 @@
-import logging
 from mail_templated import EmailMessage
 
 from django.conf import settings
@@ -13,7 +12,7 @@ from bezantrakta.order.models import Order
 from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
 
 
-def success_or_error(domain, event, order, payment_status):
+def success_or_error(domain, event, order, payment_status, logger):
     """Обработка успешной или НЕуспешной оплаты.
 
     Args:
@@ -21,20 +20,19 @@ def success_or_error(domain, event, order, payment_status):
         event (dict): Информация о событии.
         order (dict): Информация о заказе.
         payment_status (dict): Информация о сервисе онлайн-оплаты.
+        logger (logging.RootLogger): Файл для логирования процесса завершения заказа.
 
     Returns:
         dict: Словарь ``result`` с информацией об успешном или НЕуспешном завершении заказа с онлайн-оплатой.
 
             Содержимое ``result``:
                 * **success** (bool): Успешное (``True``) или НЕуспешное (``False``) завершение заказа.
-                * **messages** (list): Сообщения для последующего использования в случае НЕуспешного завершения заказа. Список из словарей с ключами ``level`` (уровень ошибки) и ``message`` (сообщение об ошибке).
+                * **messages** (list): Сообщения для последующего использования. В случае успешного завершения заказа - пустой список, в случае НЕуспешного завершения заказа - список из словарей с ключами ``level`` (уровень ошибки) и ``message`` (сообщение об ошибке).
     """
     # Заготовка для последующего возарата успешного или НЕуспешного ответа
     result = {}
     result['success'] = None
     result['messages'] = []
-
-    logger = logging.getLogger('bezantrakta.order')
 
     # Получение реквизитов покупателя
     customer = {}
@@ -54,6 +52,8 @@ def success_or_error(domain, event, order, payment_status):
 
     # Если оплата завершилась успешно
     if payment_status['success']:
+        ### ВРЕМЕННО
+
         logger.info('\nОплата {payment_id} завершилась успешно'.format(payment_id=order['payment_id']))
 
         # Подтверждение оплаты в сервисе продажи билетов
@@ -128,11 +128,11 @@ def success_or_error(domain, event, order, payment_status):
             # Опциональная генерация электронных билетов и их вложение в письмо покупателю
             if customer['delivery'] == 'email':
                 logger.info('\nСоздание электронных PDF-билетов...')
-                for t in order['tickets']:
-                    t.update(event)
-                    # logger.info('\nИнформация о билете:')
-                    # logger.info(t)
-                    pdf_ticket_file = render_eticket(t)
+                for ticket in order['tickets']:
+                    ticket.update(event)
+                    logger.info('\nИнформация о билете:')
+                    logger.info(ticket)
+                    pdf_ticket_file = render_eticket(ticket, logger)
                     customer_email.attach_file(pdf_ticket_file, mimetype='application/pdf')
 
             admin_email.send()
@@ -147,6 +147,37 @@ def success_or_error(domain, event, order, payment_status):
                 order_id=order['order_id']
                 )
             )
+
+            # Сообщения для вывода на странице или в лог-файле
+            messages = [
+                {'level': 'error', 'message': 'К сожалению, заказ ещё не завершён. 😞'},
+                {'level': 'error', 'message': 'Заказ будет завершён в ближайшее время с уведомлением на ваш email.'},
+                {'level': 'info',  'message': '👉 <a href="/">Перейти на главную</a>.'.format(
+                    event_url=event['url']
+                )},
+            ]
+
+            for msg in messages:
+                result['messages'].append(msg)
+
+        ### ВРЕМЕННО
+
+        ###### ВРЕМЕННО
+        # result['success'] = False
+
+        # Сообщения для вывода на странице или в лог-файле
+        # messages = [
+        #     {'level': 'error', 'message': 'К сожалению, ваш заказ {order_id} не смог завершиться успешно. 😞'.format(order_id=order['order_id'])},
+        #     {'level': 'error', 'message': 'Заказ будет завершён в ближайшее время с отправкой уведомления на указанный вами email.'},
+        #     {'level': 'error', 'message': 'Если подтверждения не последует - <a href="/kontakty/" target="_blank">свяжитесь с администратором сайта</a>.'},
+        #     {'level': 'info',  'message': '👉 <a href="/">Перейти на главную</a>.'.format(
+        #         event_url=event['url']
+        #     )},
+        # ]
+
+        # for msg in messages:
+        #     result['messages'].append(msg)
+        ###### ВРЕМЕННО
 
         return result
     # Если оплата завершилась НЕуспешно

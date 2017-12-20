@@ -95,7 +95,22 @@ ______________________________________________________________________________
             # Получение билетов в заказе
             for order in unfinished_orders:
                 try:
-                    order['tickets'] = list(OrderTicket.objects.filter(order_id=order['order_uuid']).values())
+                    order['tickets'] = list(OrderTicket.objects.annotate(
+                        ticket_id=F('id'),
+                    ).values(
+                        'ticket_id',
+                        'ticket_service_order',
+                        'bar_code',
+                        'sector_id',
+                        'sector_title',
+                        'row_id',
+                        'seat_id',
+                        'seat_title',
+                        'price_group_id',
+                        'price'
+                    ).filter(
+                        order_id=order['order_uuid']
+                    ))
                 except OrderTicket.DoesNotExist:
                     self.log('В заказе {order_id} нет ни одного билета!', level='ERROR'.format(
                         order_id=order['order_id'])
@@ -143,7 +158,7 @@ ______________________________________________________________________________
                     self.log('\nСтатус оплаты: {payment_status}'.format(payment_status=payment_status))
 
                     # Обработка успешной или НЕуспешной оплаты
-                    result = success_or_error(domain, event, order, payment_status)
+                    result = success_or_error(domain, event, order, payment_status, self.logger)
 
                     # Если оплата завершилась успешно
                     if result['success']:

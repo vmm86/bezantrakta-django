@@ -165,7 +165,7 @@ def payment_handler(request):
         logger.info(payment_status)
 
         # Обработка успешной или НЕуспешной оплаты
-        result = success_or_error(domain, event, order, payment_status)
+        result = success_or_error(domain, event, order, payment_status, logger)
 
         # Если оплата завершилась успешно - редирект на шаг 3 с информацией о заказе
         if result['success']:
