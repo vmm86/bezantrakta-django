@@ -1,5 +1,4 @@
 import barcode
-import logging
 import os
 import pyqrcode
 import re
@@ -15,33 +14,36 @@ from django.conf import settings
 from django.template.loader import get_template
 
 
-def render_eticket(context):
+def render_eticket(context, logger):
     """Генерация PDF-файла электронного билета.
 
     Args:
         context (dict): Информация, необходимая для генерации файла билета.
-            'url' (str):               URL станицы события на сайте.
-            'event_title' (str):       Название события.
-            'event_venue_title' (str): Название зала.
-            'event_date' (str):        Человекопонятная дата события.
-            'event_time' (str):        Человекопонятное время события.
-            'event_min_age' (int):     Ограничение по возрасту (по умолчанию - ``0``).
-            'poster' (str):            Относительный путь к файлу афиши ``small_vertical`` внутри папки ``MEDIA``.
 
-            'ticket_service_order' (int): Идентификатор заказа в сервисе продажи билетов.
+            Содержимое ``context``:
 
-            'ticket_id' (uuid.UUID): Идентификатор билета в БД.
-            'bar_code' (str):        Штрих-код.
-            'sector_title' (str):    Название сектора.
-            'row_id' (int):          Идентификатор ряда.
-            'seat_title' (str):      Название места.
-            'price' (Decimal):       Цена билета.
+                'url' (str):               URL станицы события на сайте.
+                'event_title' (str):       Название события.
+                'event_venue_title' (str): Название зала.
+                'event_date' (str):        Человекопонятная дата события.
+                'event_time' (str):        Человекопонятное время события.
+                'event_min_age' (int):     Ограничение по возрасту (по умолчанию - ``0``).
+                'poster' (str):            Относительный путь к файлу афиши ``small_vertical`` внутри папки ``MEDIA``.
+
+                'ticket_service_order' (int): Идентификатор заказа в сервисе продажи билетов.
+
+                'ticket_id' (uuid.UUID): Идентификатор билета в БД.
+                'bar_code' (str):        Штрих-код.
+                'sector_title' (str):    Название сектора.
+                'row_id' (int):          Идентификатор ряда.
+                'seat_title' (str):      Название места.
+                'price' (Decimal):       Цена билета.
+
+        logger (logging.RootLogger): Файл для логирования процесса генерации PDF-билета.
 
     Returns:
         str: Полный путь к сгенерированному файлу билета.
     """
-    logger = logging.getLogger('bezantrakta.order')
-
     titles_max_chars = 26
     sector_max_chars = 40
 
@@ -99,7 +101,7 @@ def render_eticket(context):
     template = get_template('eticket/eticket.svg')
     ticket = re.sub(r'\n', r'', template.render(context))  # Минификация кода
     svg2pdf(bytestring=str.encode(ticket), write_to=full_output_path)
-    logger.info('Электронный билет {output_name} успешно сгенерирован'.format(output_name=output_name))
+    logger.info('\nЭлектронный билет {output_name} успешно сгенерирован'.format(output_name=output_name))
 
     return full_output_path
 
