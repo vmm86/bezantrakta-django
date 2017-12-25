@@ -24,8 +24,12 @@ def reserve(request):
             ('price', str,),
             ('price_order', int,),
         )
+        # Преобразование типов
         for k in keys:
-            params[k[0]] = k[1](request.POST.get(k[0]))
+            try:
+                params[k[0]] = k[1](request.POST.get(k[0], None))
+            except ValueError:
+                params[k[0]] = None
 
         # Формирование ответа
         response = {}

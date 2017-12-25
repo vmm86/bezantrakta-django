@@ -211,9 +211,9 @@ def order(request):
                 logger.info('\nПроверка состояния билетов в созданном заказе')
                 for ticket in order['tickets']:
                     ticket_status = ts.ticket_status(**ticket)
-                    ticket['seat_status'] = ticket_status['seat_status']
+                    ticket['status'] = ticket_status['status']
                     logger.info('* {ticket_status}'.format(ticket_status=str(ticket_status)))
-                order['tickets'][:] = [t for t in order['tickets'] if t.get('seat_status') == 'ordered']
+                order['tickets'][:] = [t for t in order['tickets'] if t.get('status') == 'ordered']
 
                 now = timezone_now()
                 # Сохранение предварительного заказа
