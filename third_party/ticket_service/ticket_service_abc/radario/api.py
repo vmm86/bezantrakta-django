@@ -718,8 +718,7 @@ class Radario(TicketService):
         """
         response = {}
 
-        response['order_id'] = None
-        response['ticket_uuid'] = kwargs['ticket_uuid']
+        response['success'] = True
         response['status'] = 'reserved'
 
         return response
