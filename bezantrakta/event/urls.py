@@ -1,10 +1,10 @@
 from django.conf.urls import url
 
-from .views import events_on_index
-from .views import event
-from .views import calendar
-from .views import category
-from .views import search
+from .views import (
+    events_on_index,
+    event,
+    calendar, category, venue, search
+)
 
 app_name = 'event'
 
@@ -33,9 +33,15 @@ urlpatterns = [
         category,
         name='category'
     ),
+    # Фильтр событий по залу (месту проведения событий)
+    url(
+        r'^afisha/venue/(?P<slug>[\w-]+)/$',
+        venue,
+        name='venue'
+    ),
     # Фильтр событий по тексту (поиск событий)
     url(
-        r'^search/$',
+        r'^afisha/search/$',
         search,
         name='search'
     ),
