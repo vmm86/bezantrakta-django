@@ -712,14 +712,13 @@ class Radario(TicketService):
         Returns:
             dict: Информация о состоянии места.
                 Содержимое результата:
-                    order_id (int): Идентификатор заказа, если он был создан, иначе None.
-                    ticket_uuid (str): Уникальный UUID билета.
-                    seat_status (str): Статус места.
+                    * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
+                    * **status** (str): Статус места (всегда возвращается ``bypass`` для обхода проверок).
         """
         response = {}
 
         response['success'] = True
-        response['status'] = 'reserved'
+        response['status'] = 'bypass'
 
         return response
 
