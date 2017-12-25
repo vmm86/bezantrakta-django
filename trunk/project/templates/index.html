@@ -119,7 +119,7 @@
                         {# Фильтр событий по поиску #}
                         <div class="modul">
                             <div class="mod_top">
-                                <form action="/search" method="GET">
+                                <form action="/afisha/search/" method="GET">
                                     <input name="text" id="search" alt="Поиск" class="inputbox" type="text" size="20" value="{% if request.GET.text and request.GET.text != "" %}{{ request.GET.text }}{% endif %}">
                                     <input type="submit" value="Поиск" class="button">
                                 </form>
