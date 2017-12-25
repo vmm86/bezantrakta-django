@@ -455,6 +455,12 @@ function seats_and_prices_success(response, status, xhr) {
             {# Обновление кэша свободных мест в памяти #}
             window.seats_cache = seats_next;
             {% if debug %}console.log('seats_cache set');{% endif %}
+        {# Если последующий список мест НЕ отличается от предыдущего - значит, свободных мест в продаже НЕТ #}
+        } else {
+            {# Прелоадер с прогресс-баром #}
+            if (_.isEmpty(seats_prev)) {
+                $('#tickets-preloader').delay(1000).fadeOut(500);
+            }
         }
     } else {
         console.log('Error: ', response);
