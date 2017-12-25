@@ -133,7 +133,7 @@ def order(request):
             logger.info('Число билетов: {count}'.format(count=order['count']))
             logger.info('Сумма заказа: {total}'.format(total=order['total']))
 
-            # Проверка состояния билетов в предварительной брони
+            # Проверка состояния билетов в предварительной брони (если такой функционал предусмотрен)
             logger.info('\nПроверка состояния билетов в предварительном резерве...')
             for ticket in order['tickets']:
                 ticket['event_id'] = event['id']
@@ -152,7 +152,7 @@ def order(request):
 
                 ticket['status'] = ticket_status['status']
                 logger.info('🎫 {ticket_status}'.format(ticket_status=str(ticket_status)))
-            order['tickets'][:] = [t for t in order['tickets'] if t.get('status') == 'reserved']
+            order['tickets'][:] = [t for t in order['tickets'] if t.get('status') in ('reserved', 'bypass',)]
 
             if len(order['tickets']) == 0:
                 logger.error('Бронь на все места в заказе истекла!')
@@ -207,13 +207,13 @@ def order(request):
                         else:
                             continue
 
-                # Проверка состояния билетов в созданном заказе
+                # Проверка состояния билетов в созданном заказе (если такой функционал предусмотрен)
                 logger.info('\nПроверка состояния билетов в созданном заказе')
                 for ticket in order['tickets']:
                     ticket_status = ts.ticket_status(**ticket)
                     ticket['status'] = ticket_status['status']
                     logger.info('* {ticket_status}'.format(ticket_status=str(ticket_status)))
-                order['tickets'][:] = [t for t in order['tickets'] if t.get('status') == 'ordered']
+                order['tickets'][:] = [t for t in order['tickets'] if t.get('status') in ('ordered', 'bypass',)]
 
                 now = timezone_now()
                 # Сохранение предварительного заказа

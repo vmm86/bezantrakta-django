@@ -823,7 +823,6 @@ class SuperBilet(TicketService):
 
         Returns:
             dict: Информация о состоянии места.
-
                 Содержимое результата:
                     * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
                     * **status** (str): Статус места, сопоставляемый из словаря ``SEAT_STATUSES``.
