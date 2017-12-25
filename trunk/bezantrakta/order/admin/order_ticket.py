@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import admin
 
 from project.decorators import queryset_filter
@@ -25,5 +24,4 @@ class OrderTicketAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        if not settings.DEBUG:
-            return False
+        return True if request.user.is_superuser else False

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import ugettext as _
 from django.urls import reverse
@@ -25,7 +24,7 @@ class OrderTicketInline(admin.TabularInline):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True if request.user.is_superuser else False
 
 
 @admin.register(Order)
@@ -97,8 +96,7 @@ class OrderAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        if not settings.DEBUG:
-            return False
+        return True if request.user.is_superuser else False
 
     def order_uuid(self, obj):
         """Вывод нередактируемого уникального UUID заказа."""
