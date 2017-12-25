@@ -1,12 +1,11 @@
 import logging
 import uuid
 
-from django.conf import settings
 from django.db.models import F
 from django.shortcuts import redirect
 
 from project.cache import cache_factory
-from project.shortcuts import message, render_messages, timezone_now
+from project.shortcuts import BOOLEAN_VALUES, message, render_messages, timezone_now
 
 from bezantrakta.order.models import Order, OrderTicket
 from bezantrakta.order.shortcuts import success_or_error
@@ -44,11 +43,11 @@ def payment_handler(request):
     # (возможный обходной вариант для сервисов, у которых нельзя запросить статус оплаты отдельным запросом)
     success = request.GET.get('success', None)
     payment_id = request.GET.get('payment_id', None)
-    error_code = request.GET.get('error_code', None)
-    error_message = request.GET.get('error_message', None)
+    error_code = request.GET.get('code', None)
+    error_message = request.GET.get('message', None)
 
     if success is not None:
-        success = True if success in settings.BOOLEAN_VALUES else False
+        success = True if success in BOOLEAN_VALUES else False
 
     # Логирование информации об обработке
     now = timezone_now()
@@ -147,8 +146,8 @@ def payment_handler(request):
             payment_status = {}
             payment_status['success'] = success
             payment_status['payment_id'] = payment_id
-            payment_status['error_code'] = error_code
-            payment_status['error_message'] = error_message
+            payment_status['code'] = error_code
+            payment_status['message'] = error_message
 
             # Сообщение об ошибке при НЕполучении идентификатора оплаты
             if payment_status['payment_id'] is None:

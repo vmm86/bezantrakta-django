@@ -134,31 +134,32 @@ def order(request):
             logger.info('Сумма заказа: {total}'.format(total=order['total']))
 
             # Проверка состояния билетов в предварительной брони
-            logger.info('\nПроверка состояния билетов в предварительной брони...')
+            logger.info('\nПроверка состояния билетов в предварительном резерве...')
             for ticket in order['tickets']:
                 ticket['event_id'] = event['id']
                 ticket_status = ts.ticket_status(**ticket)
-                if 'error' in ticket_status and ticket_status['error']:
+
+                if not ticket_status['success']:
                     # Сообщение об ошибке
                     msgs = [
-                        message('error', 'К сожалению, произошла ошибка резерва билетов 🙁'),
+                        message('error', 'К сожалению, произошла ошибка резерва билетов. 🙁'),
                         message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
                                 event_url=event['url'])
                                 ),
                     ]
                     render_messages(request, msgs)
                     return redirect('error')
-                else:
-                    ticket['seat_status'] = ticket_status['seat_status']
-                    logger.info('* {ticket_status}'.format(ticket_status=str(ticket_status)))
-            order['tickets'][:] = [t for t in order['tickets'] if t.get('seat_status') == 'reserved']
+
+                ticket['status'] = ticket_status['status']
+                logger.info('🎫 {ticket_status}'.format(ticket_status=str(ticket_status)))
+            order['tickets'][:] = [t for t in order['tickets'] if t.get('status') == 'reserved']
 
             if len(order['tickets']) == 0:
-                logger.error('Бронь на все места в заказе истекла - заказ отменён!')
+                logger.error('Бронь на все места в заказе истекла!')
 
                 # Сообщение об ошибке
                 msgs = [
-                    message('error', 'Бронь на все места в заказе истекла - заказ отменён! 🙁'),
+                    message('error', 'К сожалению, бронь на все места в заказе истекла. 🙁'),
                     message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
                             event_url=event['url'])
                             ),
@@ -166,7 +167,7 @@ def order(request):
                 render_messages(request, msgs)
                 return redirect('error')
 
-            # Создание нового заказа из предварительной брони
+            # Создание нового заказа из билетов в предварительном резерве
             logger.info('\nСоздание заказа...')
             order_create = ts.order_create(
                 event_id=event['id'],
@@ -177,8 +178,8 @@ def order(request):
             logger.info('order[tickets]: {}'.format(order['tickets']))
             logger.info('order_create: {}'.format(order_create))
 
-            # Если заказ успешен - получение идентификатора заказа и штрих-кодов
-            if 'order_id' in order_create and 'tickets' in order_create:
+            # Если заказ успешно создан - получение идентификатора заказа и штрих-кодов
+            if order_create['success']:
                 order['status'] = 'ordered'
                 logger.info('Статус заказа: {status}'.format(
                     status=ORDER_STATUS[order['status']]['description'])
@@ -200,7 +201,7 @@ def order(request):
                             t['bar_code'] = (
                                 o['bar_code'] if
                                 'bar_code' in o and o['bar_code'] is not None else
-                                ''.join([str(randint(0, 9)) for x in range(20)])
+                                ''.join([str(randint(0, 9)) for x in range(ts.bar_code_length)])
                             )
                             logger.info('t[bar_code]: {barcode}'.format(barcode=t['bar_code']))
                         else:
@@ -412,7 +413,7 @@ def order(request):
                             ]
                             render_messages(request, msgs)
                             return redirect('error')
-            # Если заказ НЕуспешен
+            # Если заказ НЕ создан успешно
             else:
                 logger.critical('Ошибка при создании заказа!')
 

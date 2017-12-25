@@ -4,7 +4,10 @@ import simplejson as json
 from datetime import datetime
 from decimal import Decimal
 
-from django.conf import settings
+try:
+    from project.shortcuts import BOOLEAN_VALUES
+except ImportError:
+    BOOLEAN_VALUES = BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
 
 from ..abc import PaymentService
 
@@ -187,7 +190,7 @@ class Sberbank(PaymentService):
         return (
             iterable if
             response_success else
-            {'success': False, 'error_code': response_code, 'error_message': response_message, }
+            {'success': False, 'code': response_code, 'message': response_message, }
         )
 
     def humanize_with_type_casting(self, iterable, output_mapping):
@@ -223,7 +226,7 @@ class Sberbank(PaymentService):
                         elif internal.type is int and type(iterable[internal.key]) is not int:
                             iterable[internal.key] = int(iterable[internal.key])
                         elif internal.type is bool and type(iterable[internal.key]) is not bool:
-                            iterable[internal.key] = True if iterable[internal.key] in settings.BOOLEAN_VALUES else False
+                            iterable[internal.key] = True if iterable[internal.key] in BOOLEAN_VALUES else False
                         elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
                         elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
@@ -243,38 +246,30 @@ class Sberbank(PaymentService):
     def payment_create(self, **kwargs):
         """Создание новой онлайн-оплаты.
 
-        Полный URL возврата после оплаты:
-            ``{return_url with optional get params}&orderId={payment_id}``
-
         Args:
-            event_uuid (int): Идентификатор события.
+            event_uuid (uuid.UUID): Уникальный UUID события в БД.
 
             customer (dict): Реквизиты покупателя.
-
                 Содержимое ``customer``:
                     * **name** (str): ФИО.
                     * **email** (str): Электронная почта.
                     * **phone** (str): Телефон.
-
             order (dict): Параметры заказа.
-
                 Содержимое ``order``:
-                    * **order_uuid** (str): Уникальный UUID заказа.
+                    * **order_uuid** (uuid.UUID): Уникальный UUID заказа.
                     * **order_id** (int): Идентификатор заказа.
                     * **total** (Decimal): Общая сумма заказа в рублях (**С комиссией**).
 
         Returns:
             dict: Параметры новой оплаты.
-
-            Успешный ответ:
-                * **success** (bool): Запрос успешный (``True``).
-                * **payment_id** (str): Идентификатор оплаты.
-                * **payment_url** (str): URL платёжной формы.
-
-            НЕуспешный ответ:
-                * **success** (bool): Запрос НЕуспешный (``False``).
-                * **code** (str): Код ошибки.
-                * **message** (str): Сообщение об ошибке.
+                Успешный ответ:
+                    * **success** (bool): Запрос успешный (``True``).
+                    * **payment_id** (str): Идентификатор оплаты.
+                    * **payment_url** (str): URL платёжной формы.
+                НЕуспешный ответ:
+                    * **success** (bool): Запрос НЕуспешный (``False``).
+                    * **code** (str): Код ошибки.
+                    * **message** (str): Сообщение об ошибке.
         """
         method = 'POST'
         url = 'register.do'
@@ -317,8 +312,8 @@ class Sberbank(PaymentService):
         create['success'] = True if 'payment_url' in create else False
 
         if not create['success']:
-            create['error_code'] = create.pop('errorcode')
-            create['error_message'] = create.pop('errormessage')
+            create['action_code'] = create.pop('errorcode')
+            create['action_message'] = create.pop('errormessage')
 
         return create
 
@@ -329,7 +324,7 @@ class Sberbank(PaymentService):
             payment_id (str): Идентификатор оплаты.
 
         Returns:
-            dict: Статус оплаты.
+            dict: Информация о статусе оплаты.
         """
         method = 'POST'
         url = 'getOrderStatusExtended.do'
@@ -362,37 +357,40 @@ class Sberbank(PaymentService):
         }
         status = self.request(method, url, data, output_mapping)
 
-        if status['success']:
-            # Идентификатор оплаты (может ли его расположение в списке словарей меняться ???)
-            status['payment_id'] = status['payment_attributes'][0]['value']
-            del status['payment_attributes']
+        response = {}
 
+        if status['success']:
+            # Идентификатор заказа
+            response['order_id'] = status['order_id']
+            # Идентификатор оплаты (может ли его расположение в списке словарей меняться ???)
+            response['payment_id'] = status['payment_attributes'][0]['value']
             # Общая сумма заказа в рублях (С комиссией)
-            status['total'] = self.decimal_price(status['payment_info']['approvedamount'] / 100)
+            status['total'] = response['total'] = self.decimal_price(status['payment_info']['approvedamount'] / 100)
             # Сообщение о статусе оплаты
-            status['payment_message'] = status['payment_info']['paymentstate']
-            del status['payment_info']
+            # response['payment_message'] = status['payment_info']['paymentstate']
 
             # Был ли платёж возвращён
-            status['is_refunded'] = True if status['payment_code'] == 4 else False
+            response['is_refunded'] = True if status['payment_code'] == 4 else False
 
             # Результат успешен, только если платёж был успешно завершён
             if (
                 # Код успешного завершения операции
                 status['action_code'] == 0 and
-                # Код успешного завершения оплаты
-                status['payment_code'] == 2 and
+                # Код успешного завершения оплаты или возврата
+                (status['payment_code'] == 2 or status['payment_code'] == 4) and
                 # Ненулевая сумма оплаты
                 status['total'] > 0
             ):
-                status['success'] = True
+                response['success'] = True
             else:
-                status['success'] = False
+                response['success'] = False
 
-            status['error_code'] = status.pop('action_code')
-            status['error_message'] = status.pop('action_message')
+                response['code'] = status['action_code']
+                response['message'] = status['action_message']
 
-        return status
+        del status
+
+        return response
 
     def payment_refund(self, **kwargs):
         """Возврат суммы по ранее успешно завершённой оплате.
@@ -403,6 +401,12 @@ class Sberbank(PaymentService):
 
         Returns:
             dict: Информация о возврате.
+                Успешный ответ:
+                    * **success** (bool): Запрос успешный (``True``).
+                НЕуспешный ответ:
+                    * **success** (bool): Запрос НЕуспешный (``False``).
+                    * **code** (str): Код ошибки.
+                    * **message** (str): Сообщение об ошибке.
         """
         method = 'POST'
         url = 'refund.do'
@@ -419,7 +423,7 @@ class Sberbank(PaymentService):
         }
 
         refund = self.request(method, url, data, output_mapping)
-        print('refund:', refund)
+        # print('refund:', refund)
 
         # Успешный возврат
         # {'success': True, 'action_code': 0, 'action_message': 'Успешно'}

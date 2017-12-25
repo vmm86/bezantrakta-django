@@ -1,10 +1,16 @@
 import dateutil.parser
 import requests
+import uuid
+from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 from operator import itemgetter
+from pprint import pprint
 
-from django.conf import settings
+try:
+    from project.shortcuts import BOOLEAN_VALUES
+except ImportError:
+    BOOLEAN_VALUES = BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
 
 from ..abc import TicketService
 
@@ -20,16 +26,12 @@ class Radario(TicketService):
     Messages charset is set to UTF-8.
 
     Атрибуты класса:
-        **slug** (str): Псевдоним для инстанцирования класса (``radario``).
-
-    Attributes:
-        api_version
-        api_base_url
-        limit
-        offset
-        time_to_live
+        slug (str): Псевдоним для инстанцирования класса (``radario``).
+        bar_code_length (int): Длина штрих-кода.
     """
     slug = 'radario'
+
+    bar_code_length = 12
 
     def __init__(self, init):
         """Конструктор класса.
@@ -40,8 +42,8 @@ class Radario(TicketService):
         super().__init__()
 
         # Параметры подключения
-        self.__api_id = init['api_id']
-        self.__api_key = init['api_key']
+        self.__api_id = str(init['api_id'])
+        self.__api_key = str(init['api_key'])
         self.city_id = init['city_id']
         self.company_id = init['company_id']
         self.company_title = init['company_title']
@@ -81,6 +83,9 @@ class Radario(TicketService):
             'api-key': self.__api_key,
         }
 
+        # print(url, ':')
+        # pprint(data, indent=4, width=160)
+        # print('\n')
         if method == 'GET':
             response = requests.get(url_path, params=data, headers=headers)
         elif method == 'POST':
@@ -88,7 +93,8 @@ class Radario(TicketService):
         else:
             pass
 
-        print('response: ', response.json(), '\n')
+        # pprint(response.json(), indent=4, width=160)
+        # print('\n')
 
         # Если тестируем работу метода - получаем JSON-ответ без обработки
         if test:
@@ -122,21 +128,19 @@ class Radario(TicketService):
                     iterable = response['data']
             else:
                 if response['success']:
-                    return {'success': True, 'code': 0, 'message': 'OK', }
+                    return {'success': True, }
                 else:
                     return {'success': False, 'code': response_code, 'message': response_message, }
 
             # Если в ответе - множество записей
             if type(iterable) is list:
                 # Конвертация ключей в человекопонятные значения
-                for d in iterable:
-                    self.humanize_with_type_casting(d, output_mapping)
-                    d['success'] = True
+                for item in iterable:
+                    self.humanize_with_type_casting(item, output_mapping)
             # Если в ответе - одна запись
             elif type(iterable) is dict:
                 # Конвертация ключей в человекопонятные значения
                 self.humanize_with_type_casting(iterable, output_mapping)
-                iterable['success'] = True
             return iterable
         # Если ответ НЕуспешен
         else:
@@ -175,7 +179,7 @@ class Radario(TicketService):
                         elif internal.type is int and type(iterable[internal.key]) is not int:
                             iterable[internal.key] = int(iterable[internal.key])
                         elif internal.type is bool and type(iterable[internal.key]) is not bool:
-                            iterable[internal.key] = True if iterable[internal.key] in settings.BOOLEAN_VALUES else False
+                            iterable[internal.key] = True if iterable[internal.key] in BOOLEAN_VALUES else False
                         elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
                         elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
@@ -204,7 +208,7 @@ class Radario(TicketService):
         """Места проведения событий (в конкретном городе).
 
         Returns:
-            method: Вызов конструктора запросов request.
+            list: Список словарей с информацией о месте проведения событий.
         """
         method = 'GET'
         url = '/places'
@@ -234,11 +238,11 @@ class Radario(TicketService):
     def scheme(self, **kwargs):
         """Информация о схеме зала в месте проведения событий.
 
-        Ответ в том числе содержит информацию о секторах (зонах) и их местах.
+        Ответ в том числе содержит информацию о секторах ("зонах" в терминологии Радарио) и их местах.
 
         Args:
             scheme_id (int): Идентификатор схемы зала.
-            raw (bool, optional): Опциональная возможность получения schema raw descriptor.
+            raw (bool, optional): Опциональная возможность получения *schema raw descriptor*.
 
         Returns:
             dict: Информация о конкретной схеме зала.
@@ -277,16 +281,13 @@ class Radario(TicketService):
         return scheme
 
     def discover_schemes(self):
-        """Получение списка залов для записи в БД.
+        """Получение списка схем залов для записи в БД.
 
-        Отдельными схемами залами в API Радарио является сущность ``scheme``.
-        Сущность ``place`` - места событий как отдельные здания (не связанные напрямую со схемами залов).
+        Недостающая информация добавляется из мест проведения событий ``places``.
 
         Returns:
-            list: Список словарей с информацией о зале.
+            list: Список словарей с информацией о схеме зала.
         """
-        from collections import defaultdict
-
         events = self.events()
         discovered_schemes = []
 
@@ -347,8 +348,6 @@ class Radario(TicketService):
         Returns:
             list: Список словарей с информацией о группах событий.
         """
-        from collections import defaultdict
-
         groups = self.groups()
         events = self.events()
 
@@ -371,7 +370,7 @@ class Radario(TicketService):
                     g['group_text'] = events_by_groups[(e['group_id'])][0]['event_text']
                     g['scheme_id'] = (
                         events_by_groups[(e['group_id'])][0]['scheme_id'] if
-                        events_by_groups[(e['group_id'])][0]['scheme_id'] is not None else
+                        events_by_groups[(e['group_id'])][0]['scheme_id'] else
                         0
                     )
 
@@ -383,28 +382,27 @@ class Radario(TicketService):
     def events(self, **kwargs):
         """Список событий конкретного организатора.
 
-        Выводятся только те события, продажа билетов в которых НЕ приостановлена.
+        Выводятся только акутальные события (продажа билетов в которых НЕ приостановлена).
 
         Args:
-            group_id (int, optional): Идентификатор группы событий, если требуются события в конкретной группе.
-
-        Query parameters:
-            onlyActual (bool): Вывод только актуальных событий.
-            cityId (int): Идентификатор города.
-            placeId (int): Идентификатор места проведения события.
-            companyId (int): Идентификатор организатора.
-            superTagId (int): Тип события (e.g concert, perfomance, party, etc.).
-            groupId  (int): Идентификатор группы событий.
-            endDate (str): Конечная дата (ISO 8601).
-            onlyWithOrderCreationAvailableViaApi (bool): Только события, доступные для запроса по API.
-            limit (int): Лимит числа событий в ответе (по умолчанию 20).
-            offset (int): С какого по счёту события начинать вывод (отброс событий в начале списка).
+            group_id (int, optional): Идентификатор группы событий, если требуются события только в конкретной группе.
 
         Returns:
             list: Список словарей с информацией о событиях.
         """
         method = 'GET'
         url = '/events'
+        # Query parameters:
+        # onlyActual (bool): Вывод только актуальных событий.
+        # cityId (int): Идентификатор города.
+        # placeId (int): Идентификатор места проведения события.
+        # companyId (int): Идентификатор организатора.
+        # superTagId (int): Тип события (e.g concert, perfomance, party, etc.).
+        # groupId  (int): Идентификатор группы событий.
+        # endDate (str): Конечная дата (ISO 8601).
+        # onlyWithOrderCreationAvailableViaApi (bool): Только события, доступные для запроса по API.
+        # limit (int): Лимит числа событий в ответе (по умолчанию 20).
+        # offset (int): С какого по счёту события начинать вывод (отброс событий в начале списка).
         data = {
             'companyId': self.company_id,
             'onlyActual': True,
@@ -428,32 +426,33 @@ class Radario(TicketService):
             'age':           self.internal('event_min_age', int, 0,),
             # Идентификатор группы
             'groupId':       self.internal('group_id', int, 0,),
-            # Название места проведения событий
-            'placeTitle':    self.internal('place_title', str,),
             # Идентификатор зала
             'placeSchemeId': self.internal('scheme_id', int, 0,),
             # Отключены ли продажи в событии или нет
             'salesStopped':  self.internal('is_disabled', bool,),
+            # Название места проведения событий
+            'placeTitle':    self.internal('place_title', str,),
 
-            'category': None,
             'cityId': None,
             'cityName': None,
             'companyId': None,
             'companyTitle': None,
-            'currency': None,
-            'discountPercent': None,
-            'endDate': None,
-            'eventProviderId': None,
-            'eventProviderName': None,
-            'gmtOffset': None,
-            'images': None,
-            'maxPrice': None,
-            'maxTicketCountPerOrder': None,
             'placeId': None,
             'placeAddress': None,
             'placeSchemeImage': None,
-            'superTagId': None,
+            'eventProviderId': None,
+            'eventProviderName': None,
+            'endDate': None,
+            'gmtOffset': None,
+            'images': None,
+            'category': None,
+            'currency': None,
+            'maxPrice': None,
             'ticketCount': None,
+            'maxTicketCountPerOrder': None,
+            'soldTicketCount': None,
+            'discountPercent': None,
+            'superTagId': None,
             'videoUrl': None,
         }
         events = self.request(method, url, data, output_mapping)
@@ -503,27 +502,29 @@ class Radario(TicketService):
             'placeSchemeId': self.internal('scheme_id', int, 0,),
             # Отключены ли продажи в событии или нет
             'salesStopped':  self.internal('is_disabled', bool,),
+            # Название места проведения событий
+            'placeTitle':    self.internal('place_title', str,),
 
-            'category': None,
             'cityId': None,
             'cityName': None,
             'companyId': None,
             'companyTitle': None,
-            'currency': None,
-            'discountPercent': None,
-            'endDate': None,
-            'eventProviderId': None,
-            'eventProviderName': None,
-            'gmtOffset': None,
-            'images': None,
-            'maxPrice': None,
-            'maxTicketCountPerOrder': None,
             'placeId': None,
             'placeAddress': None,
             'placeSchemeImage': None,
-            'placeTitle': None,
-            'superTagId': None,
+            'eventProviderId': None,
+            'eventProviderName': None,
+            'endDate': None,
+            'gmtOffset': None,
+            'images': None,
+            'category': None,
+            'currency': None,
+            'maxPrice': None,
             'ticketCount': None,
+            'maxTicketCountPerOrder': None,
+            'soldTicketCount': None,
+            'discountPercent': None,
+            'superTagId': None,
             'videoUrl': None,
         }
         event = self.request(method, url, data, output_mapping)
@@ -589,10 +590,12 @@ class Radario(TicketService):
             'ticketCount':     self.internal('seats_all_count', int,),
             # Число проданных мест
             'soldTicketCount': self.internal('seats_sold_count', int,),
-            'baseTicketTypeId': None,
             'seatBeginNumber': None,
             'seatEndNumber': None,
+            'participantNameRequired': None,
+            'baseTicketTypeId': None,
             'series': None,
+            # Идентификатор сектора
             'zoneId': None,
         }
         price_groups = self.request(method, url, data, output_mapping)
@@ -619,12 +622,18 @@ class Radario(TicketService):
         seats = []
         prices = sorted([pg['price'] for pg in price_groups])
         response['prices'] = prices
+        print('\nprice_groups:\n', price_groups, '\n')
 
-        scheme = self.scheme(scheme_id=kwargs['scheme_id'])
         if kwargs['scheme_id'] != 0:
-            sectors = {s['name'].lower(): s['id'] for s in scheme['scheme_zones']}
-        else:
-            sectors = {pg['price_group_title'].lower(): pg['price_group_id'] for pg in price_groups}
+            scheme = self.scheme(scheme_id=kwargs['scheme_id'])
+            print('\nscheme:\n', scheme, '\n')
+
+        sectors = (
+            {s['name'].lower(): s['id'] for s in scheme['scheme_zones']} if
+            kwargs['scheme_id'] != 0 else
+            {pg['price_group_title'].lower(): pg['price_group_id'] for pg in price_groups}
+        )
+        print('sectors:\n', sectors, '\n')
 
         for pg in price_groups:
             # Билеты с местами
@@ -645,17 +654,16 @@ class Radario(TicketService):
                         del s['exists']
                         del s['isoccupied']
                         seats.append(s)
-            # Билеты без мест
+            # Билеты без фиксированной рассадки
             else:
-                # Возвращаются все свободные билеты без мест
-                for s in range(pg['seats_free_count']):
+                # Возвращаются все свободные билеты без фиксированной рассадки
+                for idx, s in enumerate(range(pg['seats_free_count'])):
                     seat = {}
-                    seat['sector_id'] = sectors[pg['price_group_title']]
-                    # Названия секторов
+                    seat['sector_id'] = 0
                     seat['sector_title'] = pg['price_group_title'].lower()
                     seat['row_id'] = 0
-                    seat['seat_id'] = 0
-                    seat['seat_title'] = ''
+                    seat['seat_id'] = idx + 1
+                    seat['seat_title'] = '0'
                     seat['price_group_id'] = pg['price_group_id']
                     seat['price'] = pg['price']
                     # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
@@ -671,7 +679,7 @@ class Radario(TicketService):
         """Добавление или удаление места в предварительном резерве мест (корзина заказа).
 
         Можно не использовать для резерва метод API Радарио и хранить резерв в cookie.
-        Метод будет возвращать обратно передаваемые ему атрибуты места с подтверждением успешного/НЕуспешного резерва.
+        Метод будет возвращать обратно передаваемые ему атрибуты места с подтверждением "успешного" результата.
 
         Args:
             action (str): Действие (`add` - добавить в резерв, `remove` - удалить из резерва).
@@ -682,21 +690,6 @@ class Radario(TicketService):
         Returns:
             dict: Атрибуты места с подтверждением успешного или НЕуспешного резерва.
         """
-        # method = 'POST'
-        # data = {
-        #     'EventId': kwargs['event_id'],
-        #     'TicketTypeId': kwargs['price_group_id'],
-        #     'SeatNumber': kwargs['seat_id'],
-        # }
-        # if kwargs['action'] == 'add':
-        #     url = '/orders/add_pre_reserved_seat'
-        #     # Таймаут предварительного резерва в минутах (по умолчанию - 15 минут)
-        #     data['TimeToLive'] = self.time_to_live
-        # elif kwargs['action'] == 'remove':
-        #     url = '/orders/remove_pre_reserved_seat'
-        # output_mapping = {}
-        # return self.request(method, url, data, output_mapping)
-
         reserve = {}
         reserve['success'] = True
         for kw in kwargs:
@@ -718,9 +711,10 @@ class Radario(TicketService):
 
         Returns:
             dict: Информация о состоянии места.
-                order_id (int): Идентификатор заказа, если он был создан, иначе None.
-                ticket_uuid (str): Уникальный UUID билета.
-                seat_status (str): Статус места.
+                Содержимое результата:
+                    order_id (int): Идентификатор заказа, если он был создан, иначе None.
+                    ticket_uuid (str): Уникальный UUID билета.
+                    seat_status (str): Статус места.
         """
         response = {}
 
@@ -736,18 +730,23 @@ class Radario(TicketService):
         Args:
             event_id (int): Идентификатор события.
             customer (dict): Информация о покупателе.
-            customer[name] (str): ФИО покупателя.
-            customer[email] (str): Электронная почта покупателя.
+                Содержимое **tickets**:
+                    name (str): ФИО покупателя.
+                    email (str): Электронная почта покупателя.
             tickets (list): Информация о зарезервированных билетах.
-            tickets[seat_id] (int): Идентификатор места.
-            tickets[price_group_id] (int): Идентификатор группы цен.
+                Содержимое **tickets**:
+                    ticket_uuid (str): Уникальный UUID билета.
+                    seat_id (int): Идентификатор места.
+                    price_group_id (int): Идентификатор группы цен.
 
         Returns:
             dict: Информация о созданном заказе.
-            order_id (int): Идентификатор заказа в сервисе заказа билетов.
-            tickets (list): Информация о заказанных билетах.
-            tickets[ticket_uuid] (str): Уникальный UUID билета (на данный момент генерируется на клиенте).
-            tickets[bar_code] (str): Штрих-код билета (12 символов).
+            Содержимое результата:
+                order_id (int): Идентификатор заказа в сервисе заказа билетов.
+                tickets (list): Информация о заказанных билетах.
+                    Содержимое **tickets**:
+                        ticket_uuid (str): Уникальный UUID билета.
+                        bar_code (str): Штрих-код билета (12 символов).
         """
         method = 'POST'
         url = '/orders/reserve'
@@ -769,12 +768,11 @@ class Radario(TicketService):
         for t in kwargs['tickets']:
             ticket_info = {
                 'TicketTypeId': t['price_group_id'],
-                'SeatNumber': t['seat_id'],
+                'SeatNumber': t['seat_id'] if t['sector_id'] != 0 else None,
                 'ParticipantName': kwargs['customer']['name']
             }
             data['Tickets'].append(ticket_info.copy())
         output_mapping = {
-            'success': self.internal('success', bool,),
             'id':      self.internal('order_id', int,),
             'tickets': self.internal('tickets', list),
 
@@ -787,29 +785,35 @@ class Radario(TicketService):
             'isPaid':       None,
         }
 
-        order = self.request(method, url, data, output_mapping)
-        print('order: ', order)
+        create = self.request(method, url, data, output_mapping)
+        print('order: ', create)
 
         response = {}
         response['tickets'] = []
 
-        if order['success']:
-            response['order_id'] = order['order_id']
+        if 'success' not in create and 'order_id' in create:
+            response['success'] = True
+            response['order_id'] = create['order_id']
 
-            for o in order['tickets']:
+            for idx, ord_ticket in enumerate(create['tickets']):
+                # Нумеруем места по порядку, если они - без фиксированной рассадки
+                if ord_ticket['seatnumber'] is None:
+                    ord_ticket['seatnumber'] = idx + 1
+
                 ticket = {}
-                for t in kwargs['tickets']:
-                    ticket['ticket_uuid'] = (
-                        t['ticket_uuid'] if
-                        (o['seatnumber'] == t['seat_id'] and
-                         o['tickettypeid'] == t['price_group_id']) else
-                        None
-                    )
-                ticket['bar_code'] = o['barcodekey']  # 12 символов
-                # o['participantName'] == '-' ???
+                for kwa_ticket in kwargs['tickets']:
+                    if (
+                        ord_ticket['tickettypeid'] == kwa_ticket['price_group_id'] and
+                        ord_ticket['seatnumber'] == kwa_ticket['seat_id']
+                    ):
+                        ticket['ticket_uuid'] = kwa_ticket['ticket_uuid']
+                    else:
+                        continue
+
+                ticket['bar_code'] = ord_ticket['barcodekey']  # 12 символов
                 response['tickets'].append(ticket.copy())
         else:
-            return order
+            return create
 
         return response
 
@@ -821,13 +825,49 @@ class Radario(TicketService):
             order_id (int): Идентификатор заказа.
 
         Returns:
-            method: Вызов конструктора запросов request.
+            dict: Информация о заказе.
         """
         method = 'GET'
         url = '/orders/{order_id}'.format(order_id=kwargs['order_id'])
         data = None
-        output_mapping = {}
-        return self.request(method, url, data, output_mapping)
+        output_mapping = {
+            'id':          self.internal('order_id', int,),
+            'tickets':     self.internal('tickets_list', list),
+            'isPaid':      self.internal('is_paid', bool),
+            'ticketCount': self.internal('ticket_count', int),
+            'amount':      self.internal('total', Decimal),
+
+            'baseAmount':   None,
+            'creationDate': None,
+            'eventId':      None,
+            'orderNumber':  None,
+        }
+        order = self.request(method, url, data, output_mapping)
+        print('order:', order)
+
+        if 'success' not in order or order['success']:
+            order['tickets'] = []
+
+            for idx, t in enumerate(order['tickets_list']):
+                ticket = {}
+                ticket['bar_code'] = t['barcodekey']  # 12 символов
+                ticket['price_group_id'] = t['tickettypeid']
+                ticket['sector_title'] = t['tickettypetitle']
+                if t['tickettypezoneid'] is not None:
+                    ticket['sector_id'] = t['tickettypezoneid']
+                    ticket['row_id'] = int(t['rowname'])
+                    ticket['seat_id'] = int(t['seatnumber'])
+                    ticket['seat_title'] = t['seatname']
+                else:
+                    ticket['sector_id'] = 0
+                    ticket['row_id'] = 0
+                    ticket['seat_id'] = idx + 1
+                    ticket['seat_title'] = 0
+                order['tickets'].append(ticket.copy())
+
+            del order['tickets_list']
+
+        return order
 
     def order_cancel(self, **kwargs):
         """Отмена ранее созданного заказа.
@@ -837,7 +877,6 @@ class Radario(TicketService):
 
         Returns:
             dict: Информация об удалении заказа.
-
                 Содержимое результата:
                     * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
         """
@@ -871,9 +910,10 @@ class Radario(TicketService):
         }
         output_mapping = {}
 
-        approved = self.request(method, url, data, output_mapping)
+        approve = self.request(method, url, data, output_mapping)
+        print('approve:', approve)
 
-        return approved
+        return approve
 
     def order_refund(self, **kwargs):
         """Возврат стоимости билетов (с удалением заказа и освобождением билетов для продажи).
@@ -898,6 +938,38 @@ class Radario(TicketService):
         output_mapping = {}
 
         refund = self.request(method, url, data, output_mapping)
+        print('refund:', refund)
+
+        # {
+        #   "success": "bool",
+        #   "data": {
+        #     "refundId": "int",
+        #     "companyId": "int",
+        #     "refundedMoney": "decimal",
+        #     "refundedUserCash": "decimal",
+        #     "refundMethod": "int",
+        #     "refundType": "int",
+        #     "tickets": [
+        #         {
+        #             "ticketTypeId": "int",
+        #             "seatNumber": "int",
+        #             "seatInfo":
+        #             {
+        #                 "rowName" : "string",
+        #                 "colName" : "string",
+        #                 "zoneName" : "string"
+        #             },
+        #             "price": "decimal",
+
+        #         }
+        #     ],
+        #     "ticketNumbers": "string"
+        #   },
+        #   "error": {
+        #     "errorCode": "int",
+        #     "message": "string"
+        #   }
+        # }
 
         return refund
 
