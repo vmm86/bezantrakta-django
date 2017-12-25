@@ -9,7 +9,10 @@ from datetime import datetime
 from decimal import Decimal
 from operator import itemgetter
 
-from django.conf import settings
+try:
+    from project.shortcuts import BOOLEAN_VALUES
+except ImportError:
+    BOOLEAN_VALUES = BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
 
 from ..abc import TicketService
 
@@ -24,6 +27,7 @@ class SuperBilet(TicketService):
 
     Атрибуты класса:
         slug (str): Псевдоним для инстанцирования класса (``superbilet``).
+        bar_code_length (int): Длина штрих-кода.
         LOG_OPERATIONS (dict): Коды ошибок и сообщения об ошибках.
         RESPONSE_CODES (dict): Значения параметра ``actiondone`` в методе ``GetLog``.
         SEAT_STATUSES (dict): Статусы места в предварительном резерве, созданном или оплаченном заказе.
@@ -32,6 +36,8 @@ class SuperBilet(TicketService):
         client (zeep.Client): Экземпляр SOAP-клиента.
     """
     slug = 'superbilet'
+
+    bar_code_length = 20
 
     RESPONSE_CODES = {
         # Общие коды ответа
@@ -56,34 +62,34 @@ class SuperBilet(TicketService):
     }
 
     LOG_OPERATIONS = {
-        'PlacePreRes':         'Бронирование места: при добавлении не найдено место.',
-        'PreRes':              'Бронирование места: добавлено.',
-        'ErrorPreRes':         'Бронирование места: при добавлении произошла ошибка (откат транзакции).',
-        'FailPreRes':          'Бронирование места: место не забронировано.',
-        'NoSessionFreePreRes': 'Бронирование места: при удалении не найден order_uuid.',
-        'NoPlaceFreePreRes':   'Бронирование места: при удалении не найдено место.',
-        'FailFreePreRes':      'Бронирование места: при удалении произошла ошибка.',
-        'ErrorFreePreRes':     'Бронирование места: при удалении произошла ошибка.',
-        'FreePreRes':          'Бронирование места: удалено.',
+        'PlacePreRes':         'Бронирование места: при добавлении не найдено место',
+        'PreRes':              'Бронирование места: добавлено',
+        'ErrorPreRes':         'Бронирование места: при добавлении произошла ошибка (откат транзакции)',
+        'FailPreRes':          'Бронирование места: место не забронировано',
+        'NoSessionFreePreRes': 'Бронирование места: при удалении не найден order_uuid',
+        'NoPlaceFreePreRes':   'Бронирование места: при удалении не найдено место',
+        'FailFreePreRes':      'Бронирование места: при удалении произошла ошибка',
+        'ErrorFreePreRes':     'Бронирование места: при удалении произошла ошибка',
+        'FreePreRes':          'Бронирование места: удалено',
 
-        'NoSessionSetRes':      'Создание заказа: не найден order_uuid.',
-        'NoPlaceSetRes':        'Создание заказа: не найдено место.',
-        'FailSetRes':           'Создание заказа: ошибка (не найдено предварительное бронирование или order_uuid).',
-        'ErrorSetRes':          'Создание заказа: ошибка.',
-        'SetRes':               'Создание заказа: успешно.',
-        'NoSessionFreeRes':     'Удаление заказа: не найден order_uuid.',
-        'NoPlaceFreeRes':       'Удаление заказа: не найдено место.',
-        'FailFreeRes':          'Удаление заказа: ошибка (не найдено предварительное бронирование или order_uuid).',
-        'ErrorFreeRes':         'Удаление заказа: ошибка.',
-        'NoReservationFreeRes': 'Удаление заказа: нет предварительного бронирования для места.',
-        'FreeRes':              'Удаление заказа: успешно.',
+        'NoSessionSetRes':      'Создание заказа: не найден order_uuid',
+        'NoPlaceSetRes':        'Создание заказа: не найдено место',
+        'FailSetRes':           'Создание заказа: ошибка (не найдено предварительное бронирование или order_uuid)',
+        'ErrorSetRes':          'Создание заказа: ошибка',
+        'SetRes':               'Создание заказа: успешно',
+        'NoSessionFreeRes':     'Удаление заказа: не найден order_uuid',
+        'NoPlaceFreeRes':       'Удаление заказа: не найдено место',
+        'FailFreeRes':          'Удаление заказа: ошибка (не найдено предварительное бронирование или order_uuid)',
+        'ErrorFreeRes':         'Удаление заказа: ошибка',
+        'NoReservationFreeRes': 'Удаление заказа: нет предварительного бронирования для места',
+        'FreeRes':              'Удаление заказа: успешно',
 
-        'NoSessionSetSold':     'Оплата заказа: не найден order_uuid.',
-        'NoReservationSetSold': 'Оплата заказа: не найдено предварительное бронирование.',
-        'NoPlaceSetSold':       'Оплата заказа: не найдено место.',
-        'ErrorSetSold':         'Оплата заказа: ошибка.',
-        'FailSetSold':          'Оплата заказа: ошибка (не найдено предварительное бронирование или order_uuid).',
-        'SetSold':              'Оплата заказа: успешно.',
+        'NoSessionSetSold':     'Оплата заказа: не найден order_uuid',
+        'NoReservationSetSold': 'Оплата заказа: не найдено предварительное бронирование',
+        'NoPlaceSetSold':       'Оплата заказа: не найдено место',
+        'ErrorSetSold':         'Оплата заказа: ошибка',
+        'FailSetSold':          'Оплата заказа: ошибка (не найдено предварительное бронирование или order_uuid)',
+        'SetSold':              'Оплата заказа: успешно',
     }
 
     SEAT_STATUSES = {
@@ -186,11 +192,8 @@ class SuperBilet(TicketService):
         except zeep.exceptions.Fault as error:
             response = {}
             response['success'] = False
-            response['actor'] = error.actor
             response['code'] = error.code
-            response['subcodes'] = error.subcodes
             response['message'] = error.message
-            response['detail'] = error.detail
             return response
 
         # print('XML:\n', response, '\n')
@@ -261,7 +264,7 @@ class SuperBilet(TicketService):
                         return {'error': True, 'code': code, 'message': message, }
                 return iterable
             else:
-                return {'error': True, 'code': response_code, 'message': 'По вашему запросу ничего не найдено.', }
+                return {'error': True, 'code': response_code, 'message': 'По вашему запросу ничего не найдено', }
         # Если ответ НЕуспешен
         else:
             return {'error': True, 'code': response_code, 'message': response_message, }
@@ -305,7 +308,7 @@ class SuperBilet(TicketService):
                                 int(iterable[internal.key])
                             )
                         elif internal.type is bool and type(iterable[internal.key]) is not bool:
-                            iterable[internal.key] = True if iterable[internal.key] in settings.BOOLEAN_VALUES else False
+                            iterable[internal.key] = True if iterable[internal.key] in BOOLEAN_VALUES else False
                         elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
                         elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
@@ -396,10 +399,12 @@ class SuperBilet(TicketService):
         return schemes
 
     def discover_schemes(self):
-        """Получение списка схем залов для записи в БД (с включением недостающей информации из мест проведения событий).
+        """Получение списка схем залов для записи в БД.
+
+        Недостающая информация добавляется из мест проведения событий ``places``.
 
         Returns:
-            list: Список словарей с информацией о схемах залов.
+            list: Список словарей с информацией о схеме зала.
         """
         discovered_schemes = []
         places = self.places()
@@ -420,9 +425,9 @@ class SuperBilet(TicketService):
         return discovered_schemes
 
     def groups(self):
-        """Группы событий ("шоу").
+        """Группы событий ("шоу" в терминологии СуперБилет).
 
-        В СуперБилет каждое событие находится в своей группе событий, даже если это событие в одном экземпляре.
+        В СуперБилет каждое событие находится в своём "шоу", даже если это событие только в одном экземпляре.
 
         Returns:
             list: Список словарей с информацией о группах событий.
@@ -485,17 +490,14 @@ class SuperBilet(TicketService):
 
         # Добавление в группу недостающей информации из самого раннего на данный момент входящего в неё события
         for g in groups:
-            del g['result_code']
             for e in events:
                 if g['group_id'] == e['group_id']:
-                    g['group_text'] = (
-                        events_by_groups[(e['group_id'])][0]['event_text'] if
-                        g['group_text'] == '' else
-                        g['group_text']
-                    )
+                    if g['group_text'] == '':
+                        g['group_text'] = events_by_groups[(e['group_id'])][0]['event_text']
                     g['group_datetime'] = events_by_groups[(e['group_id'])][0]['event_datetime']
                     g['group_min_price'] = events_by_groups[(e['group_id'])][0]['event_min_price']
                     g['scheme_id'] = events_by_groups[(e['group_id'])][0]['scheme_id']
+            del g['result_code']
 
         # Сортировка групп по дате/времени
         groups = sorted(groups, key=itemgetter('group_datetime'))
@@ -510,7 +512,7 @@ class SuperBilet(TicketService):
             scheme_id (int): Идентификатор схемы зала.
 
         Returns:
-            method: Вызов конструктора запросов request.
+            list: Список словарей с информацией о событиях.
         """
         method = 'GetEventList'
         input_mapping = {
@@ -644,13 +646,13 @@ class SuperBilet(TicketService):
         return sectors
 
     def seats_and_prices(self, **kwargs):
-        """Доступные для продажи места в конкретном событии.
+        """Доступные для продажи места в событии (упорядоченные по цене, сектору, ряду, месту) и список цен на билеты.
 
         Args:
             event_id (int): Идентификатор события.
 
         Returns:
-            list: Список словарей с информацией о доступных к заказу местах.
+            dict: Словарь, содержащий словарь ``seats`` и список ``prices``.
         """
         method = 'GetEvailPlaceList'
         input_mapping = {
@@ -751,7 +753,7 @@ class SuperBilet(TicketService):
         """Добавление или удаление места в предварительном резерве мест (корзина заказа).
 
         Args:
-            action (str): Действие (`add` - добавить в резерв, `remove` - удалить из резерва).
+            action (str): Действие (``add`` - добавить в резерв, ``remove`` - удалить из резерва).
             order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             event_id (int): Идентификатор события.
             sector_id (int): Идентификатор сектора.
@@ -787,17 +789,16 @@ class SuperBilet(TicketService):
         }
         reserve = self.request(method, input_mapping, data, output_mapping)
 
-        # print('reserve: ', reserve)
-
         response = {}
         response['action'] = kwargs['action']
 
-        try:
-            response['success'] = True if reserve[0]['result_code'] == 0 else False
-        except KeyError:
+        if type(reserve) is list and reserve[0]['result_code'] == 0:
+            response['success'] = True
+        else:
             response['success'] = False
-            response['error_code'] = reserve['error_code']
-            response['error_message'] = reserve['error_message']
+
+            response['code'] = reserve['code']
+            response['message'] = reserve['message']
 
         return response
 
@@ -805,6 +806,8 @@ class SuperBilet(TicketService):
         """Проверка состояния места (перед созданием заказа или перед онлайн-оплатой).
 
         В новой версии СуперБилет НЕ работает корректно, если передано несколько мест для проверки состояния.
+
+        При попытке получить статус свободного в продаже места СуперБилет может ничего не возвратить...
 
         Args:
             event_id (int): Идентификатор события.
@@ -820,9 +823,10 @@ class SuperBilet(TicketService):
 
         Returns:
             dict: Информация о состоянии места.
-                order_id (int): Идентификатор заказа, если он был создан, иначе None.
-                ticket_uuid (str): Уникальный UUID билета.
-                seat_status (str): Статус места, сопоставляемый из словаря ``SEAT_STATUSES``.
+
+                Содержимое результата:
+                    * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
+                    * **status** (str): Статус места, сопоставляемый из словаря ``SEAT_STATUSES``.
         """
         method = 'GetCurrentState'
         input_mapping = {
@@ -846,7 +850,7 @@ class SuperBilet(TicketService):
             'cod_sec':        self.internal('sector_id', int,),
             'row':            self.internal('row_id', int,),
             'seat':           self.internal('seat_id', int,),
-            'gatestatus':     self.internal('seat_status', str,),
+            'gatestatus':     self.internal('status', str,),
 
             'result_code':    self.internal('result_code', int,),
 
@@ -866,21 +870,21 @@ class SuperBilet(TicketService):
         status = self.request(method, input_mapping, data, output_mapping)
         response = {}
 
-        # print('\nticket_status:', status, '\n')
-
         if type(status) is list and status[0]['result_code'] == 0:
             status = {k: v for k, v in status[0].items()}
 
-            response['order_id'] = None if status['order_id'] == 0 else status['order_id']
-            response['ticket_uuid'] = kwargs['ticket_uuid']
+            response['success'] = True
             # '' - свободен, SEL - предварительная бронь, RES - созданный заказ, SOL - оплаченный заказ, OTH - ?
-            response['seat_status'] = (
+            response['status'] = (
                 self.SEAT_STATUSES['FREE'] if
-                status['seat_status'] == '' else
-                self.SEAT_STATUSES[status['seat_status']]
+                status['status'] == '' else
+                self.SEAT_STATUSES[status['status']]
             )
         else:
-            response = status
+            response['success'] = False
+
+            response['code'] = status['code']
+            response['message'] = status['message']
 
         return response
 
@@ -996,6 +1000,7 @@ class SuperBilet(TicketService):
                 if o['result_code'] == 0:
                     # Идентификатор заказа берётся из списка удачно заказанных билетов
                     # В одном заказе он будет один и тот же
+                    response['success'] = True
                     response['order_id'] = o['order_id']
                     ticket = {}
                     for t in kwargs['tickets']:
@@ -1026,10 +1031,16 @@ class SuperBilet(TicketService):
                         else:
                             continue
                 else:
-                    response['error_code'] = o['result_code']
-                    response['error_message'] = self.RESPONSE_CODES[response['code']]
+                    response['success'] = False
+
+                    response['code'] = o['result_code']
+                    response['message'] = self.RESPONSE_CODES[response['code']]
         else:
-            return order
+            response['success'] = False
+            del response['tickets']
+
+            response['code'] = order['code']
+            response['message'] = order['message']
 
         return response
 
@@ -1041,7 +1052,6 @@ class SuperBilet(TicketService):
             order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             order_id (int): Идентификатор заказа.
             tickets (list): Список словарей с параметрами заказываемого места.
-
                 Содержимое ``tickets``:
                     * **sector_id** (int): Идентификатор сектора.
                     * **row_id** (int): Идентификатор ряда.
@@ -1095,7 +1105,10 @@ class SuperBilet(TicketService):
             for c in cancel:
                 response['success'] = True if c['result_code'] == 0 else False
         else:
-            return cancel
+            response['success'] = False
+
+            response['code'] = cancel['code']
+            response['message'] = cancel['message']
 
         return response
 
@@ -1168,12 +1181,18 @@ class SuperBilet(TicketService):
             'paymentdate':    None,
             'paymenttime':    None,
         }
-        approved = self.request(method, input_mapping, data, output_mapping)
+        approve = self.request(method, input_mapping, data, output_mapping)
 
         response = {}
 
-        for a in approved:
-            response['success'] = True if 'result_code' in a and a['result_code'] == 0 else False
+        if type(approve) is list:
+            for a in approve:
+                response['success'] = True if 'result_code' in a and a['result_code'] == 0 else False
+        else:
+            response['success'] = False
+
+            response['code'] = approve['code']
+            response['message'] = approve['message']
 
         return response
 
@@ -1346,26 +1365,29 @@ class SuperBilet(TicketService):
         }
         log = self.request(method, input_mapping, data, output_mapping)
 
-        for l in log:
-            # Преобразование даты/времени
-            date, month, year = l['date'].split('.')
-            event_datetime = '{year}-{month}-{date} {time}'.format(
-                year=year,
-                month=month,
-                date=date,
-                time=l['time']
-            )
-            l['datetime'] = datetime.strptime(event_datetime, '%Y-%m-%d %H:%M:%S')
-            del l['date']
-            del l['time']
+        if type(log) is list:
+            for l in log:
+                # Преобразование даты/времени
+                date, month, year = l['date'].split('.')
+                event_datetime = '{year}-{month}-{date} {time}'.format(
+                    year=year,
+                    month=month,
+                    date=date,
+                    time=l['time']
+                )
+                l['datetime'] = datetime.strptime(event_datetime, '%Y-%m-%d %H:%M:%S')
+                del l['date']
+                del l['time']
 
-            # Добавление описания операции из словаря LOG_OPERATIONS
-            try:
-                l['description'] = self.LOG_OPERATIONS[l['operation']]
-            except KeyError:
-                l['description'] = ''
+                # Добавление описания операции из словаря LOG_OPERATIONS
+                try:
+                    l['description'] = self.LOG_OPERATIONS[l['operation']]
+                except KeyError:
+                    l['description'] = ''
 
-        log = sorted(log, key=itemgetter('datetime'))
+            log = sorted(log, key=itemgetter('datetime'))
+        else:
+            return log
 
         return log
 

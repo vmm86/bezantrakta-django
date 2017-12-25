@@ -216,8 +216,8 @@ def success_or_error(domain, event, order, payment_status, logger):
         messages = [
             {'level': 'error', 'message': 'К сожалению, в процессе оплаты возникла ошибка. 🙁'},
             {'level': 'error', 'message': '{code} {message}'.format(
-                code=payment_status['error_code'],
-                message=payment_status['error_message']
+                code=payment_status['code'],
+                message=payment_status['message']
             )},
             {'level': 'info',  'message': '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
                 event_url=event['url']

@@ -27,8 +27,8 @@ def sngb_proxy(request):
         'paymentid':    'payment_id',
         'tranid':       'transaction_id',
 
-        'error':        'error_code',
-        'errortext':    'error_message',
+        'error':        'code',
+        'errortext':    'message',
 
         # 'ref':          'ref',           # Уникальный идентификатор операции, созданный авторизационной системой
         # 'cvv2response': 'cvv2response',  # Код, определяющий валидность CVV2
@@ -106,9 +106,9 @@ def sngb_proxy(request):
             'order_uuid': data['order_uuid'],
         }
 
-        if data['error_code']:
-            qs['error_code'] = data['error_code']
-            qs['error_message'] = data['error_message']
+        if data['code']:
+            qs['code'] = data['code']
+            qs['message'] = data['message']
 
         urlencoded_qs = urlencode(qs)
 

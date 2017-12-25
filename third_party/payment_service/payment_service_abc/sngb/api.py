@@ -179,39 +179,30 @@ class SurgutNefteGazBank(PaymentService):
     def payment_create(self, **kwargs):
         """Создание новой онлайн-оплаты.
 
-        Полный URL возврата после оплаты:
-            ``{return_url with optional get params}&orderId={payment_id}``
-
         Args:
-            event_uuid (int): Уникальный UUID события в БД.
+            event_uuid (uuid.UUID): Уникальный UUID события в БД.
             event_id (int): Идентификатор события в сервисе продажи билетов.
-
             customer (dict): Реквизиты покупателя.
-
                 Содержимое ``customer``:
                     * **name** (str): ФИО.
                     * **email** (str): Электронная почта.
                     * **phone** (str): Телефон.
-
             order (dict): Параметры заказа.
-
                 Содержимое ``order``:
-                    * **order_uuid** (str): Уникальный UUID заказа.
+                    * **order_uuid** (uuid.UUID): Уникальный UUID заказа.
                     * **order_id** (int): Идентификатор заказа.
                     * **total** (Decimal): Общая сумма заказа в рублях (**С комиссией**).
 
         Returns:
             dict: Параметры новой оплаты.
-
-            Успешный ответ:
-                * **success** (bool): Запрос успешный (``True``).
-                * **payment_id** (str): Идентификатор оплаты.
-                * **payment_url** (str): URL платёжной формы.
-
-            НЕуспешный ответ:
-                * **success** (bool): Запрос НЕуспешный (``False``).
-                * **code** (str): Код ошибки.
-                * **message** (str): Сообщение об ошибке.
+                Успешный ответ:
+                    * **success** (bool): Запрос успешный (``True``).
+                    * **payment_id** (str): Идентификатор оплаты.
+                    * **payment_url** (str): URL платёжной формы.
+                НЕуспешный ответ:
+                    * **success** (bool): Запрос НЕуспешный (``False``).
+                    * **code** (str): Код ошибки.
+                    * **message** (str): Сообщение об ошибке.
         """
         method = 'POST'
         url = 'PaymentInitServlet'
@@ -257,10 +248,10 @@ class SurgutNefteGazBank(PaymentService):
             # Если запрос НЕуспешен
             else:
                 response['success'] = False
-                response['error_code'] = parsed_result['error']
-                response['error_message'] = parsed_result['errortext']
+                response['action_code'] = parsed_result['error']
+                response['action_message'] = parsed_result['errortext']
         else:
-            return None
+            response['success'] = False
 
         # print('response: ', response, '\n')
 
@@ -273,7 +264,7 @@ class SurgutNefteGazBank(PaymentService):
             payment_id (str): Идентификатор оплаты.
 
         Returns:
-            dict: Статус оплаты.
+            dict: Информация о статусе оплаты.
         """
         method = 'GET'
         url = 'https://{token}:@ecm.sngb.ru/{payment_type}/v1/payments/{payment_id}'.format(
@@ -285,7 +276,7 @@ class SurgutNefteGazBank(PaymentService):
         # Идентификатор оплаты
         status = self.request(method, url, data)
 
-        print('status: ', status)
+        # print('status: ', status)
 
         # Успешная оплата
         # {
@@ -339,34 +330,33 @@ class SurgutNefteGazBank(PaymentService):
 
         # Если оплата существует
         if status and status['data']:
+            # Идентификатор заказа
+            response['order_id'] = int(status['data'][0]['track'])
+            # Идентификатор оплаты
+            response['payment_id'] = status['data'][0]['id']
+            # Общая сумма заказа
+            response['total'] = self.decimal_price(status['data'][0]['amount'])
+            # Был ли платёж возвращён
+            response['is_refunded'] = True if status['data'][0]['refunded'] else False
+
             # Если оплата завершилась успешно
-            if (status['data'][0]['authorization'] and status['data'][0]['captured']):
+            if (
+                status['data'][0]['authorization'] and
+                status['data'][0]['captured']
+            ):
                 response['success'] = True
-                # Уникальный номер оплаты
-                response['order_id'] = int(status['data'][0]['track'])
-                response['payment_id'] = status['data'][0]['id']
-                # Общая сумма заказа
-                response['total'] = self.decimal_price(status['data'][0]['amount'])
-                # Был ли платёж возвращён
-                response['is_refunded'] = True if status['data'][0]['refunded'] else False
             # Если оплата завершилась НЕуспешно
             else:
                 response['success'] = False
-                # Уникальный номер оплаты
-                response['order_id'] = int(status['data'][0]['track'])
-                response['payment_id'] = status['data'][0]['id']
-                # Общая сумма заказа
-                response['total'] = self.decimal_price(status['data'][0]['amount'])
-                # Был ли платёж возвращён
-                response['is_refunded'] = True if status['data'][0]['refunded'] else False
 
-                response['error_code'] = 'NO'
-                response['error_message'] = 'Оплата завершилась с ошибкой'
+                response['code'] = 'ERROR'
+                response['message'] = 'Оплата завершилась с ошибкой'
         # Если оплата НЕ существует
         else:
             response['success'] = False
-            response['error_code'] = None
-            response['error_message'] = 'Запрошенная оплата не существует'
+
+            response['code'] = 'NONE'
+            response['message'] = 'Запрошенная оплата не существует'
 
         return response
 
@@ -379,6 +369,12 @@ class SurgutNefteGazBank(PaymentService):
 
         Returns:
             dict: Информация о возврате.
+                Успешный ответ:
+                    * **success** (bool): Запрос успешный (``True``).
+                НЕуспешный ответ:
+                    * **success** (bool): Запрос НЕуспешный (``False``).
+                    * **code** (str): Код ошибки.
+                    * **message** (str): Сообщение об ошибке.
         """
         method = 'POST'
         url = 'PaymentTranServlet'
