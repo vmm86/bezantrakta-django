@@ -4,6 +4,8 @@ from adminsortable2.admin import SortableAdminMixin
 
 from project.decorators import queryset_filter
 
+from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
+
 from ..models import MenuItem
 
 
@@ -11,7 +13,7 @@ from ..models import MenuItem
 class MenuItemAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ('title', 'slug', 'is_published', 'menu', 'domain',)
     list_filter = (
-        'menu',
+        ('menu', RelatedOnlyFieldDropdownFilter),
     )
     list_select_related = ('menu', 'domain',)
     list_per_page = 10

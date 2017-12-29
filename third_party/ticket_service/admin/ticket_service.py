@@ -6,6 +6,8 @@ from jsoneditor.forms import JSONEditor
 
 from project.cache import cache_factory
 
+from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
+
 from ..models import TicketService, TicketServiceSchemeVenueBinder
 
 
@@ -29,6 +31,9 @@ class TicketServiceAdmin(admin.ModelAdmin):
         TextField: {'widget': JSONEditor},
     }
     list_display = ('title', 'id', 'is_active', 'is_payment', 'ticket_service_schemes_count')
+    list_filter = (
+        ('domain', RelatedOnlyFieldDropdownFilter),
+    )
     list_per_page = 20
 
     fieldsets = (
