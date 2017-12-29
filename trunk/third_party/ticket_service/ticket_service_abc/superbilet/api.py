@@ -62,15 +62,15 @@ class SuperBilet(TicketService):
     }
 
     LOG_OPERATIONS = {
-        'PlacePreRes':         'Бронирование места: при добавлении не найдено место',
-        'PreRes':              'Бронирование места: добавлено',
-        'ErrorPreRes':         'Бронирование места: при добавлении произошла ошибка (откат транзакции)',
-        'FailPreRes':          'Бронирование места: место не забронировано',
-        'NoSessionFreePreRes': 'Бронирование места: при удалении не найден order_uuid',
-        'NoPlaceFreePreRes':   'Бронирование места: при удалении не найдено место',
-        'FailFreePreRes':      'Бронирование места: при удалении произошла ошибка',
-        'ErrorFreePreRes':     'Бронирование места: при удалении произошла ошибка',
-        'FreePreRes':          'Бронирование места: удалено',
+        'PlacePreRes':          'Предварительный резерв: при добавлении не найдено место',
+        'PreRes':               'Предварительный резерв: добавлено',
+        'ErrorPreRes':          'Предварительный резерв: при добавлении произошла ошибка (откат транзакции)',
+        'FailPreRes':           'Предварительный резерв: место не забронировано',
+        'NoSessionFreePreRes':  'Предварительный резерв: при удалении не найден order_uuid',
+        'NoPlaceFreePreRes':    'Предварительный резерв: при удалении не найдено место',
+        'FailFreePreRes':       'Предварительный резерв: при удалении произошла ошибка',
+        'ErrorFreePreRes':      'Предварительный резерв: при удалении произошла ошибка',
+        'FreePreRes':           'Предварительный резерв: удалено',
 
         'NoSessionSetRes':      'Создание заказа: не найден order_uuid',
         'NoPlaceSetRes':        'Создание заказа: не найдено место',
@@ -93,11 +93,11 @@ class SuperBilet(TicketService):
     }
 
     SEAT_STATUSES = {
-        'FREE': 'free',
-        'SEL':  'reserved',
-        'RES':  'ordered',
-        'SOL':  'approved',
-        'OTH':  '?',
+        'FREE': 'free',      # свободен ''
+        'SEL':  'reserved',  # предварительная бронь
+        'RES':  'ordered',   # созданный заказ
+        'SOL':  'approved',  # оплаченный заказ
+        'OTH':  '?',         # ?
     }
 
     def __init__(self, init):
@@ -539,6 +539,10 @@ class SuperBilet(TicketService):
             'cod_t':       self.internal('place_id', int),
             # Идентификатор схемы зала
             'cod_h':       self.internal('scheme_id', int,),
+            # Примечание № 1 - ограничение по возрасту (строка, например, '12+')
+            'note1':       self.internal('event_min_age', str,),
+            # Примечание № 2 - организатор
+            'note2':       self.internal('promoter', str,),
             # Код возврата
             'result_code': self.internal('result_code', int,),
 
@@ -556,8 +560,6 @@ class SuperBilet(TicketService):
             'minpricediscount': None,
             'name_ganr':        None,
             'name_categ':       None,
-            'note1':            None,
-            'note2':            None,
             'note3':            None,
             'note4':            None,
             'producer':         None,
@@ -580,14 +582,21 @@ class SuperBilet(TicketService):
             del e['event_date']
             del e['event_time']
 
+            # Получение остальных параметров либо значения по умолчанию
             if 'event_text' not in e:
                 e['event_text'] = ''
 
             if 'event_min_price' not in e:
                 e['event_min_price'] = self.decimal_price(0)
 
-            # Значение по умолчанию для ограничения по возрасту
-            e['event_min_age'] = 0
+            e['event_min_age'] = (
+                int(e['event_min_age'][:-1]) if
+                'event_min_age' in e and e['event_min_age'].endswith('+') else
+                0
+            )
+
+            if 'promoter' not in e:
+                e['promoter'] = ''
 
         events = sorted(events, key=itemgetter('event_datetime'))
 
@@ -873,7 +882,6 @@ class SuperBilet(TicketService):
             status = {k: v for k, v in status[0].items()}
 
             response['success'] = True
-            # '' - свободен, SEL - предварительная бронь, RES - созданный заказ, SOL - оплаченный заказ, OTH - ?
             response['status'] = (
                 self.SEAT_STATUSES['FREE'] if
                 status['status'] == '' else

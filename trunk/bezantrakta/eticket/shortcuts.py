@@ -19,15 +19,15 @@ def render_eticket(context, logger):
 
     Args:
         context (dict): Информация, необходимая для генерации файла билета.
-
-            Содержимое ``context``:
-
+            Содержимое ``context``, используемое при генерации PDF-билета:
                 'url' (str):               URL станицы события на сайте.
                 'event_title' (str):       Название события.
                 'event_venue_title' (str): Название зала.
                 'event_date' (str):        Человекопонятная дата события.
                 'event_time' (str):        Человекопонятное время события.
                 'event_min_age' (int):     Ограничение по возрасту (по умолчанию - ``0``).
+                'event_promoter' (str):    Организатор события (промоутер).
+                'event_seller' (str):      Продавец билетов (агент).
                 'poster' (str):            Относительный путь к файлу афиши ``small_vertical`` внутри папки ``MEDIA``.
 
                 'ticket_service_order' (int): Идентификатор заказа в сервисе продажи билетов.
@@ -38,7 +38,6 @@ def render_eticket(context, logger):
                 'row_id' (int):          Идентификатор ряда.
                 'seat_title' (str):      Название места.
                 'price' (Decimal):       Цена билета.
-
         logger (logging.RootLogger): Файл для логирования процесса генерации PDF-билета.
 
     Returns:

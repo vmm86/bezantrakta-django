@@ -231,7 +231,8 @@ class Radario(TicketService):
         }
         places = self.request(method, url, data, output_mapping)
 
-        places = sorted(places, key=itemgetter('place_id'))
+        if type(places) is list:
+            places = sorted(places, key=itemgetter('place_id'))
 
         return places
 
@@ -312,7 +313,8 @@ class Radario(TicketService):
                 )
             discovered_schemes.append(scheme)
 
-        discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
+        if type(discovered_schemes) is list:
+            discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
 
         return discovered_schemes
 
@@ -338,7 +340,8 @@ class Radario(TicketService):
         }
         groups = self.request(method, url, data, output_mapping)
 
-        groups = sorted(groups, key=itemgetter('group_id'))
+        if type(groups) is list:
+            groups = sorted(groups, key=itemgetter('group_id'))
 
         return groups
 
@@ -374,8 +377,8 @@ class Radario(TicketService):
                         0
                     )
 
-        # Сортировка групп по дате/времени
-        groups = sorted(groups, key=itemgetter('group_datetime'))
+        if type(groups) is list:
+            groups = sorted(groups, key=itemgetter('group_datetime'))
 
         return groups
 
@@ -460,6 +463,7 @@ class Radario(TicketService):
         for e in events:
             if e['is_disabled'] is False:
                 del e['is_disabled']
+                e['promoter'] = ''
             else:
                 del events[e]
 
@@ -622,18 +626,18 @@ class Radario(TicketService):
         seats = []
         prices = sorted([pg['price'] for pg in price_groups])
         response['prices'] = prices
-        print('\nprice_groups:\n', price_groups, '\n')
+        # print('\nprice_groups:\n', price_groups, '\n')
 
         if kwargs['scheme_id'] != 0:
             scheme = self.scheme(scheme_id=kwargs['scheme_id'])
-            print('\nscheme:\n', scheme, '\n')
+            # print('\nscheme:\n', scheme, '\n')
 
         sectors = (
             {s['name'].lower(): s['id'] for s in scheme['scheme_zones']} if
             kwargs['scheme_id'] != 0 else
             {pg['price_group_title'].lower(): pg['price_group_id'] for pg in price_groups}
         )
-        print('sectors:\n', sectors, '\n')
+        # print('sectors:\n', sectors, '\n')
 
         for pg in price_groups:
             # Билеты с местами
@@ -670,7 +674,8 @@ class Radario(TicketService):
                     seat['price_order'] = prices.index(pg['price']) + 1
                     seats.append(seat)
 
-        seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
+        if type(seats) is list:
+            seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
         response['seats'] = seats
 
         return response
@@ -784,7 +789,7 @@ class Radario(TicketService):
         }
 
         create = self.request(method, url, data, output_mapping)
-        print('order: ', create)
+        # print('order: ', create)
 
         response = {}
         response['tickets'] = []
@@ -970,6 +975,46 @@ class Radario(TicketService):
         # }
 
         return refund
+
+    def promoters(self):
+        """Организаторы событий для конкретного акканута Радарио.
+
+        Returns:
+            list: Список словарей с информацией о организаторах.
+        """
+        method = 'GET'
+        url = '/company/{company_id}/event-providers'.format(company_id=self.company_id)
+        data = None
+        output_mapping = {
+            # Идентификатор группы событий
+            'id':   self.internal('promoter_id', int,),
+            # Название группы событий
+            'name': self.internal('promoter_title', str),
+            # ИНН
+            'inn':         self.internal('inn', str),
+            'description': self.internal('description', str),
+            'commissionfeepercent': self.internal('description', Decimal),
+
+            'companyid': None,
+            'cityid': None,
+            'email': None,
+            'additionalemails': None,
+            'phone': None,
+            'allowsendsoldticketreportforprevday': None,
+            'allowsendsoldticketreportforalltime': None,
+            'creationddate': None,
+            'updatedate': None,
+            'deleted': None,
+            'address': None,
+            'contractnumber': None,
+            'contractdate': None,
+        }
+        promoters = self.request(method, url, data, output_mapping)
+
+        if type(promoters) is list:
+            promoters = sorted(promoters, key=itemgetter('promoter_id'))
+
+        return promoters
 
     # def categories(self):
     #     """Список категорий событий."""

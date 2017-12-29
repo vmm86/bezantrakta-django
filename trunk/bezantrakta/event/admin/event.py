@@ -98,7 +98,9 @@ class EventAdmin(admin.ModelAdmin):
                 'fields': ('title', 'slug', 'description', 'keywords', 'text',
                            'is_published', 'is_on_index', 'min_price', 'min_age',
                            'datetime', 'event_category', 'event_venue', 'domain', 'is_group',
-                           'ticket_service', 'ticket_service_event', 'ticket_service_scheme',),
+
+                           'ticket_service', 'ticket_service_event', 'ticket_service_scheme',
+                           'promoter', 'seller',),
             }
         ),
     )

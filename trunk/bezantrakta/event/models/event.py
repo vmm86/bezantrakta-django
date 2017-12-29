@@ -183,13 +183,25 @@ class Event(models.Model):
         db_column='ticket_service_scheme_id',
         verbose_name=_('event_ticket_service_scheme'),
     )
+    promoter = models.CharField(
+        max_length=256,
+        blank=True,
+        null=True,
+        verbose_name=_('event_promoter'),
+    )
+    seller = models.CharField(
+        max_length=256,
+        blank=True,
+        null=True,
+        verbose_name=_('event_seller'),
+    )
 
     class Meta:
         app_label = 'event'
         db_table = 'bezantrakta_event'
         verbose_name = _('event')
         verbose_name_plural = _('events')
-        ordering = ('domain', 'is_group', '-datetime', 'title',)
+        ordering = ('domain', '-datetime', '-is_group', 'title',)
         unique_together = (
             ('domain', 'datetime', 'slug',),
         )
