@@ -290,6 +290,10 @@
         left: 0;
     }
 
+    .bx-pager {
+        display: none;
+    }
+
     .poster-small-vertical {
         flex: 0 0 33%;
     }
