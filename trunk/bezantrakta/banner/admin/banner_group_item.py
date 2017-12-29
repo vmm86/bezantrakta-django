@@ -4,6 +4,8 @@ from adminsortable2.admin import SortableAdminMixin
 
 from project.decorators import queryset_filter
 
+from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
+
 from ..models import BannerGroupItem
 
 
@@ -11,7 +13,7 @@ from ..models import BannerGroupItem
 class BannerGroupItemAdmin(SortableAdminMixin, admin.ModelAdmin):
     list_display = ('title', 'slug', 'is_published', 'banner_group', 'domain',)
     list_filter = (
-        'banner_group',
+        ('banner_group', RelatedOnlyFieldDropdownFilter),
     )
     list_select_related = ('banner_group', 'domain',)
     list_per_page = 10
