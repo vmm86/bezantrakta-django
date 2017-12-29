@@ -73,6 +73,8 @@ class EventCache(ProjectCache):
                 event_category_title=F('event_category__title'),
                 event_venue_title=F('event_venue__title'),
                 event_venue_city=F('event_venue__city__title'),
+                event_promoter=F('promoter'),
+                event_seller=F('seller'),
                 # Параметры группы, если событие в неё входит
                 group_uuid=F('event_groups'),
 
@@ -99,6 +101,8 @@ class EventCache(ProjectCache):
                 'event_category_title',
                 'event_venue_title',
                 'event_venue_city',
+                'event_promoter',
+                'event_seller',
 
                 'group_uuid',
 

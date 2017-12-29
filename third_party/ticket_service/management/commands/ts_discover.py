@@ -301,7 +301,6 @@ ______________________________________________________________________________
             ts_scheme_venue_binder (dict): Схемы залов в БД.
             group (dict): Информация о текущей группе в списке групп.
         """
-        print('group to import:', group, '\n')
         # today = timezone_now()
         # В БД сохраняются только те группы,
         # схемы залов у которых были ранее в админ-панели связаны с залами (местами проведения событий) в БД
@@ -366,6 +365,8 @@ ______________________________________________________________________________
                         ticket_service_id=ticket_service['id'],
                         ticket_service_event=group['group_id'],
                         ticket_service_scheme=None,
+                        promoter='',
+                        seller='',
                     )
                 except IntegrityError:
                     pass
@@ -402,7 +403,6 @@ ______________________________________________________________________________
             ts_scheme_venue_binder (dict): Схемы залов в БД.
             event (dict): Информация о текущем событии в списке событий.
         """
-        # print('event to import:', event, '\n')
         today = timezone_now()
         # В БД сохраняются только те события,
         # схемы залов у которых связаны с залами (местами проведения событий) в БД
@@ -445,6 +445,8 @@ ______________________________________________________________________________
                 ).update(
                     datetime=event['event_datetime'],
                     min_price=event['event_min_price'],
+                    promoter=event['promoter'] if event['promoter'] else ticket_service['settings']['promoter'],
+                    seller=ticket_service['settings']['seller'],
                 )
 
                 # Обновить кэш события при обновлении его данных
@@ -478,6 +480,8 @@ ______________________________________________________________________________
                         ticket_service_id=ticket_service['id'],
                         ticket_service_event=event['event_id'],
                         ticket_service_scheme=event['scheme_id'],
+                        promoter=event['promoter'] if event['promoter'] else ticket_service['settings']['promoter'],
+                        seller=ticket_service['settings']['seller'],
                     )
                 except IntegrityError:
                     pass
