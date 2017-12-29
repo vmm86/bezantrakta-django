@@ -266,6 +266,7 @@
     font-weight: bold;
     letter-spacing: 0.15rem;
     text-align: center;
+    text-shadow: 0px 1px 2px #555;
     text-transform: uppercase;
 
     padding: 0.5rem 1rem 0.5rem 0.5rem;
@@ -281,7 +282,7 @@
     -webkit-background-size: 100% 100%;
 
     color: #000;
-    text-shadow: 1px 0 0 #000;
+    text-shadow: 0px 1px 2px #fff;
 }
 
 .choose-city-list li .city-status-text {
