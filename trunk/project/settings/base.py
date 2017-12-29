@@ -354,6 +354,7 @@ STATICFILES_DIRS = [
     ('global', os.path.join(BASE_DIR, 'project', 'static')),
     # Статика кастомной админ-панели
     ('admin', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'admin')),
+    ('jsoneditor', os.path.join(BASE_DIR, 'bezantrakta', 'simsim', 'static', 'jsoneditor')),
 ]
 
 # FILE_UPLOAD_DIRECTORY_PERMISSIONS = '0o755'
@@ -513,8 +514,8 @@ CKEDITOR_JQUERY_URL = '/static/global/js/jquery/3.2.1/jquery-3.2.1.min.js'
 
 CKEDITOR_UPLOAD_PATH = 'global/uploads/'
 
-JSON_EDITOR_JS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.js'
-JSON_EDITOR_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/4.2.1/jsoneditor.css'
+JSON_EDITOR_JS = os.path.join(STATIC_URL, 'jsoneditor', '4.2.1', 'jsoneditor.js')
+JSON_EDITOR_CSS = os.path.join(STATIC_URL, 'jsoneditor', '4.2.1', 'jsoneditor.css')
 
 COMPRESS_ENABLED = True
 

@@ -439,6 +439,16 @@ a.section:visited {
     max-width: 100px;
 }
 
+#result_list tr:hover .field-event_venue {
+    background-color: #ffc;
+    overflow: visible;
+}
+#result_list tr:hover .field-group_count,
+#result_list tr:hover .field-link_count,
+#result_list tr:hover .field-container_count {
+    color: transparent;
+}
+
 /* Кнопки */
 
 .object-tools a {
@@ -532,6 +542,7 @@ a.section:visited {
 #changelist #toolbar {
     background: transparent;
     border: none;
+    margin-bottom: 0;
 }
 
 #changelist #toolbar form #searchbar {
@@ -545,12 +556,20 @@ a.section:visited {
 }
 
 #changelist-filter {
-    background: transparent;
-    padding-top: 46px;
-    float: right;
+    background: #fff;
+    float: none;
     top: auto;
-    /*position: fixed;
-    right: 40px;*/
+    position: static;
+
+    border: none;
+    border-radius: 1rem 1rem 0 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
 }
 
 #changelist-filter h2 {
@@ -561,28 +580,56 @@ a.section:visited {
     margin: 0;
 }
 
+#changelist-filter .filters {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    border-right:  1px solid #ccc;
+    border-left:   1px solid #ccc;
+}
+#changelist-filter .filters:last-child {
+    border-bottom: 1px solid #ccc;
+}
+
+#changelist-filter .filters .filter {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#changelist-filter .filters.horizontal .filter {
+    flex-direction: row;
+}
+#changelist-filter .filters.vertical .filter {
+    flex-direction: column;
+}
+
+#changelist-filter .filters .filter select {
+    width: 10vw !important;
+}
+
 #changelist-filter h3 {
     background: #fff;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
     color: #222;
     font-size: 12px;
     font-weight: bold;
     text-transform: uppercase;
     padding: 12px 18px;
     margin: 0;
+
+    align-self: flex-start;
 }
 
 #changelist-filter ul {
     background: #fff;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
+    border-left: none;
     padding: 0 16px 16px 16px;
     margin: 0;
-}
-
-#changelist-filter ul:last-child {
-    border-bottom: 1px solid #ccc;
 }
 
 #changelist-filter li.selected {
@@ -607,6 +654,14 @@ a.section:visited {
     font-size: 0.75rem;
     text-shadow: 0 1px 0px #111;
     padding: 2px 10px 3px 10px;
+}
+
+.change-list .filtered .results,
+.change-list .filtered .paginator,
+.filtered #toolbar,
+.filtered div.xfull {
+    margin-right: 0;
+    width: 100%;
 }
 
 /* Статус заказа */
@@ -658,10 +713,7 @@ a.section:visited {
 }
 
 .admindatefilter {
-    border-bottom: none;
-    border-right: 1px solid #ccc;
-    border-left: 1px solid #ccc;
-    margin-top: -4px;
+    border: none !important;
 }
 .admindatefilter p {
     margin: 0;
@@ -766,10 +818,15 @@ input[type=password]:focus,
 input[type=email]:focus,
 input[type=url]:focus,
 input[type=number]:focus,
+select:focus,
 textarea:focus,
 .vTextField:focus {
     border: 2px solid #fc0;
-    font-weight: bold;
+    text-shadow: 1px 0 0 #111;
+}
+
+select:focus option {
+    text-shadow: none;
 }
 
 .submit-row input,
@@ -834,6 +891,10 @@ label,
 label.required,
 p.datetime {
     color: #111;
+}
+
+.aligned label {
+    display: inline-block;
 }
 
 .form-row {
@@ -921,6 +982,11 @@ p.file-upload {
     color: #111;
 }
 
+.related-widget-wrapper {
+    display: inline;
+    float: none;
+}
+
 .related-widget-wrapper-link {
     display: none;
 }
@@ -973,6 +1039,11 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     line-height: initial;
 }
 
+#id_promoter,
+#id_seller {
+    width: 80vw;
+}
+
 /* Оформление двух инлайн-форм (одна - для отображения добавленных данных, другая - только для добавления) */
 #groups-group {
     margin-bottom: 0;
@@ -1018,32 +1089,36 @@ fieldset.json_settings .description ul {
     border: 2px solid #999 !important;
 }
 
-.jsoneditor .search {
+.jsoneditor .search,
+.jsoneditor .jsoneditor-search {
     margin: 2px 0;
     position: static !important;
 }
 
-.jsoneditor .search .frame {
+.jsoneditor .search .frame,
+.jsoneditor .jsoneditor-search .jsoneditor-frame {
     border: 1px solid #999 !important;
 }
 
-.jsoneditor .menu {
+.jsoneditor .menu,
+.jsoneditor .jsoneditor-menu {
     color: #111 !important;
     background-color: #fc0 !important;
     border-bottom: 2px solid #999 !important;
 }
 
-.jsoneditor .menu button {
+.jsoneditor .menu button,
+.jsoneditor .jsoneditor-menu button {
     border: 1px solid #999 !important;
     border-radius: 0.33rem !important;
     opacity: 1 !important;
 }
 
-.jsoneditor .search button {
+.jsoneditor .search button,
+.jsoneditor .jsoneditor-search button {
     border: none !important;
 }
 
-.jsoneditor table td,
 .jsoneditor table td {
     border-bottom: none !important;
 }
@@ -1053,17 +1128,68 @@ fieldset.json_settings .description ul {
     border-radius: 0.33rem !important;
 }
 
-.jsoneditor .field,
-.jsoneditor .value,
-.jsoneditor .readonly {
+.jsoneditor .field, .jsoneditor .value, .jsoneditor .readonly,
+.jsoneditor .jsoneditor-field, .jsoneditor .jsoneditor-value, .jsoneditor .jsoneditor-readonly {
     min-height: 22px !important;
     min-width: 38px !important;
 }
 
-.jsoneditor .field {
+.jsoneditor .field,
+.jsoneditor .jsoneditor-field {
     font-weight: bold !important;
 }
 
 .jsoneditor-contextmenu ul li ul {
     height: auto !important;
+}
+
+tr.jsoneditor-highlight,
+tr.jsoneditor-selected {
+    background-color: #ffffab !important;
+}
+
+div.jsoneditor-outer {
+    position: relative !important;
+}
+
+.jsoneditor-contextmenu ul.menu {
+    background-color: #fff !important;
+    border: 1px solid #999 !important;
+    border-radius: 4px;
+    box-shadow: none !important;
+    padding: 0 0.33rem !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.jsoneditor-contextmenu ul.menu ul.menu {
+    background-color: #ffffab !important;
+}
+
+.jsoneditor-contextmenu ul li button {
+    color: #111 !important;
+    width: auto !important;
+}
+
+.jsoneditor-contextmenu ul li button:hover,
+.jsoneditor-contextmenu ul li button:focus {
+    background-color: transparent !important;
+    text-shadow: 1px 0 0 #111 !important;
+}
+
+.jsoneditor-contextmenu ul li button.expand {
+    border-left: none !important;
+}
+
+.jsoneditor-contextmenu ul li .selected {
+    background-color: #fc0 !important;
+    text-shadow: 1px 0 0 #111 !important;
+}
+
+.jsoneditor-contextmenu ul li ul {
+    left: 0 !important;
+}
+
+.jsoneditor-contextmenu ul li ul li button {
+    padding-left: 16px !important;
 }

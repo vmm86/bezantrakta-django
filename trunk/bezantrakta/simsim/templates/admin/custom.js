@@ -1,20 +1,29 @@
 {% load i18n %}
 $(document).ready(function() {
-    {# Фиксированное позиционирование кнопок для сохранения/удаления в форме редактирования при прокручивании вниз #}
-    if ($('.submit-row').length) {
-        var waypoint = new Waypoint({
-            element: $('.submit-row')[0],
-            handler: function(direction) {
-                if (direction == 'down') {
-                    $('.submit-row').css('position', 'fixed');
-                    $('#content').css('padding-bottom', '40px');
-                } else if (direction == 'up') {
-                    $('.submit-row').css('position', 'static');
-                    $('#content').css('padding-bottom', '20px');
+    {# Блоки, которые должны иметь sticky-позиционирование в админ-панели #}
+    sticky_blocks = [
+        $('#changelist-filter'), {# Фильтры #}
+        $('.submit-row')         {# Кнопки для сохранения/удаления в форме редактирования #}
+    ]
+
+    {# * фиксированное позиционирование каждого из ``sticky_blocks`` при прокручивании вниз #}
+    {# * статическое позиционирование каждого из ``sticky_blocks`` при прокручивании вверх к началу страницы #}
+    $.each(sticky_blocks, function(index, block) {
+        if (block.length) {
+            var waypoint = new Waypoint({
+                element: block[0],
+                handler: function(direction) {
+                    if (direction == 'down') {
+                        block.css('position', 'fixed');
+                        $('#content').css('padding-bottom', block.height());
+                    } else if (direction == 'up') {
+                        block.css('position', 'static');
+                        $('#content').css('padding-bottom', block.height() / 2);
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
+    });
 
     {# Сохранение данных выбранного для фильтрации сайта в cookie #}
     $('#choose_domain').change(function() {
