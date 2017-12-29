@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('title', models.CharField(help_text='Всего не более 60-65 символов.', max_length=64, verbose_name='Название')),
                 ('slug', models.SlugField(max_length=64, verbose_name='Псевдоним')),
-                ('description', models.TextField(help_text='Содержит ключевые слова или фразы, описывающие страницу, но не более 3-5 шт.<br>Всего не более 150-200 символов.', max_length=200, verbose_name='Метатег `description`')),
+                ('description', models.TextField(help_text='Краткое описание содержимого страницы.<br>Всего не более 150-200 символов.', max_length=200, verbose_name='Метатег `description`')),
                 ('keywords', models.TextField(help_text='Несколько ключевых слов или фраз, разделённых запятыми, которые описывают содержимое страницы.<br>Всего не более 100-150 символов.', max_length=150, verbose_name='Метатег `keywords`')),
                 ('text', ckeditor.fields.RichTextField(verbose_name='Содержимое страницы')),
                 ('is_published', models.BooleanField(default=False, verbose_name='Публикация')),
