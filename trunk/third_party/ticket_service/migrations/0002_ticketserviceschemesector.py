@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('ticket_service_sector_id', models.PositiveIntegerField(verbose_name='ID сектора')),
                 ('ticket_service_sector_title', models.CharField(max_length=128, verbose_name='Название сектора')),
-                ('sector', ckeditor.fields.RichTextField(default='', help_text='<p>Схемы секторов создаются аналогично схеме зала.<br>Общая схема зала для работы с секторами должна содержать ссылки для открытия схем секторов по клику в отдельном блоке под общей схемой зала. При клике на каком-либо секторе на общей схеме зала выбранный сектор становится видимым, а все остальны секторы скрываются.', verbose_name='Сектор в схеме зала')),
+                ('sector', ckeditor.fields.RichTextField(default='', help_text='<p>Схемы секторов создаются аналогично схеме зала.<br>Общая схема зала для работы с секторами должна содержать ссылки для открытия схем секторов по клику в отдельном блоке под общей схемой зала. При клике на каком-либо секторе на общей схеме зала выбранный сектор становится видимым, а все остальные секторы скрываются.', verbose_name='Сектор в схеме зала')),
                 ('scheme', models.ForeignKey(db_column='ticket_service_scheme_id', on_delete=django.db.models.deletion.CASCADE, related_name='scheme_sectors', to='ticket_service.TicketServiceSchemeVenueBinder', verbose_name='Схема зала')),
             ],
             options={
