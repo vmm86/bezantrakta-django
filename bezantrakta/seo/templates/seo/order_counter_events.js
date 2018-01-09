@@ -18,13 +18,22 @@ function eventsYandexGoogle() {
     }
 }
 
+window.order_counter_events_trigger = null;
+
 {% if   active == 'step1' %}
-    document.getElementById('buy-tickets').addEventListener('click', eventsYandexGoogle);
+    order_counter_events_trigger = document.getElementById('buy-tickets');
+    if (order_counter_events_trigger) {
+        order_counter_events_trigger.addEventListener('click', eventsYandexGoogle);
+    }
 {% elif active == 'step2' %}
-    document.getElementById('checkout-form').addEventListener('submit', eventsYandexGoogle);
+    order_counter_events_trigger = document.getElementById('checkout-form');
+    if (order_counter_events_trigger) {
+        order_counter_events_trigger.addEventListener('submit', eventsYandexGoogle);
+    }
 {% elif active == 'step3' %}
 window.onload = function(){
-    if (document.getElementById('success-message')) {
+    order_counter_events_trigger = document.getElementById('success-message');
+    if (order_counter_events_trigger) {
         eventsYandexGoogle();
     }
 }
