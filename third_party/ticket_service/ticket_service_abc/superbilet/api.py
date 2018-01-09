@@ -681,8 +681,8 @@ class SuperBilet(TicketService):
             'result_code': self.internal('result_code', int,),
 
             'nombilkn':      None,
-            'pricesell':     None,
-            'pricediscount': None,
+            'pricesell':     None,  # Цена продажи
+            'pricediscount': None,  # Цена продажи со скидкой
             # СуперБилет Театр
             'cod_hs':        None,  # Объект на схеме зала из метода `scheme`
         }
@@ -751,10 +751,12 @@ class SuperBilet(TicketService):
             'cod_hs':        None,  # Объект на схеме зала из метода `scheme`
             'name_sector':   None,
             'nombilkn':      None,
-            'pricesell':     None,
-            'pricediscount': None,
+            'pricesell':     None,  # Цена продажи
+            'pricediscount': None,  # Цена продажи со скидкой
         }
         sector_seats = self.request(method, input_mapping, data, output_mapping)
+
+        sector_seats = sorted(sector_seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
 
         return sector_seats
 
