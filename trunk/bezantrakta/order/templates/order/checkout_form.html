@@ -37,28 +37,8 @@
 
         {#<p>Выберите способ оплаты и получения билетов:</p>#}
 
-    {% if ticket_service.settings.order.self_cash %}
-        <div class="input-container">
-                <input id="customer-delivery-self" class="self_cash" type="radio" name="customer_order_type" value="self_cash">
-                <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-self" class="customer-delivery step2"> Забронировать и выкупить в кассе {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
-                <br>
-        </div>
-    {% endif %}
-
-    {% if ticket_service.settings.order.courier_cash %}
-        <div class="input-container">
-                <br>
-                <input id="customer-delivery-courier" class="courier_cash" type="radio" name="customer_order_type" value="courier_cash">
-                <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-courier" class="customer-delivery step2"> Доставка курьером {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
-                <br>
-        </div>
-    {% endif %}
-
     {% if ticket_service.settings.order.self_online %}
         <div class="input-container">
-                <br>
                 <input id="customer-delivery-payment" class="self_online" type="radio" name="customer_order_type" value="self_online">
                 <img border="0" style="border: 0; border-style: none">
                 <label for="customer-delivery-payment" class="customer-delivery step2"> Оплатить онлайн и получить в кассе {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
@@ -74,6 +54,27 @@
                 <label for="customer-delivery-eticket" class="customer-delivery step2"> Оплатить онлайн и получить электронный билет на email</label>
         </div>
     {% endif %}
+
+    {% if ticket_service.settings.order.courier_cash %}
+        <div class="input-container">
+                <br>
+                <input id="customer-delivery-courier" class="courier_cash" type="radio" name="customer_order_type" value="courier_cash">
+                <img border="0" style="border: 0; border-style: none">
+                <label for="customer-delivery-courier" class="customer-delivery step2"> Доставка курьером {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
+                <br>
+        </div>
+    {% endif %}
+
+    {% if ticket_service.settings.order.self_cash %}
+        <div class="input-container">
+                <br>
+                <input id="customer-delivery-self" class="self_cash" type="radio" name="customer_order_type" value="self_cash">
+                <img border="0" style="border: 0; border-style: none">
+                <label for="customer-delivery-self" class="customer-delivery step2"> Забронировать и выкупить в кассе {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
+                <br>
+        </div>
+    {% endif %}
+
     </div>
 
 {% if ticket_service.settings.order %}
@@ -94,24 +95,6 @@
 {% if ticket_service.settings.order %}
     {# Сопроводительная информация к способам получения и оплаты билетов #}
     <div class="input-container order-options-description">
-
-        {% if ticket_service.settings.order.self_cash %}
-            <div class="ticket-offices-contacts step2">
-                {{ ticket_service.settings.order_description.self_cash|safe }}
-            </div>
-        {% endif %}
-
-        {% if ticket_service.settings.order.courier_cash %}
-            <div class="customer-address step2">
-                <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
-                <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ request.city_title }}" value="{{ address }}"></input>
-                <p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>
-                {% if ticket_service.settings.courier_price > 0 %}
-                    <p>Стоимость доставки {{ ticket_service.settings.courier_price }} р.</p>
-                {% endif %}
-                {{ ticket_service.settings.order_description.courier_cash|safe }}
-           </div>
-        {% endif %}
 
         {% if ticket_service.settings.order.self_online %}
             <div class="online-info payment-info step2">
@@ -135,6 +118,25 @@
                 {{ payment_service.settings.description|safe }}
             </div>
         {% endif %}
+
+        {% if ticket_service.settings.order.courier_cash %}
+            <div class="customer-address step2">
+                <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
+                <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ request.city_title }}" value="{{ address }}">
+                <p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>
+                {% if ticket_service.settings.courier_price > 0 %}
+                    <p>Стоимость доставки {{ ticket_service.settings.courier_price }} р.</p>
+                {% endif %}
+                {{ ticket_service.settings.order_description.courier_cash|safe }}
+           </div>
+        {% endif %}
+
+        {% if ticket_service.settings.order.self_cash %}
+            <div class="ticket-offices-contacts step2">
+                {{ ticket_service.settings.order_description.self_cash|safe }}
+            </div>
+        {% endif %}
+
     </div>
 {% endif %}
 
