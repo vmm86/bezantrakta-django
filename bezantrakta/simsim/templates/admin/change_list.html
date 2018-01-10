@@ -64,16 +64,16 @@
                 {% if cl.has_filters %}
                     <div id="changelist-filter">
                         <h2>{% trans 'Filter' %}</h2>
+                        <div class="filters horizontal">
+                            <div class="filter">{% block search %}{% search_form cl %}{% endblock %}</div>
+                            <div class="filter">{% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}</div>
+                        </div>
                         <div class="filters vertical">
                             {% for spec in cl.filter_specs %}
                                 <div class="filter">
                                     {% admin_list_filter cl spec %}
                                 </div>
                             {% endfor %}
-                        </div>
-                        <div class="filters horizontal">
-                            <div class="filter">{% block search %}{% search_form cl %}{% endblock %}</div>
-                            <div class="filter">{% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}</div>
                         </div>
                     </div>
                 {% endif %}
