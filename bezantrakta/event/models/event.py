@@ -197,6 +197,23 @@ class Event(models.Model):
         null=True,
         verbose_name=_('event_seller'),
     )
+    # Включение/отключение вариантов заказа билетов в событии
+    is_order_self_cash = models.BooleanField(
+        default=True,
+        verbose_name=_('event_is_order_self_cash'),
+    )
+    is_order_courier_cash = models.BooleanField(
+        default=True,
+        verbose_name=_('event_is_order_courier_cash'),
+    )
+    is_order_self_online = models.BooleanField(
+        default=True,
+        verbose_name=_('event_is_order_self_online'),
+    )
+    is_order_email_online = models.BooleanField(
+        default=True,
+        verbose_name=_('event_is_order_email_online'),
+    )
 
     class Meta:
         app_label = 'event'

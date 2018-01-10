@@ -71,7 +71,7 @@
 
             <br>
 
-            {% include "order/checkout_form.html" with checkout_form_action=checkout_form_action ticket_service=ticket_service payment_service=payment_service %}
+            {% include "order/checkout_form.html" with checkout_form_action=checkout_form_action event=event customer=customer ticket_service=ticket_service payment_service=payment_service %}
 
             {% if debug %}
             <br><br>
@@ -83,9 +83,7 @@
             <br><br>
             order_total_plus_commission: <pre>{{ order_total_plus_commission|pprint }}</pre>
             <br><br>
-            customer: {{ customer }}
-            <br><br>
-            order_types_active: {{ order_types_active }}
+            customer: <pre>{{ customer|pprint }}</pre>
             <br><br>
             event: <pre>{{ event|pprint }}</pre>
             <br><br>
