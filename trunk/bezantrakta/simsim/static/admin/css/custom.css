@@ -124,6 +124,10 @@ em {
     margin: 0 0.1rem;
 }
 
+.small {
+    font-size: 12px;
+}
+
 /* Контейнер */
 
 #container,
@@ -545,16 +549,6 @@ a.section:visited {
     margin-bottom: 0;
 }
 
-#changelist #toolbar form #searchbar {
-    border: 2px solid #999;
-    font-size: 14px;
-    height: auto;
-}
-
-#changelist #toolbar form #searchbar:focus {
-    border: 2px solid #fc0;
-}
-
 #changelist-filter {
     background: #fff;
     float: none;
@@ -654,6 +648,53 @@ a.section:visited {
     font-size: 0.75rem;
     text-shadow: 0 1px 0px #111;
     padding: 2px 10px 3px 10px;
+}
+
+#changelist-search a {
+    vertical-align: middle;
+    margin: 0 -0.25rem;
+    position: relative;
+    z-index: 10;
+}
+
+#changelist-search #searchbar,
+#changelist #toolbar form #searchbar {
+    border: 2px solid #999;
+    border-radius: 0.5rem 0 0 0.5rem;
+    font-size: 14px;
+    padding: 5px;
+    height: auto;
+    position: relative;
+    z-index: 10;
+}
+
+#changelist-search #searchbar:focus,
+#changelist #toolbar form #searchbar:focus {
+    border: 2px solid #fc0;
+}
+
+#changelist-search input[type="submit"],
+#changelist #toolbar form input[type="submit"] {
+    background-color: #999;
+    border: none;
+    border-radius: 0 1rem 1rem 0;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+    padding: 7px 12px 7px 10px;
+    margin-left: -0.25rem;
+}
+
+#changelist-search input[type="submit"]:focus,
+#changelist-search input[type="submit"]:hover,
+#changelist #toolbar form input[type="submit"]:focus,
+#changelist #toolbar form input[type="submit"]:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 1px 1px 0px #fff;
+}
+
+#changelist-search .small {
+    vertical-align: middle;
 }
 
 .change-list .filtered .results,
@@ -937,12 +978,15 @@ p.help,
 form p.help,
 div.help,
 form div.help,
-div.help li {
+div.help li,
+.description,
+.description li {
     color: #111;
     font-size: 14px;
 }
 
-form div.help ul {
+form div.help ul,
+form div.description ul {
     padding-left: 14px;
 }
 
@@ -1064,7 +1108,12 @@ fieldset.json_settings {
 }
 
 fieldset.json_settings h2 {
-    order: 1;
+    width: 100%;
+    order: -1;
+}
+
+fieldset.json_settings .form-row {
+    width: 100%;
 }
 
 fieldset.json_settings .form-row.field-settings {
