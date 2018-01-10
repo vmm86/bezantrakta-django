@@ -58,9 +58,14 @@ a:visited {
 
 a:focus,
 a:hover {
+    color: inherit;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: inherit;
+}
+
+a:not([href]) {
+    cursor: default;
 }
 
 thead th,
@@ -295,6 +300,32 @@ ul.messagelist li {
 
 /* Модули */
 
+.dashboard #content {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.dashboard #content > h1,
+.dashboard #content > p {
+    order: -1;
+}
+
+.dashboard #content #content-main {
+    width: 50%;
+    float: none;
+}
+
+.dashboard #content #content-related {
+    margin-right: 0;
+    width: 50%;
+    float: none;
+    order: -1;
+}
+
 .module {
     border-radius: 1rem 1rem 0 0;
 }
@@ -366,10 +397,20 @@ a.section:visited {
 }
 
 #content-related .actionlist {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
     border: 1px solid #ccc;
+    border-bottom: none;
     padding: 0;
     margin: 0;
     margin-top: -1px;
+
+    height: 160px; /* 30px * X */
+    overflow: auto;
 }
 
 #content-related .actionlist li {
@@ -379,17 +420,11 @@ a.section:visited {
     justify-content: space-between;
     align-items: center;
 
-    padding: 0 12px 12px 18px;
+    flex: 0 1 100%;
+
+    padding: 7px 18px;
+    margin: 0;
     border-bottom: 1px solid #ccc;
-}
-
-#content-related .actionlist li:first-child {
-    margin-top: 12px;
-}
-
-#content-related .actionlist li:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
 }
 
 #content-related .actionlist li a {
@@ -401,12 +436,10 @@ a.section:visited {
 }
 
 #content-related .actionlist li span {
-    text-align: right;
     text-overflow: ellipsis;
     text-transform: lowercase;
     white-space: nowrap;
     overflow: hidden;
-    width: 20%;
 }
 
 #content-related .module h2 {
@@ -1046,9 +1079,11 @@ p.file-upload {
     height: auto;
 }
 
-.changelink, .inlinechangelink {
+.addlink,    .inlineaddlink,
+.changelink, .inlinechangelink,
+.deletelink, .inlinedeletelink {
     padding-left:  16px;
-    background: url(../img/icon-changelink.svg) 0 0 no-repeat;
+    background-position: 2px center;
 }
 
 div.inline-group table.ui-sortable tr.form-row.has_original td.drag {
