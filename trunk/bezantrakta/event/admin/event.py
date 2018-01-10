@@ -103,6 +103,15 @@ class EventAdmin(admin.ModelAdmin):
                            'promoter', 'seller',),
             }
         ),
+        (
+            _('event_order_options'),
+            {
+                'fields': ('is_order_self_online', 'is_order_email_online',
+                           'is_order_courier_cash', 'is_order_self_cash',),
+                'classes': ('json_settings',),
+                'description': _('event_order_options_help_text'),
+            }
+        ),
     )
     filter_horizontal = ('event_container',)
     group_inlines = (ListEventGroupBinderInline, AddEventGroupBinderInline, EventContainerBinderInline,)
@@ -115,7 +124,7 @@ class EventAdmin(admin.ModelAdmin):
         ('is_published', admin.BooleanFieldListFilter),
         ('is_group', admin.BooleanFieldListFilter),
         ('datetime', DateRangeFilter),
-        ('event_category', admin.RelatedOnlyFieldListFilter),
+        ('event_category', RelatedOnlyFieldDropdownFilter),
         ('event_venue', RelatedOnlyFieldDropdownFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
