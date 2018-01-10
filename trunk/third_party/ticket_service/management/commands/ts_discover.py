@@ -1,3 +1,4 @@
+import datetime
 import hashlib
 import logging
 import simplejson as json
@@ -62,7 +63,9 @@ class Command(BaseCommand):
         help (str): Справочная информация о задании.
         logger (Logger): Экземпляр логгера.
         task_cache (dict): Временный кэш задания в памяти.
+        groups_exist (list): Список имеющихся в БД актуальных групп.
         group_id_uuid_mapping (dict): Связка идентификаторов групп в СПБ и в БД.
+        events_exist (list): Список имеющихся в БД актуальных событий.
         event_id_uuid_mapping (dict): Связка идентификаторов событий в СПБ и в БД.
         event_model_max_length (int): Максимальное число символов в названии события в модели ``event.Event``
     """
@@ -96,7 +99,9 @@ ______________________________________________________________________________
     """
     logger = logging.getLogger('ticket_service.discover')
     task_cache = {}
+    groups_exist = []
     group_id_uuid_mapping = {}
+    events_exist = []
     event_id_uuid_mapping = {}
     event_model_max_length = Event._meta.get_field('title').max_length
 
@@ -225,27 +230,34 @@ ______________________________________________________________________________
                     self.stdout.write('Имеются связки схем залов с залами (местами проведения событий).')
 
                     # Группы, уже добавленные в БД ранее, к которым могут быть привязаны новые события
-                    groups_exist = Event.objects.filter(
+                    groups_exist = list(Event.objects.filter(
                         is_group=True,
                         domain_id=ticket_service['domain_id'],
                         ticket_service_id=ticket_service['id'],
                     ).values(
                         'id',
                         'ticket_service_event',
-                    )
-                    self.group_id_uuid_mapping = {ge['ticket_service_event']: ge['id'] for ge in groups_exist}
+                        # Поля, которые могут быть обновлены при запуске задания
+                        'datetime',
+                    ))
+                    self.group_id_uuid_mapping = {ge['ticket_service_event']: {'id': ge['id'], 'datetime': ge['datetime']} for ge in groups_exist}
                     self.stdout.write('Имеющиеся группы событий: {}'.format(self.group_id_uuid_mapping))
 
                     # События, уже добавленные в БД ранее
-                    events_exist = Event.objects.filter(
+                    events_exist = list(Event.objects.filter(
                         is_group=False,
                         domain_id=ticket_service['domain_id'],
                         ticket_service_id=ticket_service['id'],
                     ).values(
                         'id',
                         'ticket_service_event',
-                    )
-                    self.event_id_uuid_mapping = {ee['ticket_service_event']: ee['id'] for ee in events_exist}
+                        # Поля, которые могут быть обновлены при запуске задания
+                        'datetime',
+                        'min_price',
+                        'promoter',
+                        'seller',
+                    ))
+                    self.event_id_uuid_mapping = {ee['ticket_service_event']: {'id': ee['id'], 'datetime': ee['datetime'], 'min_price': ee['min_price'], 'promoter': ee['promoter'], 'seller': ee['seller']} for ee in events_exist}
                     self.stdout.write('Имеющиеся события: {}'.format(self.event_id_uuid_mapping))
 
                     self.stdout.write('Поиск групп событий...')
@@ -323,28 +335,56 @@ ______________________________________________________________________________
             # Если группа уже была добавлена ранее
             if group['group_id'] in self.group_id_uuid_mapping.keys():
                 self.stdout.write(
-                    'Группа {group_id}: {group_title} была добавлена ранее'.format(
+                    '\nГруппа {group_id}: {group_title} была добавлена ранее'.format(
                         group_id=group['group_id'],
                         group_title=group['group_title']
                     )
                 )
 
-                # Обновление информации в добавленной ранее группе событий
-                Event.objects.filter(
-                    id=self.group_id_uuid_mapping[group['group_id']],
-                    # datetime__gt=today
-                ).update(
-                    datetime=group['group_datetime']
-                )
+                # Обновление информации в добавленной ранее группе, только если это необходимо
+                group_fields = {
+                    'datetime': group['group_datetime'],
+                }
+                group_values = self.group_id_uuid_mapping[group['group_id']]
 
-                # Обновить кэш группы при обновлении её данных
-                cache_factory('group', self.group_id_uuid_mapping[group['group_id']], reset=True)
-                self.stdout.write(
-                    '    Обновлён кэш группы {group_id}: {group_title}'.format(
-                        group_id=group['group_id'],
-                        group_title=group['group_title']
-                    )
-                )
+                if group_values:
+                    self.stdout.write('Группа в БД: {} {}'.format(group_values, type(group_values)))
+
+                    fields_to_update = {}
+                    for field, value in group_fields.items():
+                        if type(value) is datetime.datetime:
+                            if group_values[field] < value:
+                                fields_to_update[field] = value
+                        else:
+                            if group_values[field] != value:
+                                fields_to_update[field] = value
+
+                        if value in fields_to_update:
+                            self.stdout.write('    {}:'.format(field))
+                            self.stdout.write('        db_value: {}'.format(group_values[field]))
+                            self.stdout.write('        in_value: {}'.format(value))
+
+                    if fields_to_update:
+                        db_item_update = Event.objects.filter(
+                            id=self.group_id_uuid_mapping[group['group_id']]['id'],
+                        ).update(**fields_to_update)
+
+                        if db_item_update:
+                            self.log(
+                                'Обновление группы {group_id}: {group_title} в БД\n{fields_to_update}'.format(
+                                    group_id=group['group_id'],
+                                    group_title=group['group_title'],
+                                    fields_to_update=fields_to_update
+                                ), level='SUCCESS'
+                            )
+                            # Обновить кэш группы при обновлении её данных
+                            cache_factory('group', self.group_id_uuid_mapping[group['group_id']]['id'], reset=True)
+                            self.stdout.write(
+                                'Обновлён кэш группы {group_id}: {group_title}'.format(
+                                    group_id=group['group_id'],
+                                    group_title=group['group_title']
+                                )
+                            )
             # Добавление новой группы в БД
             else:
                 try:
@@ -378,12 +418,13 @@ ______________________________________________________________________________
                         ), level='SUCCESS'
                     )
 
-                    self.group_id_uuid_mapping[group['group_id']] = group_uuid
+                    self.group_id_uuid_mapping[group['group_id']] = {}
+                    self.group_id_uuid_mapping[group['group_id']]['id'] = group_uuid
 
                     # Создать кэш новой группы
                     cache_factory('group', group_uuid)
                     self.stdout.write(
-                        '    Создан кэш группы {group_id}: {group_title}'.format(
+                        'Создан кэш группы {group_id}: {group_title}'.format(
                             group_id=group['group_id'],
                             group_title=group['group_title']
                         )
@@ -430,33 +471,62 @@ ______________________________________________________________________________
 
             # Если событие уже было добавлено ранее
             if event['event_id'] in self.event_id_uuid_mapping.keys():
-                event_uuid = self.event_id_uuid_mapping[event['event_id']]
+                event_uuid = self.event_id_uuid_mapping[event['event_id']]['id']
                 self.stdout.write(
-                    'Событие {event_id}: {event_title} было добавлено ранее'.format(
+                    '\nСобытие {event_id}: {event_title} было добавлено ранее'.format(
                         event_id=event['event_id'],
                         event_title=event['event_title']
                     )
                 )
 
-                # Обновление информации в добавленном ранее событии
-                Event.objects.filter(
-                    id=self.event_id_uuid_mapping[event['event_id']],
-                    datetime__gt=today
-                ).update(
-                    datetime=event['event_datetime'],
-                    min_price=event['event_min_price'],
-                    promoter=event['promoter'] if event['promoter'] else ticket_service['settings']['promoter'],
-                    seller=ticket_service['settings']['seller'],
-                )
+                # Обновление информации в добавленном ранее событии, только если это необходимо
+                event_fields = {
+                    'datetime':  event['event_datetime'],
+                    'min_price': event['event_min_price'],
+                    'promoter':  event['promoter'] if event['promoter'] else ticket_service['settings']['promoter'],
+                    'seller':    ticket_service['settings']['seller'],
+                }
+                event_values = self.event_id_uuid_mapping[event['event_id']]
 
-                # Обновить кэш события при обновлении его данных
-                cache_factory('event', self.event_id_uuid_mapping[event['event_id']], reset=True)
-                self.stdout.write(
-                    '    Обновлён кэш события {event_id}: {event_title}'.format(
-                        event_id=event['event_id'],
-                        event_title=event['event_title']
-                    )
-                )
+                if event_values:
+                    self.stdout.write('Событие в БД: {} {}'.format(event_values, type(event_values)))
+
+                    fields_to_update = {}
+                    for field, value in event_fields.items():
+                        if type(value) is datetime.datetime:
+                            if event_values[field] < value:
+                                fields_to_update[field] = value
+                        else:
+                            if event_values[field] != value:
+                                fields_to_update[field] = value
+
+                        if value in fields_to_update:
+                            self.stdout.write('    {}:'.format(field))
+                            self.stdout.write('        db_value: {}'.format(event_values[field]))
+                            self.stdout.write('        in_value: {}'.format(value))
+
+                    if fields_to_update:
+                        db_item_update = Event.objects.filter(
+                            id=self.event_id_uuid_mapping[event['event_id']]['id'],
+                            datetime__gt=today
+                        ).update(**fields_to_update)
+
+                        if db_item_update:
+                            self.log(
+                                'Обновление события {event_id}: {event_title} в БД\n{fields_to_update}'.format(
+                                    event_id=event['event_id'],
+                                    event_title=event['event_title'],
+                                    fields_to_update=fields_to_update
+                                ), level='SUCCESS'
+                            )
+                            # Обновить кэш события при обновлении его данных
+                            cache_factory('event', self.event_id_uuid_mapping[event['event_id']]['id'], reset=True)
+                            self.stdout.write(
+                                'Обновлён кэш события {event_id}: {event_title}'.format(
+                                    event_id=event['event_id'],
+                                    event_title=event['event_title']
+                                )
+                            )
             # Добавление нового события в БД
             else:
                 # Уникальный идентификатор нового события
@@ -495,16 +565,17 @@ ______________________________________________________________________________
 
                 # Если событие принадлежит ранее добавленной в БД группе -
                 # событие привязывается к этой группе.
-                if event['group_id'] in self.group_id_uuid_mapping.keys():
+                group_ids = [g['id'] for g in self.group_id_uuid_mapping.values()]
+                if event['group_id'] in group_ids:
                     try:
                         EventGroupBinder.objects.create(
-                            group_id=self.group_id_uuid_mapping[event['group_id']],
+                            group_id=self.group_id_uuid_mapping[event['group_id']]['id'],
                             event_id=event_uuid,
                         )
                     except IntegrityError:
                         pass
                     else:
-                        group_info = cache_factory('group', self.group_id_uuid_mapping[event['group_id']])
+                        group_info = cache_factory('group', self.group_id_uuid_mapping[event['group_id']]['id'])
                         self.log(
                             'Событие {event_id}: {event_title} привязано к группе {group_id}: {group_title}'.format(
                                     event_id=event['event_id'],
@@ -517,7 +588,7 @@ ______________________________________________________________________________
                         # Создать кэш нового события
                         cache_factory('event', event_uuid)
                         self.stdout.write(
-                            '    Создан кэш события {event_id}: {event_title}'.format(
+                            'Создан кэш события {event_id}: {event_title}'.format(
                                 event_id=event['event_id'],
                                 event_title=event['event_title']
                             )
