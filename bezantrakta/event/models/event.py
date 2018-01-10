@@ -50,6 +50,8 @@ class Event(models.Model):
         ticket_service (ForeignKey): Привязка к сервису продажи билетов.
         ticket_service_event (PositiveIntegerField): Идентификатор события в сервисе продажи билетов.
         ticket_service_scheme (PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
+        promoter (CharField): Организатор событий (промоутер).
+        seller (CharField): Продавец билетов (агент).
     """
     objects = EventManager()
 
