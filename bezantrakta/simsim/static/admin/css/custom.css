@@ -436,10 +436,24 @@ a.section:visited {
 }
 
 #content-related .actionlist li span {
+    text-align: center;
     text-overflow: ellipsis;
     text-transform: lowercase;
     white-space: nowrap;
     overflow: hidden;
+}
+
+#content-related .actionlist .item {
+    width: 50%;
+}
+#content-related .actionlist .content_type {
+    width: 20%;
+}
+#content-related .actionlist .user {
+    width: 15%;
+}
+#content-related .actionlist .action_time {
+    width: 15%;
 }
 
 #content-related .module h2 {
@@ -447,6 +461,7 @@ a.section:visited {
     color: #111;
     font-size: 12px;
     font-weight: bold;
+    letter-spacing: 0.5px;
     text-shadow: 0px 1px 0px #fff;
     text-transform: uppercase;
     padding: 8px;
