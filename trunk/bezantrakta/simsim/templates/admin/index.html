@@ -14,16 +14,17 @@
             {% for entry in admin_log %}
                 <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
                 {% if entry.is_deletion or not entry.get_admin_url %}
-                    <a class="deleted">{{ entry.object_repr }}</a>
+                    <a class="item deleted">{{ entry.object_repr }}</a>
                 {% else %}
-                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                    <a class="item" href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
                 {% endif %}
                 {% if entry.content_type %}
-                    <span class="content_type mini quiet">{% filter capfirst %}{{ entry.content_type }}{% endfilter %}</span>
+                    <span class="content_type quiet">{% filter capfirst %}{{ entry.content_type }}{% endfilter %}</span>
                 {% else %}
                     <span class="content_type_unknown mini quiet">{% trans 'Unknown content' %}</span>
                 {% endif %}
-                    <span class="user mini">{{ entry.user }}</span>
+                    <span class="user">{{ entry.user }}</span>
+                    <span class="action_time">{{ entry.action_time }}</span>
                 </li>
             {% endfor %}
             </ul>
