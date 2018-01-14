@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% load tz %}
+
+{% block content_header %}
+<h1>{{ title }}</h1>
+{% endblock %}
+
+{% block content_body %}
+{% if events_found %}
+<div class="poster-small-vertical-body">
+{% for item in events_found %}
+{% localtime on %}
+    {% include "event/small_vertical_posters.html" with item=item %}
+{% endlocaltime %}
+{% endfor %}
+</div>
+{% else %}
+    <p>К сожалению, при поиске подходящих событий не найдено. 🙁</p>
+{% endif %}
+
+{% if debug %}
+<br><br>
+events_found: <pre>{{ events_found|pprint }}</pre>
+<br><br>
+{% endif %}
+{% endblock %}
