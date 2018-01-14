@@ -436,24 +436,10 @@ a.section:visited {
 }
 
 #content-related .actionlist li span {
-    text-align: center;
     text-overflow: ellipsis;
     text-transform: lowercase;
     white-space: nowrap;
     overflow: hidden;
-}
-
-#content-related .actionlist .item {
-    width: 50%;
-}
-#content-related .actionlist .content_type {
-    width: 20%;
-}
-#content-related .actionlist .user {
-    width: 15%;
-}
-#content-related .actionlist .action_time {
-    width: 15%;
 }
 
 #content-related .module h2 {
@@ -461,7 +447,6 @@ a.section:visited {
     color: #111;
     font-size: 12px;
     font-weight: bold;
-    letter-spacing: 0.5px;
     text-shadow: 0px 1px 0px #fff;
     text-transform: uppercase;
     padding: 8px;
@@ -589,16 +574,6 @@ a.section:visited {
 
 #changelist .actions select:focus {
     border: 2px solid #fc0;
-}
-
-#changelist .actions .button {
-    background-color: #999;
-    color: #fff;
-    font-weight: bold;
-    text-shadow: 0 1px 0px #111;
-    border-radius: 1rem;
-    border: none;
-    padding: 4px 10px 6px 10px;
 }
 
 #changelist #toolbar {

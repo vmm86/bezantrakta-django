@@ -1,6 +1,5 @@
 import simplejson as json
 import uuid
-from collections import OrderedDict
 
 from django.shortcuts import redirect, render
 
@@ -51,45 +50,11 @@ def checkout(request):
     customer['address'] = request.COOKIES.get('bezantrakta_customer_address', request.city_title)
     customer['order_type'] = request.COOKIES.get('bezantrakta_customer_order_type', '')
 
-    # Предварительный выбор вариантов заказа билетов из списка активных, если заказов ранее не было
-    # Варианты заказа билетов в событии
-    order_types = OrderedDict([
-        (
-            'self_online',
-            {
-                'ticket_service': ticket_service['settings']['order']['self_online'],
-                'event': event['is_order_self_online'],
-            }
-        ),
-        (
-            'email_online',
-            {
-                'ticket_service': ticket_service['settings']['order']['email_online'],
-                'event': event['is_order_email_online'],
-            }
-        ),
-        (
-            'courier_cash',
-            {
-                'ticket_service': ticket_service['settings']['order']['courier_cash'],
-                'event': event['is_order_courier_cash'],
-            }
-        ),
-        (
-            'self_cash',
-            {
-                'ticket_service': ticket_service['settings']['order']['self_cash'],
-                'event': event['is_order_self_cash'],
-            }
-        ),
-    ])
-    customer['order_types_active'] = tuple(
-        ot for ot in order_types.keys() if
-        order_types[ot]['ticket_service'] is True and order_types[ot]['event'] is True
-    )
-    if customer['order_type'] == '' or customer['order_type'] not in customer['order_types_active']:
-        for ot in order_types.keys():
-            if ot in customer['order_types_active']:
+    # Предварительный выбор типа заказа из списка активных, если заказов ранее не было
+    order_types_active = [k for k, v in ticket_service['settings']['order'].items() if v == True]
+    if customer['order_type'] == '' or customer['order_type'] not in order_types_active:
+        for ot in ORDER_TYPE:
+            if ot in order_types_active:
                 customer['order_type'] = ot
                 break
 
@@ -120,6 +85,8 @@ def checkout(request):
     context['payment_service'] = payment_service
 
     context['customer'] = customer
+
+    context['order_types_active'] = order_types_active
 
     context['order_uuid'] = order_uuid
     context['order_tickets'] = order_tickets

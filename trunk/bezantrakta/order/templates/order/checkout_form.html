@@ -21,7 +21,7 @@
         </p>
     </div>
 
-{% if ticket_service.settings.order and customer.order_types_active %}
+{% if ticket_service.settings.order %}
     {# Согласие на обработку персональных данных #}
     <div class="input-container agree-container">
         <input id="agree" type="checkbox" name="customer_agree" checked="checked">
@@ -37,7 +37,7 @@
 
         {#<p>Выберите способ оплаты и получения билетов:</p>#}
 
-    {% if ticket_service.settings.order.self_online and event.is_order_self_online %}
+    {% if ticket_service.settings.order.self_online %}
         <div class="input-container">
                 <input id="customer-delivery-payment" class="self_online" type="radio" name="customer_order_type" value="self_online">
                 <img border="0" style="border: 0; border-style: none">
@@ -46,7 +46,7 @@
         </div>
     {% endif %}
 
-    {% if ticket_service.settings.order.email_online and event.is_order_email_online %}
+    {% if ticket_service.settings.order.email_online %}
         <div class="input-container">
                 <br>
                 <input id="customer-delivery-eticket" class="email_online" type="radio" name="customer_order_type" value="email_online">
@@ -55,7 +55,7 @@
         </div>
     {% endif %}
 
-    {% if ticket_service.settings.order.courier_cash and event.is_order_courier_cash %}
+    {% if ticket_service.settings.order.courier_cash %}
         <div class="input-container">
                 <br>
                 <input id="customer-delivery-courier" class="courier_cash" type="radio" name="customer_order_type" value="courier_cash">
@@ -65,7 +65,7 @@
         </div>
     {% endif %}
 
-    {% if ticket_service.settings.order.self_cash and event.is_order_self_cash %}
+    {% if ticket_service.settings.order.self_cash %}
         <div class="input-container">
                 <br>
                 <input id="customer-delivery-self" class="self_cash" type="radio" name="customer_order_type" value="self_cash">
@@ -77,7 +77,7 @@
 
     </div>
 
-{% if ticket_service.settings.order and customer.order_types_active %}
+{% if ticket_service.settings.order %}
     <div class="input-container">
         {# Кнопки "Назад" и "Подтвердить" #}
         <div class="order-buttons step2">
@@ -92,11 +92,11 @@
     </div>
 {% endif %}
 
-{% if ticket_service.settings.order and customer.order_types_active %}
+{% if ticket_service.settings.order %}
     {# Сопроводительная информация к способам получения и оплаты билетов #}
     <div class="input-container order-options-description">
 
-        {% if ticket_service.settings.order.self_online and event.is_order_self_online %}
+        {% if ticket_service.settings.order.self_online %}
             <div class="online-info payment-info step2">
                 {{ ticket_service.settings.order_description.self_online|safe }}
                 <br>
@@ -104,7 +104,7 @@
             </div>
         {% endif %}
 
-        {% if ticket_service.settings.order.email_online and event.is_order_email_online %}
+        {% if ticket_service.settings.order.email_online %}
             <div class="online-info eticket-info step2">
                 {{ ticket_service.settings.order_description.email_online|safe }}
                 <p>После успешного подтверждения оплаты PDF-файлы с билетами будут отправлены на указанную Вами электронную почту.<br>Корректно указывайте свой адрес электронной почты! В противном случае Вам необходимо связаться с администратором сайта для повторной отправки билетов.
@@ -119,7 +119,7 @@
             </div>
         {% endif %}
 
-        {% if ticket_service.settings.order.courier_cash and event.is_order_courier_cash %}
+        {% if ticket_service.settings.order.courier_cash %}
             <div class="customer-address step2">
                 <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
                 <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ request.city_title }}" value="{{ address }}">
@@ -131,7 +131,7 @@
            </div>
         {% endif %}
 
-        {% if ticket_service.settings.order.self_cash and event.is_order_self_cash %}
+        {% if ticket_service.settings.order.self_cash %}
             <div class="ticket-offices-contacts step2">
                 {{ ticket_service.settings.order_description.self_cash|safe }}
             </div>

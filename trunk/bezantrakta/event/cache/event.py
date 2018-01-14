@@ -17,7 +17,7 @@ class EventCache(ProjectCache):
     Attributes:
         entities (tuple): Перечень моделей или других сущностей для создания кэша.
         today (datetime.datetime): Текущая дата и время.
-        substitutes (dict): Параметры для замены в группе или в событии.
+        substitutes (dict): Парамтеры для замены в группе или в событии.
 
             Содержимое ``substitutes``:
                 * **group** (tuple): Параметры события для замены в родительской группе.
@@ -81,17 +81,12 @@ class EventCache(ProjectCache):
                 payment_service_id=F('ticket_service__payment_service__id'),
 
                 domain_slug=F('domain__slug'),
+
                 city_timezone=F('domain__city__timezone'),
             ).values(
                 'is_published',
                 'is_on_index',
                 'is_group',
-
-                # Включение/отключение вариантов заказа билетов в событии
-                'is_order_self_cash',
-                'is_order_courier_cash',
-                'is_order_self_online',
-                'is_order_email_online',
 
                 'event_uuid',
                 'event_title',
