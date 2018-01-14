@@ -52,11 +52,6 @@ class Event(models.Model):
         ticket_service_scheme (PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
         promoter (CharField): Организатор событий (промоутер).
         seller (CharField): Продавец билетов (агент).
-        Включение/отключение вариантов заказа билетов в конкретном событии:
-        is_order_self_cash (BooleanField): Получение покупателем + оффлайн-оплата.
-        is_order_courier_cash (BooleanField): Доставка курьером + оффлайн-оплата.
-        is_order_self_online (BooleanField): Получение покупателем + онлайн-оплата.
-        is_order_email_online (BooleanField): PDF-билет на email + онлайн-оплата.
     """
     objects = EventManager()
 
@@ -201,23 +196,6 @@ class Event(models.Model):
         blank=True,
         null=True,
         verbose_name=_('event_seller'),
-    )
-    # Включение/отключение вариантов заказа билетов в событии
-    is_order_self_cash = models.BooleanField(
-        default=True,
-        verbose_name=_('event_is_order_self_cash'),
-    )
-    is_order_courier_cash = models.BooleanField(
-        default=True,
-        verbose_name=_('event_is_order_courier_cash'),
-    )
-    is_order_self_online = models.BooleanField(
-        default=True,
-        verbose_name=_('event_is_order_self_online'),
-    )
-    is_order_email_online = models.BooleanField(
-        default=True,
-        verbose_name=_('event_is_order_email_online'),
     )
 
     class Meta:
