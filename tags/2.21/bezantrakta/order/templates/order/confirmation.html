@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load i18n static tz compress %}
+
+{% block head_title %}
+    Подтверждение заказа билетов
+{% endblock %}
+
+{% block head_description %}
+    Страница подтверждения успешного или НЕуспешного заказа билетов
+{% endblock %}
+
+{% block head_keywords %}
+    оформление заказа, чекаут, подтверждение
+{% endblock %}
+
+{% block head_stylesheet %}
+    {# Общие CSS-файлы - загружаются в любом случае #}
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq-order.css" %}">
+    {# Общие CSS-файлы - загружаются в любом случае #}
+
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/2.9.0/lightbox.min.css" %}">
+{% endblock %}
+
+{% block body %}
+    <div class="body">
+        <main class="content step3">
+
+
+            {% include "order/order_progress.html" with active="step3" %}
+
+
+            {% include "event/event_title_date_time.html" with active="step3" event=event %}
+
+
+            <div class="order-header step3">
+                <div id="basket-container" class="step3">
+                    <h3 id="chosen-tickets-header">Выбранные места</h3>
+                    <p>
+                        <ul id="chosen-tickets">
+                        {% for t in order.tickets %}
+                            <li>
+                                {{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}, цена {{ t.price }} <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </p>
+            {% if order.delivery == "courier" %}
+                {% if order.courier_price > 0 %}
+                    <h3 id="overall-header">Всего с учётом доставки курьером</h3>
+                {% else %}
+                    <h3 id="overall-header">Всего</h3>
+                {% endif %}
+            {% elif order.payment == "online" %}
+                {% if order.commission > 0 %}
+                    <h3 id="overall-header">Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
+                {% else %}
+                    <h3 id="overall-header">Всего</h3>
+                {% endif %}
+            {% else %}
+                    <h3 id="overall-header">Всего</h3>
+            {% endif %}
+                    <p id="overall">
+                        <span id="overall-text">Билетов <span id="count-chosen">{{ order.count }}</span> на сумму <span id="total-sum">{{ order.total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
+                    </p>
+
+                    <h3 id="order-info-header">Информация о заказе</h3>
+                    <ul id="order-info">
+                    {% for i in order.info %}
+                        <li>{{ i.key }} {{ i.value|safe }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+
+            <div id="success-message">
+                <p>Заказ успешно завершён. 🙂</p>
+                <p>На введённый Вами email отправлена информация о заказанных Вами билетах.</p>
+            </div>
+
+            <div class="order-buttons step3">
+                <div class="button-tomain">
+                    <a id="tomain" href="/">На главную</a>
+                </div>
+            </div>
+
+            {% if debug %}
+            <br><br>
+            order: <pre>{{ order|pprint }}</pre>
+            <br><br>
+            order_count: <pre>{{ order.count|pprint }}</pre>
+            <br><br>
+            order_total: <pre>{{ order.total|pprint }}</pre>
+            <br><br>
+            order_total_plus_commission: <pre>{{ order_total_plus_commission|pprint }}</pre>
+            <br><br>
+            order_tickets: <pre>{{ order.tickets|pprint }}</pre>
+            <br><br>
+            event: <pre>{{ event|pprint }}</pre>
+            <br><br>
+            {% endif %}
+        </main>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{# Скрипты для работы с заказом билетов #}
+    <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
+
+    {% compress js inline %}
+    <script type="text/javascript">
+        {% include "order/confirmation.js" %}
+    </script>
+    {% endcompress %}
+
+    {% if not debug %}
+    {% compress js inline %}
+    <script type="text/javascript">
+        {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
+        {% include "seo/order_counter_events.js" with active="step3" %}
+    </script>
+    {% endcompress %}
+    {% endif %}
+
+{% endblock %}
