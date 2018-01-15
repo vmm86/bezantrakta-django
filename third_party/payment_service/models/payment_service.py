@@ -1,6 +1,15 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from project.decorators import default_json_settings
+
+from ..settings import PAYMENT_SERVICE_SETTINGS_DEFAULT
+
+
+@default_json_settings(PAYMENT_SERVICE_SETTINGS_DEFAULT)
+def default_json_settings_callable():
+    pass
+
 
 class PaymentService(models.Model):
     """Сервисы онлайн-оплаты.
@@ -45,7 +54,7 @@ class PaymentService(models.Model):
         verbose_name=_('paymentservice_is_production'),
     )
     settings = models.TextField(
-        default='{}',
+        default=default_json_settings_callable,
         verbose_name=_('paymentservice_settings'),
     )
 

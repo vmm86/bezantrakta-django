@@ -92,7 +92,7 @@ msgstr "Оплата настоящими деньгами"
 
 #: models/payment_service.py:50
 msgid "paymentservice_settings"
-msgstr "Настройки"
+msgstr "Настройки в JSON"
 
 #: models/payment_service.py:56
 msgid "paymentservice"
