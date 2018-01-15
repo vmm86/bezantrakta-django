@@ -195,10 +195,10 @@ class EventCache(ProjectCache):
                 None
             )
 
-            # Получение JSON-настроек события/группы
-            self.value['settings'] = (
-                json.loads(self.value['settings']) if self.value['settings'] is not None else None
-            )
+        # Получение JSON-настроек события/группы
+        self.value['settings'] = (
+            json.loads(self.value['settings']) if self.value['settings'] is not None else None
+        )
 
     def cache_postprocessing(self, **kwargs):
         # Получение из строки даты и времени в UTC ('2017-08-31T16:00:00+00:00')
