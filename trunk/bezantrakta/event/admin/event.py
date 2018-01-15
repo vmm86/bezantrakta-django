@@ -12,6 +12,7 @@ from project.shortcuts import build_absolute_url, timezone_now
 
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 
+from ..forms import EventForm
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
@@ -103,8 +104,17 @@ class EventAdmin(admin.ModelAdmin):
                            'promoter', 'seller',),
             }
         ),
+        (
+            None,
+            {
+                'fields': ('settings',),
+                'classes': ('json_settings',),
+                'description': _('event_settings_help_text'),
+            }
+         ),
     )
     filter_horizontal = ('event_container',)
+    form = EventForm
     group_inlines = (ListEventGroupBinderInline, AddEventGroupBinderInline, EventContainerBinderInline,)
     event_inlines = (EventLinkBinderInline, EventContainerBinderInline,)
     list_display = ('title', 'ticket_service_event_short_description', 'is_published', 'is_on_index', 'is_group',
@@ -186,6 +196,8 @@ class EventAdmin(admin.ModelAdmin):
         Добавление ссылок работает только для событий.
         """
         self.inlines = self.group_inlines if obj.is_group else self.event_inlines
+        if obj is not None:
+            self.inlines = self.group_inlines if obj.is_group else self.event_inlines
         return super(EventAdmin, self).get_form(request, obj, **kwargs)
 
     def has_delete_permission(self, request, obj=None):

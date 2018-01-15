@@ -6,6 +6,15 @@ from django.db import models
 from django.urls.base import reverse
 from django.utils.translation import ugettext as _
 
+from project.decorators import default_json_settings
+
+from ..settings import EVENT_SETTINGS_DEFAULT
+
+
+@default_json_settings(EVENT_SETTINGS_DEFAULT)
+def default_json_settings_callable():
+    pass
+
 
 class EventManager(models.Manager):
     def get_queryset(self):
@@ -20,17 +29,17 @@ class Event(models.Model):
     """События, привязанные к какому-то билетному сервису или независимые (добавленные вручную).
 
     Attributes:
-        objects (EventManager): Менеджер модели.
-        id (UUIDField): Уникальный идентификатор.
-        title (CharField): Название.
-        slug (SlugField): Псевдоним.
-        description (TextField): Метатег ``description`` (краткое описание страницы, не более 150-200 символов).
-        keywords (TextField): Метатег ``keywords``.
-        text (RichTextField): Текстовое описание события в HTML.
-        is_published (BooleanField): Опубликовано или НЕ опубликовано.
-        is_on_index (BooleanField): Показывать ли "на главной" в позициях ``small_vertical``.
-        min_price (DecimalField): Минимальная цена на билет.
-        min_age (PositiveSmallIntegerField): Ограничение по возрасту из ``MIN_AGE_CHOICES`` (по умолчанию - ``0``).
+        objects (models.Manager): Менеджер модели.
+        id (django.db.models.UUIDField): Уникальный идентификатор.
+        title (django.db.models.CharField): Название.
+        slug (django.db.models.SlugField): Псевдоним.
+        description (django.db.models.TextField): Метатег ``description``.
+        keywords (django.db.models.TextField): Метатег ``keywords``.
+        text (ckeditor.fields.RichTextField): Текстовое описание события в HTML.
+        is_published (django.db.models.BooleanField): Опубликовано или НЕ опубликовано.
+        is_on_index (django.db.models.BooleanField): Показывать ли "на главной" в позициях ``small_vertical``.
+        min_price (django.db.models.DecimalField): Минимальная цена на билет.
+        min_age (django.db.models.PositiveSmallIntegerField): Ограничение по возрасту (по умолчанию - ``0``).
 
             Содержимое ``MIN_AGE_CHOICES`` (кортеж из кортежей "значение" / "подпись").
                 * **AGE_00** (int): ``0``.
@@ -39,19 +48,20 @@ class Event(models.Model):
                 * **AGE_16** (int): ``16``.
                 * **AGE_18** (int): ``18``.
 
-        datetime (DateTimeField): Дата/время события.
-        event_category (ForeignKey): Привязка к категории события.
-        event_venue (ForeignKey): Привязка к залу (месту проведения события).
-        domain (ForeignKey): Привязка к сайту.
-        is_group (BooleanField): Является ли запись в БД событием (``False``) или группой (``True``).
-        event_group (ManyToManyField): Привязка событий к группе (если текущая запись в БД - группа).
-        event_container (ManyToManyField): Привязка к категории событий.
-        event_link (ManyToManyField): Привязка к внешним ссылкам с иконками.
-        ticket_service (ForeignKey): Привязка к сервису продажи билетов.
-        ticket_service_event (PositiveIntegerField): Идентификатор события в сервисе продажи билетов.
-        ticket_service_scheme (PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
-        promoter (CharField): Организатор событий (промоутер).
-        seller (CharField): Продавец билетов (агент).
+        datetime (django.db.models.DateTimeField): Дата/время события.
+        event_category (django.db.models.ForeignKey): Привязка к категории события.
+        event_venue (django.db.models.ForeignKey): Привязка к залу (месту проведения события).
+        domain (django.db.models.ForeignKey): Привязка к сайту.
+        is_group (django.db.models.BooleanField): Является ли запись в БД событием (``False``) или группой (``True``).
+        event_group (django.db.models.ManyToManyField): Привязка событий к группе (если текущая запись в БД - группа).
+        event_container (django.db.models.ManyToManyField): Привязка к категории событий.
+        event_link (django.db.models.ManyToManyField): Привязка к внешним ссылкам с иконками.
+        ticket_service (django.db.models.ForeignKey): Привязка к сервису продажи билетов.
+        ticket_service_event (django.db.models.PositiveIntegerField): Идентификатор события в сервисе продажи билетов.
+        ticket_service_scheme (django.db.models.PositiveIntegerField): Идентификатор схемы зала в сервисе продажи билетов.
+        promoter (django.db.models.CharField): Организатор событий (промоутер).
+        seller (django.db.models.CharField): Продавец билетов (агент).
+        settings (django.db.models.TextField): Настройки в JSON.
     """
     objects = EventManager()
 
@@ -196,6 +206,10 @@ class Event(models.Model):
         blank=True,
         null=True,
         verbose_name=_('event_seller'),
+    )
+    settings = models.TextField(
+        default=default_json_settings_callable,
+        verbose_name=_('event_settings'),
     )
 
     class Meta:
