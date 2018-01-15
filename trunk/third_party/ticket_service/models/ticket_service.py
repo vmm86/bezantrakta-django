@@ -1,6 +1,15 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from project.decorators import default_json_settings
+
+from ..settings import TICKET_SERVICE_SETTINGS_DEFAULT
+
+
+@default_json_settings(TICKET_SERVICE_SETTINGS_DEFAULT)
+def default_json_settings_callable():
+    pass
+
 
 class TicketServiceManager(models.Manager):
     def get_queryset(self):
@@ -54,7 +63,7 @@ class TicketService(models.Model):
         verbose_name=_('ticketservice_is_active'),
     )
     settings = models.TextField(
-        default='{}',
+        default=default_json_settings_callable,
         verbose_name=_('ticketservice_settings'),
     )
     domain = models.ForeignKey(

@@ -7,6 +7,8 @@ from django.db import migrations, models
 import django.db.models.deletion
 import uuid
 
+import third_party.ticket_service.models.ticket_service
+
 
 class Migration(migrations.Migration):
 
@@ -26,7 +28,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=64, verbose_name='Название')),
                 ('slug', models.CharField(choices=[('superbilet', 'СуперБилет'), ('radario', 'Радарио')], max_length=32, verbose_name='Сервис продажи билетов')),
                 ('is_active', models.BooleanField(default=False, verbose_name='Работает')),
-                ('settings', models.TextField(default='{}', verbose_name='Настройки в JSON')),
+                ('settings', models.TextField(default=third_party.ticket_service.models.ticket_service.default_json_settings_callable, verbose_name='Настройки в JSON')),
                 ('domain', models.ForeignKey(db_column='domain_id', on_delete=django.db.models.deletion.CASCADE, to='location.Domain', verbose_name='Сайт')),
                 ('payment_service', models.ForeignKey(blank=True, db_column='payment_service_id', null=True, on_delete=django.db.models.deletion.CASCADE, to='payment_service.PaymentService', verbose_name='Сервис онлайн-оплаты')),
             ],
