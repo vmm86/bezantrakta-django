@@ -1,4 +1,5 @@
 import os
+import simplejson as json
 from dateutil.parser import parse
 
 from django.conf import settings
@@ -106,6 +107,8 @@ class EventCache(ProjectCache):
 
                 'group_uuid',
 
+                'settings',
+
                 'ticket_service_id',
                 'ticket_service_event',
                 'ticket_service_scheme',
@@ -190,6 +193,11 @@ class EventCache(ProjectCache):
                 list(published_events_in_group)[0] if
                 len(published_events_in_group) > 0 else
                 None
+            )
+
+            # Получение JSON-настроек события/группы
+            self.value['settings'] = (
+                json.loads(self.value['settings']) if self.value['settings'] is not None else None
             )
 
     def cache_postprocessing(self, **kwargs):
