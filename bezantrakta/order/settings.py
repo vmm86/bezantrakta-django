@@ -1,5 +1,5 @@
 # Варианты заказа билетов (комбинация способа получения билетов и способа оплаты)
-ORDER_TYPE = ('self_cash', 'courier_cash', 'self_online', 'email_online')
+ORDER_TYPE = ('self_online', 'email_online', 'self_cash', 'courier_cash',)
 
 # Способы получения билетов
 ORDER_DELIVERY = {
@@ -14,7 +14,7 @@ ORDER_PAYMENT = {
     'online': 'онлайн-оплата',
 }
 
-# Статусы заказа
+# Статусы заказа и их оформление при выводе на странице
 ORDER_STATUS = {
     'ordered':   {'color': 'blue',   'description': 'создан'},
     'cancelled': {'color': 'red',    'description': 'отменён'},
