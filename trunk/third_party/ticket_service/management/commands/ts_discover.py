@@ -361,8 +361,8 @@ ______________________________________________________________________________
                             self.stdout.write('        db_value: {}'.format(group_values[field]))
                             self.stdout.write('        in_value: {}'.format(value))
 
-                    self.stdout.write('fields_to_update: {}'.format(fields_to_update))
                     if fields_to_update:
+                        self.stdout.write('fields_to_update: {}'.format(fields_to_update))
                         db_item_update = Event.objects.filter(
                             id=self.group_id_uuid_mapping[group['group_id']]['id']
                         ).update(**fields_to_update)
@@ -500,8 +500,8 @@ ______________________________________________________________________________
                             self.stdout.write('        db_value: {}'.format(event_values[field]))
                             self.stdout.write('        in_value: {}'.format(value))
 
-                    self.stdout.write('fields_to_update: {}'.format(fields_to_update))
                     if fields_to_update:
+                        self.stdout.write('fields_to_update: {}'.format(fields_to_update))
                         db_item_update = Event.objects.filter(
                             id=self.event_id_uuid_mapping[event['event_id']]['id']
                         ).update(**fields_to_update)
