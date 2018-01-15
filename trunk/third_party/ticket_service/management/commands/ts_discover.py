@@ -348,25 +348,23 @@ ______________________________________________________________________________
                 group_values = self.group_id_uuid_mapping[group['group_id']]
 
                 if group_values:
-                    self.stdout.write('Группа в БД: {} {}'.format(group_values, type(group_values)))
+                    # self.stdout.write('Группа для импорта: {}'.format(group_fields))
+                    # self.stdout.write('Группа в БД: {}'.format(group_values))
 
                     fields_to_update = {}
                     for field, value in group_fields.items():
-                        if type(value) is datetime.datetime:
-                            if group_values[field] < value:
-                                fields_to_update[field] = value
-                        else:
-                            if group_values[field] != value:
-                                fields_to_update[field] = value
+                        if group_values[field] != value:
+                            fields_to_update[field] = value
 
-                        if value in fields_to_update:
+                        if field in fields_to_update:
                             self.stdout.write('    {}:'.format(field))
                             self.stdout.write('        db_value: {}'.format(group_values[field]))
                             self.stdout.write('        in_value: {}'.format(value))
 
+                    self.stdout.write('fields_to_update: {}'.format(fields_to_update))
                     if fields_to_update:
                         db_item_update = Event.objects.filter(
-                            id=self.group_id_uuid_mapping[group['group_id']]['id'],
+                            id=self.group_id_uuid_mapping[group['group_id']]['id']
                         ).update(**fields_to_update)
 
                         if db_item_update:
@@ -489,26 +487,23 @@ ______________________________________________________________________________
                 event_values = self.event_id_uuid_mapping[event['event_id']]
 
                 if event_values:
-                    self.stdout.write('Событие в БД: {} {}'.format(event_values, type(event_values)))
+                    # self.stdout.write('Событие для импорта: {}'.format(event_fields))
+                    # self.stdout.write('Событие в БД: {}'.format(event_values))
 
                     fields_to_update = {}
                     for field, value in event_fields.items():
-                        if type(value) is datetime.datetime:
-                            if event_values[field] < value:
-                                fields_to_update[field] = value
-                        else:
-                            if event_values[field] != value:
-                                fields_to_update[field] = value
+                        if event_values[field] != value:
+                            fields_to_update[field] = value
 
-                        if value in fields_to_update:
+                        if field in fields_to_update:
                             self.stdout.write('    {}:'.format(field))
                             self.stdout.write('        db_value: {}'.format(event_values[field]))
                             self.stdout.write('        in_value: {}'.format(value))
 
+                    self.stdout.write('fields_to_update: {}'.format(fields_to_update))
                     if fields_to_update:
                         db_item_update = Event.objects.filter(
-                            id=self.event_id_uuid_mapping[event['event_id']]['id'],
-                            datetime__gt=today
+                            id=self.event_id_uuid_mapping[event['event_id']]['id']
                         ).update(**fields_to_update)
 
                         if db_item_update:
