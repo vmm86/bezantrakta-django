@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=64, verbose_name='Название')),
                 ('slug', models.SlugField(help_text='<ul><li>Чтобы создать основной сайт в выбранном городе:<ul><li>псевдоним сайта должен совпадать с псевдонимом города,</li><li>последняя цифра идентификатора сайта - 0.</li></ul></li><li>Чтобы создать сайт какого-то учреждения в выбранном городе (например, ТОБ в Воронеже):<ul><li>псевдоним сайта может быть любым,</li><li>последняя цифра идентификатора сайта - от 1 до 9.</li></ul></li></ul>', max_length=8, verbose_name='Псевдоним')),
                 ('is_published', models.BooleanField(default=False, help_text='<ul><li>опубликован - включен и работает;</li><li>НЕ опубликован - отключен (сайт недоступен, проводятся технические работы).</li></ul>', verbose_name='Публикация')),
-                ('settings', models.TextField(default=bezantrakta.location.models.get_default_domain_settings, verbose_name='Настройки в JSON')),
+                ('settings', models.TextField(default=bezantrakta.location.models.domain.default_json_settings_callable, verbose_name='Настройки в JSON')),
                 ('city', models.ForeignKey(db_column='city_id', on_delete=django.db.models.deletion.CASCADE, to='location.City', verbose_name='Город')),
             ],
             options={

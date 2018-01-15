@@ -1,21 +1,14 @@
-import simplejson as json
-import os
-
-from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from project.decorators import default_json_settings
 
-def get_default_domain_settings():
-    """Получение настроек сайта по умолчанию из файла JSON при создании новых сайтов."""
-    domain_settings_file = os.path.join(
-        settings.BASE_DIR,
-        'bezantrakta',
-        'location',
-        'domain_settings.json',
-    )
-    with open(domain_settings_file, 'r') as dsf:
-        return json.dumps(json.load(dsf), ensure_ascii=False)
+from ..settings import DOMAIN_SETTINGS_DEFAULT
+
+
+@default_json_settings(DOMAIN_SETTINGS_DEFAULT)
+def default_json_settings_callable():
+    pass
 
 
 class DomainManager(models.Manager):
@@ -64,7 +57,7 @@ class Domain(models.Model):
         verbose_name=_('domain_city'),
     )
     settings = models.TextField(
-        default=get_default_domain_settings,
+        default=default_json_settings_callable,
         verbose_name=_('domain_settings'),
     )
 
