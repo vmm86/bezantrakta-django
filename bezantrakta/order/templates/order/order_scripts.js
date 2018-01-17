@@ -643,8 +643,6 @@ function seat_countdown_timer() {
 
             var ticket_id = seat['sector_id'] + '-' + seat['row_id'] + '-' + seat['seat_id'];
 
-            {% if active == 'step2' and debug %}console.log('  ticket: ', ticket_id);{% endif %}
-
             {# Разница между временем обновления мест и временем резерва конкретного места #}
             var added = new Date(window.order['tickets'][t]['added']);
             var updated_minus_added_ms = updated - added;
@@ -692,24 +690,20 @@ function seat_countdown_timer() {
             } else {
                 window.order['tickets'][t]['order_timeout_ms'] = seat_timeout_ms - updated_minus_added_ms;
 
+                {# Временное отключение возможности подтвердить заказ при удалении очередного билета из резерва #}
                 if (window.order['tickets'][t]['order_timeout_ms'] < 5000) {
                     $('#agree, #isubmit').prop('disabled', true);
                 }
 
                 order_timeout_ms += window.order['tickets'][t]['order_timeout_ms'];
-                {% if active == 'step2' and debug %}console.log('    ticket_timeout: ', window.order['tickets'][t]['order_timeout_ms']);{% endif %}
-                {% if active == 'step2' and debug %}console.log('    order_timeout_ms: ', order_timeout_ms);{% endif %}
         {% endif %}
             }
-
         }
 
         {% if active == 'step2' %}
-        window.order_timeout = order_timeout_ms > 0 ? parseInt(order_timeout_ms / window.order['count']) : 11000;
-        {% if debug %}console.log('window.order_timeout: ', window.order_timeout);console.log('\n');{% endif %}
-        {% endif %}
+            window.order_timeout = order_timeout_ms > 0 ? parseInt(order_timeout_ms / window.order['count']) : 11000;
+            {% if debug %}console.log('window.order_timeout: ', window.order_timeout);{% endif %}
 
-        {% if active == 'step2' %}
             {# Если средний совокупный таймаут всех билетов в заказе меньше 10 секунд - #}
             {# возможность подтверждения заказа отключается во избежание ошибок #}
             if (window.order_timeout < 10000) {
@@ -843,8 +837,9 @@ function reserve_success(response, status, xhr) {
                 }
 
             {% if active == 'step2' %}
-                var no_tickets = _.isEmpty(window.order['tickets']); {# _.size() #}
-                if (no_tickets === false) {
+                {# Включение возможности подтвердить заказ после удаления очередного билета, если заказ ещё не пустой #}
+                var no_tickets = _.isEmpty(window.order['tickets']);
+                if (no_tickets === false && window.order_timeout > 10000) {
                     $('#agree, #isubmit').prop('disabled', false);
                 }
             {% endif %}
