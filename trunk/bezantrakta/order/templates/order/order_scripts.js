@@ -33,9 +33,9 @@ order_cookies_init();
 {# На шаге 2 просто получаем созданные ранее параметры заказа из cookie #}
 {% elif active == 'step2' %}
     {# Стоимость доставки курьером #}
-    window.order['courier_price'] = get_price('{{ order.courier_price }}');
+    window.order['courier_price'] = get_price("{{ order.courier_price|stringformat:'f' }}");
     {# Процент комиссии сервиса онлайн-оплаты #}
-    window.order['commission'] = parseFloat({{ order.commission }});
+    window.order['commission'] = parseFloat("{{ order.commission|stringformat:'f' }}");
 
     {# Процент сервисного сбора для разных типов заказа #}
     window.order['extra'] = {};
@@ -835,15 +835,6 @@ function reserve_success(response, status, xhr) {
                         get_overall();
                     {% endif %}
                 }
-
-            {% if active == 'step2' %}
-                {# Включение возможности подтвердить заказ после удаления очередного билета, если заказ ещё не пустой #}
-                var no_tickets = _.isEmpty(window.order['tickets']);
-                if (no_tickets === false && window.order_timeout > 10000) {
-                    $('#agree, #isubmit').prop('disabled', false);
-                }
-            {% endif %}
-
             }
         }
     }
@@ -855,6 +846,14 @@ function reserve_success(response, status, xhr) {
     {% if active == 'step1' %}
         {# Прелоадер с прогресс-баром #}
         $('#tickets-preloader').delay(500).fadeOut(20);
+    {% endif %}
+
+    {% if active == 'step2' %}
+        {# Включение возможности подтвердить заказ после удаления очередного билета, если заказ ещё не пустой #}
+        var no_tickets = _.isEmpty(window.order['tickets']);
+        if (no_tickets === false && window.order_timeout > 10000) {
+            $('#agree, #isubmit').prop('disabled', false);
+        }
     {% endif %}
 }
 
@@ -869,6 +868,14 @@ function reserve_error(xhr, status, error) {
     {% if active == 'step1' %}
         {# Прелоадер с прогресс-баром #}
         $('#tickets-preloader').hide();
+    {% endif %}
+
+    {% if active == 'step2' %}
+        {# Включение возможности подтвердить заказ после удаления очередного билета, если заказ ещё не пустой #}
+        var no_tickets = _.isEmpty(window.order['tickets']);
+        if (no_tickets === false && window.order_timeout > 10000) {
+            $('#agree, #isubmit').prop('disabled', false);
+        }
     {% endif %}
 }
 
@@ -1075,17 +1082,23 @@ function get_overall() {
     var overall = total;
     if (extra > 0) {
         for (var t = 0; t < window.order['tickets'].length; t++) {
-            overall += ((window.order['tickets'][t]['price'] * extra) / 100);
+            var extra_increment = ((window.order['tickets'][t]['price'] * extra) / 100);
+            overall += extra_increment;
+            {% if debug %}console.log('  extra_increment: ', extra_increment);{% endif %}
         };
     }
 
+    {% if debug %}console.log('overall_with_extra: ', overall);{% endif %}
+
     {# При доставке курьером - с учётом стоимости доставки курьером (если она задана) #}
     if (delivery == 'courier') {
+        {% if debug %}console.log('courier_price: ', courier_price);{% endif %}
         overall += courier_price;
     }
 
     {# При онлайн-оплате - с учётом комиссии сервиса онлайн-оплаты (если она задана) #}
     if (payment == 'online') {
+        {% if debug %}console.log('commission: ', commission);{% endif %}
         overall = get_price(overall, commission);
     }
 
