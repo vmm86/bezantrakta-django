@@ -70,7 +70,7 @@ def checkout(request):
     customer['order_types_active'] = tuple(
         ot for ot in order_types.keys() if
         order_types[ot]['ticket_service'] is True and order_types[ot]['event'] is True and
-        (payment_service is None and not ot.endswith('_online'))
+        (payment_service is not None or not ot.endswith('_online'))
     )
     # Типы заказа билетов с онлайн-оплатой НЕ включаются в список активных типов заказа билетов,
     # если к этому сервису продажи билетов НЕ привязан никакой сервис онлайн-оплаты
