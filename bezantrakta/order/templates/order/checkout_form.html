@@ -37,6 +37,7 @@
 
         {#<p>Выберите способ оплаты и получения билетов:</p>#}
 
+{% if payment_service %}
     {% if ticket_service.settings.order.self_online and event.settings.order.self_online %}
         <div class="input-container">
                 <input id="customer-delivery-payment" class="self_online" type="radio" name="customer_order_type" value="self_online">
@@ -54,6 +55,7 @@
                 <label for="customer-delivery-eticket" class="customer-delivery step2"> Оплатить онлайн и получить электронный билет на email</label>
         </div>
     {% endif %}
+{% endif %}
 
     {% if ticket_service.settings.order.courier_cash and event.settings.order.courier_cash %}
         <div class="input-container">

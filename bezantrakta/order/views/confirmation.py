@@ -71,13 +71,15 @@ def confirmation(request, order_uuid):
             # Информация о событии из кэша
             event = cache_factory('event', order['event_uuid'])
 
-            # Информация о сервисе продажи билетов
+            # Информация о сервисе продажи билетов и экземпляр класса сервиса продажи билетов
             ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
+            # Экземпляр класса сервиса продажи билетов
+            ts = ticket_service['instance']
 
             # Информация о сервисе онлайн-оплаты
             payment_service = cache_factory('payment_service', event['payment_service_id'])
             # Экземпляр класса сервиса онлайн-оплаты
-            ps = payment_service['instance']
+            ps = payment_service['instance'] if payment_service is not None else None
 
             # Тип заказа
             order['type'] = '{delivery}_{payment}'.format(delivery=order['delivery'], payment=order['payment'])
@@ -85,9 +87,13 @@ def confirmation(request, order_uuid):
             # Процент сервисного сбора
             order['extra'] = event['settings']['extra'][order['type']]
             # Стоимость доставки курьером
-            order['courier_price'] = ps.decimal_price(ticket_service['settings']['courier_price'])
+            order['courier_price'] = ts.decimal_price(ticket_service['settings']['courier_price'])
             # Комиссия сервиса онлайн-оплаты
-            order['commission'] = ps.decimal_price(payment_service['settings']['init']['commission'])
+            order['commission'] = (
+                ps.decimal_price(payment_service['settings']['init']['commission']) if
+                payment_service is not None else
+                ts.decimal_price(0)
+            )
 
             # Формирование заголовка для общей суммы заказа
             order['overall_header'] = 'Всего с учётом сервисного сбора' if order['extra'] > 0 else 'Всего'
