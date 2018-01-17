@@ -74,36 +74,8 @@
                     </div>
                 {% endif %}
 
-                {# Корзина заказа билетов и легенда #}
                 {% if event.ticket_service_event %}
-                    <h3 id="chosen-tickets-header">Выбранные места</h3>
-                    <ul id="chosen-tickets">
-                        <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
-                    </ul>
-
-                    <h3 id="overall-header">Всего</h3>
-                    <p id="overall">
-                        <span id="no-overall">пока ничего не выбрано</span>
-                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
-                    </p>
-                    <br>
-
-                    <div id="legend-general">
-                        <ul>
-                            <li><span class="box selected"></span> <span>выбрано вами</span> &nbsp;</li>
-                            <li><span class="box free"></span> <span>недоступно</span> &nbsp;</li>
-                        </ul>
-                    </div>
-                    <br>
-
-                    <div id="legend-prices">
-                        <ul id="legend-extension">
-                            {# Цены добавляются/удаляются в браузере при AJAX-запросах свободных мест в событии #}
-                        </ul>
-                    </div>
-
-                    {# Описание процесса заказа билетов #}
-                    {% include "order/legend_text.html" with ticket_service=ticket_service %}
+                    {% include "order/order_basket.html" with active="step1" ticket_service=ticket_service %}
                 {% endif %}
 
                 {# Ссылки, добавленные к событию #}

@@ -36,36 +36,7 @@
 
             <div class="order-header step2">
                 <div id="basket-container" class="step2">
-                    <h3 id="chosen-tickets-header">Выбранные места</h3>
-                    <ul id="chosen-tickets"></ul>
-
-                    <h3 id="overall-header">Всего</h3>
-                    <p id="overall">
-                        <span id="overall-text">Билетов <span id="count-chosen"></span> на сумму <span id="total-sum">{{ order_total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
-                    </p>
-
-            {% if ticket_service.settings.order.courier_cash %}
-                {% if ticket_service.settings.courier_price > 0 %}
-                    <div id="overall-courier">
-                        <h3>Всего с учётом доставки курьером</h3>
-                        <p>
-                            К оплате <span id="total-sum-courier">{{ order_total_plus_courier_price }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
-                        </p>
-                    </div>
-                {% endif %}
-            {% endif %}
-
-            {% if ticket_service.settings.order.self_online or ticket_service.settings.order.email_online %}
-                {% if payment_service.settings.commission > 0 %}
-                    <div id="overall-online">
-                        <h3>Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
-                        <p>
-                            К оплате <span id="total-sum-online">{{ order_total_plus_commission }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
-                        </p>
-                    </div>
-                {% endif %}
-            {% endif %}
-
+                    {% include "order/order_basket.html" with active="step2" %}
                 </div>
             </div>
 
@@ -75,11 +46,7 @@
 
             {% if debug %}
             <br><br>
-            order_tickets: <pre>{{ order_tickets|pprint }}</pre>
-            <br><br>
-            order_count: <pre>{{ order_count|pprint }}</pre>
-            <br><br>
-            order_total: <pre>{{ order_total|pprint }}</pre>
+            order: <pre>{{ order|pprint }}</pre>
             <br><br>
             order_total_plus_commission: <pre>{{ order_total_plus_commission|pprint }}</pre>
             <br><br>
@@ -99,18 +66,18 @@
 {% block scripts %}
 {# Скрипты для работы с заказом билетов #}
     <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/lodash/4.17.4/lodash.min.js" %}"></script>
 
-
-    {% compress js inline %}
+    {# compress js inline #}
     <script type="text/javascript">
     {# Базовый функционал процесса заказа билетов #}
     $(document).ready(function() {
-        {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order_total_plus_commission=order_total_plus_commission delivery_price=delivery_price customer=customer %}
+        {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order=order order_total_plus_commission=order_total_plus_commission courier_price=courier_price customer=customer %}
         prepare_order_onload();
         start_heartbeat();
     });
     </script>
-    {% endcompress %}
+    {# endcompress #}
 
     {% if not debug %}
     {% compress js inline %}

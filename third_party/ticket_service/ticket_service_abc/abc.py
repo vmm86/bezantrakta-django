@@ -37,7 +37,7 @@ class TicketService(ABC):
         Returns:
             Decimal: Денежная сумма.
         """
-        return Decimal(str(value)).quantize(Decimal('0.00'))
+        return Decimal(str(value)).quantize(Decimal('1.00'))
 
     @abstractmethod
     def version(self):

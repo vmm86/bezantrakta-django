@@ -156,9 +156,9 @@ class SurgutNefteGazBank(PaymentService):
 
         # Секретный хэш для авторизации любых запросов
         if (data):
-            secret_key = '{merchant_id}{total}{order_id}{action}{psk}'.format(
+            secret_key = '{merchant_id}{overall}{order_id}{action}{psk}'.format(
                 merchant_id=self.__merchant_id,
-                total=data['amt'],
+                overall=data['amt'],
                 order_id=data['trackid'],
                 action=data['action'],
                 psk=self.__psk
@@ -191,7 +191,7 @@ class SurgutNefteGazBank(PaymentService):
                 Содержимое ``order``:
                     * **order_uuid** (uuid.UUID): Уникальный UUID заказа.
                     * **order_id** (int): Идентификатор заказа.
-                    * **total** (Decimal): Общая сумма заказа в рублях (**С комиссией**).
+                    * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Параметры новой оплаты.
@@ -214,7 +214,7 @@ class SurgutNefteGazBank(PaymentService):
         # Идентификатор заказа
         data['trackid'] = kwargs['order']['order_id']
         # Полная сумма заказа
-        data['amt'] = kwargs['order']['total']
+        data['amt'] = kwargs['order']['overall']
         # Кастомные параметры заказа (можно отправлять любые данные)
         # |-- Идентификатор события
         data['udf1'] = kwargs['event_id']
@@ -335,7 +335,7 @@ class SurgutNefteGazBank(PaymentService):
             # Идентификатор оплаты
             response['payment_id'] = status['data'][0]['id']
             # Общая сумма заказа
-            response['total'] = self.decimal_price(status['data'][0]['amount'])
+            response['overall'] = self.decimal_price(status['data'][0]['amount'])
             # Был ли платёж возвращён
             response['is_refunded'] = True if status['data'][0]['refunded'] else False
 
@@ -365,7 +365,7 @@ class SurgutNefteGazBank(PaymentService):
 
         Args:
             payment_id (str): Идентификатор оплаты.
-            total (Decimal): Общая сумма заказа в рублях (**С комиссией**).
+            * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Информация о возврате.
@@ -384,7 +384,7 @@ class SurgutNefteGazBank(PaymentService):
         data['terminal'] = self.__terminal_alias
         data['action'] = SurgutNefteGazBank.PAYMENT_ACTIONS['CREDIT']
         # Полная сумма заказа
-        data['amt'] = kwargs['total']
+        data['amt'] = kwargs['overall']
         data['trackid'] = kwargs['order']['order_id']
         data['paymentid'] = kwargs['payment_id']
         # data['tranid'] = tranid ???
