@@ -194,4 +194,4 @@ msgstr "билет"
 
 #: models/order_ticket.py:96
 msgid "order_tickets"
-msgstr "билеты"
+msgstr "список билетов"

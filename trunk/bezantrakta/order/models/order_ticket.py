@@ -110,9 +110,6 @@ class OrderTicket(models.Model):
         verbose_name_plural = _('order_tickets')
         ordering = ('domain', 'ticket_service', '-ticket_service_order',
                     'sector_id', 'row_id', 'seat_id', 'price',)
-        unique_together = (
-            ('domain', 'sector_id', 'row_id', 'seat_id', 'price_group_id',),
-        )
 
     def __str__(self):
         return 'Билет {ticket_uuid} из заказа {order_uuid}'.format(
