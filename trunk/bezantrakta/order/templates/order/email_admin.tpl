@@ -33,9 +33,14 @@
         {% if order.extra > 0 %}
             {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
                 <br>С учётом доставки курьером и сервисного сбора.
+            {% endif %}
+            {% comment %}
+            {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
+                <br>С учётом доставки курьером и сервисного сбора.
             {% else %}
                 <br>С учётом сервисного сбора.
             {% endif %}
+            {% endcomment %}
         {% else %}
             {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
                 <br>С учётом доставки курьером.
@@ -45,9 +50,14 @@
         {% if order.extra > 0 %}
             {% if payment_service.settings.commission > 0 %}
                 <br>С учётом комиссии платёжной системы и сервисного сбора.
+            {% endif %}
+            {% comment %}
+            {% if payment_service.settings.commission > 0 %}
+                <br>С учётом комиссии платёжной системы и сервисного сбора.
             {% else %}
                 <br>С учётом сервисного сбора.
             {% endif %}
+            {% endcomment %}
         {% else %}
             {% if payment_service.settings.commission > 0 %}
                 <br>С учётом комиссии платёжной системы.
