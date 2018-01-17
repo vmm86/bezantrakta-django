@@ -33,9 +33,9 @@ order_cookies_init();
 {# На шаге 2 просто получаем созданные ранее параметры заказа из cookie #}
 {% elif active == 'step2' %}
     {# Стоимость доставки курьером #}
-    window.order['courier_price'] = get_price("{{ order.courier_price|stringformat:'f' }}");
+    window.order['courier_price'] = get_price("{{ order.courier_price|stringformat:'.2f' }}");
     {# Процент комиссии сервиса онлайн-оплаты #}
-    window.order['commission'] = parseFloat("{{ order.commission|stringformat:'f' }}");
+    window.order['commission'] = parseFloat("{{ order.commission|stringformat:'.2f' }}");
 
     {# Процент сервисного сбора для разных типов заказа #}
     window.order['extra'] = {};
