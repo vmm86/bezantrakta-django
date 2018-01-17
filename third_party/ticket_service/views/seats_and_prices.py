@@ -20,8 +20,8 @@ def seats_and_prices(request):
         for k in keys:
             params[k[0]] = k[1](request.GET.get(k[0], 0))
 
-        print('event_id:', params['event_id'], type(params['event_id']))
-        print('scheme_id:', params['scheme_id'], type(params['scheme_id']))
+        # print('event_id:', params['event_id'], type(params['event_id']))
+        # print('scheme_id:', params['scheme_id'], type(params['scheme_id']))
 
         if ticket_service_id is not None:
             ticket_service = cache_factory('ticket_service', ticket_service_id)

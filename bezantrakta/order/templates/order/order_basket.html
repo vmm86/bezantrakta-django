@@ -8,7 +8,7 @@
         {% elif active == "step3" %}
             {% for ticket in order.tickets %}
                 <li>
-                    {{ ticket.sector_title }}, ряд {{ ticket.row_id }}, место {{ ticket.seat_title }}, цена {{ ticket.price }} <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">
+                    {% if ticket.sector_id != 0 %}{{ ticket.sector_title }}, ряд {{ ticket.row_id }}, место {{ ticket.seat_title }}{% else %}{{ ticket.sector_title }}{% endif %}, цена {{ ticket.price }} <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">
                 </li>
             {% endfor %}
         {% endif %}

@@ -1,4 +1,5 @@
 import dateutil.parser
+import logging
 import requests
 import uuid
 from collections import defaultdict
@@ -788,8 +789,52 @@ class Radario(TicketService):
             'isPaid':       None,
         }
 
+        # logger = logging.getLogger('bezantrakta.order')
+
         create = self.request(method, url, data, output_mapping)
-        # print('order: ', create)
+        # logger.info('radario_create: {}'.format(create))
+
+        # Резерв билета С фиксированной рассадкой
+        # {
+        #     'order_id': 2394768,
+        #     'tickets': [{
+        #         'userorderid': 2394768,
+        #         'participantname': '-',
+        #         'id': 5623032,
+        #         'number': '1376802567',
+        #         'barcodekey': '112853663161',
+        #         'tickettypeid': 341031,
+        #         'tickettypetitle': 'партер',
+        #         'tickettypezoneid': 0,
+        #         'rowname': '7',
+        #         'seatnumber': 127,
+        #         'seatname': '10',
+        #         'price': 1.0,
+        #         'discount': 0.0,
+        #         'isused': False,
+        #     }]
+        # }
+
+        # Резерв билета БЕЗ фиксированной рассадки
+        # {
+        #     'order_id': 2394755,
+        #     'tickets': [{
+        #         'userorderid': 2394755,
+        #         'participantname': '',
+        #         'id': 5623008,
+        #         'number': '2055252579',
+        #         'barcodekey': '114187651661',
+        #         'tickettypeid': 382752,
+        #         'tickettypetitle': 'малый зал',
+        #         'tickettypezoneid': None,
+        #         'rowname': None,
+        #         'seatnumber': None,
+        #         'seatname': None,
+        #         'price': 1.0,
+        #         'discount': 0.0,
+        #         'isused': False,
+        #     }]
+        # }
 
         response = {}
         response['tickets'] = []
@@ -799,17 +844,20 @@ class Radario(TicketService):
             response['order_id'] = create['order_id']
 
             for idx, ord_ticket in enumerate(create['tickets']):
-                # Нумеруем места по порядку, если они - без фиксированной рассадки
-                if ord_ticket['seatnumber'] is None:
-                    ord_ticket['seatnumber'] = idx + 1
-
                 ticket = {}
                 for kwa_ticket in kwargs['tickets']:
-                    if (
-                        ord_ticket['tickettypeid'] == kwa_ticket['price_group_id'] and
-                        ord_ticket['seatnumber'] == kwa_ticket['seat_id']
-                    ):
-                        ticket['ticket_uuid'] = kwa_ticket['ticket_uuid']
+                    if ord_ticket['tickettypeid'] == kwa_ticket['price_group_id']:
+                        # logger.info('    ord_ticket[{}] == kwa_ticket[{}]'.format(
+                        #     ord_ticket['tickettypeid'],
+                        #     kwa_ticket['price_group_id'])
+                        # )
+                        # Если билет БЕЗ фиксированной рассадки
+                        ticket['ticket_uuid'] = (
+                            kwa_ticket['ticket_uuid'] if
+                            ord_ticket['seatnumber'] is None or ord_ticket['seatnumber'] == kwa_ticket['seat_id'] else
+                            uuid.uuid4()
+                        )
+                        # logger.info('    ticket[ticket_uuid] == {}'.format(ticket['ticket_uuid']))
                     else:
                         continue
 

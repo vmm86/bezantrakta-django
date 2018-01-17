@@ -25,7 +25,7 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
     <p><strong>Билеты в заказе</strong>:</p>
     <ul style="list-style-type: none; margin-left: 0; padding-left: 0;">
     {% for t in order.tickets %}
-        <li style="margin-left: 0; padding-left: 0;">🎫 {{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}, цена {{ t.price }} р.</li>
+        <li style="margin-left: 0; padding-left: 0;">{% if t.sector_id != 0 %}🎫 {{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}{% else %}{{ t.sector_title }}{% endif %}, цена {{ t.price }} р.</li>
     {% endfor %}
     </ul>
 
