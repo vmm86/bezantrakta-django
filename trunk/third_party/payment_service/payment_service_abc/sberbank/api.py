@@ -258,7 +258,7 @@ class Sberbank(PaymentService):
                 Содержимое ``order``:
                     * **order_uuid** (uuid.UUID): Уникальный UUID заказа.
                     * **order_id** (int): Идентификатор заказа.
-                    * **total** (Decimal): Общая сумма заказа в рублях (**С комиссией**).
+                    * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Параметры новой оплаты.
@@ -278,7 +278,7 @@ class Sberbank(PaymentService):
         # Идентификатор заказа
         data['orderNumber'] = kwargs['order']['order_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(kwargs['order']['total'] * 100)
+        data['amount'] = int(kwargs['order']['overall'] * 100)
         # URL возврата после успешной оплаты
         data['returnUrl'] = '{url}?event_uuid={event_uuid}&order_uuid={order_uuid}'.format(
             url=str(self.__success_url),
@@ -365,7 +365,7 @@ class Sberbank(PaymentService):
             # Идентификатор оплаты (может ли его расположение в списке словарей меняться ???)
             response['payment_id'] = status['payment_attributes'][0]['value']
             # Общая сумма заказа в рублях (С комиссией)
-            status['total'] = response['total'] = self.decimal_price(status['payment_info']['approvedamount'] / 100)
+            status['overall'] = response['overall'] = self.decimal_price(status['payment_info']['approvedamount'] / 100)
             # Сообщение о статусе оплаты
             # response['payment_message'] = status['payment_info']['paymentstate']
 
@@ -379,7 +379,7 @@ class Sberbank(PaymentService):
                 # Код успешного завершения оплаты или возврата
                 (status['payment_code'] == 2 or status['payment_code'] == 4) and
                 # Ненулевая сумма оплаты
-                status['total'] > 0
+                status['overall'] > 0
             ):
                 response['success'] = True
             else:
@@ -397,7 +397,7 @@ class Sberbank(PaymentService):
 
         Args:
             payment_id (str): Идентификатор оплаты.
-            total (Decimal): Общая сумма заказа в рублях (**С комиссией**).
+            * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Информация о возврате.
@@ -415,7 +415,7 @@ class Sberbank(PaymentService):
         # Идентификатор оплаты
         data['orderId'] = kwargs['payment_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(kwargs['total'] * 100)
+        data['amount'] = int(kwargs['overall'] * 100)
 
         output_mapping = {
             'errorcode':    self.internal('action_code', int,),

@@ -1,6 +1,3 @@
-{# Работа с cookies при заказе билетов #}
-window.expires = new Date(new Date().getTime() + 60 * 60 * 24 * 366 * 1000);
-window.domain  = '.{{ request.root_domain }}';
 {# Модификация работы с Cookies, чтобы избежать ненужного urlendoding #}
 window.cookies = Cookies.withConverter({
     read:  function (value, name) { return value; },
@@ -14,7 +11,7 @@ window.event_id = {{ event.ticket_service_event }};
 window.countdown_id = undefined;
 {% if active == 'step1' %}
     window.scheme_id = {{ event.ticket_service_scheme }};
-    window.seats_id = undefined;
+    window.seats_and_prices_id = undefined;
 {% endif %}
 
 {# Таймаут для повторного запроса списка свободных мест в событии #}
@@ -22,77 +19,53 @@ window.heartbeat_timeout = {{ ticket_service.settings.heartbeat_timeout }};
 {# Таймаут, по истечении которого добавленное ранее в предварительный резерв место автоматически освобождается #}
 window.seat_timeout = {{ ticket_service.settings.seat_timeout }};
 
+{# Данные покупателя из cookies #}
+window.customer = {};
+
+{# Информация о предварительном резерве как потенциальном заказе #}
+window.order = {};
+
+order_cookies_init();
+
 {% if active == 'step1' %}
     window.max_seats_per_order = {{ ticket_service.settings.max_seats_per_order }};
 
-    {# На шаге 1 параметры заказа берутся из существующих cookie или создаются в cookie по умолчанию. #}
-    {# Единичный заказ действует только в рамках одного события. #}
-    {# Поэтому cookie сбросятся, если другие билеты были выбраны в другом событии, но ещё не были заказаны. #}
-    if (
-        window.cookies.get('bezantrakta_event_id') &&
-        parseInt(window.cookies.get('bezantrakta_event_id')) !== window.event_id
-    ) {
-        {# Попытка удалить предыдущий предварительный резерв из другого события (если он был создан ранее) #}
-        {# с помощью `ts_reserve('remove', seat)` с небольшими задержками во избежание возможных ошибок #}
-        window.previous_order = {}
-        previous_order['tickets'] = window.cookies.getJSON('bezantrakta_order_tickets');
-        previous_order['count']   = parseInt(window.cookies.get('bezantrakta_order_count'));
-        previous_order['total']   = get_price(window.cookies.get('bezantrakta_order_total'));
-
-        previous_order['ticket_service_id'] = window.cookies.get('bezantrakta_ticket_service_id');
-        previous_order['event_id']          = window.cookies.get('bezantrakta_event_id');
-        previous_order['order_uuid']        = window.cookies.get('bezantrakta_order_uuid');
-
-        window.previous_order_cleanup = setInterval(previous_order_cleanup, 2000);
-
-        {# Обнуление корзины заказа в новом открытом событии #}
-        window.order_uuid    = uuid4();
-        window.order_tickets = [];
-        window.order_count   = 0;
-        window.order_total   = 0;
-
-        order_cookies_update(
-            ['ticket_service_id', 'event_uuid', 'event_id', 'order_uuid', 'order_tickets', 'order_count', 'order_total']
-        );
-    } else {
-        order_cookies_init();
-    }
 {# На шаге 2 просто получаем созданные ранее параметры заказа из cookie #}
 {% elif active == 'step2' %}
-    window.order_uuid    = window.cookies.get('bezantrakta_order_uuid');
-    window.order_tickets = window.cookies.getJSON('bezantrakta_order_tickets');
-    window.order_count   = parseInt(window.cookies.get('bezantrakta_order_count'));
-    window.order_total   = get_price(window.cookies.get('bezantrakta_order_total'));
-
     {# Стоимость доставки курьером #}
-    window.courier_price = get_price('{{ courier_price }}');
-    {# Общая сумма заказа со стоимостью доставки курьером #}
-    window.order_total_plus_courier_price = get_price(window.order_total + window.courier_price);
-    window.commission = parseFloat({{ commission }});
-    {# Общая сумма заказа с комиссией сервиса онлайн-оплаты #}
-    window.order_total_plus_commission = get_price(window.order_total, window.commission);
+    window.order['courier_price'] = get_price('{{ order.courier_price }}');
+    {# Процент комиссии сервиса онлайн-оплаты #}
+    window.order['commission'] = parseFloat({{ order.commission }});
+
+    {# Процент сервисного сбора для разных типов заказа #}
+    window.order['extra'] = {};
+    window.order['extra']['self_cash']    = parseFloat('{{ event.settings.extra.self_cash }}');
+    window.order['extra']['courier_cash'] = parseFloat('{{ event.settings.extra.courier_cash }}');
+    window.order['extra']['self_online']  = parseFloat('{{ event.settings.extra.self_online }}');
+    window.order['extra']['email_online'] = parseFloat('{{ event.settings.extra.email_online }}');
 
     {# Текущий средний совокупный таймаут всех билетов в предварительном резерве, #}
     {# по истечении которого блокируется подтверждение заказа на шаге 2 #}
     window.order_timeout = window.seat_timeout * 60 * 1000;
+    {% if debug %}console.log('order_timeout (initial): ', window.order_timeout);{% endif %}
 {% endif %}
 
 {# Кэш запрошенных ранее списка цен и свободных мест для сравнения с вновь пришедшими свободными местами #}
 window.prices_cache = [];
-window.seats_cache = [];
+window.seats_cache  = [];
 
 function prepare_order_onload() {
-    if (window.order_count > 0) {
-        for (var t = 0; t < window.order_tickets.length; t++) {
+    if (window.order['count'] > 0) {
+        for (var t = 0; t < window.order['tickets'].length; t++) {
             seat = {};
-            seat['sector_id']      = window.order_tickets[t]['sector_id'];
-            seat['sector_title']   = window.order_tickets[t]['sector_title'];
-            seat['row_id']         = window.order_tickets[t]['row_id'];
-            seat['seat_id']        = window.order_tickets[t]['seat_id'];
-            seat['seat_title']     = window.order_tickets[t]['seat_title'];
-            seat['price_group_id'] = window.order_tickets[t]['price_group_id'];
-            seat['price']          = window.order_tickets[t]['price'];
-            seat['price_order']    = window.order_tickets[t]['price_order'];
+            seat['sector_id']      = window.order['tickets'][t]['sector_id'];
+            seat['sector_title']   = window.order['tickets'][t]['sector_title'];
+            seat['row_id']         = window.order['tickets'][t]['row_id'];
+            seat['seat_id']        = window.order['tickets'][t]['seat_id'];
+            seat['seat_title']     = window.order['tickets'][t]['seat_title'];
+            seat['price_group_id'] = window.order['tickets'][t]['price_group_id'];
+            seat['price']          = window.order['tickets'][t]['price'];
+            seat['price_order']    = window.order['tickets'][t]['price_order'];
 
             var class_f = 'free color' + seat['price_order'];
             var class_s = 'selected';
@@ -122,7 +95,7 @@ function prepare_order_onload() {
                 '</li>'
             );
 
-            {# Выбранные места на схеме зала отмечаются, только если мы на шаге 1 со схемой зала #}
+            {# Выбранные места на схеме зала отмечаются только на шаге 1 со схемой зала #}
             {% if active == 'step1' %}
                 $(seat_selector).addClass(class_s).removeClass(class_f);
 
@@ -151,55 +124,61 @@ function prepare_order_onload() {
     {# Подготовка полей формы для подтверждения заказа на шаге 2 #}
     {% if active == 'step2' %}
         {# При начальной загрузке страницы скрытие всех блоков, появляющихся при выборе чекбоксов #}
-        $('#overall-courier,  #overall-online, .ticket-offices-contacts, .customer-address, .payment-info, .eticket-info').hide();
+        $('#overall-block, .ticket-offices-contacts, .customer-address, .payment-info, .eticket-info').hide();
 
         {# Логика переключения чекбоксов при выборе способа заказа #}
-        var checkout_options = {
+        var order_types = {
             'self_cash': {
-                'field':    '#customer-delivery-self',
-                'hide':     '#overall-courier, #overall-online, .customer-address, .online-info',
-                'show':     '.ticket-offices-contacts',
-                'delivery': 'self',
-                'payment':  'cash',
-                'total':    window.order_total
+                'field':          '#customer-delivery-self',
+                'hide':           '.customer-address, .online-info',
+                'show':           '.ticket-offices-contacts',
+                'delivery':       'self',
+                'payment':        'cash'
             },
             'courier_cash': {
-                'field':    '#customer-delivery-courier',
-                'hide':     '#overall-online, .ticket-offices-contacts, .online-info',
-                'show':     '#overall-courier, .customer-address',
-                'delivery': 'courier',
-                'payment':  'cash',
-                'total':    window.order_total_plus_courier_price
+                'field':          '#customer-delivery-courier',
+                'hide':           '.ticket-offices-contacts, .online-info',
+                'show':           '.customer-address',
+                'delivery':       'courier',
+                'payment':        'cash'
             },
             'self_online': {
-                'field':    '#customer-delivery-payment',
-                'hide':     '#overall-courier, .ticket-offices-contacts, .customer-address, .eticket-info',
-                'show':     '#overall-online, .payment-info',
-                'delivery': 'self',
-                'payment':  'online',
-                'total':    window.order_total_plus_commission
+                'field':          '#customer-delivery-payment',
+                'hide':           '.ticket-offices-contacts, .customer-address, .eticket-info',
+                'show':           '.payment-info',
+                'delivery':       'self',
+                'payment':        'online'
             },
             'email_online': {
-                'field':    '#customer-delivery-eticket',
-                'hide':     '#overall-courier, .ticket-offices-contacts, .customer-address, .payment-info',
-                'show':     '#overall-online, .eticket-info',
-                'delivery': 'email',
-                'payment':  'online',
-                'total':    window.order_total_plus_commission
+                'field':          '#customer-delivery-eticket',
+                'hide':           '.ticket-offices-contacts, .customer-address, .payment-info',
+                'show':           '.eticket-info',
+                'delivery':       'email',
+                'payment':        'online'
             }
         };
 
-        $.each(checkout_options, function(option) {
-            $(checkout_options[option]['field']).change(function(){
-                $(checkout_options[option]['hide']).hide();
-                $(checkout_options[option]['show']).show();
+        $.each(order_types, function(type) {
+            $(order_types[type]['field']).change(function(){
+                $(order_types[type]['hide']).hide();
+                $(order_types[type]['show']).show();
 
-                $('#delivery').val(checkout_options[option]['delivery']);
-                $('#payment').val(checkout_options[option]['payment']);
+                {# Обновить выбранный тип заказа #}
+                window.customer['order_type'] = type;
+                window.customer['delivery'] = order_types[type]['delivery'];
+                    $('#delivery').val(window.customer['delivery']);
+                window.customer['payment'] = order_types[type]['payment'];
+                    $('#payment').val(window.customer['payment']);
 
-                cookies.set('bezantrakta_customer_order_type', option, {expires: window.expires, domain: window.domain});
+                order_cookies_update(['customer_order_type']);
+
+                get_overall();
+
+                html_basket_update();
+
                 {% if debug %}
-                    console.log(option, ': ', checkout_options[option]['total']);
+                    console.log('order_type: ', window.customer['order_type'], '\n',
+                                'overall: ', window.order['overall']);
                 {% endif %}
             });
         });
@@ -240,8 +219,9 @@ function prepare_order_onload() {
                 }
                 $(this).val(res.join(''));
                 $(this).val($.trim($(this).val()));
-                window.cookies.set('bezantrakta_customer_name', $(this).val(), {expires: window.expires, domain: window.domain});
-                return $(this).val();
+                window.customer['name'] = $(this).val();
+                order_cookies_update('customer_name');
+                return window.customer['name'];
             });
         });
 
@@ -249,8 +229,9 @@ function prepare_order_onload() {
         {# Обрезка лишних пробелов в начале и в конце #}
         $('#customer-phone').blur(function() {
             $(this).val($.trim($(this).val()));
-            window.cookies.set('bezantrakta_customer_phone', $(this).val(), {expires: window.expires, domain: window.domain});
-            return $(this).val();
+            window.customer['phone'] = $(this).val();
+            order_cookies_update('customer_phone');
+            return window.customer['phone'];
         });
 
         {# Поле "Email" #}
@@ -259,8 +240,9 @@ function prepare_order_onload() {
             var test_email = /^\s*[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}\s*$/i;
             if (test_email.test(this.value)) {
                 $(this).val($.trim($(this).val()));
-                window.cookies.set('bezantrakta_customer_email', $(this).val(), {expires: window.expires, domain: window.domain});
-                return $(this).val();
+                window.customer['email'] = $(this).val();
+                order_cookies_update('customer_email');
+                return window.customer['email'];
             } else {
                 alert('Пожалуйста, укажите правильный email-адрес');
             }
@@ -270,8 +252,9 @@ function prepare_order_onload() {
         {# Обрезка лишних пробелов в начале и в конце #}
         $('#customer-address').blur(function() {
             $(this).val($.trim($(this).val()));
-            window.cookies.set('bezantrakta_customer_address', $(this).val(), {expires: window.expires, domain: window.domain});
-            return $(this).val();
+            window.customer['address'] = $(this).val();
+            order_cookies_update('customer_address');
+            return window.customer['address'];
         });
     {% endif %}
 }
@@ -288,53 +271,6 @@ function sectors_handler() {
     }
 }
 
-{# AJAX-запрос к внутреннему API сервисов продажи билетов #}
-{# Периодическое получение списка доступных для продажи билетов в событии из сервиса продажи билетов. #}
-function ts_seats_and_prices() {
-    {% if debug %}
-    if (window.seats_id !== undefined) {console.log('ts_seats: ', window.seats_id);}
-    {% endif %}
-
-    $.ajax({
-        url: '/api/ts/seats_and_prices/',
-        type: 'GET',
-        data: {
-            'ticket_service_id': window.ticket_service_id,
-            'event_id':          window.event_id,
-            'scheme_id':         window.scheme_id
-        },
-        success: seats_and_prices_success,
-        error: seats_and_prices_error
-    });
-}
-
-{# AJAX-запрос к внутреннему API сервисов продажи билетов #}
-{# Добавление или удаление места в предварительном резерве #}
-function ts_reserve(action, seat) {
-    $.ajax({
-        url: '/api/ts/reserve/',
-        type: 'POST',
-        data: {
-            'ticket_service_id': seat['ticket_service_id'], /* window.ticket_service_id */
-            'order_uuid':        seat['order_uuid'], /* window.order_uuid */
-            'action':            action,
-            'event_id':          seat['event_id'], /* window.event_id */
-            'sector_id':         seat['sector_id'],
-            'sector_title':      seat['sector_title'],
-            'row_id':            seat['row_id'],
-            'seat_id':           seat['seat_id'],
-            'seat_title':        seat['seat_title'],
-            'price_group_id':    seat['price_group_id'],
-            'price':             seat['price'],
-            'price_order':       seat['price_order'],
-
-            'csrfmiddlewaretoken': window.cookies.get('csrftoken')
-        },
-        success: reserve_success,
-        error: reserve_error
-    });
-}
-
 {# Инициализация проверок по таймаутам при загрузке страницы #}
 function start_heartbeat() {
     {# Периодические проверки состояния мест с обратным отсчётом до их освобождения #}
@@ -349,16 +285,16 @@ function start_heartbeat() {
         ts_seats_and_prices();
 
         {# Периодические запросы свободных для продажи мест в событии #}
-        window.seats_id = setInterval(ts_seats_and_prices, window.heartbeat_timeout * 1000);
-        {% if debug %}console.log('started heartbeat ' + window.seats_id);{% endif %}
+        window.seats_and_prices_id = setInterval(ts_seats_and_prices, window.heartbeat_timeout * 1000);
+        {% if debug %}console.log('started heartbeat ' + window.seats_and_prices_id);{% endif %}
 
         {# Добавлять и убирать в предварительном резерве можно только доступные к заказу места #}
         $('#tickets').on('click', '.seat.free, .seat.selected', seat_click_handler);
         {# Селектор `#tickets` указан для того, чтобы работали клики по схемам отдельных секторов в больших залах, когда эти схемы ещё добавлялись "на лету" в jQuery #}
         {# Селектор `#tickets`, к которому применяется `.on()`, НЕ должен генерироваться уже после загрузки страницы, будучи при этом родителем для вновь генерируемых элементов #}
 
-        {# Отключение запроса мест при переходе на шаг 2 #}
-        {# (чтобы очередной запуск `ts_seats_and_prices` не мог бы завершился с ошибкой) #}
+        {# Отключение запроса мест при переходе на шаг 2, #}
+        {# чтобы очередной запуск `ts_seats_and_prices` не мог бы завершился с ошибкой #}
         $('#buy-tickets').on('click', stop_heartbeat);
     {% elif active == 'step2' %}
         {# Отключение проверки состояния мест при уходе назад на шаг 1 или при подтверждении заказа #}
@@ -372,13 +308,62 @@ function start_heartbeat() {
 {# Остановка проверок по по таймаутам при достижении определённых условий #}
 function stop_heartbeat() {
     {% if active == 'step1' %}
-        clearInterval(window.seats_id);
-        {% if debug %}console.log('stopped seats_and_prices ' + window.seats_id);{% endif %}
+        clearInterval(window.seats_and_prices_id);
+        {% if debug %}console.log('stopped seats_and_prices ' + window.seats_and_prices_id);{% endif %}
         $('#tickets-preloader').show();
     {% endif %}
 
     clearInterval(window.countdown_id);
     {% if debug %}console.log('stopped countdown ' + window.countdown_id);{% endif %}
+}
+
+{# AJAX-запрос к внутреннему API сервисов продажи билетов #}
+{# Периодическое получение списка доступных для продажи билетов в событии из сервиса продажи билетов. #}
+function ts_seats_and_prices() {
+    {% if debug %}
+    if (window.seats_and_prices_id !== undefined) {
+        console.log('ts_seats_and_prices: ', window.seats_and_prices_id);
+    }
+    {% endif %}
+
+    $.ajax({
+        url: '/api/ts/seats_and_prices/',
+        type: 'GET',
+        data: {
+            'ticket_service_id': window.ticket_service_id,
+            'event_id':          window.event_id,
+            'scheme_id':         window.scheme_id
+        },
+        success: seats_and_prices_success,
+        error:   seats_and_prices_error
+    });
+}
+
+{# AJAX-запрос к внутреннему API сервисов продажи билетов #}
+{# Добавление или удаление места в предварительном резерве #}
+function ts_reserve(seat, action) {
+    $.ajax({
+        url: '/api/ts/reserve/',
+        type: 'POST',
+        data: {
+            'ticket_service_id': seat['ticket_service_id'], {# window.ticket_service_id #}
+            'order_uuid':        seat['order_uuid'], {# window.order['uuid'] #}
+            'action':            action,
+            'event_id':          seat['event_id'], {# window.event_id #}
+            'sector_id':         seat['sector_id'],
+            'sector_title':      seat['sector_title'],
+            'row_id':            seat['row_id'],
+            'seat_id':           seat['seat_id'],
+            'seat_title':        seat['seat_title'],
+            'price_group_id':    seat['price_group_id'],
+            'price':             seat['price'],
+            'price_order':       seat['price_order'],
+
+            'csrfmiddlewaretoken': window.cookies.get('csrftoken')
+        },
+        success: reserve_success,
+        error:   reserve_error
+    });
 }
 
 {# Фильтрация из вновь полученного списка только тех мест, состояние которых изменилось (выбраны или освобождены). #}
@@ -579,7 +564,7 @@ function seats_and_prices_error(xhr, status, error) {
 function seat_click_handler(event) {
     event.preventDefault();
 
-    if (window.order_count < window.max_seats_per_order) {
+    if (window.order['count'] < window.max_seats_per_order) {
         {# Прелоадер с прогресс-баром #}
         $('#tickets-preloader').fadeIn(20);
     }
@@ -596,7 +581,7 @@ function seat_click_handler(event) {
 
     seat['ticket_service_id'] = window.ticket_service_id;
     seat['event_id']          = window.event_id;
-    seat['order_uuid']        = window.order_uuid;
+    seat['order_uuid']        = window.order['uuid'];
 
     var action = undefined;
 
@@ -607,7 +592,7 @@ function seat_click_handler(event) {
     if ($(this).hasClass(class_f)) {
         {# Нельзя выбрать больше билетов, чем максимальное значение из настроек сервиса продажи билетов #}
         {# Фактически работает как `order_count` <= `max_seats_per_order` #}
-        if (window.order_count < window.max_seats_per_order) {
+        if (window.order['count'] < window.max_seats_per_order) {
             action = 'add';
         } else {
             return false;
@@ -617,7 +602,7 @@ function seat_click_handler(event) {
         action = 'remove';
     }
 
-    ts_reserve(action, seat);
+    ts_reserve(seat, action);
 }
 
 {# Обратный отсчёт до освобождения добавленных в предварительный резерв мест #}
@@ -632,21 +617,21 @@ function seat_countdown_timer() {
     {# Выбранные ранее билеты: #}
     {# * ЛИБО сохраняются в заказе, если их таймаут ещё не прошёл #}
     {# * ЛИБО удаляются из корзины заказа, если их таймаут уже прошёл #}
-    if (window.order_count > 0) {
-        for (var t = 0; t < window.order_tickets.length; t++) {
+    if (window.order['count'] > 0) {
+        for (var t = 0; t < window.order['tickets'].length; t++) {
             seat = {};
-            seat['sector_id']      = window.order_tickets[t]['sector_id'];
-            seat['sector_title']   = window.order_tickets[t]['sector_title'];
-            seat['row_id']         = window.order_tickets[t]['row_id'];
-            seat['seat_id']        = window.order_tickets[t]['seat_id'];
-            seat['seat_title']     = window.order_tickets[t]['seat_title'];
-            seat['price_group_id'] = window.order_tickets[t]['price_group_id'];
-            seat['price']          = window.order_tickets[t]['price'];
-            seat['price_order']    = window.order_tickets[t]['price_order'];
+            seat['sector_id']      = window.order['tickets'][t]['sector_id'];
+            seat['sector_title']   = window.order['tickets'][t]['sector_title'];
+            seat['row_id']         = window.order['tickets'][t]['row_id'];
+            seat['seat_id']        = window.order['tickets'][t]['seat_id'];
+            seat['seat_title']     = window.order['tickets'][t]['seat_title'];
+            seat['price_group_id'] = window.order['tickets'][t]['price_group_id'];
+            seat['price']          = window.order['tickets'][t]['price'];
+            seat['price_order']    = window.order['tickets'][t]['price_order'];
 
             seat['ticket_service_id'] = window.ticket_service_id;
             seat['event_id']          = window.event_id;
-            seat['order_uuid']        = window.order_uuid;
+            seat['order_uuid']        = window.order['uuid'];
 
             var class_f = 'free color' + seat['price_order'];
             var class_s = 'selected';
@@ -658,74 +643,79 @@ function seat_countdown_timer() {
 
             var ticket_id = seat['sector_id'] + '-' + seat['row_id'] + '-' + seat['seat_id'];
 
+            {% if active == 'step2' and debug %}console.log('  ticket: ', ticket_id);{% endif %}
+
             {# Разница между временем обновления мест и временем резерва конкретного места #}
-            var added = new Date(window.order_tickets[t]['added']);
+            var added = new Date(window.order['tickets'][t]['added']);
             var updated_minus_added_ms = updated - added;
 
             {# Вывод обратного отсчёта до автоматического освобождения места #}
             var uma = new Date(seat_timeout_ms - updated_minus_added_ms);
             var min = uma.getMinutes();
-            if (min >= 0 && min < 10) { min = '0' + min; }
             var sec = uma.getSeconds();
-            if (sec >= 0 && sec < 10) { sec = '0' + sec; }
+            min = min >= 0 && min < 10 ? '0' + min : min;
+            sec = sec >= 0 && sec < 10 ? '0' + sec : sec;
             $('#' + ticket_id + '-countdown').html('(' + min + ':' + sec + ')');
 
             {# Если заданный таймаут для резерва места прошёл - место освобождается #}
             if (updated_minus_added_ms > seat_timeout_ms) {
                 $('#' + ticket_id + '-countdown').html('(00:00)');
 
-                {# При истечении таймаута на резерв единожды запрашиваем удаление из предваиртельного резерва #}
+                {# При истечении таймаута на резерв ЕДИНОЖДЫ запрашиваем удаление из предварительного резерва #}
                 {# Если удаление не завершится из-за ошибки - место просто удалится из корзины заказа в браузере #}
-                if (window.order_tickets[t]['remove_in_progress'] !== true) {
-                    window.order_tickets[t]['remove_in_progress'] = true;
+                if (window.order['tickets'][t]['remove_in_progress'] !== true) {
+                    window.order['tickets'][t]['remove_in_progress'] = true;
 
                     {% if active == 'step2' %}
-                        for (var t = 0; t < window.order_tickets.length; t++) {
+                        for (var t = 0; t < window.order['tickets'].length; t++) {
                             if (
-                                window.order_tickets[t]['sector_id'] == seat['sector_id'] &&
-                                window.order_tickets[t]['row_id']    == seat['row_id']    &&
-                                window.order_tickets[t]['seat_id']   == seat['seat_id']
+                                window.order['tickets'][t]['sector_id'] == seat['sector_id'] &&
+                                window.order['tickets'][t]['row_id']    == seat['row_id']    &&
+                                window.order['tickets'][t]['seat_id']   == seat['seat_id']
                             ) {
-                                window.order_tickets.splice(t, 1);
-                                window.order_count -= 1;
-                                window.order_total -= seat['price'];
-                                window.order_total_plus_courier_price = get_price(
-                                    window.order_total + window.courier_price
-                                );
-                                window.order_total_plus_commission = get_price(
-                                    window.order_total, window.commission
-                                );
+                                window.order['tickets'].splice(t, 1);
+                                window.order['count'] -= 1;
+                                window.order['total'] -= seat['price'];
 
                                 order_cookies_update(['order_tickets', 'order_count', 'order_total']);
+
+                                get_overall();
 
                                 $('#' + ticket_id).remove();
                             }
                         }
                     {% endif %}
 
-                    ts_reserve('remove', seat);
+                    ts_reserve(seat, 'remove');
                 }
+        {% if active == 'step2' %}
+            } else {
+                window.order['tickets'][t]['order_timeout_ms'] = seat_timeout_ms - updated_minus_added_ms;
+
+                if (window.order['tickets'][t]['order_timeout_ms'] < 5000) {
+                    $('#agree, #isubmit').prop('disabled', true);
+                }
+
+                order_timeout_ms += window.order['tickets'][t]['order_timeout_ms'];
+                {% if active == 'step2' and debug %}console.log('    ticket_timeout: ', window.order['tickets'][t]['order_timeout_ms']);{% endif %}
+                {% if active == 'step2' and debug %}console.log('    order_timeout_ms: ', order_timeout_ms);{% endif %}
+        {% endif %}
             }
 
-            {% if active == 'step2' %}
-                order_timeout_ms += seat_timeout_ms - updated_minus_added_ms;
-
-                {# Если средний совокупный таймаут всех билетов в заказе меньше 10 секунд - #}
-                {# возможность подтверждения заказа отключается во избежание ошибок #}
-                if (window.order_timeout < 10000 && window.order_timeout != 0) {
-                    $('#agree, #isubmit').prop('disabled', true);
-                    {% if debug %}console.log('order_timeout is coming...');{% endif %}
-                }
-            {% endif %}
         }
 
         {% if active == 'step2' %}
-        if (window.order_timeout > 0) {
-            window.order_timeout = parseInt(order_timeout_ms / window.order_count);
-            {% if debug %}console.log('order_timeout: ', window.order_timeout);{% endif %}
-        } else {
-            window.order_timeout = 0;
-        }
+        window.order_timeout = order_timeout_ms > 0 ? parseInt(order_timeout_ms / window.order['count']) : 11000;
+        {% if debug %}console.log('window.order_timeout: ', window.order_timeout);console.log('\n');{% endif %}
+        {% endif %}
+
+        {% if active == 'step2' %}
+            {# Если средний совокупный таймаут всех билетов в заказе меньше 10 секунд - #}
+            {# возможность подтверждения заказа отключается во избежание ошибок #}
+            if (window.order_timeout < 10000) {
+                $('#agree, #isubmit').prop('disabled', true);
+                {% if active == 'step2' and debug %}console.log('order_timeout is coming...');{% endif %}
+            }
         {% endif %}
 
     {# Если все билеты удалены из предварительного резерва - перезагрузить страницу #}
@@ -779,12 +769,12 @@ function reserve_success(response, status, xhr) {
 
     {% if debug %}
     console.log(
-        'is_successful: ', is_successful,      '\n',
-        'action: ',        action,             '\n',
-        'seat: ',          seat,               '\n',
-        'order_count: ',   window.order_count, '\n',
-        'order_total: ',   window.order_total, '\n',
-        'order_tickets: ', window.order_tickets
+        'is_successful: ', is_successful,         '\n',
+        'action: ',        action,                '\n',
+        'seat: ',          seat,                  '\n',
+        'order_count: ',   window.order['count'], '\n',
+        'order_total: ',   window.order['total'], '\n',
+        'order_tickets: ', window.order['tickets']
     );
     {% endif %}
 
@@ -794,7 +784,7 @@ function reserve_success(response, status, xhr) {
         if (action == 'add') {
             var added = new Date();
 
-            window.order_tickets.push({
+            window.order['tickets'].push({
                 'ticket_uuid':    uuid4(),
                 'sector_id':      seat['sector_id'],
                 'sector_title':   seat['sector_title'],
@@ -806,14 +796,14 @@ function reserve_success(response, status, xhr) {
                 'price_order':    seat['price_order'],
                 'added':          added
             });
-            window.order_count += 1;
-            window.order_total += seat['price'];
-            {% if active == 'step2' %}
-                window.order_total_plus_courier_price = get_price(window.order_total + window.courier_price);
-                window.order_total_plus_commission = get_price(window.order_total, window.commission);
-            {% endif %}
+            window.order['count'] += 1;
+            window.order['total'] += seat['price'];
 
             order_cookies_update(['order_tickets', 'order_count', 'order_total']);
+
+            {% if active == 'step2' %}
+                get_overall();
+            {% endif %}
 
             {% if active == 'step1' %}
                 $(seat_selector).addClass(class_s).removeClass(class_f);
@@ -830,28 +820,35 @@ function reserve_success(response, status, xhr) {
             $('#' + ticket_id + '-countdown').html('(' + seat_timeout_output + ':00)');
         {# Если место удалено из предварительного резерва #}
         } else if (action == 'remove') {
-            for (var t = 0; t < window.order_tickets.length; t++) {
+            for (var t = 0; t < window.order['tickets'].length; t++) {
                 if (
-                    window.order_tickets[t]['sector_id'] == seat['sector_id'] &&
-                    window.order_tickets[t]['row_id']    == seat['row_id']    &&
-                    window.order_tickets[t]['seat_id']   == seat['seat_id']
+                    window.order['tickets'][t]['sector_id'] == seat['sector_id'] &&
+                    window.order['tickets'][t]['row_id']    == seat['row_id']    &&
+                    window.order['tickets'][t]['seat_id']   == seat['seat_id']
                 ) {
-                    window.order_tickets.splice(t, 1);
-                    window.order_count -= 1;
-                    window.order_total -= seat['price'];
-                    {% if active == 'step2' %}
-                        window.order_total_plus_courier_price = get_price(window.order_total + window.courier_price);
-                        window.order_total_plus_commission = get_price(window.order_total, window.commission);
-                    {% endif %}
-
-                    order_cookies_update(['order_tickets', 'order_count', 'order_total']);
-
+                    window.order['tickets'].splice(t, 1);
+                    window.order['count'] -= 1;
+                    window.order['total'] -= seat['price'];
                     {% if active == 'step1' %}
                         $(seat_selector).addClass(class_f).removeClass(class_s);
                     {% endif %}
 
                     $('#' + ticket_id).remove();
+
+                    order_cookies_update(['order_tickets', 'order_count', 'order_total']);
+
+                    {% if active == 'step2' %}
+                        get_overall();
+                    {% endif %}
                 }
+
+            {% if active == 'step2' %}
+                var no_tickets = _.isEmpty(window.order['tickets']); {# _.size() #}
+                if (no_tickets === false) {
+                    $('#agree, #isubmit').prop('disabled', false);
+                }
+            {% endif %}
+
             }
         }
     }
@@ -904,7 +901,7 @@ function previous_order_cleanup() {
             window.previous_order['total'] -= seat['price'];
 
             console.log('remove previous order seat...', seat);
-            ts_reserve('remove', seat);
+            ts_reserve(seat, 'remove');
         } else {
             clearInterval(window.previous_order_cleanup);
             window.previous_order = undefined;
@@ -914,40 +911,55 @@ function previous_order_cleanup() {
 
 {# Инициализация параметров заказа из имеющихся cookies для заказе билетов #}
 function order_cookies_init() {
-    if (window.cookies.get('bezantrakta_event_uuid')) {
-        window.event_uuid = window.cookies.get('bezantrakta_event_uuid');
-    } else {
-        window.cookies.set('bezantrakta_event_uuid', window.event_uuid, {domain: window.domain});
-    }
+    {# На шаге 1 параметры заказа берутся из существующих cookie или создаются в cookie по умолчанию. #}
+    {# Единичный заказ действует только в рамках одного события. #}
+    {# Поэтому cookie сбросятся, если другие билеты были выбраны в другом событии, но ещё не были заказаны. #}
+    if (
+        window.cookies.get('bezantrakta_event_id') &&
+        parseInt(window.cookies.get('bezantrakta_event_id')) !== window.event_id
+    ) {
+        {# Попытка удалить предыдущий предварительный резерв из другого события (если он был создан ранее) #}
+        {# с помощью `ts_reserve(seat, 'remove')` с небольшими задержками во избежание возможных ошибок #}
+        window.previous_order = {}
+        previous_order['tickets'] = window.cookies.getJSON('bezantrakta_order_tickets');
+        previous_order['count']   = parseInt(window.cookies.get('bezantrakta_order_count'));
+        previous_order['total']   = get_price(window.cookies.get('bezantrakta_order_total'));
 
-    window.cookies.set('bezantrakta_event_id', window.event_id, {domain: window.domain});
+        previous_order['ticket_service_id'] = window.cookies.get('bezantrakta_ticket_service_id');
+        previous_order['event_id']          = window.cookies.get('bezantrakta_event_id');
+        previous_order['order_uuid']        = window.cookies.get('bezantrakta_order_uuid');
 
-    if (window.cookies.get('bezantrakta_order_uuid')) {
-        window.order_uuid = window.cookies.get('bezantrakta_order_uuid');
-    } else {
-        window.order_uuid = uuid4();
-        window.cookies.set('bezantrakta_order_uuid', window.order_uuid, {domain: window.domain});
-    }
+        window.previous_order_cleanup = setInterval(previous_order_cleanup, 2000);
 
-    if (window.cookies.get('bezantrakta_order_tickets')) {
-        window.order_tickets = window.cookies.getJSON('bezantrakta_order_tickets');
-    } else {
-        window.order_tickets = [];
-        window.cookies.set('bezantrakta_order_tickets', window.order_tickets, {domain: window.domain});
-    }
+        {# Обнуление корзины заказа в новом открытом событии #}
+        window.order['uuid']    = uuid4();
+        window.order['tickets'] = [];
+        window.order['count']   = 0;
+        window.order['total']   = 0;
 
-    if (window.cookies.get('bezantrakta_order_count')) {
-        window.order_count = parseInt(window.cookies.get('bezantrakta_order_count'));
+        order_cookies_update(
+            ['ticket_service_id', 'event_uuid', 'event_id', 'order_uuid', 'order_tickets', 'order_count', 'order_total']
+        );
     } else {
-        window.order_count = 0;
-        window.cookies.set('bezantrakta_order_count', window.order_count, {domain: window.domain});
-    }
+        if (window.cookies.get('bezantrakta_event_uuid')) {
+            window.event_uuid = window.cookies.get('bezantrakta_event_uuid');
+        }
 
-    if (window.cookies.get('bezantrakta_order_total')) {
-        window.order_total = get_price(window.cookies.get('bezantrakta_order_total'));
-    } else {
-        window.order_total = 0;
-        window.cookies.set('bezantrakta_order_total', window.order_total, {domain: window.domain});
+        window.order['ticket_service_id'] = window.cookies.get('bezantrakta_ticket_service_id');
+
+        window.customer['order_type'] = undefined;
+        window.customer['name']       = window.cookies.get('bezantrakta_customer_name');
+        window.customer['phone']      = window.cookies.get('bezantrakta_customer_phone');
+        window.customer['email']      = window.cookies.get('bezantrakta_customer_email');
+        window.customer['address']    = window.cookies.get('bezantrakta_customer_address');
+
+        {# Данные о заказе #}
+        window.order['uuid'] = window.cookies.get('bezantrakta_order_uuid') ? window.cookies.get('bezantrakta_order_uuid') : uuid4();
+        window.order['tickets'] = window.cookies.get('bezantrakta_order_tickets') ? window.cookies.getJSON('bezantrakta_order_tickets') : [];
+        window.order['count'] = window.cookies.get('bezantrakta_order_count') ? parseInt(window.cookies.get('bezantrakta_order_count')) : 0;
+        window.order['total'] = window.cookies.get('bezantrakta_order_total') ? get_price(window.cookies.get('bezantrakta_order_total')) : 0;
+
+        order_cookies_update(['ticket_service_id', 'event_uuid', 'event_id', 'order_uuid', 'order_tickets', 'order_count', 'order_total']);
     }
 }
 
@@ -956,13 +968,21 @@ function order_cookies_update(cookies_list) {
     {% if debug %}console.log('order_cookies_update...');{% endif %}
     var cookie_prefix = 'bezantrakta_';
     var order_cookies = {
-        'ticket_service_id': window.ticket_service_id,
-        'event_uuid':        window.event_uuid,
-        'event_id':          window.event_id,
-        'order_uuid':        window.order_uuid,
-        'order_count':       window.order_count,
-        'order_total':       window.order_total,
-        'order_tickets':     window.order_tickets
+        'ticket_service_id':   window.ticket_service_id,
+
+        'event_uuid':          window.event_uuid,
+        'event_id':            window.event_id,
+
+        'order_uuid':          window.order['uuid'],
+        'order_count':         window.order['count'],
+        'order_total':         window.order['total'],
+        'order_tickets':       window.order['tickets'],
+
+        'customer_order_type': window.customer['order_type'],
+        'customer_name':       window.customer['name'],
+        'customer_phone':      window.customer['phone'],
+        'customer_email':      window.customer['email'],
+        'customer_address':    window.customer['address']
     }
 
     for (var input = 0; input < cookies_list.length; input++) {
@@ -971,8 +991,15 @@ function order_cookies_update(cookies_list) {
                 var cookie_title = cookie;
                 var cookie_value = order_cookies[cookie];
 
-                window.cookies.set(cookie_prefix + cookie, cookie_value, {domain: window.domain});
-                {% if debug %}console.log('cookie `' + cookie_title + '`: ', cookie_value);{% endif %}
+                var cookie_options = {};
+                cookie_options['domain'] = '.{{ request.root_domain }}';
+                {# cookies, относящиеся к покупателю, сохраняются на будущее и НЕ являются сессионными #}
+                if (cookie.startsWith('customer_')) {
+                    cookie_options['expires'] = new Date(new Date().getTime() + 60 * 60 * 24 * 366 * 1000);
+                }
+
+                window.cookies.set(cookie_prefix + cookie, cookie_value, cookie_options);
+                {% if debug %}console.log('cookie `' + cookie_title + '`:\n', cookie_value);{% endif %}
             }
         }
     }
@@ -982,19 +1009,47 @@ function order_cookies_update(cookies_list) {
 {# Добавленные в предварительный резерв билеты выводятся в легенде страницы и отмечаются выделенными на схеме зала. #}
 {# В противном случае легенда сбрасывается в состояние по умолчанию "пока ничего не выбрано". #}
 function html_basket_update() {
-    if (window.order_count > 0) {
-        $('#count-chosen').html(window.order_count);
-        $('#total-sum').html(window.order_total);
+    if (window.order['count'] > 0) {
+        $('#tickets-count').html(window.order['count']);
+        $('#total').html(window.order['total']);
         {% if active == 'step2' %}
-            $('#total-sum-courier').html(window.order_total_plus_courier_price);
-            $('#total-sum-online').html(window.order_total_plus_commission);
+            var type     = window.customer['order_type'];
+            var delivery = window.customer['delivery'];
+            var payment  = window.customer['payment'];
+            var total    = window.order['total'];
+            var extra    = window.order['extra'][type];
+            {% if debug %}console.log('extra: ', extra);{% endif %}
+
+            var courier_price = window.order['courier_price'];
+            var commission    = window.order['commission'];
+
+            overall_header = extra > 0 ? 'Всего с учётом сервисного сбора' : 'Общая сумма заказа';
+
+            if (delivery == 'courier' && courier_price > 0) {
+                overall_header = extra > 0 ? 'Всего с учётом доставки курьером и сервисного сбора' : 'Всего с учётом доставки курьером';
+            }
+            if (payment == 'online' && commission > 0) {
+                overall_header = extra > 0 ? 'Всего с учётом комиссии платёжной системы и сервисного сбора' : 'Всего с учётом комиссии платёжной системы';
+            } 
+
+            $('#overall-header').html(overall_header);
+            {% if debug %}console.log('overall_header: ', overall_header);{% endif %}
+
+            {# Вывод общей суммы заказа в зависимости от возможных наценок/скидок для выбранного типа заказа #}
+            $('#overall').html(window.order['overall']);
+
+            if (overall_header !== 'Общая сумма заказа') {
+                $('#overall-block').show();
+            } else {
+                $('#overall-block').hide();
+            }
         {% endif %}
 
-        $('#no-tickets, #no-overall, #buy-tickets-inactive').hide();
-        $('#overall-text, #buy-tickets').show();
+        $('#no-tickets, #no-total, #buy-tickets-inactive').hide();
+        $('#total-text, #buy-tickets').show();
     } else {
-        $('#no-tickets, #no-overall, #buy-tickets-inactive').show();
-        $('#overall-text, #buy-tickets').hide();
+        $('#no-tickets, #no-total, #buy-tickets-inactive').show();
+        $('#total-text, #buy-tickets').hide();
     }
 }
 
@@ -1004,9 +1059,42 @@ function get_price(price, commission) {
     if (commission === undefined) {
         return Math.round(parseFloat(price) * 100) / 100;
     {# Если комиссия задана - получаем цену price с учётом commission #}
-    } else if (typeof(commission) === 'number' ) {
+    } else if (typeof(commission) === 'number') {
         return Math.round(parseFloat(price + ((price * commission) / 100)) * 100) / 100;
     }
+}
+
+{# Получение общей суммы заказа в зависимости от возможных наценок/скидок для выбранного типа заказа #}
+function get_overall() {
+    var type     = window.customer['order_type'];
+    var delivery = window.customer['delivery'];
+    var payment  = window.customer['payment'];
+    var total    = window.order['total'];
+    var extra    = window.order['extra'][type];
+
+    var courier_price = window.order['courier_price'];
+    var commission    = window.order['commission'];
+
+    {# Получение общей суммы заказа #}
+    {# Для любого типа заказа - с учётом сервисного сбора для каждого билета в заказе (если он задан) #}
+    var overall = total;
+    if (extra > 0) {
+        for (var t = 0; t < window.order['tickets'].length; t++) {
+            overall += ((window.order['tickets'][t]['price'] * extra) / 100);
+        };
+    }
+
+    {# При доставке курьером - с учётом стоимости доставки курьером (если она задана) #}
+    if (delivery == 'courier') {
+        overall += courier_price;
+    }
+
+    {# При онлайн-оплате - с учётом комиссии сервиса онлайн-оплаты (если она задана) #}
+    if (payment == 'online') {
+        overall = get_price(overall, commission);
+    }
+
+    window.order['overall'] = overall;
 }
 
 {# Генерация случайного уникального UUID #}

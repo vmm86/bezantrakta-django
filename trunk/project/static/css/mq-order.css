@@ -190,9 +190,8 @@ h1, h2 {
 #group-events-header,
 #links-header,
 #chosen-tickets-header,
+#total-header,
 #overall-header,
-#overall-courier h3,
-#overall-online h3,
 #order-info-header {
     display: block;
 
@@ -214,10 +213,9 @@ h1, h2 {
 
 #basket-container #chosen-tickets,
 #basket-container-full #chosen-tickets,
-#basket-container #overall,
-#basket-container-full #overall,
-#overall-courier p,
-#overall-online p,
+#basket-container #total-content,
+#basket-container-full #total-content,
+#overall-content,
 #order-info {
     display: block;
 
@@ -235,8 +233,8 @@ h1, h2 {
 
 #basket-container #chosen-tickets li,
 #basket-container-full #chosen-tickets li,
-#basket-container #overall,
-#basket-container-full #overall,
+#basket-container #total-content,
+#basket-container-full #total-content,
 #order-info li,
 .ticket-message {
     font-size: 0.95rem;

@@ -28,12 +28,31 @@
     {% endfor %}
     </ul>
 
-    <p><strong>Общая сумма заказа</strong>: {{ order.total }} р.
-    {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-        <br>В сумму заказа включена стоимость доставки курьером.
-    {% endif %}
-    {% if customer.payment == "online" and payment_service.settings.commission > 0 %}
-        <br>К сумме заказа добавлена комиссия сервиса онлайн-оплаты.
+    <p><strong>Общая сумма заказа</strong>: {{ order.overall }} р.
+    {% if customer.payment == "cash" %}
+        {% if order.extra > 0 %}
+            {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
+                <br>С учётом сервисного сбора и стоимости доставки курьером.
+            {% else %}
+                <br>С учётом сервисного сбора.
+            {% endif %}
+        {% else %}
+            {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
+                <br>С учётом стоимости доставки курьером.
+            {% endif %}
+        {% endif %}
+    {% elif customer.payment == "online" %}
+        {% if order.extra > 0 %}
+            {% if payment_service.settings.commission > 0 %}
+                <br>С учётом сервисного сбора и комиссии платёжной системы.
+            {% else %}
+                <br>С учётом сервисного сбора.
+            {% endif %}
+        {% else %}
+            {% if payment_service.settings.commission > 0 %}
+                <br>С учётом комиссии платёжной системы.
+            {% endif %}
+        {% endif %}
     {% endif %}
     </p>
 

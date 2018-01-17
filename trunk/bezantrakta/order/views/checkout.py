@@ -79,61 +79,15 @@ def checkout(request):
 
     # Информация о предварительном резерве и возможных опциях последующего заказа
     order = {}
-
-    # Получение параметров заказа из cookie
-    order_uuid = request.COOKIES.get('bezantrakta_order_uuid')
-    order_tickets = json.loads(request.COOKIES.get('bezantrakta_order_tickets'))
-    order_count = int(request.COOKIES.get('bezantrakta_order_count'))
-    order_total = ps.decimal_price(request.COOKIES.get('bezantrakta_order_total'))
+    order['uuid'] = request.COOKIES.get('bezantrakta_order_uuid')
+    order['tickets'] = json.loads(request.COOKIES.get('bezantrakta_order_tickets'))
+    order['count'] = int(request.COOKIES.get('bezantrakta_order_count'))
+    order['total'] = ps.decimal_price(request.COOKIES.get('bezantrakta_order_total'))
 
     # Стоимость доставки курьером
-    courier_price = ps.decimal_price(ticket_service['settings']['courier_price'])
-    # Общая сумма заказа со стоимостью доставки курьером
-    order_total_plus_courier_price = order_total + courier_price
-
-    # Комиссия сервиса онлайн-оплаты
-    commission = ps.decimal_price(payment_service['settings']['init']['commission'])
-    # Общая сумма заказа с комиссией сервиса онлайн-оплаты
-    order_total_plus_commission = ps.total_plus_commission(order_total)
-
-    # Типы заказа билетов и формирование общей суммы заказа в зависимости от их возможных наценок или скидок
-    # order['options'] = {}
-    # for ot in ORDER_TYPE:
-    #     order['options'][ot] = {}
-    #     # Процент сервисного сбора
-    #     order['options'][ot]['extra'] = event['settings']['extra'][ot]
-    #     total_plus_extra = ps.total_plus_extra(order['tickets'], order['total'], order['options'][ot]['extra'])
-
-    #     # При оффлайн-оплате
-    #     if '_cash' in ot:
-    #         # Общая сумма заказа (с учётом сервисного сбора)
-    #         order['options'][ot]['overall'] = (
-    #             total_plus_extra if
-    #             order['options'][ot]['extra'] > 0 else
-    #             order['total']
-    #         )
-
-    #     # При доставке курьером
-    #     if 'courier_' in ot:
-    #         # Стоимость доставки курьером
-    #         order['options'][ot]['courier_price'] = ps.decimal_price(ticket_service['settings']['courier_price'])
-    #         # Общая сумма заказа (с учётом сервисного сбора и стоимости доставки курьером)
-    #         order['options'][ot]['overall'] = (
-    #             ps.total_plus_courier_price(total_plus_extra, order['options'][ot]['courier_price']) if
-    #             order['options'][ot]['extra'] > 0 else
-    #             ps.total_plus_courier_price(order['total'], order['options'][ot]['courier_price'])
-    #         )
-
-    #     # При онлайн-оплате
-    #     if '_online' in ot:
-    #         # Процент комиссии сервиса онлайн-оплаты
-    #         order['options'][ot]['commission'] = ps.decimal_price(payment_service['settings']['init']['commission'])
-    #         # Общая сумма заказа (с учётом сервисного сбора и комиссии сервиса онлайн-оплаты)
-    #         order['options'][ot]['overall'] = (
-    #             ps.total_plus_commission(total_plus_extra) if
-    #             order['options'][ot]['extra'] > 0 else
-    #             ps.total_plus_commission(order['total'])
-    #         )
+    order['courier_price'] = ps.decimal_price(ticket_service['settings']['courier_price'])
+    # Процент комиссии сервиса онлайн-оплаты
+    order['commission'] = ps.decimal_price(payment_service['settings']['init']['commission'])
 
     # Формирование контекста для вывода в шаблоне
     context = {}
@@ -147,21 +101,12 @@ def checkout(request):
 
     context['customer'] = customer
 
-    context['order_uuid'] = order_uuid
-    context['order_tickets'] = order_tickets
-    context['order_count'] = order_count
-    context['order_total'] = order_total
-
-    context['courier_price'] = str(courier_price)
-    context['order_total_plus_courier_price'] = str(order_total_plus_courier_price)
-
-    context['commission'] = str(commission)
-    context['order_total_plus_commission'] = str(order_total_plus_commission)
+    context['order'] = order
 
     context['checkout_form_action'] = build_absolute_url(request.domain_slug, '/afisha/order/')
 
     # Если корзина заказа пустая
-    if context['order_count'] == 0:
+    if order['count'] == 0:
         # Сообщение об ошибке
         msgs = [
             message(

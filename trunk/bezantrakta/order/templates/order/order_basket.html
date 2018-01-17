@@ -1,0 +1,81 @@
+{% load static %}
+{# Список билетов в предварительном резерве/заказе #}
+<div id="chosen-tickets-block">
+    <h3 id="chosen-tickets-header">Выбранные места</h3>
+    <ul id="chosen-tickets">
+        {% if active == "step1" %}
+            <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
+        {% elif active == "step3" %}
+            {% for ticket in order.tickets %}
+                <li>
+                    {{ ticket.sector_title }}, ряд {{ ticket.row_id }}, место {{ ticket.seat_title }}, цена {{ ticket.price }} <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
+
+{# Сумма цен на билеты #}
+<div id="total-block">
+    <h3 id="total-header">Всего</h3>
+    <p id="total-content">
+        {% if active == "step1" %}
+            <span id="no-total">пока ничего не выбрано</span>
+        {% endif %}
+        <span id="total-text">Билетов <span id="tickets-count">{% if active == "step2" %}{{ order.count }}{% endif %}</span> на сумму <span id="total">{% if active == "step2" %}{{ order.total }}{% endif %}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
+    </p>
+</div>
+
+{# Условный вывод дополнительных блоков в зависимости от шага заказа билетов #}
+
+{# Шаг 1 #}
+{% if active == "step1" %}
+    {# Список цен на билеты с их цветовым обозначением #}
+    <div id="legend-general">
+        <ul>
+            <li><span class="box selected"></span> <span>выбрано вами</span> &nbsp;</li>
+            <li><span class="box free"></span> <span>недоступно</span> &nbsp;</li>
+        </ul>
+    </div>
+    <br>
+    <div id="legend-prices">
+        <ul id="legend-extension">
+            {# Цены добавляются/удаляются в браузере при AJAX-запросах свободных мест в событии #}
+        </ul>
+    </div>
+
+    {# Описание процесса заказа билетов #}
+    {% include "order/legend_text.html" with ticket_service=ticket_service %}
+
+{# Шаг 2 #}
+{% elif active == "step2" %}
+    <div id="overall-block">
+        <h3 id="overall-header">Общая сумма заказа</h3>
+        <p id="overall-content">
+            К оплате <span id="overall"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">
+        </p>
+    </div>
+
+{# Шаг 3 #}
+{% elif active == "step3" %}
+    {% if order.delivery == "courier" %}
+        {% if order.courier_price > 0 %}
+            <h3 id="overall-header">Всего с учётом доставки курьером</h3>
+        {% else %}
+            <h3 id="overall-header">Всего</h3>
+        {% endif %}
+    {% elif order.payment == "online" %}
+        {% if order.commission > 0 %}
+            <h3 id="overall-header">Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
+        {% else %}
+            <h3 id="overall-header">Всего</h3>
+        {% endif %}
+    {% else %}
+            <h3 id="overall-header">Всего</h3>
+    {% endif %}
+
+    <p id="overall-content">
+        <span id="overall-text">Билетов <span id="tickets-count">{{ order.count }}</span> на сумму <span id="overall">{{ order.total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
+    </p>
+{% endif %}
+<br>

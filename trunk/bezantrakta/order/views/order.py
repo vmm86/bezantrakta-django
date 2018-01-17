@@ -12,8 +12,8 @@ from django.shortcuts import redirect
 from project.cache import cache_factory
 from project.shortcuts import message, render_messages, timezone_now
 
-from bezantrakta.order.models import Order, OrderTicket
-from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
+from ..models import Order, OrderTicket
+from ..settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS, ORDER_TYPE
 
 
 def order(request):
@@ -60,7 +60,7 @@ def order(request):
 
         # Получение реквизитов покупателя
         customer = {}
-        # customer['order_type'] = request.POST.get('customer_order_type')
+        customer['order_type'] = request.POST.get('customer_order_type')
         customer['delivery'] = request.POST.get('customer_delivery')
         customer['payment'] = request.POST.get('customer_payment')
         customer['name'] = request.POST.get('customer_name')
@@ -72,7 +72,7 @@ def order(request):
         # Получение параметров заказа
         order = {}
         try:
-            order['order_uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_order_uuid', None))
+            order['uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_order_uuid', None))
         except (AttributeError, TypeError, ValueError) as e:
             logger.critical('Неправильный уникальный номер заказа!')
             logger.critical(e)
@@ -89,18 +89,44 @@ def order(request):
         else:
             order['tickets'] = json.loads(request.COOKIES.get('bezantrakta_order_tickets', []))
             order['count'] = int(request.COOKIES.get('bezantrakta_order_count', 0))
-            order['total'] = ts.decimal_price(request.COOKIES.get('bezantrakta_order_total', 0))
+            order['total'] = ps.decimal_price(request.COOKIES.get('bezantrakta_order_total', 0))
 
-            # При доставке курьером - общая сумма заказа плюс стоимость доставки курьером
+            # Типы заказа билетов
+            order['type'] = customer['order_type']
+
+            # Процент сервисного сбора
+            order['extra'] = event['settings']['extra'][order['type']]
+
+            # Получение общей суммы заказа в зависимости от возможных наценок/скидок
+
+            # Для любого типа заказа - с учётом сервисного сбора для каждого билета в заказе (если он задан)
+            order['overall'] = ps.total_plus_extra(order['tickets'], order['total'], order['extra'])
+
+            # При доставке курьером - с учётом стоимости доставки курьером (если она задана)
             if customer['delivery'] == 'courier':
-                order['total'] += ps.decimal_price(ticket_service['settings']['courier_price'])
-            # При онлайн-оплате - общая сумма заказа с комиссией сервиса онлайн-оплаты
+                # Стоимость доставки курьером
+                order['courier_price'] = ps.decimal_price(ticket_service['settings']['courier_price'])
+                # Общая сумма заказа (с учётом сервисного сбора и стоимости доставки курьером)
+                order['overall'] = (
+                    ps.total_plus_courier_price(order['overall'], order['courier_price']) if
+                    order['extra'] > 0 else
+                    ps.total_plus_courier_price(order['total'], order['courier_price'])
+                )
+
+            # При онлайн-оплате - с учётом комиссии сервиса онлайн-оплаты (если она задана)
             if customer['payment'] == 'online':
-                order['total'] = ps.total_plus_commission(order['total'])
+                # Процент комиссии сервиса онлайн-оплаты
+                order['commission'] = ps.decimal_price(payment_service['settings']['init']['commission'])
+                # Общая сумма заказа (с учётом сервисного сбора и комиссии сервиса онлайн-оплаты)
+                order['overall'] = (
+                    ps.total_plus_commission(order['overall']) if
+                    order['extra'] > 0 else
+                    ps.total_plus_commission(order['total'])
+                )
 
             # Логирование базовой информации о заказе
             now = timezone_now()
-            logger.info('\n----------Обработка заказа {order_uuid}----------'.format(order_uuid=order['order_uuid']))
+            logger.info('\n----------Обработка заказа {order_uuid}----------'.format(order_uuid=order['uuid']))
             logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
 
             logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
@@ -126,12 +152,13 @@ def order(request):
             logger.info('Телефон: {phone}'.format(phone=customer['phone']))
 
             logger.info('\nПараметры заказа')
-            logger.info('UUID заказа: {order_uuid}'.format(order_uuid=order['order_uuid']))
+            logger.info('UUID заказа: {order_uuid}'.format(order_uuid=order['uuid']))
             logger.info('Билеты в заказе:')
             for ticket in order['tickets']:
                 logger.info('* {ticket}'.format(ticket=ticket))
             logger.info('Число билетов: {count}'.format(count=order['count']))
-            logger.info('Сумма заказа: {total}'.format(total=order['total']))
+            logger.info('Сумма цен на билеты: {total}'.format(total=order['total']))
+            logger.info('Общая сумма заказа: {total}'.format(total=order['overall']))
 
             # Проверка состояния билетов в предварительной брони (если такой функционал предусмотрен)
             logger.info('\nПроверка состояния билетов в предварительном резерве...')
@@ -171,7 +198,7 @@ def order(request):
             logger.info('\nСоздание заказа...')
             order_create = ts.order_create(
                 event_id=event['id'],
-                order_uuid=order['order_uuid'],
+                order_uuid=order['uuid'],
                 customer=customer,
                 tickets=order['tickets']
             )
@@ -219,7 +246,7 @@ def order(request):
                 # Сохранение предварительного заказа
                 try:
                     Order.objects.create(
-                        id=order['order_uuid'],
+                        id=order['uuid'],
                         ticket_service_id=ticket_service['id'],
                         ticket_service_order=order['order_id'],
                         event_id=event['event_uuid'],
@@ -234,7 +261,7 @@ def order(request):
                         payment_id=None,
                         status=order['status'],
                         tickets_count=order['count'],
-                        total=order['total'],
+                        total=order['overall'],
                         domain_id=domain['domain_id']
                     )
                 except IntegrityError:
@@ -250,13 +277,13 @@ def order(request):
                     render_messages(request, msgs)
                     return redirect('error')
                 else:
-                    logger.info('\nЗаказ {order_uuid} сохранён в БД'.format(order_uuid=order['order_uuid']))
+                    logger.info('\nЗаказ {order_uuid} сохранён в БД'.format(order_uuid=order['uuid']))
 
                     for t in order['tickets']:
                         try:
                             OrderTicket.objects.create(
                                 id=t['ticket_uuid'],
-                                order_id=order['order_uuid'],
+                                order_id=order['uuid'],
                                 ticket_service_id=ticket_service['id'],
                                 ticket_service_order=order['order_id'],
                                 is_punched=False,
@@ -283,7 +310,7 @@ def order(request):
                             status=ORDER_STATUS[order['status']]['description'])
                         )
 
-                        Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
+                        Order.objects.filter(id=order['uuid']).update(status=order['status'])
 
                         # Человекопонятный текст для email-уведомлений
                         customer['delivery_description'] = ORDER_DELIVERY[customer['delivery']]
@@ -331,7 +358,7 @@ def order(request):
                         customer_email.send()
                         logger.info('Email-уведомление покупателю отправлено')
 
-                        return redirect('order:confirmation', order_uuid=order['order_uuid'])
+                        return redirect('order:confirmation', order_uuid=order['uuid'])
                     # Если онлайн-оплата - запрос новой оплаты
                     elif customer['payment'] == 'online':
                         # Создание новой онлайн-оплаты
@@ -354,7 +381,7 @@ def order(request):
 
                             now = timezone_now()
                             # Сохранение идентификатора оплаты в БД
-                            Order.objects.filter(id=order['order_uuid']).update(
+                            Order.objects.filter(id=order['uuid']).update(
                                 datetime=now,
                                 payment_id=payment_id
                             )
@@ -370,7 +397,7 @@ def order(request):
                             # Отмена заказа в сервисе продажи билетов
                             order_cancel = ts.order_cancel(
                                 event_id=event['id'],
-                                order_uuid=order['order_uuid'],
+                                order_uuid=order['uuid'],
                                 order_id=order['order_id'],
                                 tickets=order['tickets'],
                             )
@@ -384,7 +411,7 @@ def order(request):
 
                                 # Отмена заказа в БД
                                 order['status'] = 'cancelled'
-                                Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
+                                Order.objects.filter(id=order['uuid']).update(status=order['status'])
 
                                 logger.info('Статус заказа: {status}'.format(
                                     status=ORDER_STATUS[order['status']]['description'])
@@ -420,7 +447,7 @@ def order(request):
                 # Освобождение предварительной брони
                 for ticket in order['tickets']:
                     ticket['action'] = 'remove'
-                    ticket['order_uuid'] = order['order_uuid']
+                    ticket['order_uuid'] = order['uuid']
                     ticket['event_id'] = event['id']
                     remove = ts.reserve(**ticket)
 
