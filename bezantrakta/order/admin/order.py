@@ -39,15 +39,15 @@ class OrderAdmin(admin.ModelAdmin):
             }
         ),
         (
-            'Билеты',
-            {
-                'fields': ('total', 'tickets_count',),
-            }
-        ),
-        (
             'Реквизиты покупателя',
             {
                 'fields': ('name', 'phone', 'email',),
+            }
+        ),
+        (
+            'Билеты',
+            {
+                'fields': ('total', 'tickets_count',),
             }
         ),
     )
