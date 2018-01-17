@@ -176,17 +176,27 @@ class EventAdmin(admin.ModelAdmin):
         """Полномочия пользователей при редактировании имеющихся или создании новых событий/групп."""
         # Суперадминистраторы при необходимости могут редактировать или создавать вручную события/группы,
         # например, если они по каким-то причинам НЕ исмпортировались из сервиса продажи билетов.
+        ro_fields = []
         if request.user.is_superuser:
-            if obj is not None and obj.ticket_service is not None:
-                return ['ticket_service', 'ticket_service_event', 'ticket_service_scheme',
-                        'is_group', 'domain', ]
-            return []
+            if obj is not None and obj.ticket_service:
+                ro_fields = ['ticket_service', 'ticket_service_event', 'ticket_service_scheme',
+                             'is_group', 'domain', ]
+                if obj.is_group:
+                    ro_fields.append('promoter')
+                    ro_fields.append('seller')
+            # print('ro_fields: ', ro_fields)
+            return ro_fields
         # Обычные администраторы в любом случае НЕ могут изменить информацию, относящуюся к сервису продажи билетов.
         else:
             ro_fields = ['ticket_service', 'ticket_service_event', 'ticket_service_scheme',
                          'is_group', 'event_venue', 'domain', ]
-            if obj is not None and obj.ticket_service is not None and not obj.is_group:
+            if obj is not None and obj.ticket_service:
+                if obj.is_group:
+                    ro_fields.append('promoter')
+                    ro_fields.append('seller')
+                else:
                     ro_fields.append('datetime')
+            # print('ro_fields: ', ro_fields)
             return ro_fields
 
     def get_form(self, request, obj=None, **kwargs):
