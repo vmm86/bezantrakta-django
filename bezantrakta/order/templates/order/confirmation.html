@@ -37,13 +37,6 @@
             <div class="order-header step3">
                 <div id="basket-container" class="step3">
                     {% include "order/order_basket.html" with active="step3" %}
-
-                    <h3 id="order-info-header">Информация о заказе</h3>
-                    <ul id="order-info">
-                    {% for i in order.info %}
-                        <li>{{ i.key }} {{ i.value|safe }}</li>
-                    {% endfor %}
-                    </ul>
                 </div>
 
             </div>
@@ -62,14 +55,6 @@
             {% if debug %}
             <br><br>
             order: <pre>{{ order|pprint }}</pre>
-            <br><br>
-            order_count: <pre>{{ order.count|pprint }}</pre>
-            <br><br>
-            order_total: <pre>{{ order.total|pprint }}</pre>
-            <br><br>
-            order_total_plus_commission: <pre>{{ order_total_plus_commission|pprint }}</pre>
-            <br><br>
-            order_tickets: <pre>{{ order.tickets|pprint }}</pre>
             <br><br>
             event: <pre>{{ event|pprint }}</pre>
             <br><br>

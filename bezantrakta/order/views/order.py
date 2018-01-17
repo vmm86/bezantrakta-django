@@ -72,7 +72,7 @@ def order(request):
         # Получение параметров заказа
         order = {}
         try:
-            order['uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_order_uuid', None))
+            order['order_uuid'] = uuid.UUID(request.COOKIES.get('bezantrakta_order_uuid', None))
         except (AttributeError, TypeError, ValueError) as e:
             logger.critical('Неправильный уникальный номер заказа!')
             logger.critical(e)
@@ -126,7 +126,7 @@ def order(request):
 
             # Логирование базовой информации о заказе
             now = timezone_now()
-            logger.info('\n----------Обработка заказа {order_uuid}----------'.format(order_uuid=order['uuid']))
+            logger.info('\n----------Обработка заказа {order_uuid}----------'.format(order_uuid=order['order_uuid']))
             logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
 
             logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
@@ -152,7 +152,7 @@ def order(request):
             logger.info('Телефон: {phone}'.format(phone=customer['phone']))
 
             logger.info('\nПараметры заказа')
-            logger.info('UUID заказа: {order_uuid}'.format(order_uuid=order['uuid']))
+            logger.info('UUID заказа: {order_uuid}'.format(order_uuid=order['order_uuid']))
             logger.info('Билеты в заказе:')
             for ticket in order['tickets']:
                 logger.info('* {ticket}'.format(ticket=ticket))
@@ -160,7 +160,7 @@ def order(request):
             logger.info('Сумма цен на билеты: {total}'.format(total=order['total']))
             logger.info('Общая сумма заказа: {total}'.format(total=order['overall']))
 
-            # Проверка состояния билетов в предварительной брони (если такой функционал предусмотрен)
+            # Проверка состояния билетов в предварительном резерве (если такой функционал предусмотрен)
             logger.info('\nПроверка состояния билетов в предварительном резерве...')
             for ticket in order['tickets']:
                 ticket['event_id'] = event['id']
@@ -182,11 +182,11 @@ def order(request):
             order['tickets'][:] = [t for t in order['tickets'] if t.get('status') in ('reserved', 'bypass',)]
 
             if len(order['tickets']) == 0:
-                logger.error('Бронь на все места в заказе истекла!')
+                logger.error('Резерв на все места в заказе истёк!')
 
                 # Сообщение об ошибке
                 msgs = [
-                    message('error', 'К сожалению, бронь на все места в заказе истекла. 🙁'),
+                    message('error', 'К сожалению, резерв на все места в заказе истёк. 🙁'),
                     message('info', '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
                             event_url=event['url'])
                             ),
@@ -198,7 +198,7 @@ def order(request):
             logger.info('\nСоздание заказа...')
             order_create = ts.order_create(
                 event_id=event['id'],
-                order_uuid=order['uuid'],
+                order_uuid=order['order_uuid'],
                 customer=customer,
                 tickets=order['tickets']
             )
@@ -246,7 +246,7 @@ def order(request):
                 # Сохранение предварительного заказа
                 try:
                     Order.objects.create(
-                        id=order['uuid'],
+                        id=order['order_uuid'],
                         ticket_service_id=ticket_service['id'],
                         ticket_service_order=order['order_id'],
                         event_id=event['event_uuid'],
@@ -277,13 +277,13 @@ def order(request):
                     render_messages(request, msgs)
                     return redirect('error')
                 else:
-                    logger.info('\nЗаказ {order_uuid} сохранён в БД'.format(order_uuid=order['uuid']))
+                    logger.info('\nЗаказ {order_uuid} сохранён в БД'.format(order_uuid=order['order_uuid']))
 
                     for t in order['tickets']:
                         try:
                             OrderTicket.objects.create(
                                 id=t['ticket_uuid'],
-                                order_id=order['uuid'],
+                                order_id=order['order_uuid'],
                                 ticket_service_id=ticket_service['id'],
                                 ticket_service_order=order['order_id'],
                                 is_punched=False,
@@ -304,13 +304,13 @@ def order(request):
 
                     # Если оплата наличными - заказ завершается
                     if customer['payment'] == 'cash':
-                        # Подтверждение обычной брони в БД
+                        # Подтверждение обычного резерва в БД
                         order['status'] = 'approved'
                         logger.info('Статус заказа: {status}'.format(
                             status=ORDER_STATUS[order['status']]['description'])
                         )
 
-                        Order.objects.filter(id=order['uuid']).update(status=order['status'])
+                        Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
 
                         # Человекопонятный текст для email-уведомлений
                         customer['delivery_description'] = ORDER_DELIVERY[customer['delivery']]
@@ -358,7 +358,7 @@ def order(request):
                         customer_email.send()
                         logger.info('Email-уведомление покупателю отправлено')
 
-                        return redirect('order:confirmation', order_uuid=order['uuid'])
+                        return redirect('order:confirmation', order_uuid=order['order_uuid'])
                     # Если онлайн-оплата - запрос новой оплаты
                     elif customer['payment'] == 'online':
                         # Создание новой онлайн-оплаты
@@ -381,7 +381,7 @@ def order(request):
 
                             now = timezone_now()
                             # Сохранение идентификатора оплаты в БД
-                            Order.objects.filter(id=order['uuid']).update(
+                            Order.objects.filter(id=order['order_uuid']).update(
                                 datetime=now,
                                 payment_id=payment_id
                             )
@@ -397,7 +397,7 @@ def order(request):
                             # Отмена заказа в сервисе продажи билетов
                             order_cancel = ts.order_cancel(
                                 event_id=event['id'],
-                                order_uuid=order['uuid'],
+                                order_uuid=order['order_uuid'],
                                 order_id=order['order_id'],
                                 tickets=order['tickets'],
                             )
@@ -411,7 +411,7 @@ def order(request):
 
                                 # Отмена заказа в БД
                                 order['status'] = 'cancelled'
-                                Order.objects.filter(id=order['uuid']).update(status=order['status'])
+                                Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
 
                                 logger.info('Статус заказа: {status}'.format(
                                     status=ORDER_STATUS[order['status']]['description'])
@@ -444,16 +444,16 @@ def order(request):
             else:
                 logger.critical('Ошибка при создании заказа!')
 
-                # Освобождение предварительной брони
+                # Освобождение предварительного резерва
                 for ticket in order['tickets']:
                     ticket['action'] = 'remove'
-                    ticket['order_uuid'] = order['uuid']
+                    ticket['order_uuid'] = order['order_uuid']
                     ticket['event_id'] = event['id']
                     remove = ts.reserve(**ticket)
 
                     if remove['success']:
                         logger.critical(
-                            'Снята предварительная бронь: {sector} {sector_id} {row_id} {seat_id}'.format(
+                            'Удалён предварительный резерв: {sector} {sector_id} {row_id} {seat_id}'.format(
                                 sector=ticket['sector_title'],
                                 sector_id=ticket['sector_id'],
                                 row_id=ticket['row_id'],
@@ -461,7 +461,7 @@ def order(request):
                         )
                     else:
                         logger.critical(
-                            'Не удалось снять предварительную бронь: {sector} {sector_id} {row_id} {seat_id}'.format(
+                            'Не удалось удалить предварительный резерв: {sector} {sector_id} {row_id} {seat_id}'.format(
                                 sector=ticket['sector_title'],
                                 sector_id=ticket['sector_id'],
                                 row_id=ticket['row_id'],
