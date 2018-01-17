@@ -31,38 +31,12 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
 
     <p><strong>Общая сумма заказа</strong>: {{ order.overall }} р.
     {% if customer.payment == "cash" %}
-        {% if order.extra > 0 %}
-            {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-                <br>С учётом доставки курьером и сервисного сбора.
-            {% endif %}
-            {% comment %}
-            {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-                <br>С учётом доставки курьером и сервисного сбора.
-            {% else %}
-                <br>С учётом сервисного сбора.
-            {% endif %}
-            {% endcomment %}
-        {% else %}
-            {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-                <br>С учётом доставки курьером.
-            {% endif %}
+        {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
+            <br>С учётом доставки курьером и сервисного сбора.
         {% endif %}
     {% elif customer.payment == "online" %}
-        {% if order.extra > 0 %}
-            {% if payment_service.settings.commission > 0 %}
-                <br>С учётом комиссии платёжной системы и сервисного сбора.
-            {% endif %}
-            {% comment %}
-            {% if payment_service.settings.commission > 0 %}
-                <br>С учётом комиссии платёжной системы и сервисного сбора.
-            {% else %}
-                <br>С учётом сервисного сбора.
-            {% endif %}
-            {% endcomment %}
-        {% else %}
-            {% if payment_service.settings.commission > 0 %}
-                <br>С учётом комиссии платёжной системы.
-            {% endif %}
+        {% if payment_service.settings.commission > 0 %}
+            <br>С учётом комиссии платёжной системы и сервисного сбора.
         {% endif %}
     {% endif %}
     </p>
