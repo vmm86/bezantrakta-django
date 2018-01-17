@@ -81,7 +81,7 @@ def checkout(request):
     order = {}
     order['uuid'] = request.COOKIES.get('bezantrakta_order_uuid')
     order['tickets'] = json.loads(request.COOKIES.get('bezantrakta_order_tickets'))
-    order['count'] = int(request.COOKIES.get('bezantrakta_order_count'))
+    order['tickets_count'] = int(request.COOKIES.get('bezantrakta_order_count'))
     order['total'] = ps.decimal_price(request.COOKIES.get('bezantrakta_order_total'))
 
     # Стоимость доставки курьером
@@ -106,7 +106,7 @@ def checkout(request):
     context['checkout_form_action'] = build_absolute_url(request.domain_slug, '/afisha/order/')
 
     # Если корзина заказа пустая
-    if order['count'] == 0:
+    if order['tickets_count'] == 0:
         # Сообщение об ошибке
         msgs = [
             message(

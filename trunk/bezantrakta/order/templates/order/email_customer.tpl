@@ -33,19 +33,19 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
     {% if customer.payment == "cash" %}
         {% if order.extra > 0 %}
             {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-                <br>С учётом сервисного сбора и стоимости доставки курьером.
+                <br>С учётом доставки курьером и сервисного сбора.
             {% else %}
                 <br>С учётом сервисного сбора.
             {% endif %}
         {% else %}
             {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
-                <br>С учётом стоимости доставки курьером.
+                <br>С учётом доставки курьером.
             {% endif %}
         {% endif %}
     {% elif customer.payment == "online" %}
         {% if order.extra > 0 %}
             {% if payment_service.settings.commission > 0 %}
-                <br>С учётом сервисного сбора и комиссии платёжной системы.
+                <br>С учётом комиссии платёжной системы и сервисного сбора.
             {% else %}
                 <br>С учётом сервисного сбора.
             {% endif %}

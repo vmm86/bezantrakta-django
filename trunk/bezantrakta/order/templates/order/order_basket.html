@@ -15,16 +15,18 @@
     </ul>
 </div>
 
-{# Сумма цен на билеты #}
+{% if not active == "step3" %}
+{# Сумма цен на билеты (без наценок/скидок) #}
 <div id="total-block">
     <h3 id="total-header">Всего</h3>
     <p id="total-content">
         {% if active == "step1" %}
             <span id="no-total">пока ничего не выбрано</span>
         {% endif %}
-        <span id="total-text">Билетов <span id="tickets-count">{% if active == "step2" %}{{ order.count }}{% endif %}</span> на сумму <span id="total">{% if active == "step2" %}{{ order.total }}{% endif %}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
+        <span id="total-text">Билетов <span id="tickets-count">{% if active == "step2" %}{{ order.tickets_count }}{% endif %}</span> на сумму <span id="total">{% if active == "step2" %}{{ order.total }}{% endif %}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
     </p>
 </div>
+{% endif %}
 
 {# Условный вывод дополнительных блоков в зависимости от шага заказа билетов #}
 
@@ -58,24 +60,20 @@
 
 {# Шаг 3 #}
 {% elif active == "step3" %}
-    {% if order.delivery == "courier" %}
-        {% if order.courier_price > 0 %}
-            <h3 id="overall-header">Всего с учётом доставки курьером</h3>
-        {% else %}
-            <h3 id="overall-header">Всего</h3>
-        {% endif %}
-    {% elif order.payment == "online" %}
-        {% if order.commission > 0 %}
-            <h3 id="overall-header">Всего с учётом комиссии платёжной системы и сервисного сбора</h3>
-        {% else %}
-            <h3 id="overall-header">Всего</h3>
-        {% endif %}
-    {% else %}
-            <h3 id="overall-header">Всего</h3>
-    {% endif %}
+    <div id="overall-block">
+        <h3 id="overall-header">{{ order.overall_header }}</h3>
+        <p id="overall-content">
+            <span id="overall-text">Билетов <span id="tickets-count">{{ order.count }}</span> на сумму <span id="overall">{{ order.total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
+        </p>
+    </div>
 
-    <p id="overall-content">
-        <span id="overall-text">Билетов <span id="tickets-count">{{ order.count }}</span> на сумму <span id="overall">{{ order.total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
-    </p>
+    <div id="order-info-block">
+        <h3 id="order-info-header">Информация о заказе</h3>
+        <ul id="order-info">
+        {% for i in order.info %}
+            <li>{{ i.key }} {{ i.value|safe }}</li>
+        {% endfor %}
+        </ul>
+    </div>
 {% endif %}
 <br>

@@ -79,13 +79,31 @@ def confirmation(request, order_uuid):
             # Экземпляр класса сервиса онлайн-оплаты
             ps = payment_service['instance']
 
-            if order['delivery'] == 'courier':
-                # Стоимость доставки курьером
-                order['courier_price'] = ps.decimal_price(ticket_service['settings']['courier_price'])
+            # Тип заказа
+            order['type'] = '{delivery}_{payment}'.format(delivery=order['delivery'], payment=order['payment'])
 
-            if order['payment'] == 'online':
-                # Комиссия сервиса онлайн-оплаты
-                order['commission'] = ps.decimal_price(payment_service['settings']['init']['commission'])
+            # Процент сервисного сбора
+            order['extra'] = event['settings']['extra'][order['type']]
+            # Стоимость доставки курьером
+            order['courier_price'] = ps.decimal_price(ticket_service['settings']['courier_price'])
+            # Комиссия сервиса онлайн-оплаты
+            order['commission'] = ps.decimal_price(payment_service['settings']['init']['commission'])
+
+            # Формирование заголовка для общей суммы заказа
+            order['overall_header'] = 'Всего с учётом сервисного сбора' if order['extra'] > 0 else 'Всего'
+
+            if order['payment'] == 'cash':
+                if order['delivery'] == 'courier' and order['courier_price'] > 0:
+                    if order['extra'] > 0:
+                        order['overall_header'] = 'Всего с учётом доставки курьером и сервисного сбора'
+                    else:
+                        order['overall_header'] = 'Всего с учётом доставки курьером'
+            elif order['payment'] == 'online':
+                if order['commission'] > 0:
+                    if order['extra'] > 0:
+                        order['overall_header'] = 'Всего с учётом комиссии платёжной системы и сервисного сбора'
+                    else:
+                        order['overall_header'] = 'Всего с учётом комиссии платёжной системы'
 
             # Вывод основной информации о заказе
             order_info = []

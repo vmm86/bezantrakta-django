@@ -50,6 +50,11 @@ def success_or_error(domain, event, order, payment_status, logger):
     # Настройки сервиса онлайн-оплаты
     payment_service = cache_factory('payment_service', event['payment_service_id'])
 
+    # Тип заказа
+    order['type'] = '{delivery}_{payment}'.format(delivery=order['delivery'], payment=order['payment'])
+    # Процент сервисного сбора
+    order['extra'] = event['settings']['extra'][order['type']]
+
     # Если оплата завершилась успешно
     if payment_status['success']:
         logger.info('\nОплата {payment_id} завершилась успешно'.format(payment_id=order['payment_id']))
