@@ -39,6 +39,39 @@ class TicketService(ABC):
         """
         return Decimal(str(value)).quantize(Decimal('1.00'))
 
+    def total_plus_extra(self, tickets, total, extra):
+        """Общая сумма заказа с учётом сервисного сбора.
+
+        Если процент сервисного сбора ``extra`` больше ``0``,
+        то к общей сумме заказа добавляется указанный процент от цены каждого из билетов в заказе.
+        Если процент сервисного сбора равен ``0``, т.е. не используется, мы получаем ту же самую сумму.
+
+        Args:
+            tickets (list): Список билетов в заказе.
+            total (Decimal): Сумма цен на билеты в заказе.
+            extra (Decimal): Процент сервисного сбора.
+        """
+        total_plus_extra = total
+        if extra > 0:
+            for ticket in tickets:
+                total_plus_extra += ((self.decimal_price(ticket['price']) * extra) / 100)
+        return total_plus_extra
+
+    def total_plus_courier_price(self, total, courier_price):
+        """Общая сумма заказа с учётом стоимости доставки курьером.
+
+        Стоимость доставки курьером добавляется к сумме заказа, если она не равна 0.
+        Если стоимость доставки курьером равна ``0``, т.е. бесплатна, мы получаем ту же самую сумму.
+
+        Args:
+            total (Decimal): Сумма цен на билеты в заказе.
+            courier_price (Decimal): Стоимость доставки курьером.
+
+        Returns:
+            Decimal: Общая сумма заказа.
+        """
+        return total + courier_price
+
     @abstractmethod
     def version(self):
         """Версия API сервиса продажи билетов.

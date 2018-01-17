@@ -100,7 +100,7 @@ def order(request):
             # Получение общей суммы заказа в зависимости от возможных наценок/скидок
 
             # Для любого типа заказа - с учётом сервисного сбора для каждого билета в заказе (если он задан)
-            order['overall'] = ps.total_plus_extra(order['tickets'], order['total'], order['extra'])
+            order['overall'] = ts.total_plus_extra(order['tickets'], order['total'], order['extra'])
 
             # При доставке курьером - с учётом стоимости доставки курьером (если она задана)
             if customer['delivery'] == 'courier':
@@ -108,9 +108,9 @@ def order(request):
                 order['courier_price'] = ps.decimal_price(ticket_service['settings']['courier_price'])
                 # Общая сумма заказа (с учётом сервисного сбора и стоимости доставки курьером)
                 order['overall'] = (
-                    ps.total_plus_courier_price(order['overall'], order['courier_price']) if
+                    ts.total_plus_courier_price(order['overall'], order['courier_price']) if
                     order['extra'] > 0 else
-                    ps.total_plus_courier_price(order['total'], order['courier_price'])
+                    ts.total_plus_courier_price(order['total'], order['courier_price'])
                 )
 
             # При онлайн-оплате - с учётом комиссии сервиса онлайн-оплаты (если она задана)
