@@ -6,7 +6,7 @@
 <div id="content-related">
     <div class="module" id="recent-actions-module">
         <h2>{% trans 'Recent actions' %}</h2>
-            {% get_admin_log 10 as admin_log %}
+            {% get_admin_log 20 as admin_log %}
             {% if not admin_log %}
             <p>{% trans 'None available' %}</p>
             {% else %}
