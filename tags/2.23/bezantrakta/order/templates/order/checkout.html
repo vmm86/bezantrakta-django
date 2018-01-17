@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n static tz compress %}
+
+{% block head_title %}
+    Контактные данные покупателя и способы заказа билетов
+{% endblock %}
+
+{% block head_description %}
+    Ввод контактных данных покупателем (ФИО, email, телефон) и выбор способа получения и оплаты билетов
+{% endblock %}
+
+{% block head_keywords %}
+    оформление заказа, чекаут, контактные данные, фио, email, телефон, способы заказа билетов, способы получения билетов, способы оплаты билетов
+{% endblock %}
+
+{% block head_stylesheet %}
+    {# Общие CSS-файлы - загружаются в любом случае #}
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/normalize.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq-order.css" %}">
+    {# Общие CSS-файлы - загружаются в любом случае #}
+
+    <link rel="stylesheet" href="{{ request.url_protocol_domain }}{% static "global/js/lightbox2/2.9.0/lightbox.min.css" %}">
+{% endblock %}
+
+{% block body %}
+    <div class="body">
+        <main class="content step2">
+
+
+            {% include "order/order_progress.html" with active="step2" %}
+
+
+            {% include "event/event_title_date_time.html" with active="step2" event=event %}
+
+
+            <div class="order-header step2">
+                <div id="basket-container" class="step2">
+                    {% include "order/order_basket.html" with active="step2" %}
+                </div>
+            </div>
+
+            <br>
+
+            {% include "order/checkout_form.html" with checkout_form_action=checkout_form_action ticket_service=ticket_service payment_service=payment_service %}
+
+            {% if debug %}
+            <br><br>
+            customer: <pre>{{ customer|pprint }}</pre>
+            <br><br>
+            order: <pre>{{ order|pprint }}</pre>
+            <br><br>
+            event: <pre>{{ event|pprint }}</pre>
+            <br><br>
+            ticket_service: <pre>{{ ticket_service|pprint }}</pre>
+            <br><br>
+            payment_service: <pre>{{ payment_service|pprint }}</pre>
+            <br><br>
+            {% endif %}
+        </main>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+{# Скрипты для работы с заказом билетов #}
+    <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
+    <script type="text/javascript" src="{% static "global/js/lodash/4.17.4/lodash.min.js" %}"></script>
+
+    {# compress js inline #}
+    <script type="text/javascript">
+    {# Базовый функционал процесса заказа билетов #}
+    $(document).ready(function() {
+        {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order=order order_total_plus_commission=order_total_plus_commission courier_price=courier_price customer=customer %}
+        prepare_order_onload();
+        start_heartbeat();
+    });
+    </script>
+    {# endcompress #}
+
+    {% if not debug %}
+    {% compress js inline %}
+    <script type="text/javascript">
+        {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
+        {% include "seo/order_counter_events.js" with active="step2" %}
+    </script>
+    {% endcompress %}
+    {% endif %}
+
+{% endblock %}
