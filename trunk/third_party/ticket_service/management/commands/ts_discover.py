@@ -342,10 +342,10 @@ ______________________________________________________________________________
                 )
 
                 # Обновление информации в добавленной ранее группе, только если это необходимо
+                group_values = self.group_id_uuid_mapping[group['group_id']]
                 group_fields = {
                     'datetime': group['group_datetime'],
                 }
-                group_values = self.group_id_uuid_mapping[group['group_id']]
 
                 if group_values:
                     # self.stdout.write('Группа для импорта: {}'.format(group_fields))
@@ -478,13 +478,13 @@ ______________________________________________________________________________
                 )
 
                 # Обновление информации в добавленном ранее событии, только если это необходимо
+                event_values = self.event_id_uuid_mapping[event['event_id']]
                 event_fields = {
                     'datetime':  event['event_datetime'],
                     'min_price': event['event_min_price'],
-                    'promoter':  event['promoter'] if event['promoter'] else ticket_service['settings']['promoter'],
-                    'seller':    ticket_service['settings']['seller'],
+                    'promoter':  event['promoter'] or ticket_service['settings']['promoter'] or event_values['promoter'],
+                    'seller':    ticket_service['settings']['seller'] or event_values['seller'],
                 }
-                event_values = self.event_id_uuid_mapping[event['event_id']]
 
                 if event_values:
                     # self.stdout.write('Событие для импорта: {}'.format(event_fields))
