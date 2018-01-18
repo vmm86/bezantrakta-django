@@ -30,12 +30,13 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
     </ul>
 
     <p><strong>Общая сумма заказа</strong>: {{ order.overall }} р.
-    {% if customer.payment == "cash" %}
-        {% if customer.delivery == "courier" and ticket_service.settings.courier_price > 0 %}
+    {% if customer.delivery == "courier" %}
+        {% if ticket_service.settings.courier_price > 0 or order.extra > 0 %}
             <br>С учётом доставки курьером и сервисного сбора.
         {% endif %}
-    {% elif customer.payment == "online" %}
-        {% if payment_service.settings.commission > 0 %}
+    {% endif %}
+    {% if customer.payment == "online" %}
+        {% if payment_service.settings.commission > 0 or order.extra > 0 %}
             <br>С учётом комиссии платёжной системы и сервисного сбора.
         {% endif %}
     {% endif %}
