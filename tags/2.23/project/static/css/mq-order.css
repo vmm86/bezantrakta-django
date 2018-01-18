@@ -43,6 +43,7 @@
 
     margin: 0.5rem 0;
 
+    max-width: 98vw;
     width: 100%;
 }
 .order-progress-step1,
@@ -481,8 +482,8 @@ h1, h2 {
 #tickets {
     padding: 0;
 
-    max-width: 60vw;
-    width: 60vw;
+    /*max-width: 60vw;*/
+    /*width: 60vw;*/
 }
 
 .stagehall {
