@@ -125,9 +125,9 @@ class EventAdmin(admin.ModelAdmin):
         ('is_published', admin.BooleanFieldListFilter),
         ('is_group', admin.BooleanFieldListFilter),
         ('datetime', DateRangeFilter),
-        ('event_category', admin.RelatedOnlyFieldListFilter),
+        ('event_category', RelatedOnlyFieldDropdownFilter),
         ('event_venue', RelatedOnlyFieldDropdownFilter),
-        ('ticket_service', admin.RelatedOnlyFieldListFilter),
+        ('ticket_service', RelatedOnlyFieldDropdownFilter),
     )
     list_select_related = ('event_category', 'event_venue', 'domain',)
     list_per_page = 20
