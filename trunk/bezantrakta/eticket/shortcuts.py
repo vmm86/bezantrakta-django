@@ -67,6 +67,9 @@ def render_eticket(context, logger):
         '0+'
     )
 
+    context['row_id'] = context['row_id'] if context['row_id'] > 0 else '-'
+    context['seat_title'] = context['seat_title'] if int(context['seat_title']) > 0 else '-'
+
     context['price'] = int(context['price']) if context['price'] % 1 == 0 else context['price']
 
     # Полный путь к файлу афиши `small vertical` на сервере
