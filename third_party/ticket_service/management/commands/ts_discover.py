@@ -560,7 +560,7 @@ ______________________________________________________________________________
 
                 # Если событие принадлежит ранее добавленной в БД группе -
                 # событие привязывается к этой группе.
-                group_ids = [g['id'] for g in self.group_id_uuid_mapping.values()]
+                group_ids = [g for g in self.group_id_uuid_mapping.keys()]
                 if event['group_id'] in group_ids:
                     try:
                         EventGroupBinder.objects.create(
