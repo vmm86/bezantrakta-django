@@ -105,12 +105,14 @@
             {% if event.ticket_service_event %}
                 {% spaceless %}
                 <div id="tickets">
-                {% if venue_scheme_sectors %}
-                    <p class="sectors-caption">Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</p>
-                    <br>
-                    <br>
-                {% endif %}
-                    {{ venue_scheme.scheme|safe }}
+                    <div id="stagehall-block">
+                    {% if venue_scheme_sectors %}
+                        <p class="sectors-caption">Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</p>
+                        <br>
+                        <br>
+                    {% endif %}
+                        {{ venue_scheme.scheme|safe }}
+                    </div>
 
                 {# Опциональное включение схем отдельных секторов, #}
                 {# если к общей схеме зала в БД добавлен хотя бы один сектор #}

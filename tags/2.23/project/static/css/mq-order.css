@@ -482,16 +482,23 @@ h1, h2 {
 #tickets {
     padding: 0;
 
-    /*max-width: 60vw;*/
-    /*width: 60vw;*/
+    width: 100%;
+    max-width: 67vw;
+}
+
+#stagehall-block {
+    overflow-x: auto;
+}
+
+#stagehall-block .stagehall {
+    min-width: 70%;
+    max-width: 100%;
 }
 
 .stagehall {
     border-collapse: collapse;
 
     background-color: #fff;
-
-    width: 100%;
 }
 
 .stagehall td {
@@ -606,7 +613,6 @@ h1, h2 {
 
 .sectors-caption {
     font-weight: bold;
-    text-align: center;
 }
 
 .stagehall .sector-button {
@@ -637,6 +643,7 @@ h1, h2 {
     color: #000;
     font-weight: bold;
     vertical-align: middle;
+    padding: 0.4rem 1rem;
 }
 
 .stagehall .sector-button input {
@@ -655,11 +662,13 @@ h1, h2 {
 
     padding: 1rem 0;
 
-    max-width: 100%;
-
     overflow-x: auto;
 
     position: relative;
+
+    width: 100%;
+    max-width: 67vw;
+
     height: auto;
 }
 
@@ -1316,8 +1325,12 @@ input[type=checkbox]:disabled + img {
     }
 
     #tickets {
-/*        width: 100%;*/
-        max-width: 100%;
+        /*width: 100%;*/
+        /*max-width: 100%;*/
+    }
+
+    #stagehall-block .stagehall {
+        min-width: 100%;
     }
 
 }
@@ -1338,6 +1351,7 @@ input[type=checkbox]:disabled + img {
 
     .order-progress {
         justify-content: space-around;
+        max-width: unset;
     }
 
     .order-progress-step1,
@@ -1353,10 +1367,12 @@ input[type=checkbox]:disabled + img {
 
     .event-header {
         flex-direction: column;
+        width: 92vw;
     }
     #event-title-date-time {
         margin-bottom: 0;
         width: 100%;
+        min-width: unset;
     }
     #event-venue {
         margin-top: 0;
@@ -1379,6 +1395,7 @@ input[type=checkbox]:disabled + img {
 
     #basket-container {
         width: 92vw;
+        min-width: unset;
         max-width: 92vw;
     }
 
@@ -1387,7 +1404,7 @@ input[type=checkbox]:disabled + img {
         margin: 0;
 
         width: auto;
-        max-width: unset;
+        max-width: 92vw;
     }
 
     #legend-general ul,
@@ -1488,6 +1505,14 @@ input[type=checkbox]:disabled + img {
     .order-progress-step2,
     .order-progress-step3 {
         flex: 1 0 auto;
+    }
+
+    .description {
+        flex-direction: column;
+    }
+
+    .event-description {
+        width: 100%;
     }
 
 }
