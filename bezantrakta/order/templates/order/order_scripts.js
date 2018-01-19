@@ -1028,13 +1028,15 @@ function html_basket_update() {
             overall_header = extra > 0 ? 'Всего с учётом сервисного сбора' : 'Общая сумма заказа';
 
             if (delivery == 'courier') {
-                if (courier_price > 0 || extra > 0) {
-                    overall_header = 'Всего с учётом доставки курьером и сервисного сбора';
+                if (courier_price > 0) {
+                    overall_header = extra > 0 ? 'Всего с учётом доставки курьером и сервисного сбора' : 'Всего с учётом доставки курьером';
                 }
             }
             if (payment == 'online') {
-                if (commission > 0 || extra > 0) {
-                    overall_header = 'Всего с учётом комиссии платёжной системы и сервисного сбора';
+                if (commission > 0) {
+                    overall_header = extra > 0 ? 'Всего с учётом комиссии платёжной системы и сервисного сбора' : 'Всего с учётом комиссии платёжной системы';
+                } else {
+                    overall_header = extra > 0 ? 'Всего с учётом комиссии платёжной системы и сервисного сбора' : 'Общая сумма заказа';
                 }
             }
 
