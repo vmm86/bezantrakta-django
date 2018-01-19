@@ -99,11 +99,25 @@ def confirmation(request, order_uuid):
             order['overall_header'] = 'Всего с учётом сервисного сбора' if order['extra'] > 0 else 'Общая сумма заказа'
 
             if order['delivery'] == 'courier':
-                if order['courier_price'] > 0 or order['extra'] > 0:
-                    order['overall_header'] = 'Всего с учётом доставки курьером и сервисного сбора'
+                if order['courier_price'] > 0:
+                    order['overall_header'] = (
+                        'Всего с учётом доставки курьером и сервисного сбора' if
+                        order['extra'] > 0 else
+                        'Всего с учётом доставки курьером'
+                    )
             if order['payment'] == 'online':
-                if order['commission'] > 0 or order['extra'] > 0:
-                    order['overall_header'] = 'Всего с учётом комиссии платёжной системы и сервисного сбора'
+                if order['commission'] > 0:
+                    order['overall_header'] = (
+                        'Всего с учётом комиссии платёжной системы и сервисного сбора' if
+                        order['extra'] > 0 else
+                        'Всего с учётом комиссии платёжной системы'
+                    )
+                else:
+                    order['overall_header'] = (
+                        'Всего с учётом комиссии платёжной системы и сервисного сбора' if
+                        order['extra'] > 0 else
+                        'Общая сумма заказа'
+                    )
 
             # Вывод основной информации о заказе
             order_info = []
