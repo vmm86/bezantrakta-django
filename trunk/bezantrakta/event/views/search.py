@@ -9,7 +9,7 @@ from ..models import Event
 
 def search(request):
     """Фильтр событий по названию, тегам ``description`` и ``keywords`` и вывод их афиш в позиции ``small_vertical``"""
-    text = request.GET['text']
+    text = request.GET.get('text', '')
 
     today = timezone_now()
 
