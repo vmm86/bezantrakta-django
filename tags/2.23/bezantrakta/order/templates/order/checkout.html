@@ -66,7 +66,7 @@
     <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
     <script type="text/javascript" src="{% static "global/js/lodash/4.17.4/lodash.min.js" %}"></script>
 
-    {# compress js inline #}
+    {% compress js inline %}
     <script type="text/javascript">
     {# Базовый функционал процесса заказа билетов #}
     $(document).ready(function() {
@@ -75,7 +75,7 @@
         start_heartbeat();
     });
     </script>
-    {# endcompress #}
+    {% endcompress %}
 
     {% if not debug %}
     {% compress js inline %}
