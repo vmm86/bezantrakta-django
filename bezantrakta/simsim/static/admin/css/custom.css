@@ -821,27 +821,25 @@ a.section:visited {
     text-shadow: 1px 1px 0px #fff;
 }
 
-.admindatefilter #id_datetime__gte,
-.admindatefilter #id_datetime__lte {
+.admindatefilter input[name$="datetime__gte"],
+.admindatefilter input[name$="datetime__lte"] {
     border-radius: 0.5rem 0 0 0.5rem;
 }
 
 .admindatefilter .datetimeshortcuts > a {
     display: none !important;
 }
-.admindatefilter .datetimeshortcuts > #calendarlink0,
-.admindatefilter .datetimeshortcuts > #calendarlink1 {
+.admindatefilter .datetimeshortcuts > a[id^="calendarlink"] {
     display: flex !important;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: center;
-    border-radius: 0 1rem 1rem 0;
+    border-radius: 0 1rem 1rem 0 !important;
     height: 2.1rem;
     top: 0;
 }
-.admindatefilter .datetimeshortcuts > #calendarlink0 .date-icon,
-.admindatefilter .datetimeshortcuts > #calendarlink1 .date-icon {
+.admindatefilter .datetimeshortcuts > a[id^="calendarlink"] .date-icon {
     left: -2px;
 }
 
