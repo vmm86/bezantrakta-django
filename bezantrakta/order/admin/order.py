@@ -68,7 +68,7 @@ class OrderAdmin(admin.ModelAdmin):
     radio_fields = {
         'status': admin.VERTICAL,
     }
-    search_fields = ('name', 'phone', 'email',)
+    search_fields = ('ticket_service_order', 'name', 'phone', 'email',)
 
     def view_on_site(self, obj):
         url = reverse('order:confirmation', args=[obj.id])
