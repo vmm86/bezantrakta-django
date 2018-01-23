@@ -152,6 +152,7 @@ h1, h2 {
 
     padding: 1.75rem 2.75rem;
 
+    /*width: calc(50vw - 3rem);*/
     max-width: 50vw;
 
     position: relative;
@@ -483,11 +484,11 @@ h1, h2 {
     padding: 0;
 
     width: 100%;
-    max-width: 67vw;
+    /*max-width: 67vw;*/
 }
 
 #stagehall-block {
-    overflow-x: auto;
+    /*overflow-x: auto;*/
 }
 
 #stagehall-block .stagehall {
@@ -634,6 +635,7 @@ h1, h2 {
     color: #000;
     font-weight: bold;
     vertical-align: middle;
+    padding: 0.4rem 1rem;
     transition: background 0.5s linear 0s;
 }
 
@@ -667,7 +669,9 @@ h1, h2 {
     position: relative;
 
     width: 100%;
-    max-width: 67vw;
+    max-width: -webkit-calc(96vw - 33rem);
+    max-width:    -moz-calc(96vw - 33rem);
+    max-width:         calc(96vw - 33rem);
 
     height: auto;
 }
@@ -1404,6 +1408,11 @@ input[type=checkbox]:disabled + img {
         margin: 0;
 
         width: auto;
+        /*max-width: 92vw;*/
+        max-width: unset;
+    }
+
+    .sectors-slider {
         max-width: 92vw;
     }
 
