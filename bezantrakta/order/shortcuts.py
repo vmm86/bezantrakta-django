@@ -69,6 +69,7 @@ def success_or_error(domain, event, order, payment_status, logger):
             payment_datetime=timezone_now(),
             tickets=order['tickets'],
         )
+        logger.info(order_approve)
         # Заказ успешно подтверждён как оплаченный в сервисе продажи билетов
         if order_approve['success']:
             result['success'] = True
@@ -195,7 +196,7 @@ def success_or_error(domain, event, order, payment_status, logger):
             order_id=order['order_id'],
             tickets=order['tickets'],
         )
-
+        logger.info(order_cancel)
         # Заказ успешно отмечен как отменённый в сервисе продажи билетов
         if order_cancel['success']:
             logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
