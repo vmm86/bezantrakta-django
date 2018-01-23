@@ -180,6 +180,7 @@ def order(request):
                 ticket['status'] = ticket_status['status']
                 logger.info('🎫 {ticket_status}'.format(ticket_status=str(ticket_status)))
             order['tickets'][:] = [t for t in order['tickets'] if t.get('status') in ('reserved', 'bypass',)]
+            logger.info('order[tickets]: {}'.format(order['tickets']))
 
             if len(order['tickets']) == 0:
                 logger.error('Резерв на все места в заказе истёк!')
@@ -202,7 +203,6 @@ def order(request):
                 customer=customer,
                 tickets=order['tickets']
             )
-            logger.info('order[tickets]: {}'.format(order['tickets']))
             logger.info('order_create: {}'.format(order_create))
 
             # Если заказ успешно создан - получение идентификатора заказа и штрих-кодов
