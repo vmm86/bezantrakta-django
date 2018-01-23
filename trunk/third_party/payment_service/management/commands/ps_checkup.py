@@ -135,6 +135,9 @@ ______________________________________________________________________________
 
                 # Если таймаут на оплату уже прошёл
                 if now_minus_order_datetime > timedelta(minutes=timeout):
+                    self.log('\nЗаказ с незавершённой оплатой:')
+                    self.log('------------------------------')
+                    self.log('{}'.format(order))
                     self.log('\nНезавершённая оплата: {order}'.format(order=order))
                     self.log('Таймаут на оплату: {timeout}'.format(timeout=timeout))
                     self.log('Дата заказа: {:%Y-%m-%d %H:%M:%S}'.format(order['datetime']))
