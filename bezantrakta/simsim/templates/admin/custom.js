@@ -66,9 +66,9 @@ $(document).ready(function() {
     }, 4000);
 
     {# Подписи к фильтру по дате #}
-    if ($('#id_datetime__gte').length || $('#id_datetime__lte').length) {
-        $('#id_datetime__gte').attr('placeholder', 'С');
-        $('#id_datetime__lte').attr('placeholder', 'По');
+    if ($('input[name$="datetime__gte"]').length || $('input[name$="datetime__lte"]').length) {
+        $('input[name$="datetime__gte"]').attr('placeholder', 'С');
+        $('input[name$="datetime__lte"]').attr('placeholder', 'По');
         $('.admindatefilter input[type=\'reset\']').val('Очистить');
     }
 
