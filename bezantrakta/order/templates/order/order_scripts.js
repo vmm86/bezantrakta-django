@@ -116,6 +116,12 @@ function prepare_order_onload() {
 
     {# Работа с секторами в больших или составных залах #}
     {% if active == 'step1' and venue_scheme_sectors %}
+        {# Максимальная ширина блока с секторами - текущая ширина общей схемы зала #}
+        if ($('.sectors-slider').length) {
+            var scheme_width = $('#tickets #stagehall-block .stagehall').width();
+            $('.sectors-slider').css('max-width', scheme_width);
+        }
+
         {# Показ выбранного сектора и скрытие всех НЕвыбранных секторов при переключении радиокнопок #}
         $('input[name="sectors"]').change(sectors_handler);
         $('input[name="sectors"]').trigger('change');
