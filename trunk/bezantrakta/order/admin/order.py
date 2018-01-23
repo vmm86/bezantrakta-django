@@ -59,9 +59,10 @@ class OrderAdmin(admin.ModelAdmin):
                     'status',
                     'ticket_service',)
     list_filter = (
-        ('datetime', DateRangeFilter),
+        # ('datetime', DateRangeFilter),
         'status', 'delivery', 'payment',
         ('event', RelatedOnlyFieldDropdownFilter),
+        ('event__datetime', DateRangeFilter),
         ('ticket_service', admin.RelatedOnlyFieldListFilter),
     )
     list_per_page = 20
