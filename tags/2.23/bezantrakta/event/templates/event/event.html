@@ -237,17 +237,18 @@
         prepare_order_onload();
         start_heartbeat();
 
-        // {# Фиксированное позиционирование легенды заказа и кнопок "Назад"/"Оформить" при прокручивании страницы #}
-        // $(window).scroll(function(){
-        //     console.log('scroll:', $(window).scrollTop());
-        //     legend_position = $('#basket-container').position().top;
-        //     if ($(window).scrollTop() >= legend_position) {
-        //         $('#basket-container').css('position', 'fixed');
-        //     } else {
-        //         $('#basket-container').css('position', 'static');
-        //     }
-        // });
-
+        {% comment %}
+        {# Фиксированное позиционирование легенды заказа и кнопок "Назад"/"Оформить" при прокручивании страницы #}
+        $(window).scroll(function(){
+            console.log('scroll:', $(window).scrollTop());
+            legend_position = $('#basket-container').position().top;
+            if ($(window).scrollTop() >= legend_position) {
+                $('#basket-container').css('position', 'fixed');
+            } else {
+                $('#basket-container').css('position', 'static');
+            }
+        });
+        {% endcomment %}
     });
     </script>
     {% endcompress %}
