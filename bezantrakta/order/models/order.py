@@ -189,10 +189,11 @@ class Order(models.Model):
         )
 
     def __str__(self):
-        return 'Заказ {order_uuid} ({tickets_count} билетов на {total} р.)'.format(
-            order_uuid=self.id,
+        return 'Заказ {order_uuid} ({tickets_count} билетов на {total} р.) - {domain}'.format(
+            order_uuid=self.ticket_service_order,
             tickets_count=self.tickets_count,
             total=self.total,
+            domain=self.domain.title,
         )
 
     def get_absolute_url(self):
