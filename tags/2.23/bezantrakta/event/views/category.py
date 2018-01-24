@@ -43,7 +43,6 @@ def category(request, slug):
     # Получение событий во всех категориях или фильтр по конкретной категории
     if slug == settings.BEZANTRAKTA_CATEGORY_ALL:
         category_title = 'Все события'
-        category_events[:] = [ce for ce in category_events if ce['event_category_slug'] is not None]
     else:
         # Если категория не найдена - редирект на главную
         try:
