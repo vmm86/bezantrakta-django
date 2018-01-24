@@ -24,18 +24,19 @@ def search(request):
         ).values(
             'uuid',
         ).filter(
-            Q(
-                Q(is_group=False) &
-                Q(is_published=True) &
-                Q(event_category__is_published=True) &
-                (
-                    Q(title__icontains=text) |
-                    Q(description__icontains=text) |
-                    Q(keywords__icontains=text)
-                ),
-                Q(datetime__gt=today) &
-                Q(domain_id=request.domain_id)
-            )
+            Q(is_group=False) &
+            Q(is_published=True) &
+            (
+                Q(event_category__is_published=True) |
+                Q(event_category__isnull=True)
+            ) &
+            (
+                Q(title__icontains=text) |
+                Q(description__icontains=text) |
+                Q(keywords__icontains=text)
+            ) &
+            Q(datetime__gt=today) &
+            Q(domain_id=request.domain_id)
         ).order_by(
             'datetime',
             'title'
