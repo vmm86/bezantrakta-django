@@ -118,7 +118,7 @@ class EventAdmin(admin.ModelAdmin):
     group_inlines = (ListEventGroupBinderInline, AddEventGroupBinderInline, EventContainerBinderInline,)
     event_inlines = (EventLinkBinderInline, EventContainerBinderInline,)
     list_display = ('title', 'ticket_service_event_short_description', 'is_published', 'is_on_index', 'is_group',
-                    'datetime', 'event_category', 'event_venue',
+                    'datetime', 'event_category', 'event_venue', 'ticket_service_scheme_short_description',
                     'group_count', 'link_count', 'container_count',
                     'ticket_service', 'domain',)
     list_filter = (
@@ -292,7 +292,7 @@ class EventAdmin(admin.ModelAdmin):
     def ticket_service_scheme_short_description(self, obj):
         """Короткая подпись для ID схемы зала при выводе списка в ``list_display``."""
         return obj.ticket_service_scheme
-    ticket_service_scheme_short_description.short_description = _('ID')
+    ticket_service_scheme_short_description.short_description = _('Схема')
 
     def update_event_or_group_cache(self, obj):
         """Обновить кэш группы (и всех его актуальных событий) или события (и его группы, если она имеется)."""
