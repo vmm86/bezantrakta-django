@@ -25,7 +25,7 @@ urlpatterns = [
 
     url(r'^simsim/', admin.site.urls),
 
-    url(r'', include('api.urls')),
+    url(r'^api/', include('api.urls')),
 
     url(r'', include('bezantrakta.event.urls')),
     url(r'', include('bezantrakta.seo.urls')),
