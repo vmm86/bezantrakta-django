@@ -55,4 +55,10 @@ TICKET_SERVICE_SETTINGS_DEFAULT = OrderedDict([
     (
         'courier_price', 0
     ),
+    (
+        'promoter', 'ООО «БЕЛЬКАНТО» ИНН 3662243480'
+    ),
+    (
+        'seller', 'ИП Карюков Игорь Леонидович ИНН 366202613092 ОГРНИП 313366803500228'
+    ),
 ])
