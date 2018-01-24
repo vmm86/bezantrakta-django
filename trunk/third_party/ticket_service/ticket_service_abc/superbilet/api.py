@@ -878,6 +878,8 @@ class SuperBilet(TicketService):
             'status':         None,
         }
         status = self.request(method, input_mapping, data, output_mapping)
+        print('status: ', status)
+
         response = {}
 
         if type(status) is list and status[0]['result_code'] == 0:
@@ -1112,7 +1114,12 @@ class SuperBilet(TicketService):
 
         if type(cancel) is list:
             for c in cancel:
-                response['success'] = True if c['result_code'] == 0 else False
+                if 'result_code' in c and c['result_code'] == 0:
+                    response['success'] = True
+                else:
+                    response['success'] = False
+                    response['code'] = c['result_code']
+                    response['message'] = c['message']
         else:
             response['success'] = False
 
@@ -1196,7 +1203,12 @@ class SuperBilet(TicketService):
 
         if type(approve) is list:
             for a in approve:
-                response['success'] = True if 'result_code' in a and a['result_code'] == 0 else False
+                if 'result_code' in a and a['result_code'] == 0:
+                    response['success'] = True
+                else:
+                    response['success'] = False
+                    response['code'] = a['result_code']
+                    response['message'] = a['message']
         else:
             response['success'] = False
 
