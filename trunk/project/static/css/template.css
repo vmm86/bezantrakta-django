@@ -766,6 +766,10 @@
     width: 100%;
 }
 
+.content ul {
+    padding-left: 1.25rem;
+}
+
 /* Блок маленьких вертикальных афиш */
 
 .poster-small-vertical-body {
