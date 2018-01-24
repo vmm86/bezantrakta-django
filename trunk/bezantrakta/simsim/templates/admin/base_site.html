@@ -71,4 +71,10 @@
         {% include "admin/custom.js" with bezantrakta_admin_domain_id=bezantrakta_admin_domain_id %}
     </script>
     {% endcompress %}
+
+    {% if debug %}
+        {# Вывод размеров viewport в dev-версии сайта #}
+        <script type="text/javascript">{% include "viewport_size_debugger.js" %}</script>
+    {% endif %}
+
 {% endblock %}
