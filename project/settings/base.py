@@ -68,6 +68,8 @@ INSTALLED_APPS = [
 
     'mail_templated',
 
+    'api',
+
     'bezantrakta.simsim',
     'bezantrakta.location',
     'bezantrakta.menu',
