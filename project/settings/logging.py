@@ -20,8 +20,11 @@ LOGGING_FILES = {
     'BEZANTRAKTA_DEFAULT': os.path.join(LOGGING_PATH, 'bezantrakta.default.log'),
     'BEZANTRAKTA_ORDER':   os.path.join(LOGGING_PATH, 'bezantrakta.order.log'),
 
-    'PAYMENT_SERVICE_CHECKUP': os.path.join(LOGGING_PATH, 'payment_service.checkup.log'),
+    'TICKET_SERVICE_SUPERBILET': os.path.join(LOGGING_PATH, 'ticket_service.superbilet.log'),
+    'TICKET_SERVICE_RADARIO':    os.path.join(LOGGING_PATH, 'ticket_service.radario.log'),
+
     'TICKET_SERVICE_DISCOVER': os.path.join(LOGGING_PATH, 'ticket_service.discover.log'),
+    'PAYMENT_SERVICE_CHECKUP': os.path.join(LOGGING_PATH, 'payment_service.checkup.log'),
 }
 
 # Файлы логов приложений создаются, если ещё не были созданы
@@ -36,7 +39,7 @@ for log_file in LOGGING_FILES.values():
 LOGGING_LEVEL = 'DEBUG' if DEBUG else 'INFO'
 LOGGING_FORMATTER = 'default'
 LOGGING_CLASS = 'logging.handlers.TimedRotatingFileHandler'
-LOGGING_WHEN = 'D'
+LOGGING_WHEN = 'midnight'
 LOGGING_UTC = True
 LOGGING_BACKUP_COUNT = 15
 
@@ -145,19 +148,39 @@ LOGGING = {
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
-        'payment_service_checkup_log': {
+
+        'ticket_service_superbilet_log': {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
-            'filename':    LOGGING_FILES['PAYMENT_SERVICE_CHECKUP'],
+            'filename':    LOGGING_FILES['TICKET_SERVICE_SUPERBILET'],
             'when':        LOGGING_WHEN,
             'utc':         LOGGING_UTC,
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
+        'ticket_service_radario_log': {
+            'level':       LOGGING_LEVEL,
+            'class':       LOGGING_CLASS,
+            'filename':    LOGGING_FILES['TICKET_SERVICE_RADARIO'],
+            'when':        LOGGING_WHEN,
+            'utc':         LOGGING_UTC,
+            'backupCount': LOGGING_BACKUP_COUNT,
+            'formatter':   'message',
+        },
+
         'ticket_service_discover_log': {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
             'filename':    LOGGING_FILES['TICKET_SERVICE_DISCOVER'],
+            'when':        LOGGING_WHEN,
+            'utc':         LOGGING_UTC,
+            'backupCount': LOGGING_BACKUP_COUNT,
+            'formatter':   'message',
+        },
+        'payment_service_checkup_log': {
+            'level':       LOGGING_LEVEL,
+            'class':       LOGGING_CLASS,
+            'filename':    LOGGING_FILES['PAYMENT_SERVICE_CHECKUP'],
             'when':        LOGGING_WHEN,
             'utc':         LOGGING_UTC,
             'backupCount': LOGGING_BACKUP_COUNT,
@@ -213,13 +236,25 @@ LOGGING = {
             'level': LOGGING_LEVEL,
             'propagate': True,
         },
-        'payment_service.checkup': {
-            'handlers': ['payment_service_checkup_log', ],
+
+        'ticket_service.superbilet': {
+            'handlers': ['ticket_service_superbilet_log', ],
             'level': LOGGING_LEVEL,
             'propagate': True,
         },
+        'ticket_service.radario': {
+            'handlers': ['ticket_service_radario_log', ],
+            'level': LOGGING_LEVEL,
+            'propagate': True,
+        },
+
         'ticket_service.discover': {
             'handlers': ['ticket_service_discover_log', ],
+            'level': LOGGING_LEVEL,
+            'propagate': True,
+        },
+        'payment_service.checkup': {
+            'handlers': ['payment_service_checkup_log', ],
             'level': LOGGING_LEVEL,
             'propagate': True,
         },

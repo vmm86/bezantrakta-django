@@ -31,6 +31,7 @@ class Radario(TicketService):
         bar_code_length (int): Длина штрих-кода.
     """
     slug = 'radario'
+    logger = logging.getLogger('ticket_service.radario')
 
     bar_code_length = 12
 
@@ -789,10 +790,8 @@ class Radario(TicketService):
             'isPaid':       None,
         }
 
-        # logger = logging.getLogger('bezantrakta.order')
-
         create = self.request(method, url, data, output_mapping)
-        # logger.info('radario_create: {}'.format(create))
+        # self.logger.info('radario_create: {}'.format(create))
 
         # Резерв билета С фиксированной рассадкой
         # {
@@ -847,7 +846,7 @@ class Radario(TicketService):
                 ticket = {}
                 for kwa_ticket in kwargs['tickets']:
                     if ord_ticket['tickettypeid'] == kwa_ticket['price_group_id']:
-                        # logger.info('    ord_ticket[{}] == kwa_ticket[{}]'.format(
+                        # self.logger.info('    ord_ticket[{}] == kwa_ticket[{}]'.format(
                         #     ord_ticket['tickettypeid'],
                         #     kwa_ticket['price_group_id'])
                         # )
@@ -857,7 +856,7 @@ class Radario(TicketService):
                             ord_ticket['seatnumber'] is None or ord_ticket['seatnumber'] == kwa_ticket['seat_id'] else
                             uuid.uuid4()
                         )
-                        # logger.info('    ticket[ticket_uuid] == {}'.format(ticket['ticket_uuid']))
+                        # self.logger.info('    ticket[ticket_uuid] == {}'.format(ticket['ticket_uuid']))
                     else:
                         continue
 
