@@ -1288,3 +1288,10 @@ div.jsoneditor-outer {
 .jsoneditor-contextmenu ul li ul li button {
     padding-left: 16px !important;
 }
+
+@media all and (max-width: 1080px) {
+    .dashboard #content #content-related,
+    .dashboard #content #content-main {
+        width: 100%;
+    }
+}
