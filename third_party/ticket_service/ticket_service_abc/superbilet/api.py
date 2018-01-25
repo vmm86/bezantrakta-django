@@ -1,5 +1,6 @@
 import dateutil.parser
 import logging
+import requests
 import uuid
 import xml
 import xmltodict
@@ -12,7 +13,7 @@ from operator import itemgetter
 try:
     from project.shortcuts import BOOLEAN_VALUES
 except ImportError:
-    BOOLEAN_VALUES = BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
+    BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
 
 from ..abc import TicketService
 
@@ -36,6 +37,7 @@ class SuperBilet(TicketService):
         client (zeep.Client): Экземпляр SOAP-клиента.
     """
     slug = 'superbilet'
+    logger = logging.getLogger('ticket_service.superbilet')
 
     bar_code_length = 20
 
@@ -114,8 +116,11 @@ class SuperBilet(TicketService):
         self.__pswd = init['pswd']
         self.__mode = init['mode']
 
-        # Экземпляр SOAP-клиента
-        self.client = zeep.Client(wsdl=self.__host)
+        # Экземпляр SOAP-клиента (обработка возможных исключений в грёбаном СуперГовне)
+        try:
+            self.client = zeep.Client(wsdl=self.__host)
+        except requests.exceptions.RequestException as exc:
+            self.logger.error('__init__ exception: {}'.format(exc))
 
     def __str__(self):
         return '{cls}({host}: {mode})'.format(
@@ -189,11 +194,14 @@ class SuperBilet(TicketService):
         # Обработка возможных исключений в грёбаном СуперГовне
         try:
             response = self.client.service[method](**data)
-        except zeep.exceptions.Fault as error:
+        except zeep.exceptions.Fault as exc:
+            self.logger.error('request exception: {}'.format(exc))
+
             response = {}
             response['success'] = False
-            response['code'] = error.code
-            response['message'] = error.message
+            response['code'] = exc.code
+            response['message'] = exc.message
+
             return response
 
         # print('XML:\n', response, '\n')
@@ -991,10 +999,8 @@ class SuperBilet(TicketService):
         elif self.__mode == 'theatre':
             output_mapping['barcode'] = self.internal('bar_code', str, '')
 
-        # logger = logging.getLogger('bezantrakta.order')
-
         order = self.request(method, input_mapping, data, output_mapping)
-        # logger.info('\norder response: {}'.format(order))
+        # self.logger.info('\norder response: {}'.format(order))
 
         # order []:
         # 'order_uuid': '1fa590a2-21e4-453a-ab5a-945e422ac42c',
@@ -1020,17 +1026,17 @@ class SuperBilet(TicketService):
                             o['row_id'] == t['row_id'] and
                             o['seat_id'] == t['seat_id']
                         ):
-                            # logger.info('\n{o_sector} == {t_sector}: {cond}'.format(
+                            # self.logger.info('\n{o_sector} == {t_sector}: {cond}'.format(
                             #     o_sector=o['sector_id'],
                             #     t_sector=t['sector_id'],
                             #     cond=o['sector_id'] == t['sector_id'])
                             # )
-                            # logger.info('{o_row} == {t_row}: {cond}'.format(
+                            # self.logger.info('{o_row} == {t_row}: {cond}'.format(
                             #     o_row=o['row_id'],
                             #     t_row=t['row_id'],
                             #     cond=o['row_id'] == t['row_id'])
                             # )
-                            # logger.info('{o_seat} == {t_seat}: {cond}\n'.format(
+                            # self.logger.info('{o_seat} == {t_seat}: {cond}\n'.format(
                             #     o_seat=o['seat_id'],
                             #     t_seat=t['seat_id'],
                             #     cond=o['seat_id'] == t['seat_id'])

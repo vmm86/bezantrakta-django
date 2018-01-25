@@ -7,7 +7,7 @@ from decimal import Decimal
 try:
     from project.shortcuts import BOOLEAN_VALUES
 except ImportError:
-    BOOLEAN_VALUES = BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
+    BOOLEAN_VALUES = ('True', 'true', 1, '1', 'y', 'yes', 'д', 'да',)
 
 from ..abc import PaymentService
 
