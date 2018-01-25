@@ -156,7 +156,7 @@ LOGGING = {
             'when':        LOGGING_WHEN,
             'utc':         LOGGING_UTC,
             'backupCount': LOGGING_BACKUP_COUNT,
-            'formatter':   'message',
+            'formatter':   'default',
         },
         'ticket_service_radario_log': {
             'level':       LOGGING_LEVEL,
@@ -165,7 +165,7 @@ LOGGING = {
             'when':        LOGGING_WHEN,
             'utc':         LOGGING_UTC,
             'backupCount': LOGGING_BACKUP_COUNT,
-            'formatter':   'message',
+            'formatter':   'default',
         },
 
         'ticket_service_discover_log': {
