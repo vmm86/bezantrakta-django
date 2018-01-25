@@ -122,6 +122,8 @@ class SuperBilet(TicketService):
         except requests.exceptions.RequestException as exc:
             self.logger.error('__init__ exception: {}'.format(exc))
 
+            return exc
+
     def __str__(self):
         return '{cls}({host}: {mode})'.format(
             cls=self.__class__.__name__,
