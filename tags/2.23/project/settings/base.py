@@ -199,7 +199,7 @@ ADMIN_REORDER = (
             {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': '└─ Схемы залов 🔗 '},
             {'model': 'ticket_service.TicketServiceSchemeSector', 'label': '      └─ Секторы в схемах залов 🔗 '},
             {'model': 'event.EventCategory', 'label': 'Категории'},
-            {'model': 'event.EventLink', 'label': 'Внешние ссылки'},
+            {'model': 'event.EventLink', 'label': 'Внешние ссылки в событиях'},
             {'model': 'event.EventContainer', 'label': 'Контейнеры'},
         )
     },
