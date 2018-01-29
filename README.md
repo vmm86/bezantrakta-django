@@ -92,7 +92,7 @@ source venv/bin/activate
 * Создание `uWSGI`-приложения.
 
 ```bash
-touch /etc/uwsgi/sites-available/bezantrakta.ini
+touch /etc/uwsgi/sites-available/bezantrakta-django.ini
 ```
 ```ini
 [uwsgi]
@@ -104,22 +104,44 @@ pythonpath = %(project)
 virtualenv = /opt/bezantrakta-django/venv
 module = project.wsgi:application
 
-master = 1
-workers = 4
-cheaper = 1
-idle = 8
-vacuum = 1
+master = true
+workers = 64
+
+harakiri = 60
+harakiri-verbose = true
+
+cheaper-algo = spare
+cheaper = 8
+cheaper-initial = 8
+cheaper-step = 4
+cheaper-idle = 60
+cheaper-overload = 30
+
+vacuum = true
 ```
 ```bash
-ln -s /etc/uwsgi/apps-available/bezantrakta.ini /etc/uwsgi/apps-enabled/
+# Создать 2 символьные ссылки на основное uWSGI-приложение
+ln -s /etc/uwsgi/apps-available/bezantrakta-django.ini /etc/uwsgi/apps-available/bezantrakta-django_default.ini
+ln -s /etc/uwsgi/apps-available/bezantrakta-django.ini /etc/uwsgi/apps-available/bezantrakta-django_api.ini
+
+ln -s /etc/uwsgi/apps-available/bezantrakta-django_default.ini /etc/uwsgi/apps-enabled/
+ln -s /etc/uwsgi/apps-available/bezantrakta-django_api.ini /etc/uwsgi/apps-enabled/
 ```
 
 * Создание виртуального хоста `nginx`, взаимодействующего с сокетом `uWSGI`-приложения.
 
 ```bash
-touch /etc/nginx/sites-available/bezantrakta.conf
+touch /etc/nginx/sites-available/bezantrakta-django.conf
 ```
 ```nginx
+upstream bezantrakta-django_default {
+    server unix:/run/uwsgi/app/bezantrakta-django_default/socket;
+}
+
+upstream bezantrakta-django_api {
+    server unix:/run/uwsgi/app/bezantrakta-django_api/socket;
+}
+
 server {
     listen 80;
     listen [::]:80;
@@ -129,13 +151,8 @@ server {
     client_body_buffer_size 10M;
     client_max_body_size    10M;
 
-    access_log /var/log/nginx/bezantrakta.access.log;
-    error_log /var/log/nginx/bezantrakta.error.log info;
-
-    location / {
-        include uwsgi_params;
-        uwsgi_pass unix:/run/uwsgi/app/belcanto/socket;
-    }
+    access_log /var/log/nginx/bezantrakta-django.access.log;
+    error_log  /var/log/nginx/bezantrakta-django.error.log info;
 
     location /static/ {
         alias /var/www/bezantrakta-django/static/;
@@ -148,10 +165,35 @@ server {
         access_log off;
         expires 3600;
     }
+
+    location /api/ {
+        uwsgi_pass bezantrakta-django_api;
+        include uwsgi_params;
+        uwsgi_ignore_client_abort on;
+    }
+
+    location / {
+        uwsgi_pass bezantrakta-django_default;
+        include uwsgi_params;
+        uwsgi_ignore_client_abort on;
+    }
 }
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name www.bezantrakta.ru;
+    return 301 http://bezantrakta.ru$request_uri;
+}
+#server {
+#    listen 80;
+#    listen [::]:80;
+#    server_name ~^www\.(?<subdomain>\w+)\.bezantrakta.ru$;
+#    return 301 http://$subdomain.bezantrakta.ru$request_uri;
+#}
 ```
 ```bash
-ln -s /etc/nginx/sites-available/bezantrakta.conf /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/bezantrakta-django.conf /etc/nginx/sites-enabled/
 ```
 
 * Скачать, распаковать и настроить `phpMyAdmin`.
