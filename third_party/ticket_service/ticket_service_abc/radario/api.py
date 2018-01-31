@@ -558,7 +558,9 @@ class Radario(TicketService):
         """
         scheme = self.scheme(scheme_id=kwargs['scheme_id'])
 
-        return {s['id']: s['name'].lower() for s in scheme['scheme_zones']}
+        sectors = {s['id']: s['name'].lower() for s in scheme['scheme_zones']}
+
+        return sectors
 
     def price_groups(self, **kwargs):
         """Группы цен в конкретном событии (с дочерними списками мест для каждой группы цен).
@@ -647,9 +649,15 @@ class Radario(TicketService):
                 for s in pg['seats']:
                     # Возвращаются только существующие и ещё не проданные места
                     if s['exists'] and not s['isoccupied']:
-                        s['sector_id'] = sectors[pg['price_group_title']]
+                        # Выбор между названием сектора или названием группы цен (если они НЕ полностью совпадают)
+                        # Например, 'места на сцене' и 'на сцене'
+                        for sector_name, sector_id in sectors.items():
+                            sector_title = (
+                                sector_name if pg['price_group_title'] in sector_name else pg['price_group_title']
+                            )
+                        s['sector_id'] = sectors.get(sector_title, 0)
                         # Названия секторов
-                        s['sector_title'] = pg['price_group_title'].lower()
+                        s['sector_title'] = sector_title.lower()
                         s['row_id'] = int(s.pop('rowname'))
                         s['seat_id'] = int(s.pop('number'))
                         s['seat_title'] = s.pop('seatname')
