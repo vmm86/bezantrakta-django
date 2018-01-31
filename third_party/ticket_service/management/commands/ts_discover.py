@@ -254,10 +254,19 @@ ______________________________________________________________________________
                         # Поля, которые могут быть обновлены при запуске задания
                         'datetime',
                         'min_price',
+                        'ticket_service_scheme',
                         'promoter',
                         'seller',
                     ))
-                    self.event_id_uuid_mapping = {ee['ticket_service_event']: {'id': ee['id'], 'datetime': ee['datetime'], 'min_price': ee['min_price'], 'promoter': ee['promoter'], 'seller': ee['seller']} for ee in events_exist}
+                    self.event_id_uuid_mapping = {
+                        ee['ticket_service_event']: {
+                            'id': ee['id'],
+                            'datetime': ee['datetime'],
+                            'min_price': ee['min_price'],
+                            'ticket_service_scheme': ee['ticket_service_scheme'],
+                            'promoter': ee['promoter'],
+                            'seller': ee['seller']
+                        } for ee in events_exist}
                     self.stdout.write('Имеющиеся события: {}'.format(self.event_id_uuid_mapping))
 
                     self.stdout.write('Поиск групп событий...')
@@ -480,10 +489,11 @@ ______________________________________________________________________________
                 # Обновление информации в добавленном ранее событии, только если это необходимо
                 event_values = self.event_id_uuid_mapping[event['event_id']]
                 event_fields = {
-                    'datetime':  event['event_datetime'],
+                    'datetime': event['event_datetime'],
                     'min_price': event['event_min_price'],
-                    'promoter':  event['promoter'] or ticket_service['settings']['promoter'] or event_values['promoter'],
-                    'seller':    ticket_service['settings']['seller'] or event_values['seller'],
+                    'ticket_service_scheme': event['scheme_id'],
+                    'promoter': event['promoter'] or ticket_service['settings']['promoter'] or event_values['promoter'],
+                    'seller': ticket_service['settings']['seller'] or event_values['seller'],
                 }
 
                 if event_values:
