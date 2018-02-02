@@ -257,7 +257,7 @@
     {% compress js inline %}
     <script type="text/javascript">
         {# Отправка событий для отслеживания заказов в Яндекс.Метрика и Google.Analytics #}
-        {% include "seo/order_counter_events.js" with active="step1" %}
+        {% include "order/order_counter_events.js" with active="step1" %}
     </script>
     {% endcompress %}
     {% endif %}
