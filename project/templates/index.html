@@ -326,6 +326,17 @@
 {% endblock %}
 
 {% block scripts %}
+    <script type="text/javascript" src="{% static "global/js/prognroll/prognroll.min.js" %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function(e) {
+        $("body").prognroll({
+            height: 4,
+            color: "#ffcc00",
+            custom: false
+        });
+    });
+    </script>
+
     {# "Карусель" больших горизонтальных афиш #}
     <script type="text/javascript" src="{% static "global/js/bxslider/4.2.12/jquery.bxslider.min.js" %}"></script>
     <script type="text/javascript" src="{% static "global/js/bxslider/carousel.js" %}"></script>
