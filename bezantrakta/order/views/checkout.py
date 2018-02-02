@@ -86,9 +86,9 @@ def checkout(request):
     # Информация о предварительном резерве и возможных опциях последующего заказа
     order = {}
     order['uuid'] = request.COOKIES.get('bezantrakta_order_uuid')
-    order['tickets'] = json.loads(request.COOKIES.get('bezantrakta_order_tickets'))
-    order['tickets_count'] = int(request.COOKIES.get('bezantrakta_order_count'))
-    order['total'] = ts.decimal_price(request.COOKIES.get('bezantrakta_order_total'))
+    order['tickets'] = json.loads(request.COOKIES.get('bezantrakta_order_tickets', []))
+    order['tickets_count'] = int(request.COOKIES.get('bezantrakta_order_count', 0))
+    order['total'] = ts.decimal_price(request.COOKIES.get('bezantrakta_order_total', 0))
 
     # Стоимость доставки курьером
     order['courier_price'] = ts.decimal_price(ticket_service['settings']['courier_price'])
