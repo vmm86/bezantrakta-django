@@ -4,11 +4,16 @@ import requests
 import uuid
 import xml
 import xmltodict
-import zeep
+
 from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 from operator import itemgetter
+
+from zeep import Client, CachingClient, xsd
+from zeep.cache import SqliteCache
+from zeep.exceptions import Fault
+from zeep.transports import Transport
 
 try:
     from project.shortcuts import BOOLEAN_VALUES
@@ -28,40 +33,20 @@ class SuperBilet(TicketService):
 
     Атрибуты класса:
         slug (str): Псевдоним для инстанцирования класса (``superbilet``).
+        logger (logging.Logger): Объект для логирования информации о работе класса.
         bar_code_length (int): Длина штрих-кода.
+        request_timeout (int): Время в секундах, при превышении которого долгие запросы логируются в ``logger``.
         LOG_OPERATIONS (dict): Коды ошибок и сообщения об ошибках.
         RESPONSE_CODES (dict): Значения параметра ``actiondone`` в методе ``GetLog``.
         SEAT_STATUSES (dict): Статусы места в предварительном резерве, созданном или оплаченном заказе.
 
     Instance attributes:
-        client (zeep.Client): Экземпляр SOAP-клиента.
+        client (zeep.Client|zeep.CachingClient): Экземпляр SOAP-клиента.
     """
     slug = 'superbilet'
     logger = logging.getLogger('ticket_service.superbilet')
-
     bar_code_length = 20
-
-    RESPONSE_CODES = {
-        # Общие коды ответа
-        0:  'Успешный результат',
-        1:  'Место занято/отсутствует или событие неактивно (прошло, отменено, продажа не разрешена)',
-        2:  'Ошибка интерфейса - неверный формат данных',
-        3:  'Ошибка доступа к базе данных',
-        4:  'Неверный номер сессии или удалён предварительный резерв',
-        5:  'Ошибка авторизации',
-        6:  'Системная ошибка в работе шлюза',
-        7:  'Отсутствует шлюз для подключения (версия V2) или отсутствует покупатель',
-        # Только в "Супербилет-Театр"
-        8:  'Не заполнены Ф.И.О. покупателя',
-        9:  'Не заполнены контактные данные покупателя (телефон или email)',
-        10: 'Не указана транзакция в методе SetSoldExt',
-        11: 'Не указана дата транзакции в методе SetSoldExt',
-        12: 'Не указано время транзакции в методе SetSoldExt',
-        13: 'Заказ оплачен - место не подлежит удалению',
-        # Только в "Супербилет-Театр" версии 6.2.P+
-        14: 'Пользователь не является пользователем шлюза',
-        15: 'Пользователю запрещен доступ к шлюзу',
-    }
+    request_timeout = 5
 
     LOG_OPERATIONS = {
         'PlacePreRes':          'Предварительный резерв: при добавлении не найдено место',
@@ -94,6 +79,28 @@ class SuperBilet(TicketService):
         'SetSold':              'Оплата заказа: успешно',
     }
 
+    RESPONSE_CODES = {
+        # Общие коды ответа
+        0:  'Успешный результат',
+        1:  'Место занято/отсутствует или событие неактивно (прошло, отменено, продажа не разрешена)',
+        2:  'Ошибка интерфейса - неверный формат данных',
+        3:  'Ошибка доступа к базе данных',
+        4:  'Неверный номер сессии или удалён предварительный резерв',
+        5:  'Ошибка авторизации',
+        6:  'Системная ошибка в работе шлюза',
+        7:  'Отсутствует шлюз для подключения (версия V2) или отсутствует покупатель',
+        # Только в "Супербилет-Театр"
+        8:  'Не заполнены Ф.И.О. покупателя',
+        9:  'Не заполнены контактные данные покупателя (телефон или email)',
+        10: 'Не указана транзакция в методе SetSoldExt',
+        11: 'Не указана дата транзакции в методе SetSoldExt',
+        12: 'Не указано время транзакции в методе SetSoldExt',
+        13: 'Заказ оплачен - место не подлежит удалению',
+        # Только в "Супербилет-Театр" версии 6.2.P+
+        14: 'Пользователь не является пользователем шлюза',
+        15: 'Пользователю запрещен доступ к шлюзу',
+    }
+
     SEAT_STATUSES = {
         'FREE': 'free',      # свободен ''
         'SEL':  'reserved',  # предварительный резерв
@@ -116,13 +123,24 @@ class SuperBilet(TicketService):
         self.__pswd = init['pswd']
         self.__mode = init['mode']
 
+        wsdl_cache = '/tmp/{}.db'.format(SuperBilet.slug)
+        self.__cache = SqliteCache(path=wsdl_cache, timeout=3600)
+        self.__transport = Transport(cache=self.__cache)
+
         # Экземпляр SOAP-клиента (обработка возможных исключений в грёбаном СуперГовне)
+        init_dt_start = datetime.now()
         try:
-            self.client = zeep.Client(wsdl=self.__host)
+            self.client = Client(self.__host, transport=self.__transport)
         except requests.exceptions.RequestException as exc:
             self.logger.error('__init__ exception: {}'.format(exc))
 
             return exc
+        init_dt_end = datetime.now()
+        init_dt_delta = (init_dt_end - init_dt_start).total_seconds()
+        # Логирование слишком длительных запросов
+        if init_dt_delta > SuperBilet.request_timeout:
+            self.logger.error('__init__ is too long: {} s.'.format(init_dt_delta))
+        print('__init__ delta: ', init_dt_delta)
 
     def __str__(self):
         return '{cls}({host}: {mode})'.format(
@@ -193,10 +211,11 @@ class SuperBilet(TicketService):
             }
             # print('DATA:\n', data['Value'], '\n')
 
+        request_dt_start = datetime.now()
         # Обработка возможных исключений в грёбаном СуперГовне
         try:
             response = self.client.service[method](**data)
-        except zeep.exceptions.Fault as exc:
+        except Fault as exc:
             self.logger.error('request exception: {}'.format(exc))
 
             response = {}
@@ -205,6 +224,12 @@ class SuperBilet(TicketService):
             response['message'] = exc.message
 
             return response
+        request_dt_end = datetime.now()
+        request_dt_delta = (request_dt_end - request_dt_start).total_seconds()
+        # Логирование слишком длительных запросов
+        if request_dt_delta > SuperBilet.request_timeout:
+            self.logger.error('request is too long: {} s.'.format(request_dt_delta))
+        print('    request delta: ', request_dt_delta)
 
         # print('XML:\n', response, '\n')
 
