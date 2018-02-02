@@ -6,7 +6,6 @@ from collections import defaultdict
 from datetime import datetime
 from decimal import Decimal
 from operator import itemgetter
-from pprint import pprint
 
 try:
     from project.shortcuts import BOOLEAN_VALUES
@@ -21,13 +20,13 @@ class Radario(TicketService):
 
     Любой метод, делающий запросы к API, вызывает для этого конструктор запросов ``request``.
 
-    `Документация по API Радарио <https://radario.github.io/slate/radario.api/>`_.
+    `Документация по API Радарио версии 1.1 <http://docs.radario.ru/api/>`_.
 
-    The only one accepted Content-Type is ``application/json``.
-    Messages charset is set to UTF-8.
+    При отправке данных используется формат ``application/json`` с соответствующимо заголовком ``Content-Type``.
 
     Атрибуты класса:
         slug (str): Псевдоним для инстанцирования класса (``radario``).
+        logger (logging.Logger): Объект для логирования информации о работе класса.
         bar_code_length (int): Длина штрих-кода.
     """
     slug = 'radario'
@@ -44,13 +43,13 @@ class Radario(TicketService):
         super().__init__()
 
         # Параметры подключения
-        self.__api_id = str(init['api_id'])
-        self.__api_key = str(init['api_key'])
+        self.__api_version = init['api_version']
+        self.__api_base_url = 'https://api.radario.ru'
+        self.__api_id = init['api_id']
+        self.__api_key = init['api_key']
         self.city_id = init['city_id']
         self.company_id = init['company_id']
         self.company_title = init['company_title']
-        self.api_version = 'v1'
-        self.api_base_url = 'https://api.radario.ru/{version}'.format(version=self.api_version)
 
         # Параметры вывода
         self.limit = 100
@@ -58,8 +57,9 @@ class Radario(TicketService):
         self.time_to_live = 15
 
     def __str__(self):
-        return '{cls}(city: {city}, company: {company_title})'.format(
+        return '{cls}(api_version: {api_version}, city: {city}, company: {company_title})'.format(
             cls=self.__class__.__name__,
+            api_version=self.__api_version,
             city=self.city_id,
             company_title=self.company_title,
         )
@@ -77,23 +77,20 @@ class Radario(TicketService):
         Returns:
             list, dict: Обработанный ответ конкретного метода API.
         """
-        url_path = self.api_base_url + url
+        url_path = self.__api_base_url + url
         # print('request url: ', url_path)
 
         headers = {
-            'api-id':  self.__api_id,
-            'api-key': self.__api_key,
+            'api-version': str(self.__api_version),
+            'api-id':      str(self.__api_id),
+            'api-key':     str(self.__api_key),
         }
+        # print('headers: ', headers)
 
-        # print(url, ':')
-        # pprint(data, indent=4, width=160)
-        # print('\n')
         if method == 'GET':
             response = requests.get(url_path, params=data, headers=headers)
         elif method == 'POST':
             response = requests.post(url_path, json=data, headers=headers)
-        else:
-            pass
 
         # pprint(response.json(), indent=4, width=160)
         # print('\n')
@@ -204,7 +201,7 @@ class Radario(TicketService):
         Returns:
             str: Версия API Радарио.
         """
-        return self.api_version
+        return self.__api_version
 
     def places(self):
         """Места проведения событий (в конкретном городе).
@@ -216,9 +213,10 @@ class Radario(TicketService):
         url = '/places'
         data = {
             'cityId': self.city_id,
-            'onlyWithOrderCreationAvailableViaApi': True,
             'limit': self.limit,
         }
+        if self.__api_version == 1:
+            data['onlyWithOrderCreationAvailableViaApi'] = True
         output_mapping = {
             # Идентификатор места
             'id':    self.internal('place_id', int,),
@@ -264,17 +262,17 @@ class Radario(TicketService):
             'version': self.internal('scheme_version', int,),
             # Секторы (зоны) зала
             'zones':   self.internal('scheme_zones', list,),
-            # Атрибуты zones
+            # Атрибуты `zones`
             # 'colcount' (int): (?)
             # 'id' (int): Идентификатор сектора
             # 'name' (str): Название сектора
             # 'withseats' (bool): Сектор с местами для сидения или нет
             # 'rowcount' (int): (?)
             # 'seats':   self.internal('scheme_seats', list,),
-            # Атрибуты seats
+            # Атрибуты `seats`
             # 'number' (int): Идентификатор места
-            # 'seatname' (str): Название места
-            # 'rowname' (str->int): Идентификатор ряда
+            # 'seatName' (str): Название места
+            # 'rowName' (str->int): Идентификатор ряда
             # 'exists' (bool): Существует место или нет (?)
             'seatCount': None,
             'image':     None,
@@ -392,28 +390,32 @@ class Radario(TicketService):
         Args:
             group_id (int, optional): Идентификатор группы событий, если требуются события только в конкретной группе.
 
+        Query parameters:
+            onlyActual (bool): Только актуальные события.
+            onlyWithOrderCreationAvailableViaApi (bool): Только доступные по API события (только в API версии 1).
+            cityId (int): Идентификатор города.
+            placeId (int): Идентификатор места проведения события.
+            companyId (int): Идентификатор организатора.
+            superTagId (int): Тип события (concert, perfomance, party, etc.).
+            groupId  (int): Идентификатор группы событий.
+            endDate (str): Конечная дата (формат ISO 8601).
+            eventDateFrom (string): Работает при отсутствии параметра ``endDate`` (формат ISO 8601).
+            eventDateTo (string): Работает при отсутствии параметра ``endDate`` (формат ISO 8601).
+            limit (int): Лимит числа событий в ответе (по умолчанию 20).
+            offset (int): С какого по счёту события начинать вывод (отброс событий в начале списка).
+
         Returns:
             list: Список словарей с информацией о событиях.
         """
         method = 'GET'
         url = '/events'
-        # Query parameters:
-        # onlyActual (bool): Вывод только актуальных событий.
-        # cityId (int): Идентификатор города.
-        # placeId (int): Идентификатор места проведения события.
-        # companyId (int): Идентификатор организатора.
-        # superTagId (int): Тип события (e.g concert, perfomance, party, etc.).
-        # groupId  (int): Идентификатор группы событий.
-        # endDate (str): Конечная дата (ISO 8601).
-        # onlyWithOrderCreationAvailableViaApi (bool): Только события, доступные для запроса по API.
-        # limit (int): Лимит числа событий в ответе (по умолчанию 20).
-        # offset (int): С какого по счёту события начинать вывод (отброс событий в начале списка).
         data = {
             'companyId': self.company_id,
             'onlyActual': True,
-            'onlyWithOrderCreationAvailableViaApi': True,
             'limit': self.limit,
         }
+        if self.__api_version == 1:
+            data['onlyWithOrderCreationAvailableViaApi'] = True
         if 'group_id' in kwargs and kwargs['group_id']:
             data['groupId'] = kwargs['group_id']
         output_mapping = {
@@ -479,9 +481,9 @@ class Radario(TicketService):
             event_id (int): Идентификатор события.
 
         Query parameters:
-            onlyWithOrderCreationAvailableViaApi
-            limit
-            offset
+            onlyWithOrderCreationAvailableViaApi (bool): Только доступные по API события (только в API версии 1).
+            limit (int): Лимит числа событий в ответе (по умолчанию 20).
+            offset (int): С какого по счёту события начинать вывод (отброс событий в начале списка).
 
         Returns:
             dict: Словарь с информацией о событии.
@@ -574,9 +576,10 @@ class Radario(TicketService):
         method = 'GET'
         url = '/events/{event_id}/ticket_types'.format(event_id=kwargs['event_id'])
         data = {
-            'onlyWithOrderCreationAvailableViaApi': True,
             'limit': self.limit,
         }
+        if self.__api_version == 1:
+            data['onlyWithOrderCreationAvailableViaApi'] = True
         output_mapping = {
             # Идентификатор группы цен
             'id':              self.internal('price_group_id', int,),
@@ -627,37 +630,35 @@ class Radario(TicketService):
         response = {}
 
         price_groups = self.price_groups(event_id=kwargs['event_id'])
-        seats = []
+
         prices = sorted([pg['price'] for pg in price_groups])
         response['prices'] = prices
         # print('\nprice_groups:\n', price_groups, '\n')
 
+        # Если билеты с местами в какой-либо схеме зала -
         if kwargs['scheme_id'] != 0:
             scheme = self.scheme(scheme_id=kwargs['scheme_id'])
-            # print('\nscheme:\n', scheme, '\n')
+            # print('\nscheme_zones:\n', scheme['scheme_zones'], '\n')
 
-        sectors = (
-            {s['name'].lower(): s['id'] for s in scheme['scheme_zones']} if
-            kwargs['scheme_id'] != 0 else
-            {pg['price_group_title'].lower(): pg['price_group_id'] for pg in price_groups}
-        )
-        # print('sectors:\n', sectors, '\n')
+            # Создаём словарь для сопоставления ID мест и ID секторов из метода `scheme`,
+            # т.к. ID секторов нельзя получить в методе `price_groups`
+            seat_sector_mapping = {}
+            for scheme_zone in scheme['scheme_zones']:
+                for seat in scheme_zone['seats']:
+                    if seat['exists']:
+                        seat_sector_mapping[seat['number']] = scheme_zone['id']
+            # print('seat_sector_mapping: \n', seat_sector_mapping, '\n')
 
+        seats = []
         for pg in price_groups:
             # Билеты с местами
             if pg['seats'] is not None:
                 for s in pg['seats']:
                     # Возвращаются только существующие и ещё не проданные места
                     if s['exists'] and not s['isoccupied']:
-                        # Выбор между названием сектора или названием группы цен (если они НЕ полностью совпадают)
-                        # Например, 'места на сцене' и 'на сцене'
-                        for sector_name, sector_id in sectors.items():
-                            sector_title = (
-                                sector_name if pg['price_group_title'] in sector_name else pg['price_group_title']
-                            )
-                        s['sector_id'] = sectors.get(sector_title, 0)
+                        s['sector_id'] = seat_sector_mapping.get(s['number'], 0)
                         # Названия секторов
-                        s['sector_title'] = sector_title.lower()
+                        s['sector_title'] = pg['price_group_title'].lower()  # sector_title.lower()
                         s['row_id'] = int(s.pop('rowname'))
                         s['seat_id'] = int(s.pop('number'))
                         s['seat_title'] = s.pop('seatname')
@@ -671,7 +672,7 @@ class Radario(TicketService):
             # Билеты без фиксированной рассадки
             else:
                 # Возвращаются все свободные билеты без фиксированной рассадки
-                for idx, s in enumerate(range(pg['seats_free_count'])):
+                for idx in range(pg['seats_free_count']):
                     seat = {}
                     seat['sector_id'] = 0
                     seat['sector_title'] = pg['price_group_title'].lower()
@@ -1041,11 +1042,8 @@ class Radario(TicketService):
         url = '/company/{company_id}/event-providers'.format(company_id=self.company_id)
         data = None
         output_mapping = {
-            # Идентификатор группы событий
             'id':   self.internal('promoter_id', int,),
-            # Название группы событий
             'name': self.internal('promoter_title', str),
-            # ИНН
             'inn':         self.internal('inn', str),
             'description': self.internal('description', str),
             'commissionfeepercent': self.internal('description', Decimal),
@@ -1071,20 +1069,7 @@ class Radario(TicketService):
 
         return promoters
 
-    # def categories(self):
-    #     """Список категорий событий."""
-    #     method = 'GET'
-    #     url = '/categories'
-    #     data = {
-    #         'companyId': self.company_id,
-    #         'onlyWithOrderCreationAvailableViaApi': True,
-    #         'limit': self.limit,
-    #     }
-    #     output_mapping = {
-    #         'id':   ('category_id', int,),
-    #         'name': ('category_title', str,),
-    #     }
-    #     return self.request(method, url, data, output_mapping)
+    # GET /categories - Get categories
 
     # GET /cities - Get cities
 
