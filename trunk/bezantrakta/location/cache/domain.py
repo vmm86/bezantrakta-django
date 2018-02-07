@@ -12,7 +12,7 @@ from ..models import Domain
 class DomainCache(ProjectCache):
     entities = ('domain', )
 
-    def get_model_object(self, object_id, **kwargs):
+    def get_object(self, object_id, **kwargs):
         return Domain.objects.select_related('city').annotate(
                 domain_id=F('id'),
                 domain_title=F('title'),

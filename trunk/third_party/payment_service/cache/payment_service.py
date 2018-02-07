@@ -13,7 +13,7 @@ from ..payment_service_abc.abc import PaymentService as PaymentServiceABC
 class PaymentServiceCache(ProjectCache):
     entities = ('payment_service', )
 
-    def get_model_object(self, object_id, **kwargs):
+    def get_object(self, object_id, **kwargs):
         return PaymentService.objects.values(
                 'id',
                 'title',
@@ -47,8 +47,8 @@ class PaymentServiceCache(ProjectCache):
             'domain_slug' in kwargs and kwargs['domain_slug'] is not None else
             settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG
         )
-        self.value['settings']['init']['success_url'] = build_absolute_url(domain_slug, '/api/ps/success/')
-        self.value['settings']['init']['error_url'] = build_absolute_url(domain_slug, '/api/ps/error/')
+        self.value['settings']['init']['success_url'] = build_absolute_url(domain_slug, '/api/payment/success/')
+        self.value['settings']['init']['error_url'] = build_absolute_url(domain_slug, '/api/payment/error/')
 
         # Получение экземпляра класса сервиса онлайн-оплаты с использованием параметров из его ранее полученного кэша
         self.value['instance'] = payment_service_factory(
