@@ -8,8 +8,8 @@ from project.shortcuts import build_absolute_url, timezone_now
 
 from bezantrakta.eticket.shortcuts import render_eticket
 
-from bezantrakta.order.models import Order
-from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
+from .models import Order
+from .settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
 
 
 def success_or_error(domain, event, order, payment_status, logger):
@@ -20,7 +20,7 @@ def success_or_error(domain, event, order, payment_status, logger):
         event (dict): Информация о событии.
         order (dict): Информация о заказе.
         payment_status (dict): Информация о сервисе онлайн-оплаты.
-        logger (logging.RootLogger): Файл для логирования процесса завершения заказа.
+        logger (logging.Logger): Файл для логирования процесса завершения заказа.
 
     Returns:
         dict: Словарь ``result`` с информацией об успешном или НЕуспешном завершении заказа с онлайн-оплатой.
