@@ -1,7 +1,7 @@
 import simplejson as json
 from abc import ABC, abstractmethod, abstractproperty
 
-from django.core.cache import cache
+from django.core.cache import caches
 from django.core.exceptions import ObjectDoesNotExist
 
 from project.shortcuts import debug_console, json_serializer
@@ -13,51 +13,66 @@ class ProjectCache(ABC):
 
     Attributes:
         entities (tuple): Перечень моделей или других сущностей для создания кэша (указывается в дочерних классах).
+        cache_backend (string): Используемый бэкенд кэша из настроек проекта (по умолчанию - ``default``).
         key (str): Текущий ключ для создания/обновления/получения кэша.
         value (dict): Текущее обработанное значение кэша для вывода.
     """
     entities = ()
+    cache_backend = 'default'
+    database_first = True
     key = ''
     value = None
 
-    def __init__(self, entity, object_id, reset=False, **kwargs):
+    def __init__(self, entity, object_id, reset=False, delete=False, **kwargs):
         """Конструктор класса.
 
         Args:
             entity (str): Название модели или другой сущности для создания кэша.
             object_id (int|str|uuid.UUID): Идентификатор записи в БД.
             reset (bool, optional): В любом случае пересоздать кэш, даже если он имеется.
-            **kwargs: Description
+            delete (bool, optional): Удалить кэш.
+            **kwargs: Дополнительные параметры для получения кэша.
 
         Returns:
             dict|None: Обработанное значение кэша для вывода, если вывод требуется.
         """
         super().__init__()
 
+        cache = caches[self.cache_backend]
+
         self.set_cache_key(entity, object_id, **kwargs)
         self.value = cache.get(self.key)
         debug_console('cache_key:', self.key)
 
         # При явном инвалидировании кэша сначала удаляется его старое значение
-        if reset:
+        if reset or delete:
             cache.delete(self.key)
+            # При явном удалении кэша работа завершается
+            if delete:
+                return None
 
         # Если кэш отсутствует или присутствует, но явно инвалидируется
         if not self.value or reset:
             # Получаем значение из БД
-            try:
-                self.value = dict(self.get_model_object(object_id, **kwargs))
-            except ObjectDoesNotExist:
-                debug_console('return None')
-                return None
+            if self.database_first:
+                try:
+                    self.value = dict(self.get_object(object_id, **kwargs))
+                except (ObjectDoesNotExist, TypeError):
+                    debug_console('nothing found in DB')
+                    self.value = kwargs['obj'] if 'obj' in kwargs else None
+            # Получаем значение из входных параметров в **kwargs
             else:
-                # При необходимости обрабатываем полученные из БД данные
-                self.cache_preprocessing(**kwargs)
-                debug_console('cache_value_preprocessed:', self.value, type(self.value))
+                self.value = kwargs['obj'] if 'obj' in kwargs else None
+                print('self.value', self.value)
 
-                # Записываем полученные данные в кэш
-                cache.set(self.key, json.dumps(self.value, ensure_ascii=False, default=json_serializer))
-                debug_console('cache_value_set')
+            # При необходимости обрабатываем полученные данные
+            self.cache_preprocessing(**kwargs)
+            debug_console('cache_value_preprocessed:', self.value, type(self.value))
+
+            # Записываем полученные данные в кэш
+            cache.set(self.key, json.dumps(self.value, ensure_ascii=False, default=json_serializer))
+            print('self.value', self.value)
+            debug_console('cache_value_set')
         else:
             # Получаем данные из имеющейся в кэше JSON-строки
             self.value = json.loads(self.value)
@@ -74,7 +89,7 @@ class ProjectCache(ABC):
     def set_cache_key(self, entity, object_id, **kwargs):
         """Формирование ключа для сохранения нового или получения имеющегося кэша.
 
-        Метод можно переопределить в дочернем классе для формирования заведомо уникального сочентания данных в ключе.
+        Метод можно переопределить в дочернем классе для формирования заведомо уникального сочетания данных в ключе.
 
         Args:
             entity (str): Название модели или другой сущности для создания кэша.
@@ -84,8 +99,8 @@ class ProjectCache(ABC):
         self.key = '{entity}.{object_id}'.format(entity=entity, object_id=object_id)
 
     @abstractmethod
-    def get_model_object(self, object_id, **kwargs):
-        """Получение объекта необходимой модели в БД запросом к ``self.model``.
+    def get_object(self, object_id, **kwargs):
+        """Получение объекта из модели в БД или из входных параметров.
 
         Args:
             object_id (int|str|uuid.UUID): Идентификатор записи в БД.

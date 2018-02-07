@@ -55,7 +55,7 @@ class EventCache(ProjectCache):
 
         self.override = False if 'override' in kwargs and not kwargs['override'] else True
 
-    def get_model_object(self, object_id, **kwargs):
+    def get_object(self, object_id, **kwargs):
         return Event.objects.select_related(
                 'event_venue',
                 'domain'

@@ -8,7 +8,7 @@ from ..models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
 class TicketServiceSchemeSectorCache(ProjectCache):
     entities = ('ticket_service_scheme', 'ticket_service_sectors', )
 
-    def get_model_object(self, object_id, **kwargs):
+    def get_object(self, object_id, **kwargs):
         # Схема зала
         return TicketServiceSchemeVenueBinder.objects.annotate(
             scheme_id=F('ticket_service_scheme_id'),
@@ -27,7 +27,7 @@ class TicketServiceSchemeSectorCache(ProjectCache):
             entity=entity,
             ticket_service_id=kwargs['ticket_service_id'],
             object_id=object_id
-            )
+        )
 
     def cache_preprocessing(self, **kwargs):
         # Секторы, привязанные к схеме зала (если они были созданы)
