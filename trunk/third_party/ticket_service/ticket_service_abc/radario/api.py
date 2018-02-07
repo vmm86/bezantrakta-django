@@ -87,10 +87,12 @@ class Radario(TicketService):
         }
         # print('headers: ', headers)
 
+        session = requests.Session()
+
         if method == 'GET':
-            response = requests.get(url_path, params=data, headers=headers)
+            response = session.get(url_path, params=data, headers=headers)
         elif method == 'POST':
-            response = requests.post(url_path, json=data, headers=headers)
+            response = session.post(url_path, json=data, headers=headers)
 
         # pprint(response.json(), indent=4, width=160)
         # print('\n')
@@ -694,22 +696,23 @@ class Radario(TicketService):
     def reserve(self, **kwargs):
         """Добавление или удаление места в предварительном резерве мест (корзина заказа).
 
-        Можно не использовать для резерва метод API Радарио и хранить резерв в cookie.
+        В API Радарио этот метод фактически можно не использовать.
         Метод будет возвращать обратно передаваемые ему атрибуты места с подтверждением "успешного" результата.
 
         Args:
-            action (str): Действие (`add` - добавить в резерв, `remove` - удалить из резерва).
             event_id (int): Идентификатор события.
             price_group_id (int): Идентификатор группы цен.
             seat_id (int): Идентификатор места.
+            action (str): Действие (`add` - добавить в резерв, `remove` - удалить из резерва).
 
         Returns:
             dict: Атрибуты места с подтверждением успешного или НЕуспешного резерва.
         """
         reserve = {}
         reserve['success'] = True
-        for kw in kwargs:
-            reserve[kw] = kwargs[kw]
+        reserve['action'] = kwargs['action']
+        # for kw in kwargs:
+        #     reserve[kw] = kwargs[kw]
         return reserve
 
     def ticket_status(self, **kwargs):
