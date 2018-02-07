@@ -512,7 +512,7 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-CKEDITOR_JQUERY_URL = '/static/global/js/jquery/3.2.1/jquery-3.2.1.min.js'
+# CKEDITOR_JQUERY_URL = '/static/global/js/jquery/3.2.1/jquery-3.2.1.min.js'
 
 CKEDITOR_UPLOAD_PATH = 'global/uploads/'
 
