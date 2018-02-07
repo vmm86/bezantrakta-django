@@ -18,6 +18,7 @@ LOGGING_FILES = {
     'DJANGO_SECURITY': os.path.join(LOGGING_PATH, 'django.security.log'),
 
     'BEZANTRAKTA_DEFAULT': os.path.join(LOGGING_PATH, 'bezantrakta.default.log'),
+    'BEZANTRAKTA_RESERVE': os.path.join(LOGGING_PATH, 'bezantrakta.reserve.log'),
     'BEZANTRAKTA_ORDER':   os.path.join(LOGGING_PATH, 'bezantrakta.order.log'),
 
     'TICKET_SERVICE_SUPERBILET': os.path.join(LOGGING_PATH, 'ticket_service.superbilet.log'),
@@ -139,6 +140,15 @@ LOGGING = {
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
+        'bezantrakta_reserve_log': {
+            'level':       LOGGING_LEVEL,
+            'class':       LOGGING_CLASS,
+            'filename':    LOGGING_FILES['BEZANTRAKTA_RESERVE'],
+            'when':        LOGGING_WHEN,
+            'utc':         LOGGING_UTC,
+            'backupCount': LOGGING_BACKUP_COUNT,
+            'formatter':   'message',
+        },
         'bezantrakta_order_log': {
             'level':       LOGGING_LEVEL,
             'class':       LOGGING_CLASS,
@@ -228,6 +238,11 @@ LOGGING = {
 
         'bezantrakta.default': {
             'handlers': ['console', 'bezantrakta_default_log', ],
+            'level': LOGGING_LEVEL,
+            'propagate': True,
+        },
+        'bezantrakta.reserve': {
+            'handlers': ['console', 'bezantrakta_reserve_log', ],
             'level': LOGGING_LEVEL,
             'propagate': True,
         },
