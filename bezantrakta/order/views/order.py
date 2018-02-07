@@ -95,7 +95,7 @@ def order(request):
             order['type'] = customer['order_type']
 
             # Процент сервисного сбора
-            order['extra'] = event['settings']['extra'][order['type']]
+            order['extra'] = event['settings']['extra'][order['type']] if 'extra' in event['settings'] else 0
 
             # Получение общей суммы заказа в зависимости от возможных наценок/скидок
 
