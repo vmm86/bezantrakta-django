@@ -140,7 +140,7 @@ class SuperBilet(TicketService):
         # Логирование слишком длительных запросов
         if init_dt_delta > SuperBilet.request_timeout:
             self.logger.error('__init__ is too long: {} s.'.format(init_dt_delta))
-        print('__init__ delta: ', init_dt_delta)
+            print('__init__ delta: ', init_dt_delta)
 
     def __str__(self):
         return '{cls}({host}: {mode})'.format(
@@ -163,6 +163,8 @@ class SuperBilet(TicketService):
         Returns:
             list: Ответ запрошенного метода СуперБилет.
         """
+        print('\nSuperBilet request:', method, data, '\n')
+
         # Тело запроса по умолчанию
         default_params = {
             'GateReq': {
@@ -229,7 +231,7 @@ class SuperBilet(TicketService):
         # Логирование слишком длительных запросов
         if request_dt_delta > SuperBilet.request_timeout:
             self.logger.error('request is too long: {} s.'.format(request_dt_delta))
-        print('    request delta: ', request_dt_delta)
+            print('    request delta: ', request_dt_delta)
 
         # print('XML:\n', response, '\n')
 
@@ -799,12 +801,12 @@ class SuperBilet(TicketService):
         """Добавление или удаление места в предварительном резерве мест (корзина заказа).
 
         Args:
-            action (str): Действие (``add`` - добавить в резерв, ``remove`` - удалить из резерва).
-            order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             event_id (int): Идентификатор события.
+            order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             sector_id (int): Идентификатор сектора.
             row_id (int): Идентификатор ряда.
             seat_id (int): Идентификатор места.
+            action (str): Действие (``add`` - добавить в резерв, ``remove`` - удалить из резерва).
 
         Returns:
             dict: Атрибуты места с подтверждением успешного или НЕуспешного резерва.
