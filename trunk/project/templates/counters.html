@@ -53,10 +53,29 @@
 {% endif %}
 {% if request.domain_settings.counter.vkontakte != "" %}
     {# Пиксель вКонтакте #}
-    <div id="vkontakte_pixel">
+    <div id="vkontakte-pixel">
         <script type="text/javascript">
             (window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={{ request.domain_settings.counter.vkontakte }}';
         </script>
     </div>
     {# Пиксель вКонтакте #}
+{% endif %}
+{% if request.domain_settings.counter.facebook != "" %}
+    {# Пиксель Facebook #}
+    <div id="facebook-pixel">
+        <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ request.domain_settings.counter.facebook }}');
+        fbq('track', 'PageView');
+        </script>
+        <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ request.domain_settings.counter.facebook }}&amp;ev=PageView&amp;noscript=1" /></noscript>
+    </div>
+    {# Пиксель Facebook #}
 {% endif %}
