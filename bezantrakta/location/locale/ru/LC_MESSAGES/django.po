@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-08 13:57+0000\n"
+"POT-Creation-Date: 2018-02-09 13:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,9 @@ msgstr ""
 "act=office_help&oid=-19542789&p=%D0%A7%D0%B0%D1%81%D1%82%D1%8B%D0%B5_"
 "%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D1%8B_%D0%BF%D0%BE_"
 "%D1%80%D0%B5%D1%82%D0%B0%D1%80%D0%B3%D0%B5%D1%82%D0%B8%D0%BD%D0%B3%D1%83' "
-"target='_blank'>пиксель ВКонтакте</a>.</li></ul></li><li><strong>telephone</"
+"target='_blank'>пиксель ВКонтакте</a>.</li><li><strong>facebook</strong> "
+"строка - <a href='https://www.facebook.com/business/help/651294705016616' "
+"target='_blank'>пиксель Facebook</a>.</li></ul></li><li><strong>telephone</"
 "strong> [ список ] - телефоны для блока 'Справки и бронирование':"
 "<ul><li>строка - телефон в формате <em>+7 (473) 210-01-02</em>.</li></ul></"
 "li><li><strong>social</strong> [ список ] - учётные записи сайта в соцсетях:"
@@ -55,11 +57,11 @@ msgstr ""
 "li><li><strong>href</strong> строка - ссылка на страницу в соцсети.</li></"
 "ul></li></ul></li></ul>"
 
-#: admin/domain.py:64
+#: admin/domain.py:63
 msgid "domain_admin_publish_or_unpublish_items"
 msgstr "Опубликовать или снять с публикации"
 
-#: admin/domain.py:82
+#: admin/domain.py:78
 msgid "domain_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных сайтов"
 
@@ -118,7 +120,7 @@ msgstr "города"
 msgid "city_state_icons"
 msgstr "Состояние"
 
-#: models/domain.py:43
+#: models/domain.py:36
 msgid "domain_id_help_text"
 msgstr ""
 "Идентификатор сайта - число из 3-х цифр.<br>Первые 2 цифры - автомобильный "
@@ -127,15 +129,15 @@ msgstr ""
 "Поиск автомобильного кода региона</a><br>Третья цифра - порядковый номер от "
 "0 до 9."
 
-#: models/domain.py:44
+#: models/domain.py:37
 msgid "domain_id"
 msgstr "Идентификатор"
 
-#: models/domain.py:48
+#: models/domain.py:41
 msgid "domain_title"
 msgstr "Название"
 
-#: models/domain.py:52
+#: models/domain.py:45
 msgid "domain_slug_help_text"
 msgstr ""
 "<ul><li>Чтобы создать основной сайт в выбранном городе:<ul><li>псевдоним "
@@ -145,32 +147,32 @@ msgstr ""
 "сайта может быть любым,</li><li>последняя цифра идентификатора сайта - от 1 "
 "до 9.</li></ul></li></ul>"
 
-#: models/domain.py:53
+#: models/domain.py:46
 msgid "domain_slug"
 msgstr "Псевдоним"
 
-#: models/domain.py:57
+#: models/domain.py:50
 msgid "domain_is_published_help_text"
 msgstr ""
 "<ul><li>опубликован - включен и работает;</li><li>НЕ опубликован - отключен "
 "(сайт недоступен, проводятся технические работы).</li></ul>"
 
-#: models/domain.py:58
+#: models/domain.py:51
 msgid "domain_is_published"
 msgstr "Публикация"
 
-#: models/domain.py:64
+#: models/domain.py:57
 msgid "domain_city"
 msgstr "Город"
 
-#: models/domain.py:68
+#: models/domain.py:61
 msgid "domain_settings"
 msgstr "Настройки в JSON"
 
-#: models/domain.py:74
+#: models/domain.py:67
 msgid "domain"
 msgstr "сайт"
 
-#: models/domain.py:75
+#: models/domain.py:68
 msgid "domains"
 msgstr "сайты"
