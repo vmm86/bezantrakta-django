@@ -1,122 +1,128 @@
 import logging
 import uuid
+from random import randint
 from time import sleep
-
-from django.http import JsonResponse
 
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from bezantrakta.order.order_basket import OrderBasket
+from bezantrakta.order import OrderBasket
+
+from api.shortcuts import JsonResponseUTF8
 
 
 def prev_order_delete(request):
-    """Попытка удалить предыдущий предварительный резерв из другого события (если он был создан ранее)."""
+    """Попытка удалить старый предварительный резерв из другого события, если он был сделан ранее.
 
-    # Класс для работы с заказом (на данный момент - с предварительным резервом)
-    # Получение предыдущего заказа, который в новом событии необходимо очистить
+    Единичный заказ действует только в рамках одного события.
+    Если идентификаторы предыдущего и текущего событий не совпадают, старый предварительный резерв удаляется.
+    """
+    #
     if request.is_ajax() and request.method == 'POST':
         logger = logging.getLogger('bezantrakta.reserve')
 
-        # Идентификатор события
-        event_id = request.POST.get('event_id', None)
-        # UUID заказа
+        # UUID события
+        event_uuid = request.POST.get('event_uuid', None)
+        try:
+            event_uuid = uuid.UUID(event_uuid)
+        except (TypeError, ValueError):
+            response = {'success': False, 'message': 'UUID события некорректен или отсутствует'}
+            return JsonResponseUTF8(response, status=400)
+
+        # UUID предварительного резерва
         order_uuid = request.POST.get('order_uuid', None)
-        # Если идентификатор события или UUID заказа не получен - возвращается НЕуспешный ответ с ошибкой
-        if not event_id:
-            response = {'success': False, 'message': 'Отсутствует идентификатор события'}
-            return JsonResponse(response, safe=False)
-        if not order_uuid:
-            response = {'success': False, 'message': 'Отсутствует UUID заказа'}
-            return JsonResponse(response, safe=False)
+        if order_uuid:
+            try:
+                order_uuid = uuid.UUID(order_uuid)
+            except (TypeError, ValueError):
+                response = {'success': False, 'message': 'UUID предварительного резерва некорректен или отсутствует'}
+                return JsonResponseUTF8(response, status=400)
 
         # Получение параметров сайта
         domain = cache_factory('domain', request.domain_slug)
 
+        logger.info('\n----------prev_order_remove----------'.format(order_uuid))
+        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
+        logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
+
+        # Получение предварительного резерва в предыдущем событии
         basket = OrderBasket(order_uuid=order_uuid)
 
-        logger.info('\n------------------------------------------------------------')
-        logger.info('event_id: {}'.format(event_id))
-        logger.info('order_uuid: {}'.format(order_uuid))
-        logger.info('basket.order[tickets]: {}'.format(basket.order['tickets']))
-
-        # Если предварительный резерв не существует - возвращается НЕуспешный ответ с ошибкой
         if not basket or not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
-            return JsonResponse(response, safe=False)
-        else:
-            if not basket.order['tickets']:
-                # Удалить кэш старого предварительного резерва
-                # basket.delete_order_cache()
-                response = {'success': False, 'message': 'В предварительном резерве нет билетов'}
-                return JsonResponse(response, safe=False)
+            return JsonResponseUTF8(response, status=404)
 
-        # Информация о сервисе продажи билетов из кэша
-        ticket_service = cache_factory('ticket_service', basket.order['ticket_service_id'])
-        ts = ticket_service['instance']
+        if not basket.order['tickets']:
+            # Удаление старого предварительного резерва (без билетов)
+            basket.delete_order()
+            response = {
+                'success': True,
+                'tickets': None,
+                'message': 'Старый предварительный резерв (без билетов) успешно удалён'
+            }
+            return JsonResponseUTF8(response)
 
-        now = timezone_now()
-        logger.info('\n----------Отмена предыдущего предварительного резерва {}----------'.format(order_uuid))
-        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
+        logger.info('order_uuid: {} {}'.format(order_uuid, str(type(order_uuid))))
+        logger.info('\nПредыдущий предварительный резерв: {}'.format(basket.order))
 
-        logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
-        logger.info('Сервис продажи билетов: {title} ({id})'.format(
-                title=ticket_service['title'],
-                id=ticket_service['id']
-            )
-        )
+        # Информация из предыдущего события
+        prev_ticket_service_id = basket.order['ticket_service_id']
+        prev_event_id = basket.order['event_id']
 
-        logger.info('Билетов в заказе: {}'.format(len(basket.order['tickets'])))
+        # Информация из текущего события
+        this_event = cache_factory('event', basket.order['event_uuid'])
+        this_event_id = this_event['ticket_service_event']
+
+        logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id, str(type(prev_ticket_service_id))))
+        logger.info('prev_event_id: {} {}'.format(prev_event_id, str(type(prev_event_id))))
+        logger.info('this_event_id: {} {}'.format(this_event_id, str(type(this_event_id))))
 
         # Формирование ответа
         response = {}
-        response['tickets'] = []
 
-        logger.info('\nОтмена предварительного резерва билетов...')
-        # Отмена предварительного резерва для каждого из билетов
-        for ticket in basket.order['tickets']:
-            logger.info('\n    * {}'.format(ticket))
+        if prev_event_id != this_event_id:
+            response['success'] = True
+            response['tickets'] = {}
 
-            # Параметры для отправки запроса к сервису продажи билетов
-            params = {}
-            params['event_id'] = event_id
-            params['order_uuid'] = order_uuid
-            params['action'] = 'remove'
+            logger.info('\nОтмена предыдущего предварительного резерва...')
 
-            keys = (
-                'sector_id',
-                'sector_title',
-                'row_id',
-                'seat_id',
-                'seat_title',
-                'price_group_id',
-                'price',
-                'price_order',
-            )
+            # Информация о сервисе продажи билетов в предыдущем событии
+            prev_ticket_service = cache_factory('ticket_service', prev_ticket_service_id)
+            prev_ts = prev_ticket_service['instance']
 
-            for k in keys:
-                params[k] = ticket[k] if k in ticket else None
+            # Отмена предварительного резерва для каждого из билетов
+            for ticket_id in basket.order['tickets']:
+                logger.info('\n    * {}'.format(basket.order['tickets'][ticket_id]))
 
-            # logger.info('    params: {}'.format(params))
+                # Параметры для отправки запроса к сервису продажи билетов
+                params = {
+                    'event_id':   prev_event_id,
+                    'order_uuid': order_uuid,
+                    'ticket_id':  ticket_id,
+                    'action':     'remove',
+                }
 
-            # Удаление места из предварительного резерва
-            remove = ts.reserve(**params)
-            # logger.info('    remove: {}'.format(remove))
+                # Удаление места из предварительного резерва
+                remove = prev_ts.reserve(**params)
+                response['tickets'][ticket_id] = basket.order['tickets'][ticket_id]
 
-            response['success'] = True if remove['success'] else False
+                logger.info('    remove: {}'.format(remove))
 
-            if remove['success']:
-                response['tickets'].append(params)
-                logger.info('    Резерв билета успешно отменён')
-            else:
-                logger.info('    НЕ удалось отменить резерв билета')
+                if remove['success']:
+                    response['tickets'][ticket_id]['removed'] = True
+                    logger.info('    Билет успешно удалён из предварительного резерва')
+                else:
+                    response['tickets'][ticket_id]['removed'] = False
+                    logger.info('    Билет НЕ удалось удалить из предварительного резерва')
 
-            # basket.remove_ticket(params)
+                # Задержка в несколько секунд во избежание возможных ошибок
+                sleep(randint(2, 5))
 
-            # Задержка в 2 секунды во избежание возможных ошибок
-            sleep(2)
+            # Удаление старого предварительного резерва
+            basket.delete_order()
+            response['message'] = 'Старый предварительный резерв успешно удалён'
+        else:
+            response['success'] = False
+            response['message'] = 'Удаление предварительного резерва НЕ требуется'
 
-        # Удалить кэш старого предварительного резерва
-        basket.delete_order_cache()
-
-        return JsonResponse(response, safe=False)
+        return JsonResponseUTF8(response)

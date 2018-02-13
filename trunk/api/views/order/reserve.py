@@ -1,13 +1,12 @@
 import logging
 import uuid
-import simplejson as json
-
-from django.http import JsonResponse
 
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from bezantrakta.order.order_basket import OrderBasket
+from bezantrakta.order import OrderBasket
+
+from api.shortcuts import JsonResponseUTF8
 
 
 def reserve(request):
@@ -17,36 +16,46 @@ def reserve(request):
 
         # UUID события
         event_uuid = request.POST.get('event_uuid', None)
-        # UUID заказа
-        order_uuid = request.POST.get('order_uuid', uuid.uuid4())
-
-        seat = json.loads(request.POST.get('seat', {}))
-        action = request.POST.get('action', 'add')
-
-        # Если UUID события или места не получен - возвращается НЕуспешный ответ с ошибкой
         if not event_uuid:
-            return {'success': False, 'message': 'Отсутствует уникальный идентификатор события'}
-        if not seat:
-            return {'success': False, 'message': 'Отсутствует место для резерва'}
+            response = {'success': False, 'message': 'Отсутствует UUID события'}
+            return JsonResponseUTF8(response, status=404)
+
+        # UUID заказа
+        order_uuid = request.POST.get('order_uuid', None)
+        if not order_uuid:
+            response = {'success': False, 'message': 'Отсутствует UUID предварительного резерва'}
+            return JsonResponseUTF8(response, status=404)
+
+        # Идентификатор билета
+        ticket_id = request.POST.get('ticket_id', None)
+        if not ticket_id:
+            response = {'success': False, 'message': 'Отсутствует идентификатор билета для резерва'}
+            return JsonResponseUTF8(response, status=404)
+
+        # seat = json.loads(request.POST.get('seat', {}))
+        # if not seat:
+        #     response = {'success': False, 'message': 'Отсутствует билет для резерва'}
+        #     return JsonResponseUTF8(response, status=404)
+
+        action = request.POST.get('action', 'add')
 
         # Получение параметров сайта
         domain = cache_factory('domain', request.domain_slug)
 
+        # Получение существующего ранее инициализированного предварительного резерва
+        basket = OrderBasket(order_uuid=order_uuid)
+
         # Информация о событии из кэша
         event = cache_factory('event', event_uuid)
+        event_id = event['ticket_service_event']
+
+        if not event:
+            response = {'success': False, 'message': 'Отсутствует запрошенное событие'}
+            return JsonResponseUTF8(response, status=404)
 
         # Информация о сервисе продажи билетов из кэша
         ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
         ts = ticket_service['instance']
-
-        # Класс для работы с заказом (на данный момент - с предварительным резервом)
-        # Создание нового пустого заказа в файловом кэше или получение имеющегося
-        basket = OrderBasket(
-            order_uuid=order_uuid,
-            ticket_service_id=ticket_service['id'],
-            event_uuid=event_uuid,
-            event_id=event['ticket_service_event'],
-        )
 
         now = timezone_now()
         logger.info('\n----------Предварительный резерв {}----------'.format(order_uuid))
@@ -69,7 +78,7 @@ def reserve(request):
         elif action == 'remove':
             logger.info('\nДействие: удалить')
 
-        logger.info('\nВыбранное место: {}'.format(seat))
+        logger.info('\nИдентификатор билета: {}'.format(ticket_id))
 
         logger.info('\nПредыдущее состояние заказа:')
         if basket.order['tickets']:
@@ -83,56 +92,55 @@ def reserve(request):
 
         # Параметры для отправки запроса к сервису продажи билетов
         params = {}
-        params['event_id'] = event['ticket_service_event']
+        params['event_id'] = event_id
         params['order_uuid'] = order_uuid
+        params['ticket_id'] = ticket_id
         params['action'] = action
 
-        keys = (
-            ('sector_id', int,),
-            ('sector_title', str,),
-            ('row_id', int,),
-            ('seat_id', int,),
-            ('seat_title', str,),
-            ('price_group_id', int,),
-            ('price', str,),
-            ('price_order', int,),
-        )
-        # Преобразование типов
-        for k in keys:
-            try:
-                params[k[0]] = k[1](seat[k[0]]) if k[0] in seat else None
-            except (TypeError, ValueError):
-                params[k[0]] = None
-
-        # Формирование ответа
-        response = {k[0]: params[k[0]] for k in keys}
-        response['action'] = action
+        # Текущее состояние мест и цен в событии
+        seats_and_prices = cache_factory('seats_and_prices', event_uuid)
 
         # Универсальный метод для работы с предварительным резервом мест
         reserve = ts.reserve(**params)
+        logger.info('\nreserve: {}'.format(reserve))
 
-        response['success'] = True if reserve['success'] else False
+        if reserve['success']:
+            if action == 'add':
+                ticket = seats_and_prices['seats'][ticket_id]
+                # ticket['ticket_id'] = ticket_id
+                ticket['ticket_uuid'] = uuid.uuid4()
+                ticket['added'] = timezone_now().astimezone(domain['city_timezone'])
+                basket.add_ticket(ticket)
+            elif action == 'remove':
+                basket.remove_ticket(ticket_id)
 
-        if not reserve['success']:
-            response['code'] = reserve['code']
-            response['message'] = reserve['message']
-            return JsonResponse(response, safe=False)
+            response = reserve
 
-        # logger.info('response: {}'.format(response))
+            response['tickets_count'] = basket.order['tickets_count']
+            response['tickets'] = basket.order['tickets']
+            response['total'] = basket.order['total']
 
-        if action == 'add':
-            basket.add_ticket(response)
-        elif action == 'remove':
-            basket.remove_ticket(response)
+            logger.info('\nresponse: {}'.format(response))
 
-        logger.info('\nПоследующее состояние заказа:')
-        if basket.order['tickets']:
-            logger.info('    Билеты в заказе:')
-            for t in basket.order['tickets']:
-                logger.info('    * {}'.format(t))
+            logger.info('\nПоследующее состояние заказа:')
+            if basket.order['tickets']:
+                logger.info('    Билеты в заказе:')
+                for t in basket.order['tickets']:
+                    logger.info('    * {}'.format(t))
+            else:
+                logger.info('    Билеты в заказе: []')
+            logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
+            logger.info('    Сумма цен на билеты: {}'.format(basket.order['total']))
         else:
-            logger.info('    Билеты в заказе: []')
-        logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
-        logger.info('    Сумма цен на билеты: {}'.format(basket.order['total']))
+            response = {
+                'success': False,
+                'code':    reserve['code'],
+                'message': reserve['message'],
+            }
 
-        return JsonResponse(response, safe=False)
+            logger.info('Код ошибки: {}'.format(reserve['code']))
+            logger.info('Сообщение об ошибке: {}'.format(reserve['message']))
+
+            return JsonResponseUTF8(response, status=400)
+
+        return JsonResponseUTF8(response)

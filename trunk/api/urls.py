@@ -3,7 +3,7 @@ from django.conf.urls import url
 # События
 from api.views.event import seats_and_prices
 # Заказы
-from api.views.order import prev_order_delete, reserve
+from api.views.order import prev_order_delete, initialize, reserve, change_type
 # Оплата
 from api.views.payment import payment_handler, sngb_proxy
 
@@ -19,20 +19,34 @@ event_urls = [
 ]
 
 order_urls = [
-    # Удаление предыдущего заказа в другом событии при заходе в новое событие
+    # Попытка удалить предыдущий предварительный резерв из другого события, если он был сделан ранее
     url(
         r'^order/prev_order_delete/$',
         prev_order_delete,
         name='prev_order_delete'
     ),
 
-    # Предварительный резерв места (добавление в резерв или удаление из резерва)
+    # Получение информации о текущем предварительном резерве или создание нового пустого предварительного резерва
+    url(
+        r'^order/initialize/$',
+        initialize,
+        name='initialize'
+    ),
+
+    # Добавление/удаление билета в предварительном резерве
     # В зависимости от сервиса продажи билетов может работать или НЕ работать
-    # В последнем случае всегда возвращается успешный результат со всеми переданными аргументы места
+    # В последнем случае всегда возвращается успешный результат со всеми переданными аргументами
     url(
         r'^order/reserve/$',
         reserve,
         name='reserve'
+    ),
+
+    # Изменение типа заказа на шаге 2 заказа билетов (ДО создания заказа)
+    url(
+        r'^order/change_type/$',
+        change_type,
+        name='change_type'
     ),
 ]
 
