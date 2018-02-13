@@ -13,7 +13,7 @@ from project.cache import cache_factory
 from project.shortcuts import message, render_messages, timezone_now
 
 from ..models import Order, OrderTicket
-from ..settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS, ORDER_TYPE
+from ..settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION, ORDER_TYPE
 
 
 def order(request):
@@ -143,10 +143,10 @@ def order(request):
             logger.info(event)
 
             logger.info('\nРеквизиты покупателя')
-            logger.info('Получение билетов: {delivery}'.format(delivery=ORDER_DELIVERY[customer['delivery']]))
+            logger.info('Получение билетов: {delivery}'.format(delivery=ORDER_DELIVERY_CAPTION[customer['delivery']]))
             if customer['delivery'] == 'courier':
                 logger.info('Адрес доставки: {address}'.format(address=customer['address']))
-            logger.info('Оплата: {payment}'.format(payment=ORDER_PAYMENT[customer['payment']]))
+            logger.info('Оплата: {payment}'.format(payment=ORDER_PAYMENT_CAPTION[customer['payment']]))
             logger.info('ФИО: {name}'.format(name=customer['name']))
             logger.info('Email: {email}'.format(email=customer['email']))
             logger.info('Телефон: {phone}'.format(phone=customer['phone']))
@@ -209,7 +209,7 @@ def order(request):
             if order_create['success']:
                 order['status'] = 'ordered'
                 logger.info('Статус заказа: {status}'.format(
-                    status=ORDER_STATUS[order['status']]['description'])
+                    status=ORDER_STATUS_CAPTION[order['status']]['description'])
                 )
                 order['order_id'] = order_create['order_id']
                 logger.info('Идентификатор заказа: {order_id}'.format(order_id=order['order_id']))
@@ -293,7 +293,7 @@ def order(request):
                                 row_id=t['row_id'],
                                 seat_id=t['seat_id'],
                                 seat_title=t['seat_title'],
-                                price_group_id=t['price_group_id'],
+                                # price_group_id=t['price_group_id'],
                                 price=t['price'],
                                 domain_id=domain['domain_id']
                             )
@@ -307,16 +307,16 @@ def order(request):
                         # Подтверждение обычного резерва в БД
                         order['status'] = 'approved'
                         logger.info('Статус заказа: {status}'.format(
-                            status=ORDER_STATUS[order['status']]['description'])
+                            status=ORDER_STATUS_CAPTION[order['status']]['description'])
                         )
 
                         Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
 
                         # Человекопонятный текст для email-уведомлений
-                        customer['delivery_description'] = ORDER_DELIVERY[customer['delivery']]
-                        customer['payment_description'] = ORDER_PAYMENT[customer['payment']]
-                        customer['status_color'] = ORDER_STATUS[order['status']]['color']
-                        customer['status_description'] = ORDER_STATUS[order['status']]['description']
+                        customer['delivery_description'] = ORDER_DELIVERY_CAPTION[customer['delivery']]
+                        customer['payment_description'] = ORDER_PAYMENT_CAPTION[customer['payment']]
+                        customer['status_color'] = ORDER_STATUS_CAPTION[order['status']]['color']
+                        customer['status_description'] = ORDER_STATUS_CAPTION[order['status']]['description']
 
                         # Отправка email администратору и покупателю
                         from_email = {}
@@ -414,7 +414,7 @@ def order(request):
                                 Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
 
                                 logger.info('Статус заказа: {status}'.format(
-                                    status=ORDER_STATUS[order['status']]['description'])
+                                    status=ORDER_STATUS_CAPTION[order['status']]['description'])
                                 )
                             # Заказ НЕ удалось отметить как отменённый в сервисе продажи билетов
                             else:

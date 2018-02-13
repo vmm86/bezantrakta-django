@@ -1,3 +1,4 @@
+import decimal
 import simplejson as json
 from abc import ABC, abstractmethod, abstractproperty
 
@@ -42,7 +43,7 @@ class ProjectCache(ABC):
 
         self.set_cache_key(entity, object_id, **kwargs)
         self.value = cache.get(self.key)
-        debug_console('cache_key:', self.key)
+        debug_console('cache_key: ', self.key)
 
         # При явном инвалидировании кэша сначала удаляется его старое значение
         if reset or delete:
@@ -55,30 +56,32 @@ class ProjectCache(ABC):
         if not self.value or reset:
             # Получаем значение из БД
             if self.database_first:
+                debug_console('try database...')
                 try:
                     self.value = dict(self.get_object(object_id, **kwargs))
                 except (ObjectDoesNotExist, TypeError):
                     debug_console('nothing found in DB')
+                    debug_console('obj after except...')
                     self.value = kwargs['obj'] if 'obj' in kwargs else None
             # Получаем значение из входных параметров в **kwargs
             else:
+                debug_console('obj from params...')
                 self.value = kwargs['obj'] if 'obj' in kwargs else None
-                print('self.value', self.value)
+                debug_console('self.value', str(self.value)[:200], '...', type(self.value))
 
             # При необходимости обрабатываем полученные данные
             self.cache_preprocessing(**kwargs)
-            debug_console('cache_value_preprocessed:', self.value, type(self.value))
+            debug_console('cache_value_preprocessed:', str(self.value)[:200], '...', type(self.value))
 
             # Записываем полученные данные в кэш
             cache.set(self.key, json.dumps(self.value, ensure_ascii=False, default=json_serializer))
-            print('self.value', self.value)
             debug_console('cache_value_set')
         else:
             # Получаем данные из имеющейся в кэше JSON-строки
-            self.value = json.loads(self.value)
+            self.value = json.loads(self.value, parse_float=decimal.Decimal)
             # При необходимости обрабатываем полученные из кэша данные
             self.cache_postprocessing(**kwargs)
-            debug_console('cache_value_postprocessed:', self.value, type(self.value))
+            debug_console('cache_value_postprocessed:', str(self.value)[:200], '...', type(self.value))
 
     def __str__(self):
         return '{cls}({key})'.format(
