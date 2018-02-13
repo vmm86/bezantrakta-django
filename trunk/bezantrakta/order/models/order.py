@@ -171,6 +171,11 @@ class Order(models.Model):
         decimal_places=2,
         verbose_name=_('order_total'),
     )
+    overall = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name=_('order_overall'),
+    )
     domain = models.ForeignKey(
         'location.Domain',
         on_delete=models.CASCADE,
