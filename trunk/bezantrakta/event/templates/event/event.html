@@ -234,6 +234,7 @@
     {# Базовый функционал процесса заказа билетов #}
     {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_scheme_sectors=venue_scheme_sectors %}
     {# AJAX-запросы к внутреннему API сайта #}
+    {% include "order/ajax_order_prev_order_delete.js" with active="step1" %}
     {% include "order/ajax_order_initialize.js" with active="step1" %}
     {% include "order/ajax_event_seats_and_prices.js" with active="step1" %}
     {% include "order/ajax_order_reserve.js" with active="step1" %}

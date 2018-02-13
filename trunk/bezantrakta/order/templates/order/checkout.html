@@ -72,6 +72,7 @@
     {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order=order order_total_plus_commission=order_total_plus_commission courier_price=courier_price customer=customer %}
 
     {# AJAX-запросы к внутреннему API сайта #}
+    {% include "order/ajax_order_prev_order_delete.js" with active="step1" %}
     {% include "order/ajax_order_initialize.js" with active="step2" %}
     {% include "order/ajax_event_seats_and_prices.js" with active="step2" %}
     {% include "order/ajax_order_reserve.js" with active="step2" %}
