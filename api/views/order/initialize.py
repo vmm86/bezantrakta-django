@@ -4,7 +4,7 @@ import uuid
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from bezantrakta.order import OrderBasket
+from bezantrakta.order.order_basket import OrderBasket
 from bezantrakta.order.shortcuts import new_blank_order
 
 from api.shortcuts import JsonResponseUTF8
@@ -24,7 +24,7 @@ def initialize(request):
             event_uuid = uuid.UUID(event_uuid)
         except (TypeError, ValueError):
             response = {'success': False, 'message': 'UUID события некорректен или отсутствует'}
-            return JsonResponseUTF8(response, status=400)
+            return JsonResponseUTF8(response)
 
         # UUID предварительного резерва
         order_uuid = request.GET.get('order_uuid', None)
@@ -46,15 +46,17 @@ def initialize(request):
             # Получение существующего предварительного резерва
             basket = OrderBasket(order_uuid=order_uuid)
 
+            log_order = {'uuid': None, 'state': None, }
             # Если предварительный резерв с полученным order_uuid по каким-то причинам НЕ существует
             if not basket or not basket.order:
                 # Создаётся новый пустой предварительный резерв
                 basket = new_blank_order(event_uuid)
-                logger.info('\nПредварительный резерв с указанным order_uuid {} НЕ существует'.format(order_uuid))
-                logger.info('Новый пустой предварительный резерв: {}'.format(basket.order))
-
-            logger.info('\norder_uuid: {} {}'.format(order_uuid, str(type(order_uuid))))
-            logger.info('Существующий предварительный резерв: {}'.format(basket.order))
+                logger.info('\nПредварительный резерв {} НЕ существует'.format(order_uuid))
+                log_order['uuid'] = basket.order['order_uuid']
+                log_order['state'] = 'Новый пустой предварительный резерв'
+            else:
+                log_order['uuid'] = order_uuid
+                log_order['state'] = 'Существующий предварительный резерв'
 
             # Информация из предыдущего события
             prev_ticket_service_id = basket.order['ticket_service_id']
@@ -64,20 +66,26 @@ def initialize(request):
             this_event = cache_factory('event', basket.order['event_uuid'])
             this_event_id = this_event['ticket_service_event']
 
-            logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id, str(type(prev_ticket_service_id))))
-            logger.info('prev_event_id: {} {}'.format(prev_event_id, str(type(prev_event_id))))
-            logger.info('this_event_id: {} {}'.format(this_event_id, str(type(this_event_id))))
+            logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id))
+            logger.info('prev_event_id: {} {}'.format(prev_event_id))
+            logger.info('this_event_id: {} {}'.format(this_event_id))
 
             # Если существующий предварительный резерв был сделан в другом событии
             if prev_event_id != this_event_id:
                 # Этот предварительный резерв будет удалён при параллельном запуске ``prev_order_delete``
                 # Создаётся новый пустой предварительный резерв
                 basket = new_blank_order(event_uuid)
+                log_order['uuid'] = basket.order['order_uuid']
+                log_order['state'] = 'Новый пустой предварительный резерв'
         # Если order_uuid НЕ получен
         else:
             # Создаётся новый пустой предварительный резерв
             basket = new_blank_order(event_uuid)
-            logger.info('\nНовый пустой предварительный резерв: {}'.format(basket.order))
+            log_order['uuid'] = basket.order['order_uuid']
+            log_order['state'] = 'Новый пустой предварительный резерв'
+
+        logger.info('order_uuid: {}'.format(log_order['uuid']))
+        logger.info('{}: {}'.format(log_order['state'], basket.order))
 
         # Формирование ответа
         response = {}

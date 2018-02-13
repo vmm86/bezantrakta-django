@@ -3,7 +3,7 @@ import logging
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from bezantrakta.order import OrderBasket
+from bezantrakta.order.order_basket import OrderBasket
 from bezantrakta.order.settings import ORDER_TYPE, ORDER_TYPE_MAPPING
 
 from api.shortcuts import JsonResponseUTF8
@@ -20,15 +20,15 @@ def change_type(request):
 
         if not order_uuid:
             response = {'success': False, 'message': 'Отсутствует UUID предварительного резерва'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
 
         if not order_type:
             response = {'success': False, 'message': 'Отсутствует тип заказа'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
         else:
             if order_type not in ORDER_TYPE:
                 response = {'success': False, 'message': 'Указан некорректный тип заказа'}
-            return JsonResponseUTF8(response, status=400)
+            return JsonResponseUTF8(response)
 
         # Класс для работы с заказом (на данный момент - с предварительным резервом)
         basket = OrderBasket(order_uuid=order_uuid)
@@ -36,7 +36,7 @@ def change_type(request):
         # Если предварительный резерв не существует - возвращается НЕуспешный ответ с ошибкой
         if not basket or not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
         # else:
         #     if not basket.order['tickets']:
         #         response = {'success': False, 'message': 'В предварительном резерве нет билетов'}
@@ -47,7 +47,7 @@ def change_type(request):
 
         if not event:
             response = {'success': False, 'message': 'Отсутствует событие с указанным UUID'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
 
         # Информация о сервисе продажи билетов
         ticket_service = cache_factory('ticket_service', event['ticket_service_id'])

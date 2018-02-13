@@ -6,7 +6,7 @@ from time import sleep
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from bezantrakta.order import OrderBasket
+from bezantrakta.order.order_basket import OrderBasket
 
 from api.shortcuts import JsonResponseUTF8
 
@@ -27,7 +27,7 @@ def prev_order_delete(request):
             event_uuid = uuid.UUID(event_uuid)
         except (TypeError, ValueError):
             response = {'success': False, 'message': 'UUID события некорректен или отсутствует'}
-            return JsonResponseUTF8(response, status=400)
+            return JsonResponseUTF8(response)
 
         # UUID предварительного резерва
         order_uuid = request.POST.get('order_uuid', None)
@@ -36,21 +36,17 @@ def prev_order_delete(request):
                 order_uuid = uuid.UUID(order_uuid)
             except (TypeError, ValueError):
                 response = {'success': False, 'message': 'UUID предварительного резерва некорректен или отсутствует'}
-                return JsonResponseUTF8(response, status=400)
+                return JsonResponseUTF8(response)
 
         # Получение параметров сайта
         domain = cache_factory('domain', request.domain_slug)
-
-        logger.info('\n----------prev_order_remove----------'.format(order_uuid))
-        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
-        logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
 
         # Получение предварительного резерва в предыдущем событии
         basket = OrderBasket(order_uuid=order_uuid)
 
         if not basket or not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
 
         if not basket.order['tickets']:
             # Удаление старого предварительного резерва (без билетов)
@@ -62,9 +58,6 @@ def prev_order_delete(request):
             }
             return JsonResponseUTF8(response)
 
-        logger.info('order_uuid: {} {}'.format(order_uuid, str(type(order_uuid))))
-        logger.info('\nПредыдущий предварительный резерв: {}'.format(basket.order))
-
         # Информация из предыдущего события
         prev_ticket_service_id = basket.order['ticket_service_id']
         prev_event_id = basket.order['event_id']
@@ -73,14 +66,21 @@ def prev_order_delete(request):
         this_event = cache_factory('event', basket.order['event_uuid'])
         this_event_id = this_event['ticket_service_event']
 
-        logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id, str(type(prev_ticket_service_id))))
-        logger.info('prev_event_id: {} {}'.format(prev_event_id, str(type(prev_event_id))))
-        logger.info('this_event_id: {} {}'.format(this_event_id, str(type(this_event_id))))
-
         # Формирование ответа
         response = {}
 
         if prev_event_id != this_event_id:
+            logger.info('\n----------prev_order_remove----------'.format(order_uuid))
+            logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
+            logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
+
+            logger.info('order_uuid: {} {}'.format(order_uuid, str(type(order_uuid))))
+            logger.info('\nПредыдущий предварительный резерв: {}'.format(basket.order))
+
+            logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id, str(type(prev_ticket_service_id))))
+            logger.info('prev_event_id: {} {}'.format(prev_event_id, str(type(prev_event_id))))
+            logger.info('this_event_id: {} {}'.format(this_event_id, str(type(this_event_id))))
+
             response['success'] = True
             response['tickets'] = {}
 

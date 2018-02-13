@@ -14,12 +14,12 @@ def seats_and_prices(request):
         # Если UUID события не получен - возвращается пустой ответ
         if event_uuid is None:
             response = {'success': False, 'message': 'Отсутствует UUID события'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
         try:
             event_uuid = uuid.UUID(event_uuid)
         except (TypeError, ValueError):
             response = {'success': False, 'message': 'Получен неправильный UUID события'}
-            return JsonResponseUTF8(response, status=400)
+            return JsonResponseUTF8(response)
 
         # Информация о событии из кэша
         event = cache_factory('event', event_uuid)
