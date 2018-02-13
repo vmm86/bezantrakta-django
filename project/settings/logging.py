@@ -215,7 +215,7 @@ LOGGING = {
     # Loggers
     'loggers': {
         'django.request': {
-            'handlers': ['django_request_log', ],
+            'handlers': ['console', 'django_request_log', ],
             'level': LOGGING_LEVEL,
         },
         'django.server': {
@@ -242,12 +242,12 @@ LOGGING = {
             'propagate': True,
         },
         'bezantrakta.reserve': {
-            'handlers': ['console', 'bezantrakta_reserve_log', ],
+            'handlers': ['bezantrakta_reserve_log', ],
             'level': LOGGING_LEVEL,
             'propagate': True,
         },
         'bezantrakta.order': {
-            'handlers': ['console', 'bezantrakta_order_log', ],
+            'handlers': ['bezantrakta_order_log', ],
             'level': LOGGING_LEVEL,
             'propagate': True,
         },
