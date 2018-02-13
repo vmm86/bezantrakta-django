@@ -15,8 +15,8 @@ from ..models import Order, OrderTicket
 class OrderTicketInline(admin.TabularInline):
     model = OrderTicket
     extra = 0
-    fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id',)
-    readonly_fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id',)
+    fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
+    readonly_fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
     show_change_link = True
     template = 'admin/tabular_custom.html'
 

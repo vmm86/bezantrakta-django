@@ -87,10 +87,6 @@ class OrderTicket(models.Model):
         max_length=128,
         verbose_name=_('order_ticket_seat_title'),
     )
-    price_group_id = models.PositiveIntegerField(
-        null=True,
-        verbose_name=_('order_ticket_price_group'),
-    )
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
