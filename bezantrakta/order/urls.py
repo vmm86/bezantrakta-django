@@ -20,7 +20,7 @@ urlpatterns = [
     ),
     # Шаг 3 заказа билетов (подтверждение успешного заказа с краткой информацией о нём)
     url(
-        r'^afisha/order/(?P<order_uuid>[A-z0-9\-]+)/$',
+        r'^afisha/order/(?P<order_uuid>[0-9A-Fa-f\-]+)/$',
         confirmation,
         name='confirmation'
     ),
