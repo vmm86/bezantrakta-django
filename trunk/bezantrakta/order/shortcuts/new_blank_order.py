@@ -1,6 +1,6 @@
 from project.cache import cache_factory
 
-from bezantrakta.order import OrderBasket
+from bezantrakta.order.order_basket import OrderBasket
 
 
 def new_blank_order(event_uuid):

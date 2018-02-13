@@ -13,6 +13,11 @@ function ajax_order_initialize() {
 }
 
 function ajax_order_initialize_success(response, status, xhr) {
+    {% if debug %}
+    console.log('previous order removed: ', response['success']);
+    console.log('order initialized: ',      response['order']);
+    {% endif %}
+
     {# Получение параметров предварительного резерва (нового или существующего) #}
     window.order = response['order'];
 
@@ -22,11 +27,6 @@ function ajax_order_initialize_success(response, status, xhr) {
     window.customer['phone']   = window.cookies.get('bezantrakta_customer_phone');
     window.customer['email']   = window.cookies.get('bezantrakta_customer_email');
     window.customer['address'] = window.cookies.get('bezantrakta_customer_address');
-
-    {% if debug %}
-    console.log('previous order removed: ', response['prev_order_removed']);
-    console.log('order initialized: ', window.order);
-    {% endif %}
 
     order_cookies_update(
         ['event_uuid', 'order_uuid']

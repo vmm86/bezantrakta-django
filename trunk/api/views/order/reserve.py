@@ -4,7 +4,7 @@ import uuid
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
-from bezantrakta.order import OrderBasket
+from bezantrakta.order.order_basket import OrderBasket
 
 from api.shortcuts import JsonResponseUTF8
 
@@ -18,24 +18,19 @@ def reserve(request):
         event_uuid = request.POST.get('event_uuid', None)
         if not event_uuid:
             response = {'success': False, 'message': 'Отсутствует UUID события'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
 
         # UUID заказа
         order_uuid = request.POST.get('order_uuid', None)
         if not order_uuid:
             response = {'success': False, 'message': 'Отсутствует UUID предварительного резерва'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
 
         # Идентификатор билета
         ticket_id = request.POST.get('ticket_id', None)
         if not ticket_id:
             response = {'success': False, 'message': 'Отсутствует идентификатор билета для резерва'}
-            return JsonResponseUTF8(response, status=404)
-
-        # seat = json.loads(request.POST.get('seat', {}))
-        # if not seat:
-        #     response = {'success': False, 'message': 'Отсутствует билет для резерва'}
-        #     return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
 
         action = request.POST.get('action', 'add')
 
@@ -51,7 +46,7 @@ def reserve(request):
 
         if not event:
             response = {'success': False, 'message': 'Отсутствует запрошенное событие'}
-            return JsonResponseUTF8(response, status=404)
+            return JsonResponseUTF8(response)
 
         # Информация о сервисе продажи билетов из кэша
         ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
@@ -141,6 +136,6 @@ def reserve(request):
             logger.info('Код ошибки: {}'.format(reserve['code']))
             logger.info('Сообщение об ошибке: {}'.format(reserve['message']))
 
-            return JsonResponseUTF8(response, status=400)
+            return JsonResponseUTF8(response)
 
         return JsonResponseUTF8(response)
