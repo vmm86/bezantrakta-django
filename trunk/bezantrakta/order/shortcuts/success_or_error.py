@@ -9,7 +9,7 @@ from project.shortcuts import build_absolute_url, timezone_now
 from bezantrakta.eticket.shortcuts import render_eticket
 
 from .models import Order
-from .settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
+from .settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION
 
 
 def success_or_error(domain, event, order, payment_status, logger):
@@ -84,14 +84,14 @@ def success_or_error(domain, event, order, payment_status, logger):
             Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
 
             logger.info('Статус заказа: {status}\n'.format(
-                status=ORDER_STATUS[order['status']]['description'])
+                status=ORDER_STATUS_CAPTION[order['status']]['description'])
             )
 
             # Человекопонятный текст для email-уведомлений
-            customer['delivery_description'] = ORDER_DELIVERY[customer['delivery']]
-            customer['payment_description'] = ORDER_PAYMENT[customer['payment']]
-            customer['status_color'] = ORDER_STATUS[order['status']]['color']
-            customer['status_description'] = ORDER_STATUS[order['status']]['description']
+            customer['delivery_description'] = ORDER_DELIVERY_CAPTION[customer['delivery']]
+            customer['payment_description'] = ORDER_PAYMENT_CAPTION[customer['payment']]
+            customer['status_color'] = ORDER_STATUS_CAPTION[order['status']]['color']
+            customer['status_description'] = ORDER_STATUS_CAPTION[order['status']]['description']
 
             # Отправка email администратору и покупателю
             from_email = {}
@@ -209,7 +209,7 @@ def success_or_error(domain, event, order, payment_status, logger):
             Order.objects.filter(id=order['order_uuid']).update(status=order['status'])
 
             logger.info('Статус заказа: {status}'.format(
-                status=ORDER_STATUS[order['status']]['description'])
+                status=ORDER_STATUS_CAPTION[order['status']]['description'])
             )
         # Заказ НЕ удалось отметить как отменённый в сервисе продажи билетов
         else:
