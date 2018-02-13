@@ -551,29 +551,33 @@ class Radario(TicketService):
 
         return events
 
+    # def scheme_zones(self, **kwargs):
+    #     """Список зон в конкретном зале.
+
+    #     Args:
+    #         scheme_id (int): Идентификатор зала.
+
+    #     Returns:
+    #         dict: Словарь, где ключи - идентификаторы секторов, значения - названия секторов.
+    #     """
+    #     scheme = self.scheme(scheme_id=kwargs['scheme_id'])
+
+    #     scheme_zones = {s['id']: s['name'].lower() for s in scheme['scheme_zones']}
+
+    #     return scheme_zones
+
     def sectors(self, **kwargs):
-        """Список секторов в конкретном зале.
+        """Секторы в конкретном событии (с дочерними списками мест для каждого сектора).
 
-        Args:
-            scheme_id (int): Идентификатор зала.
-
-        Returns:
-            dict: Словарь, где ключи - идентификаторы секторов, значения - названия секторов.
-        """
-        scheme = self.scheme(scheme_id=kwargs['scheme_id'])
-
-        sectors = {s['id']: s['name'].lower() for s in scheme['scheme_zones']}
-
-        return sectors
-
-    def price_groups(self, **kwargs):
-        """Группы цен в конкретном событии (с дочерними списками мест для каждой группы цен).
+        Секторы в API Радарио - по сути группы билетов с одинаковой ценой (``ticket_type``).
+        В разных событиях они могут содержать в себе разные места,
+        т.е. секторы НЕ привязаны жёстко к местам в схеме зала.
 
         Args:
             event_id (int): Идентификатор события.
 
         Returns:
-            list: Список словарей с информацией о группах цен.
+            list: Список словарей с информацией о секторах.
         """
         method = 'GET'
         url = '/events/{event_id}/ticket_types'.format(event_id=kwargs['event_id'])
@@ -584,13 +588,13 @@ class Radario(TicketService):
             data['onlyWithOrderCreationAvailableViaApi'] = True
         output_mapping = {
             # Идентификатор группы цен
-            'id':              self.internal('price_group_id', int,),
+            'id':              self.internal('sector_id', int,),
             # Название группы цен
-            'title':           self.internal('price_group_title', str,),
+            'title':           self.internal('sector_title', str,),
             # Цена
             'price':           self.internal('price', Decimal,),
             # Группа цен с местами для сидения или нет
-            'withSeats':       self.internal('is_price_group_with_seats', bool,),
+            'withSeats':       self.internal('is_sector_with_seats', bool,),
             # Список словарей с информацией о местах
             'seats':           self.internal('seats', list,),
             # Атрибуты seats
@@ -611,16 +615,17 @@ class Radario(TicketService):
             # Идентификатор сектора
             'zoneId': None,
         }
-        price_groups = self.request(method, url, data, output_mapping)
+        sectors = self.request(method, url, data, output_mapping)
+        # print('\nsectors:\n', sectors, '\n')
 
-        for pg in price_groups:
+        for sec in sectors:
             # Число свободных мест
-            pg['seats_free_count'] = pg['seats_all_count'] - pg['seats_sold_count']
+            sec['seats_free_count'] = sec['seats_all_count'] - sec['seats_sold_count']
 
-        return price_groups
+        return sectors
 
     def seats_and_prices(self, **kwargs):
-        """Доступные для продажи места в конкретном событии.
+        """Доступные для продажи места в событии и список цен на билеты.
 
         Args:
             event_id (int): Идентификатор события.
@@ -631,78 +636,77 @@ class Radario(TicketService):
         """
         response = {}
 
-        price_groups = self.price_groups(event_id=kwargs['event_id'])
+        sectors = self.sectors(event_id=kwargs['event_id'])
 
-        prices = sorted([pg['price'] for pg in price_groups])
-        response['prices'] = prices
-        # print('\nprice_groups:\n', price_groups, '\n')
+        if type(sectors) is list:
+            response['success'] = True
 
-        # Если билеты с местами в какой-либо схеме зала -
-        if kwargs['scheme_id'] != 0:
-            scheme = self.scheme(scheme_id=kwargs['scheme_id'])
-            # print('\nscheme_zones:\n', scheme['scheme_zones'], '\n')
+            prices = sorted([sec['price'] for sec in sectors])
+            response['prices'] = prices
+            # print('\nsectors:\n', sectors, '\n')
 
-            # Создаём словарь для сопоставления ID мест и ID секторов из метода `scheme`,
-            # т.к. ID секторов нельзя получить в методе `price_groups`
-            seat_sector_mapping = {}
-            for scheme_zone in scheme['scheme_zones']:
-                for seat in scheme_zone['seats']:
-                    if seat['exists']:
-                        seat_sector_mapping[seat['number']] = scheme_zone['id']
-            # print('seat_sector_mapping: \n', seat_sector_mapping, '\n')
+            response['seats'] = {}
+            for sec in sectors:
+                # Билеты с местами
+                if sec['seats'] is not None:
+                    for s in sec['seats']:
+                        # Возвращаются только существующие и ещё не проданные места
+                        if s['exists'] and not s['isoccupied']:
+                            seat = {}
+                            # Уникальный идентификатор билета (сочетание идентификаторов сектора, ряда и места)
+                            ticket_id = str(s['number'])
 
-        seats = []
-        for pg in price_groups:
-            # Билеты с местами
-            if pg['seats'] is not None:
-                for s in pg['seats']:
-                    # Возвращаются только существующие и ещё не проданные места
-                    if s['exists'] and not s['isoccupied']:
-                        s['sector_id'] = seat_sector_mapping.get(s['number'], 0)
-                        # Названия секторов
-                        s['sector_title'] = pg['price_group_title'].lower()  # sector_title.lower()
-                        s['row_id'] = int(s.pop('rowname'))
-                        s['seat_id'] = int(s.pop('number'))
-                        s['seat_title'] = s.pop('seatname')
-                        s['price_group_id'] = pg['price_group_id']
-                        s['price'] = pg['price']
+                            seat['sector_id'] = sec['sector_id']
+                            seat['sector_title'] = sec['sector_title'].lower()
+                            seat['row_id'] = int(s['rowname'])
+                            seat['seat_id'] = int(s['number'])
+                            seat['seat_title'] = s['seatname']
+                            seat['price'] = sec['price']
+                            # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
+                            seat['price_order'] = prices.index(sec['price']) + 1
+
+                            response['seats'][ticket_id] = seat
+                # Билеты без фиксированной рассадки
+                else:
+                    # Возвращаются все свободные билеты без фиксированной рассадки
+                    for idx in range(sec['seats_free_count']):
+                        seat = {}
+                        # Уникальный идентификатор билета (сочетание идентификаторов сектора, ряда и места)
+                        ticket_id = str(idx + 1)
+
+                        seat['sector_id'] = sec['sector_id']
+                        seat['sector_title'] = sec['sector_title'].lower()
+                        seat['row_id'] = 0
+                        seat['seat_id'] = idx + 1
+                        seat['seat_title'] = '0'
+                        seat['price'] = sec['price']
                         # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
-                        s['price_order'] = prices.index(pg['price']) + 1
-                        del s['exists']
-                        del s['isoccupied']
-                        seats.append(s)
-            # Билеты без фиксированной рассадки
-            else:
-                # Возвращаются все свободные билеты без фиксированной рассадки
-                for idx in range(pg['seats_free_count']):
-                    seat = {}
-                    seat['sector_id'] = 0
-                    seat['sector_title'] = pg['price_group_title'].lower()
-                    seat['row_id'] = 0
-                    seat['seat_id'] = idx + 1
-                    seat['seat_title'] = '0'
-                    seat['price_group_id'] = pg['price_group_id']
-                    seat['price'] = pg['price']
-                    # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
-                    seat['price_order'] = prices.index(pg['price']) + 1
-                    seats.append(seat)
+                        seat['price_order'] = prices.index(sec['price']) + 1
 
-        if type(seats) is list:
-            seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
-        response['seats'] = seats
+                        response['seats'][ticket_id] = seat
+
+            del sectors
+        else:
+            response['success'] = False
+
+            response['code'] = sectors['code']
+            response['message'] = sectors['message']
 
         return response
 
     def reserve(self, **kwargs):
         """Добавление или удаление места в предварительном резерве мест (корзина заказа).
 
-        В API Радарио этот метод фактически можно не использовать.
-        Метод будет возвращать обратно передаваемые ему атрибуты места с подтверждением "успешного" результата.
+        Предварительный резерв, предусмотренный в API Радарио, можно НЕ использовать, т.к.:
+        1) он работает только для мест С фиксированной рассадкой.
+        2) предварительно зарезервироанные места НЕ исчезают из списка доступных для продажи мест.
+
+        Поэтому этот метод в любом случае возвращает передаваемые ему атрибуты с подтверждением "успешного" результата.
 
         Args:
             event_id (int): Идентификатор события.
-            price_group_id (int): Идентификатор группы цен.
-            seat_id (int): Идентификатор места.
+            order_uuid (str): Уникальный UUID заказа.
+            ticket_id (str): Идентификатор билета (совпадает с идентификатором места).
             action (str): Действие (`add` - добавить в резерв, `remove` - удалить из резерва).
 
         Returns:
@@ -710,9 +714,12 @@ class Radario(TicketService):
         """
         reserve = {}
         reserve['success'] = True
+
+        reserve['event_id'] = kwargs['event_id']
+        reserve['order_uuid'] = kwargs['order_uuid']
+        reserve['ticket_id'] = kwargs['ticket_id']
         reserve['action'] = kwargs['action']
-        # for kw in kwargs:
-        #     reserve[kw] = kwargs[kw]
+
         return reserve
 
     def ticket_status(self, **kwargs):
@@ -753,8 +760,8 @@ class Radario(TicketService):
             tickets (list): Информация о зарезервированных билетах.
                 Содержимое **tickets**:
                     ticket_uuid (str): Уникальный UUID билета.
+                    sector_id (int): Идентификатор сектора.
                     seat_id (int): Идентификатор места.
-                    price_group_id (int): Идентификатор группы цен.
 
         Returns:
             dict: Информация о созданном заказе.
@@ -784,8 +791,8 @@ class Radario(TicketService):
         }
         for t in kwargs['tickets']:
             ticket_info = {
-                'TicketTypeId': t['price_group_id'],
-                'SeatNumber': t['seat_id'] if t['sector_id'] != 0 else None,
+                'TicketTypeId': t['sector_id'],
+                'SeatNumber': t['seat_id'] if t['row_id'] != 0 else None,  # ???
                 'ParticipantName': kwargs['customer']['name']
             }
             data['Tickets'].append(ticket_info.copy())
@@ -857,10 +864,10 @@ class Radario(TicketService):
             for idx, ord_ticket in enumerate(create['tickets']):
                 ticket = {}
                 for kwa_ticket in kwargs['tickets']:
-                    if ord_ticket['tickettypeid'] == kwa_ticket['price_group_id']:
+                    if ord_ticket['tickettypeid'] == kwa_ticket['sector_id']:
                         # self.logger.info('    ord_ticket[{}] == kwa_ticket[{}]'.format(
                         #     ord_ticket['tickettypeid'],
-                        #     kwa_ticket['price_group_id'])
+                        #     kwa_ticket['sector_id'])
                         # )
                         # Если билет БЕЗ фиксированной рассадки
                         ticket['ticket_uuid'] = (
@@ -913,7 +920,7 @@ class Radario(TicketService):
             for idx, t in enumerate(order['tickets_list']):
                 ticket = {}
                 ticket['bar_code'] = t['barcodekey']  # 12 символов
-                ticket['price_group_id'] = t['tickettypeid']
+                ticket['sector_id'] = t['tickettypeid']
                 ticket['sector_title'] = t['tickettypetitle']
                 if t['tickettypezoneid'] is not None:
                     ticket['sector_id'] = t['tickettypezoneid']
