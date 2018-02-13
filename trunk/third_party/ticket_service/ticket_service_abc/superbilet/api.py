@@ -163,7 +163,7 @@ class SuperBilet(TicketService):
         Returns:
             list: Ответ запрошенного метода СуперБилет.
         """
-        print('\nSuperBilet request:', method, data, '\n')
+        # print('\nSuperBilet request:', method, data, '\n')
 
         # Тело запроса по умолчанию
         default_params = {
@@ -692,7 +692,7 @@ class SuperBilet(TicketService):
         return sectors
 
     def seats_and_prices(self, **kwargs):
-        """Доступные для продажи места в событии (упорядоченные по цене, сектору, ряду, месту) и список цен на билеты.
+        """Доступные для продажи места в событии и список цен на билеты.
 
         Args:
             event_id (int): Идентификатор события.
@@ -728,8 +728,10 @@ class SuperBilet(TicketService):
 
         response = {}
 
-        # Группировка мест по ценам билетов
         if type(seats) is list:
+            response['success'] = True
+
+            # Получение списка цен на билеты, упорядоченного по возрастанию
             seats_by_prices = defaultdict(list)
             for s in seats:
                 seats_by_prices[(s['price'])].append(s)
@@ -737,23 +739,39 @@ class SuperBilet(TicketService):
             prices = sorted([p for p in seats_by_prices])
             response['prices'] = prices
 
+            # Получение перечня свободных для продажи мест
+            response['seats'] = {}
             for s in seats:
                 if s['result_code'] == 0:
+                    seat = {}
+                    # Уникальный идентификатор билета (сочетание идентификаторов сектора, ряда и места)
+                    # padding_zeroes_length = 5 - len(str(s['seat_id']))
+                    # padding_zeroes = '0' * padding_zeroes_length if padding_zeroes_length != 0 else ''
+
+                    ticket_id = '{}_{}_{}'.format(s['sector_id'], s['row_id'], s['seat_id'])
+
+                    seat['sector_id'] = s['sector_id']
                     # Название сектора (если оно получено без ошибок)
-                    s['sector_title'] = (
+                    seat['sector_title'] = (
                         sectors.get(s['sector_id']) if
                         type(sectors) is dict and 'error' not in sectors else
                         ''
                     )
-                    s['seat_title'] = s['seat_id']
+                    seat['row_id'] = s['row_id']
+                    seat['seat_id'] = s['seat_id']
+                    seat['seat_title'] = str(s['seat_id'])
+                    seat['price'] = s['price']
                     # Порядковые номера цен на билеты для сопоставления с цветом места в схеме зала
-                    s['price_order'] = prices.index(s['price']) + 1 if len(prices) > 0 else 0
-                    del s['result_code']
-                else:
-                    del seats[s]
+                    seat['price_order'] = prices.index(s['price']) + 1 if len(prices) > 0 else 0
 
-            seats = sorted(seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
-            response['seats'] = seats
+                    response['seats'][ticket_id] = seat
+
+            del seats
+        else:
+            response['success'] = False
+
+            response['code'] = seats['code']
+            response['message'] = seats['message']
 
         return response
 
@@ -803,9 +821,7 @@ class SuperBilet(TicketService):
         Args:
             event_id (int): Идентификатор события.
             order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
-            sector_id (int): Идентификатор сектора.
-            row_id (int): Идентификатор ряда.
-            seat_id (int): Идентификатор места.
+            ticket_id (str): Идентификатор билета (``сектор_ряд_место``).
             action (str): Действие (``add`` - добавить в резерв, ``remove`` - удалить из резерва).
 
         Returns:
@@ -815,6 +831,12 @@ class SuperBilet(TicketService):
             method = 'PreSetReservation'
         elif kwargs['action'] == 'remove':
             method = 'FreePreReservation'
+
+        # Разбиваем идентификатор билета на составляющие (с преобразованием к целым числам),
+        # чтобы отправить их для резерва в отдельных переменных
+        ticket_id_items = kwargs['ticket_id'].split('_')
+        kwargs['sector_id'], kwargs['row_id'], kwargs['seat_id'] = [int(i) for i in ticket_id_items]
+
         input_mapping = {
             'NomBilKn': 'event_id',
             'cod_sec':  'sector_id',
@@ -838,10 +860,14 @@ class SuperBilet(TicketService):
         reserve = self.request(method, input_mapping, data, output_mapping)
 
         response = {}
-        response['action'] = kwargs['action']
 
         if type(reserve) is list and reserve[0]['result_code'] == 0:
             response['success'] = True
+
+            response['event_id'] = kwargs['event_id']
+            response['order_uuid'] = kwargs['order_uuid']
+            response['ticket_id'] = kwargs['ticket_id']
+            response['action'] = kwargs['action']
         else:
             response['success'] = False
 
