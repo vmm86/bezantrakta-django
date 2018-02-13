@@ -8,8 +8,8 @@ from project.shortcuts import build_absolute_url, timezone_now
 
 from bezantrakta.eticket.shortcuts import render_eticket
 
-from .models import Order
-from .settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION
+from ..models import Order
+from ..settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION
 
 
 def success_or_error(domain, event, order, payment_status, logger):
