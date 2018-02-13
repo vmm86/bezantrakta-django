@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-25 14:43+0000\n"
+"POT-Creation-Date: 2018-02-12 14:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,178 +20,178 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin.py:71
+#: admin/order.py:105
 msgid "order_admin_order_uuid"
 msgstr "Уникальный ID заказа"
 
-#: models/order.py:30
+#: models/order.py:69
 msgid "order_ticket_service"
 msgstr "Сервис продажи билетов"
 
-#: models/order.py:36
+#: models/order.py:75
 msgid "order_ticket_service_order"
 msgstr "ID заказа"
 
-#: models/order.py:42
+#: models/order.py:81
 msgid "order_event"
 msgstr "Событие"
 
-#: models/order.py:46
+#: models/order.py:85
 msgid "order_ticket_service_event"
 msgstr "ID события"
 
-#: models/order.py:49
+#: models/order.py:88
 msgid "order_datetime"
 msgstr "Дата и время"
 
-#: models/order.py:53
+#: models/order.py:92
 msgid "order_name"
 msgstr "ФИО"
 
-#: models/order.py:56
+#: models/order.py:95
 msgid "order_email"
 msgstr "Email"
 
-#: models/order.py:60
+#: models/order.py:99
 msgid "order_phone"
 msgstr "Телефон"
 
-#: models/order.py:66
+#: models/order.py:105
 msgid "order_address"
 msgstr "Адрес доставки"
 
-#: models/order.py:78
+#: models/order.py:117
 msgid "order_mode_self"
 msgstr "Выкуп в кассе"
 
-#: models/order.py:79
+#: models/order.py:118
 msgid "order_mode_courier"
 msgstr "Доставка курьером"
 
-#: models/order.py:80
+#: models/order.py:119
 msgid "order_mode_email"
 msgstr "Электронный билет на email"
 
-#: models/order.py:87
+#: models/order.py:126
 msgid "order_delivery"
 msgstr "Получение билетов"
 
-#: models/order.py:92
+#: models/order.py:131
 msgid "order_mode_cash"
 msgstr "Наличные"
 
-#: models/order.py:93
+#: models/order.py:132
 msgid "order_mode_online"
 msgstr "Онлайн-оплата"
 
-#: models/order.py:100
+#: models/order.py:139
 msgid "order_payment"
 msgstr "Оплата билетов"
 
-#: models/order.py:106
+#: models/order.py:145
 msgid "order_payment_id"
 msgstr "ID онлайн-оплаты"
 
-#: models/order.py:113
+#: models/order.py:153
 msgid "order_status_ordered"
 msgstr "создан"
 
-#: models/order.py:114
+#: models/order.py:154
 msgid "order_status_cancelled"
 msgstr "отменён"
 
-#: models/order.py:115
+#: models/order.py:155
 msgid "order_status_approved"
 msgstr "подтверждён"
 
-#: models/order.py:116
+#: models/order.py:156
 msgid "order_status_refunded"
 msgstr "возвращён"
 
-#: models/order.py:123
+#: models/order.py:163
 msgid "order_status"
 msgstr "Статус"
 
-#: models/order.py:127
+#: models/order.py:167
 msgid "order_tickets_count"
 msgstr "Билетов"
 
-#: models/order.py:132
+#: models/order.py:172
 msgid "order_total"
 msgstr "Сумма"
 
-#: models/order.py:138
+#: models/order.py:177
+msgid "order_overall"
+msgstr "Всего"
+
+#: models/order.py:183
 msgid "order_domain"
 msgstr "Сайт"
 
-#: models/order.py:144
+#: models/order.py:189
 msgid "order"
 msgstr "заказ"
 
-#: models/order.py:145
+#: models/order.py:190
 msgid "orders"
 msgstr "заказы"
 
-#: models/order_ticket.py:22
+#: models/order_ticket.py:40
 msgid "order_ticket_id"
 msgstr "ID билета"
 
-#: models/order_ticket.py:28
+#: models/order_ticket.py:46
 msgid "order_ticket_order"
 msgstr "ID заказа"
 
-#: models/order_ticket.py:34
+#: models/order_ticket.py:52
 msgid "order_ticket_ticket_service"
 msgstr "Сервис продажи билетов"
 
-#: models/order_ticket.py:39
+#: models/order_ticket.py:57
 msgid "order_ticket_ticket_service_order"
 msgstr "ID заказа"
 
-#: models/order_ticket.py:43
+#: models/order_ticket.py:61
 msgid "order_ticket_is_punched"
 msgstr "Пробит ли на входе"
 
-#: models/order_ticket.py:48
+#: models/order_ticket.py:66
 msgid "order_ticket_bar_code"
 msgstr "Штрих-код"
 
-#: models/order_ticket.py:53
+#: models/order_ticket.py:70
 msgid "order_ticket_sector"
 msgstr "ID сектора"
 
-#: models/order_ticket.py:58
+#: models/order_ticket.py:75
 msgid "order_ticket_sector_title"
 msgstr "Сектор"
 
-#: models/order_ticket.py:63
+#: models/order_ticket.py:79
 msgid "order_ticket_row"
 msgstr "Ряд"
 
-#: models/order_ticket.py:68
+#: models/order_ticket.py:83
 msgid "order_ticket_seat"
 msgstr "ID места"
 
-#: models/order_ticket.py:73
+#: models/order_ticket.py:88
 msgid "order_ticket_seat_title"
 msgstr "Место"
 
-#: models/order_ticket.py:78
-msgid "order_ticket_price_group"
-msgstr "ID группы цен"
-
-#: models/order_ticket.py:83
+#: models/order_ticket.py:93
 msgid "order_ticket_price"
 msgstr "Цена"
 
-#: models/order_ticket.py:89
+#: models/order_ticket.py:99
 msgid "order_ticket_domain"
 msgstr "Сайт"
 
-#: models/order_ticket.py:95
+#: models/order_ticket.py:105
 msgid "order_ticket"
 msgstr "билет"
 
-#: models/order_ticket.py:96
+#: models/order_ticket.py:106
 msgid "order_tickets"
 msgstr "список билетов"

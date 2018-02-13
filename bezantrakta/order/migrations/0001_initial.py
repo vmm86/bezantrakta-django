@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
                 ('ticket_service', models.ForeignKey(db_column='ticket_service_id', on_delete=django.db.models.deletion.CASCADE, to='ticket_service.TicketService', verbose_name='Сервис продажи билетов')),
             ],
             options={
-                'verbose_name_plural': 'билеты',
+                'verbose_name_plural': 'список билетов',
                 'verbose_name': 'билет',
                 'db_table': 'bezantrakta_order_ticket',
                 'ordering': ('domain', 'ticket_service', '-ticket_service_order', 'sector_id', 'row_id', 'seat_id', 'price'),
