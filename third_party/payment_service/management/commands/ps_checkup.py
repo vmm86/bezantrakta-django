@@ -65,7 +65,6 @@ ______________________________________________________________________________
             order_id=F('ticket_service_order'),
             payment_service_id=F('ticket_service__payment_service_id'),
             domain_slug=F('domain__slug'),
-            overall=F('total'),
         ).values(
             'event_uuid',
             'event_id',
@@ -108,7 +107,6 @@ ______________________________________________________________________________
                         'row_id',
                         'seat_id',
                         'seat_title',
-                        # 'price_group_id',
                         'price'
                     ).filter(
                         order_id=order['order_uuid']

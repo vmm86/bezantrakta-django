@@ -27,7 +27,6 @@ class OrderTicket(models.Model):
         row_id (PositiveIntegerField): Идентификатор ряда.
         seat_id (PositiveIntegerField): Идентификатор места.
         seat_title (CharField): Название места.
-        price_group_id (PositiveIntegerField): Идентификатор группы цен.
         price (DecimalField): Цена билета.
         domain (ForeignKey): Привязка к сайту.
     """

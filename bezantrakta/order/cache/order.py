@@ -21,7 +21,6 @@ class OrderCache(ProjectCache):
                 event_id=F('ticket_service_event'),
                 order_uuid=F('id'),
                 order_id=F('ticket_service_order'),
-                overall=F('total'),
             ).values(
                 'event_uuid',
                 'event_id',
@@ -57,7 +56,6 @@ class OrderCache(ProjectCache):
                     'row_id',
                     'seat_id',
                     'seat_title',
-                    # 'price_group_id',
                     'price'
                 ).filter(
                     order_id=object_id

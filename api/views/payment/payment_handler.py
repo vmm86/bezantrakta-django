@@ -70,7 +70,6 @@ def payment_handler(request):
             event_id=F('ticket_service_event'),
             order_uuid=F('id'),
             order_id=F('ticket_service_order'),
-            overall=F('total'),
         ).values(
             'event_uuid',
             'event_id',
@@ -103,7 +102,6 @@ def payment_handler(request):
                 'row_id',
                 'seat_id',
                 'seat_title',
-                # 'price_group_id',
                 'price'
             ).filter(
                 order_id=order_uuid

@@ -52,7 +52,8 @@ class Order(models.Model):
                 * **STATUS_REFUNDED** (str): Возвращён (``refunded``).
 
         tickets_count (PositiveSmallIntegerField): Число билетов в заказе.
-        total (DecimalField): Общая сумма заказа (со стоимостью доставки курьером или комиссией сервиса онлайн-оплаты).
+        total (DecimalField): Сумма цен на билеты в заказе.
+        overall (DecimalField): Общая сумма заказа (с учётом возможных наценнок или скидок).
         domain (ForeignKey): Привязка к сайту.
     """
     objects = OrderManager()
