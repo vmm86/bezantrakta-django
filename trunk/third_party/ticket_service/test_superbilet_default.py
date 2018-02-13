@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from pprint import pprint
 
@@ -64,14 +65,15 @@ group_id = 214
 # event_id = 1913  # arh test
 # event_id = 1914  # vluki test
 # event_id = 1915  # vluki test
-event_id = 1916  # nsk test
+event_id = 2281  # test 2199
+# event_id = 116  # test Сургут
 sector_id = 509
 
 # THEATRE_VRN_TEST
 # scheme_id = 1
 # place_id = 1
 # group_id = 1
-# event_id = 615
+# event_id = 725
 # sector_id = 15
 
 # VERSION
@@ -94,70 +96,83 @@ sector_id = 509
 # py_result = ts.events(place_id=place_id)
 # py_result = ts.events(scheme_id=scheme_id)
 # DISCOVER_EVENTS
-py_result = ts.discover_events()
+# py_result = ts.discover_events()
 
 # SECTORS
 # py_result = ts.sectors(event_id=event_id)
+# SECTORS
+# py_result = ts.sector_seats(event_id=event_id, sector_id=sector_id)
 # SEATS AND PRICES
-# py_result = ts.seats_and_prices(event_id=event_id)
-
+py_result = ts.seats_and_prices(event_id=event_id)
+#
 # SCHEME
 # py_result = ts.scheme(event_id=event_id)
 
-order_uuid = 'c126ea91-f896-49ef-bdee-f8ab8fb6146a'
+# order_uuid = uuid.UUID('987bdbb4-0180-4839-93b3-2bb2ff42729c')
 # RESERVE (ADD OR REMOVE)
-# # action = 'add'
-# action = 'remove'
+# action = 'add'
+# # action = 'remove'
 # py_result = ts.reserve(
 #     action=action,
 #     event_id=event_id,
-#     sector_id=sector_id,
-#     row_id=11,
-#     seat_id=35,
+#     sector_id=529,
+#     row_id=8,
+#     seat_id=23,
 #     order_uuid=order_uuid
 # )
 
 # TICKET_STATUS
 # py_result = ts.ticket_status(
 #     # from_date='18.07.2017', from_time='15:30', to_date='18.07.2017', to_time='15:40',
-#     event_id=event_id, ticket_uuid='c1d1d880-c3c8-4d9b-ada6-325501af1cf8', sector_id=sector_id, row_id=1, seat_id=34
+#     event_id=event_id, ticket_uuid='c1d1d880-c3c8-4d9b-ada6-325501af1cf8', sector_id=529, row_id=8, seat_id=23
 # )
 
 # ORDER_CREATE
 # customer = {
-#     'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '89201234567',
+#     'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '+74732000111',
 #     'is_courier': True, 'address': 'Воронеж',
 #     # 'is_courier': False, 'address': '',
 # }
-tickets = [
-    {'ticket_uuid': 'f2449bd0-2cf4-4153-b37f-15eaf21c15d0', 'sector_id': 509, 'row_id': 2, 'seat_id': 14, },
-    {'ticket_uuid': '424603cc-1871-4f41-9cf1-e11ad525ae2f', 'sector_id': 509, 'row_id': 2, 'seat_id': 15, },
-]
+# tickets = [
+#     {'ticket_uuid': uuid.UUID('c909a29e-9001-4382-8308-fb612bcc95c1'), 'sector_id': 5, 'row_id': 1, 'seat_id': 26, },
+# ]
 # py_result = ts.order_create(event_id=event_id, order_uuid=order_uuid, customer=customer, tickets=tickets)
 
 # ORDER_CANCEL
-order_id = 39351
+# order_id = 13331
 # py_result = ts.order_cancel(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
 
 # ORDER_APPROVE
-# payment_id = '2d529111-1da0-455a-be55-3456eaf97055'
+# event_id = 151
+# order_uuid = uuid.UUID('b004469f-1be6-42be-9c91-14301c0cca9e')
+# payment_id = '3141333342280100'
 # payment_datetime = datetime.now()
+# tickets = [
+#     {'ticket_uuid': uuid.UUID('64127eb5-1487-4597-a603-45e94a7b27c0'), 'sector_id': 22, 'row_id': 14, 'seat_id': 31, },
+#     {'ticket_uuid': uuid.UUID('dd3d3f7c-abc2-49d0-9991-0655a8dce53b'), 'sector_id': 22, 'row_id': 14, 'seat_id': 32, },
+# ]
+
+# for ticket in tickets:
+#     ticket['event_id'] = event_id
+#     print('    ticket: ', ticket)
+#     print(ts.ticket_status(**ticket))
+
 # py_result = ts.order_approve(
 #     event_id=event_id,
 #     order_uuid=order_uuid,
 #     payment_id=payment_id,
-#     payment_datetime=payment_datetime,  # 'payment_date': '18.07.2017', 'payment_time': '15:40',
+#     payment_datetime=payment_datetime,
 #     tickets=tickets
 # )
 
 # # LOG
 # py_result = ts.log(
-#     from_date='24.08.2017', from_time='12:00', to_date='26.08.2017', to_time='12:00',
-#     event_id=event_id, sector_id=sector_id, row_id=1, seat_id=42
+#     from_date='21.12.2017', from_time='11:30', to_date='21.12.2017', to_time='12:10',
+#     event_id=event_id, sector_id=529, row_id=8, seat_id=23
 # )
 
 try:
     print(type(py_result))
-    pprint(py_result, indent=4, width=160)
+    pprint(py_result, indent=4, width=180)
 except NameError:
     pass
