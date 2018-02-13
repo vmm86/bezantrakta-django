@@ -261,7 +261,8 @@ def order(request):
                         payment_id=None,
                         status=order['status'],
                         tickets_count=order['count'],
-                        total=order['overall'],
+                        total=order['total'],
+                        overall=order['overall'],
                         domain_id=domain['domain_id']
                     )
                 except IntegrityError:
@@ -293,7 +294,6 @@ def order(request):
                                 row_id=t['row_id'],
                                 seat_id=t['seat_id'],
                                 seat_title=t['seat_title'],
-                                # price_group_id=t['price_group_id'],
                                 price=t['price'],
                                 domain_id=domain['domain_id']
                             )
