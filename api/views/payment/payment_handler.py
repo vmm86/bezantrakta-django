@@ -103,7 +103,7 @@ def payment_handler(request):
                 'row_id',
                 'seat_id',
                 'seat_title',
-                'price_group_id',
+                # 'price_group_id',
                 'price'
             ).filter(
                 order_id=order_uuid

@@ -13,7 +13,7 @@ class OrderTicketAdmin(admin.ModelAdmin):
     list_per_page = 20
     readonly_fields = ('id', 'order', 'ticket_service', 'ticket_service_order',
                        'is_punched', 'bar_code',
-                       'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price_group_id', 'price',
+                       'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', 'price',
                        'domain',)
 
     @queryset_filter('Domain', 'domain__slug')

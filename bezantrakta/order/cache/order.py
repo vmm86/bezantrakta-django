@@ -47,9 +47,9 @@ class OrderCache(ProjectCache):
             # Получение билетов в заказе
             try:
                 order['tickets'] = list(OrderTicket.objects.annotate(
-                    ticket_id=F('id'),
+                    ticket_uuid=F('id'),
                 ).values(
-                    'ticket_id',
+                    'ticket_uuid',
                     'ticket_service_order',
                     'bar_code',
                     'sector_id',
@@ -57,7 +57,7 @@ class OrderCache(ProjectCache):
                     'row_id',
                     'seat_id',
                     'seat_title',
-                    'price_group_id',
+                    # 'price_group_id',
                     'price'
                 ).filter(
                     order_id=object_id
@@ -71,22 +71,9 @@ class OrderCache(ProjectCache):
         pass
 
     def cache_postprocessing(self, **kwargs):
+        pass
         # Преобразование типов при получении заказа, если он непустой
-        if self.value:
-            for t in self.value['tickets']:
-                t['ticket_uuid'] = uuid.UUID(t['ticket_uuid'])
-                t['price'] = self.decimal_price(t['price'])
-
-            self.value['total'] = self.decimal_price(self.value['total'])
-            self.value['overall'] = self.decimal_price(self.value['overall'])
-
-    def decimal_price(self, value):
-        """Преобразование входного значения в денежную сумму с 2 знаками после запятой (копейки) типа ``Decimal``.
-
-        Args:
-            value (str): Входное значение (в любом случае строка - для обхода проблем с округлением ``float``).
-
-        Returns:
-            Decimal: Денежная сумма.
-        """
-        return Decimal(str(value)).quantize(Decimal('1.00'))
+        # if self.value:
+        #     for t in self.value['tickets']:
+        #         t['ticket_uuid'] = uuid.UUID(t['ticket_uuid'])
+        #         t['price'] = self.decimal_price(t['price'])

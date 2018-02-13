@@ -10,7 +10,7 @@ from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
 from bezantrakta.order.models import Order, OrderTicket
-from bezantrakta.order.settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
+from bezantrakta.order.settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION
 from bezantrakta.order.shortcuts import success_or_error
 
 
@@ -108,7 +108,7 @@ ______________________________________________________________________________
                         'row_id',
                         'seat_id',
                         'seat_title',
-                        'price_group_id',
+                        # 'price_group_id',
                         'price'
                     ).filter(
                         order_id=order['order_uuid']
