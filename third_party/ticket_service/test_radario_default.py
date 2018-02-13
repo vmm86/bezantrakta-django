@@ -1,9 +1,11 @@
+import uuid
 from pprint import pprint
 
 from ticket_service_abc import ticket_service_factory
 
 RADARIO_VRN = {
-    'api_id': '15',
+    'api_version': 1.1,
+    'api_id': 15,
     'api_key': 'testing000',
     'city_id': 14,  # Воронеж
     'company_id': 1671,  # Камерный театр
@@ -13,23 +15,63 @@ RADARIO_VRN = {
 slug = 'radario'
 init = RADARIO_VRN
 ts = ticket_service_factory(slug, init)
+print(ts)
 
 # RADARIO_VRN
 place_id = 1224
-scheme_id = 7528  # Камерный театр
-# event_id = 52238  # Тест (сектор без мест)
-event_id = 73811  # Тест (зал)
-# event_id = 130324
-group_id = 2127  # Игроки
-price_group_id = 341031
+
+data = {
+    # тест (билеты без мест)
+    'test_no_hall': {
+        'scheme_id': 0,
+        'event_id': 52238,
+        'group_id': None,
+        'sector_id': 382752,
+    },
+    # тест (большой зал)
+    'test_big_hall': {
+        'scheme_id': 7528,
+        'event_id': 73811,
+        'group_id': None,
+        'sector_id': 341031,
+    },
+    # Трамвай "Желание" (с местами на сцене)
+    'desire': {
+        'scheme_id': 8440,
+        'event_id': 238743,
+        'group_id': 2124,
+        'sector_id': 2701104,
+    },
+    # Гоголь переоделся Пушкиным (малый зал)
+    'gogol': {
+        'scheme_id': 14115,
+        'event_id': 239722,
+        'group_id': 4021,
+        'sector_id': 2704603,
+    },
+    # Каренин (малый зал)
+    'karenin': {
+        'scheme_id': 14116,
+        'event_id': 239720,
+        'group_id': 3930,
+        'sector_id': 2704602,
+    },
+}
+
+# test_data = data['test_no_hall']
+test_data = data['test_big_hall']
+# test_data = data['desire']
+# test_data = data['gogol']
+# test_data = data['karenin']
 
 # VERSION
 # py_result = ts.version()
 
 # PLACES
-py_result = ts.places()
+# py_result = ts.places()
 # SCHEME
-# py_result = ts.scheme(scheme_id=scheme_id)
+# py_result = ts.scheme(scheme_id=test_data['scheme_id'])
+# py_result = ts.scheme(scheme_id=test_data['scheme_id'], raw=True)
 # DISCOVER_SCHEMES
 # py_result = ts.discover_schemes()
 
@@ -40,45 +82,47 @@ py_result = ts.places()
 
 # EVENTS
 # py_result = ts.events()
-# py_result = ts.events(group_id=group_id)
+# py_result = ts.events(group_id=test_data['group_id'])
 # DISCOVER_EVENTS
 # py_result = ts.discover_events()
 
 # EVENT
-# py_result = ts.event(event_id=event_id)
+# py_result = ts.event(event_id=test_data['event_id'])
+# py_result = ts.event(event_id=234266)
 
 # SECTORS
-# py_result = ts.sectors(scheme_id=scheme_id)
+# py_result = ts.sectors(event_id=test_data['event_id'])
 # SEATS AND PRICES
-# py_result = ts.seats_and_prices(event_id=event_id, scheme_id=scheme_id)
-# PRICE_GROUPS
-# py_result = ts.price_groups(event_id=event_id)
+py_result = ts.seats_and_prices(event_id=test_data['event_id'])
 
 # RESERVE (ADD OR REMOVE)
 # action = 'add'
 # # action = 'remove'
 # py_result = ts.reserve(
 #     action=action,
-#     event_id=event_id,
-#     price_group_id=price_group_id,
+#     event_id=test_data['event_id'],
+#     sector_id=test_data['sector_id'],
 #     seat_id=110
 # )
 
 # ORDER_CREATE
-customer = {
-    'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '84739876543',
-}
-tickets = [
-    {'ticket_uuid': 'c1d1d880-c3c8-4d9b-ada6-325501af1cf8', 'price_group_id': price_group_id, 'seat_id': 110, },
-    # {'ticket_uuid': 'c0b88fc5-5f6b-4fcd-a19c-4f88f53bdf2b', 'price_group_id': price_group_id, 'seat_id': 109, },
-]
-# py_result = ts.order_create(event_id=event_id, customer=customer, tickets=tickets)
+# customer = {
+#     'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '+74732000111',
+# }
+# tickets = [
+#     {
+#         'ticket_uuid': uuid.UUID('c4ccb2c3-1278-4a71-a169-7b8db6e872c1'),
+#         'sector_id': test_data['sector_id'], 'sector_id': 3, 'seat_id': 127,
+#     }
+# ]
+# py_result = ts.order_create(event_id=test_data['event_id'], customer=customer, tickets=tickets)
 
 # ORDER
-order_id = 1880161
+# order_id = 2309295
 # py_result = ts.order(order_id=order_id)
 
 # ORDER_CANCEL
+# order_id = 2395321
 # py_result = ts.order_cancel(order_id=order_id)
 
 # ORDER_APPROVE
