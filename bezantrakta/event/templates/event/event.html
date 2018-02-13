@@ -229,29 +229,21 @@
     <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
     <script type="text/javascript" src="{% static "global/js/lodash/4.17.4/lodash.min.js" %}"></script>
 
-    {% compress js inline %}
+    {# compress js inline #}
     <script type="text/javascript">
     {# Базовый функционал процесса заказа билетов #}
-    $(document).ready(function() {
-        {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_scheme_sectors=venue_scheme_sectors %}
-        prepare_order_onload();
-        start_heartbeat();
+    {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_scheme_sectors=venue_scheme_sectors %}
+    {# AJAX-запросы к внутреннему API сайта #}
+    {% include "order/ajax_order_initialize.js" with active="step1" %}
+    {% include "order/ajax_event_seats_and_prices.js" with active="step1" %}
+    {% include "order/ajax_order_reserve.js" with active="step1" %}
+    {% include "order/ajax_order_change_type.js" with active="step1" %}
 
-        {% comment %}
-        {# Фиксированное позиционирование легенды заказа и кнопок "Назад"/"Оформить" при прокручивании страницы #}
-        $(window).scroll(function(){
-            console.log('scroll:', $(window).scrollTop());
-            legend_position = $('#basket-container').position().top;
-            if ($(window).scrollTop() >= legend_position) {
-                $('#basket-container').css('position', 'fixed');
-            } else {
-                $('#basket-container').css('position', 'static');
-            }
-        });
-        {% endcomment %}
+    $(document).ready(function() {
+        order_processing();
     });
     </script>
-    {% endcompress %}
+    {# endcompress #}
 
     {% if not debug %}
     {% compress js inline %}

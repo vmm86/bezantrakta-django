@@ -66,16 +66,22 @@
     <script type="text/javascript" src="{% static "global/js/jscookie/2.1.4/js.cookie.js" %}"></script>
     <script type="text/javascript" src="{% static "global/js/lodash/4.17.4/lodash.min.js" %}"></script>
 
-    {% compress js inline %}
+    {# compress js inline #}
     <script type="text/javascript">
     {# Базовый функционал процесса заказа билетов #}
+    {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order=order order_total_plus_commission=order_total_plus_commission courier_price=courier_price customer=customer %}
+
+    {# AJAX-запросы к внутреннему API сайта #}
+    {% include "order/ajax_order_initialize.js" with active="step2" %}
+    {% include "order/ajax_event_seats_and_prices.js" with active="step2" %}
+    {% include "order/ajax_order_reserve.js" with active="step2" %}
+    {% include "order/ajax_order_change_type.js" with active="step2" %}
+
     $(document).ready(function() {
-        {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order=order order_total_plus_commission=order_total_plus_commission courier_price=courier_price customer=customer %}
-        prepare_order_onload();
-        start_heartbeat();
+        order_processing();
     });
     </script>
-    {% endcompress %}
+    {# endcompress #}
 
     {% if not debug %}
     {% compress js inline %}

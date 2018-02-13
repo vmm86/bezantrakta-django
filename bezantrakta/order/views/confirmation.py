@@ -7,7 +7,7 @@ from project.cache import cache_factory
 from project.shortcuts import message, render_messages
 
 from ..models import Order, OrderTicket
-from ..settings import ORDER_DELIVERY, ORDER_PAYMENT, ORDER_STATUS
+from ..settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION
 
 
 def confirmation(request, order_uuid):
@@ -126,14 +126,14 @@ def confirmation(request, order_uuid):
             order_info.append({
                 'key': 'Статус заказа:',
                 'value': '<span style="color: {color};">{description}</span>'.format(
-                    color=ORDER_STATUS[order['status']]['color'],
-                    description=ORDER_STATUS[order['status']]['description'],
+                    color=ORDER_STATUS_CAPTION[order['status']]['color'],
+                    description=ORDER_STATUS_CAPTION[order['status']]['description'],
                 )
             })
-            order_info.append({'key': 'Получение:', 'value': ORDER_DELIVERY[order['delivery']]})
+            order_info.append({'key': 'Получение:', 'value': ORDER_DELIVERY_CAPTION[order['delivery']]})
             if order['delivery'] == 'courier':
                 order_info.append({'key': 'Адрес доставки:', 'value': order['address']})
-            order_info.append({'key': 'Оплата:',    'value': ORDER_PAYMENT[order['payment']]})
+            order_info.append({'key': 'Оплата:',    'value': ORDER_PAYMENT_CAPTION[order['payment']]})
 
             if order['payment'] == 'online' and order['status'] == 'approved':
                 order_info.append({'key': 'Номер оплаты:', 'value': order['payment_id']})

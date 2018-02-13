@@ -2,17 +2,11 @@
 {# Список билетов в предварительном резерве/заказе #}
 <div id="chosen-tickets-block">
     <h3 id="chosen-tickets-header">Выбранные места</h3>
-    <ul id="chosen-tickets">
-        {% if active == "step1" %}
-            <li id="no-tickets">пока ничего не выбрано&nbsp;</li>
-        {% elif active == "step3" %}
-            {% for ticket in order.tickets %}
-                <li>
-                    {% if ticket.sector_id != 0 %}{{ ticket.sector_title }}, ряд {{ ticket.row_id }}, место {{ ticket.seat_title }}{% else %}{{ ticket.sector_title }}{% endif %}, цена {{ ticket.price }} <img class="ruble-sign" src="/static/global/ico/ruble_sign.svg">
-                </li>
-            {% endfor %}
-        {% endif %}
-    </ul>
+    <div id="chosen-tickets-content">
+        <span id="no-tickets">пока ничего не выбрано&nbsp;</span>
+        <ul id="chosen-tickets">
+        </ul>
+    </div>
 </div>
 
 {% if not active == "step3" %}
@@ -23,7 +17,7 @@
         {% if active == "step1" %}
             <span id="no-total">пока ничего не выбрано</span>
         {% endif %}
-        <span id="total-text">Билетов <span id="tickets-count">{% if active == "step2" %}{{ order.tickets_count }}{% endif %}</span> на сумму <span id="total">{% if active == "step2" %}{{ order.total }}{% endif %}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
+        <span id="total-text">Билетов <span id="tickets-count"></span> на сумму <span id="total"></span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}">&nbsp;</span>
     </p>
 </div>
 {% endif %}

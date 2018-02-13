@@ -18,7 +18,7 @@ def checkout(request):
 
     # Информация о событии из кэша
     event = cache_factory('event', event_uuid)
-    if event is None:
+    if not event:
         # Сообщение об ошибке
         msgs = [
             message(
@@ -33,15 +33,15 @@ def checkout(request):
         render_messages(request, msgs)
         return redirect('error')
 
-    # Информация о сервисе продажи билетов и экземпляр класса сервиса продажи билетов
+    # Информация о сервисе продажи билетов
     ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
     # Экземпляр класса сервиса продажи билетов
     ts = ticket_service['instance']
 
     # Информация о сервисе онлайн-оплаты
     payment_service = cache_factory('payment_service', event['payment_service_id'])
-    # Экземпляр класса сервиса онлайн-оплаты
-    ps = payment_service['instance'] if payment_service is not None else None
+    # Экземпляр класса сервиса онлайн-оплаты, если она присутствует
+    ps = payment_service['instance'] if payment_service else None
 
     # Получение реквизитов покупателя из предыдущего заказа (если он был)
     customer = {}
@@ -67,23 +67,23 @@ def checkout(request):
         )
 
     # Активные типы заказа билетов в конкретном событии
-    customer['order_types_active'] = tuple(
+    ORDER_TYPES_ACTIVE = tuple(
         ot for ot in order_types.keys() if
         order_types[ot]['ticket_service'] is True and order_types[ot]['event'] is True and
-        (payment_service is not None or not ot.endswith('_online'))
+        (payment_service or not ot.endswith('_online'))
     )
-    # Типы заказа билетов с онлайн-оплатой НЕ включаются в список активных типов заказа билетов,
-    # если к этому сервису продажи билетов НЕ привязан никакой сервис онлайн-оплаты
+    # Типы заказа билетов с онлайн-оплатой НЕ включаются в список активных,
+    # если к текущему сервису продажи билетов НЕ привязан никакой сервис онлайн-оплаты
 
     # Выбор первого доступного типа заказа по порядку,
     # если он НЕ был выбран ранее или если выбранный ранее тип заказа в текущем событии отключен
-    if customer['order_type'] == '' or customer['order_type'] not in customer['order_types_active']:
+    if customer['order_type'] == '' or customer['order_type'] not in ORDER_TYPES_ACTIVE:
         for ot in order_types.keys():
-            if ot in customer['order_types_active']:
+            if ot in ORDER_TYPES_ACTIVE:
                 customer['order_type'] = ot
                 break
 
-    # Информация о предварительном резерве и возможных опциях последующего заказа
+    # Информация о предварительном резерве и возможных опциях последующего заказа (УДАЛИТЬ!)
     order = {}
     order['uuid'] = request.COOKIES.get('bezantrakta_order_uuid')
     order['tickets'] = json.loads(request.COOKIES.get('bezantrakta_order_tickets', '[]'))
@@ -92,10 +92,10 @@ def checkout(request):
 
     # Стоимость доставки курьером
     order['courier_price'] = ts.decimal_price(ticket_service['settings']['courier_price'])
-    # Процент комиссии сервиса онлайн-оплаты
+    # Процент комиссии сервиса онлайн-оплаты, если он используется
     order['commission'] = (
         ps.decimal_price(payment_service['settings']['init']['commission']) if
-        payment_service is not None else
+        payment_service else
         ts.decimal_price(0)
     )
 

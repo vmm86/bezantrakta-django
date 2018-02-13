@@ -1,5 +1,4 @@
-from api.cache import SeatsPricesCache
-from bezantrakta.event.cache import EventCache
+from bezantrakta.event.cache import EventCache, EventSeatsPricesCache
 from bezantrakta.location.cache import DomainCache
 from bezantrakta.order.cache import OrderCache
 from third_party.ticket_service.cache import TicketServiceCache, TicketServiceSchemeSectorCache
@@ -7,7 +6,7 @@ from third_party.payment_service.cache import PaymentServiceCache
 
 
 CACHE_CLASSES = (
-    SeatsPricesCache,
+    EventSeatsPricesCache,
     EventCache,
     DomainCache,
     OrderCache,
