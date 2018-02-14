@@ -1,5 +1,5 @@
 {# Точка входа для работы с заказами #}
-function order_processing() {
+function welcome() {
     {# Прелоадер с прогресс-баром #}
     $('#tickets-preloader').show();
 
