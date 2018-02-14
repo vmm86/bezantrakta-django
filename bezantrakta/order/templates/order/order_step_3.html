@@ -31,7 +31,7 @@
             {% include "order/order_progress.html" with active="step3" %}
 
 
-            {% include "event/event_title_date_time.html" with active="step3" event=event %}
+            {% include "order/order_event_title_date_time.html" with active="step3" event=event %}
 
 
             <div class="order-header step3">
@@ -69,7 +69,12 @@
 
     {% compress js inline %}
     <script type="text/javascript">
-        {% include "order/confirmation.js" %}
+    {% include "order/order_cookies.js" %}
+
+    {# Удаление cookies при завершении заказа на шаге 3 заказа билетов #}
+    $(document).ready(function() {
+        order_cookies_delete(['event_uuid', 'order_uuid']);
+    });
     </script>
     {% endcompress %}
 

@@ -52,14 +52,14 @@
         {# Баннеры #}
         {% for banner in banner_group_items.banner_big_vertical_left %}
             <div class="banneritem">
-                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+                {% include "banner/posters_big.html" with banner=banner %}
             </div>
         {% endfor %}
         {# Афиши #}
         {% for item in big_vertical_left %}
             <div class="banneritem">
             {% localtime on %}
-                {% include "event/big_posters.html" with item=item %}
+                {% include "event/posters_big.html" with item=item %}
             {% endlocaltime %}
             </div>
         {% endfor %}
@@ -74,14 +74,14 @@
         {# Баннеры #}
         {% for banner in banner_group_items.banner_big_vertical_right %}
             <div class="banneritem">
-                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+                {% include "banner/posters_big.html" with banner=banner %}
             </div>
         {% endfor %}
         {# Афиши #}
         {% for item in big_vertical_right %}
             <div class="banneritem">
             {% localtime on %}
-                {% include "event/big_posters.html" with item=item %}
+                {% include "event/posters_big.html" with item=item %}
             {% endlocaltime %}
             </div>
         {% endfor %}
@@ -136,14 +136,14 @@
                         {# Баннеры #}
                         {% for banner in banner_group_items.banner_big_horizontal %}
                             <li class="slide">
-                                {% include "banner/banners_with_big_posters.html" with banner=banner %}
+                                {% include "banner/posters_big.html" with banner=banner %}
                             </li>
                         {% endfor %}
                         {# Афиши #}
                         {% for item in big_horizontal %}
                             <li class="slide">
                             {% localtime on %}
-                                {% include "event/big_posters.html" with item=item %}
+                                {% include "event/posters_big.html" with item=item %}
                             {% endlocaltime %}
                             </li>
                         {% endfor %}
@@ -160,7 +160,7 @@
             {% if categories %}
                 <ul>
                 {% for category in categories %}
-                    {% url 'event:category' slug=category.slug as category_url %}
+                    {% url 'event:filter_category' slug=category.slug as category_url %}
                     <li id="category_{{ category.slug }}" {% if category_url == request.url_path %}class="active"{% endif %}>
                         <a href="{{ category_url }}">{{ category.title }}</a>
                     </li>

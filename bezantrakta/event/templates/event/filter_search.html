@@ -10,7 +10,7 @@
 <div class="poster-small-vertical-body">
 {% for item in events_found %}
 {% localtime on %}
-    {% include "event/small_vertical_posters.html" with item=item %}
+    {% include "event/posters_small_vertical.html" with item=item %}
 {% endlocaltime %}
 {% endfor %}
 </div>

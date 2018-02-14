@@ -7,11 +7,11 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from project.cache import cache_factory
 from project.shortcuts import build_absolute_url, message, render_messages, timezone_now
 
-from ..models import Event, EventGroupBinder, EventLinkBinder
+from bezantrakta.event.models import Event, EventGroupBinder, EventLinkBinder
 
 
 @ensure_csrf_cookie
-def event(request, year, month, day, hour, minute, slug):
+def order_step_1(request, year, month, day, hour, minute, slug):
     """Отображение страницы конкретного события.
 
     Шаг 1 процесса заказа билетов - выбор билетов на схеме зала и формирование корзины заказа.
@@ -176,7 +176,7 @@ def event(request, year, month, day, hour, minute, slug):
 
             context['checkout_url'] = build_absolute_url(request.domain_slug, '/afisha/checkout/')
 
-            return render(request, 'event/event.html', context)
+            return render(request, 'order/order_step_1.html', context)
         # Событие НЕ опубликовано
         else:
             # Событие НЕ опубликовано и ещё НЕ прошло

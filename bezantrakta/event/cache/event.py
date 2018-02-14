@@ -131,7 +131,7 @@ class EventCache(ProjectCache):
 
         # Полный URL страницы события
         url = reverse(
-            'event:event',
+            'order:order_step_1',
             args=[
                 event_datetime_localized.strftime('%Y'),
                 event_datetime_localized.strftime('%m'),

@@ -233,7 +233,7 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            'event',
+            'order:order_step_1',
             args=[
                 str(self.datetime.year),
                 str(self.datetime.month),

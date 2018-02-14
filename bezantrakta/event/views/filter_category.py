@@ -8,7 +8,7 @@ from project.shortcuts import timezone_now
 from ..models import Event, EventCategory
 
 
-def category(request, slug):
+def filter_category(request, slug):
     """Фильтр событий, принадлежащих какой-либо категории и вывод их афиш в позиции ``small_vertical``.
 
     Args:
@@ -41,8 +41,8 @@ def category(request, slug):
             event.update(cache_factory('event', event['uuid']))
 
     # Получение событий во всех категориях или фильтр по конкретной категории
-    if slug == settings.BEZANTRAKTA_CATEGORY_ALL:
-        category_title = 'Все события'
+    if slug == settings.BEZANTRAKTA_CATEGORY_ALL_SLUG:
+        category_title = settings.BEZANTRAKTA_CATEGORY_ALL_TITLE
     else:
         # Если категория не найдена - редирект на главную
         try:
@@ -57,4 +57,4 @@ def category(request, slug):
         'slug': slug,
         'category_events': category_events,
     }
-    return render(request, 'event/category.html', context)
+    return render(request, 'event/filter_category.html', context)

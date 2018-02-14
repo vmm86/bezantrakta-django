@@ -28,8 +28,8 @@ urlpatterns = [
     url(r'^api/', include('api.urls')),
 
     url(r'', include('bezantrakta.event.urls')),
-    url(r'', include('bezantrakta.seo.urls')),
     url(r'', include('bezantrakta.order.urls')),
+    url(r'', include('bezantrakta.seo.urls')),
     url(r'', include('bezantrakta.article.urls')),
 ]
 

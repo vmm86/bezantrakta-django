@@ -7,7 +7,7 @@ from project.shortcuts import timezone_now
 from ..models import Event, EventVenue
 
 
-def venue(request, slug):
+def filter_venue(request, slug):
     """Фильтр событий, принадлежащих какому-либо залу (каждой из его схем) и вывод их афиш в позиции ``small_vertical``.
 
     Args:
@@ -51,4 +51,4 @@ def venue(request, slug):
         'slug': slug,
         'venue_events': venue_events,
     }
-    return render(request, 'event/venue.html', context)
+    return render(request, 'event/filter_venue.html', context)

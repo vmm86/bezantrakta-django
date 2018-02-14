@@ -31,7 +31,7 @@
             {% include "order/order_progress.html" with active="step2" %}
 
 
-            {% include "event/event_title_date_time.html" with active="step2" event=event %}
+            {% include "order/order_event_title_date_time.html" with active="step2" event=event %}
 
 
             <div class="order-header step2">
@@ -42,7 +42,7 @@
 
             <br>
 
-            {% include "order/checkout_form.html" with checkout_form_action=checkout_form_action ticket_service=ticket_service payment_service=payment_service %}
+            {% include "order/order_step_2_form.html" with order_step_2_form_action=order_step_2_form_action ticket_service=ticket_service payment_service=payment_service %}
 
             {% if debug %}
             <br><br>
@@ -68,6 +68,7 @@
 
     {# compress js inline #}
     <script type="text/javascript">
+    {% include "order/order_cookies.js" %}
     {# Базовый функционал процесса заказа билетов #}
     {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order=order order_total_plus_commission=order_total_plus_commission courier_price=courier_price customer=customer %}
 

@@ -3,6 +3,7 @@ import uuid
 from collections import OrderedDict
 
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
 from project.cache import cache_factory
 from project.shortcuts import build_absolute_url, message, render_messages
@@ -10,7 +11,7 @@ from project.shortcuts import build_absolute_url, message, render_messages
 from bezantrakta.order.settings import ORDER_TYPE
 
 
-def checkout(request):
+def order_step_2(request):
     """Введение контактных данных покупателем и выбор типа заказа."""
     # Получение параметров события из cookie
     event_uuid = request.COOKIES.get('bezantrakta_event_uuid', uuid.uuid4())
@@ -67,7 +68,7 @@ def checkout(request):
         )
 
     # Активные типы заказа билетов в конкретном событии
-    ORDER_TYPES_ACTIVE = tuple(
+    order_types_active = tuple(
         ot for ot in order_types.keys() if
         order_types[ot]['ticket_service'] is True and order_types[ot]['event'] is True and
         (payment_service or not ot.endswith('_online'))
@@ -77,9 +78,9 @@ def checkout(request):
 
     # Выбор первого доступного типа заказа по порядку,
     # если он НЕ был выбран ранее или если выбранный ранее тип заказа в текущем событии отключен
-    if customer['order_type'] == '' or customer['order_type'] not in ORDER_TYPES_ACTIVE:
+    if customer['order_type'] == '' or customer['order_type'] not in order_types_active:
         for ot in order_types.keys():
-            if ot in ORDER_TYPES_ACTIVE:
+            if ot in order_types_active:
                 customer['order_type'] = ot
                 break
 
@@ -113,7 +114,7 @@ def checkout(request):
 
     context['order'] = order
 
-    context['checkout_form_action'] = build_absolute_url(request.domain_slug, '/afisha/order/')
+    context['order_step_2_form_action'] = build_absolute_url(request.domain_slug, reverse('order:order_processing'))
 
     # Если корзина заказа пустая
     if order['tickets_count'] == 0:
@@ -132,4 +133,4 @@ def checkout(request):
         return redirect('error')
     # Если корзина заказа НЕпустая
     else:
-        return render(request, 'order/checkout.html', context)
+        return render(request, 'order/order_step_2.html', context)

@@ -100,12 +100,12 @@ class OrderBasket():
                 None
             )
 
-            self.order['customer_name'] = ''
-            self.order['customer_phone'] = ''
-            self.order['customer_email'] = ''
+            self.order['customer_name'] = None
+            self.order['customer_phone'] = None
+            self.order['customer_email'] = None
 
-            self.order['delivery'] = ''
-            self.order['payment'] = ''
+            self.order['delivery'] = None
+            self.order['payment'] = None
 
             self.order['extra'] = 0
             self.order['courier_price'] = 0
@@ -143,6 +143,7 @@ class OrderBasket():
         cache_factory('order', self.order['order_uuid'], delete=True)
 
     def add_ticket(self, ticket):
+        ticket_id = ticket['ticket_id']
         t = {
             'ticket_uuid':    ticket['ticket_uuid'],
             'sector_id':      ticket['sector_id'],
@@ -154,7 +155,7 @@ class OrderBasket():
             'price_order':    ticket['price_order'],
             'added':          ticket['added'],
         }
-        self.order['tickets'][ticket['ticket_id']] = t
+        self.order['tickets'][ticket_id] = t
         self.order['tickets_count'] += 1
         self.order['total'] += self.decimal_price(ticket['price'])
 

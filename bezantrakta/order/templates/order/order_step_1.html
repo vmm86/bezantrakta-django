@@ -35,7 +35,7 @@
             {% include "order/order_progress.html" with active="step1" %}
         {% endif %}
 
-            {% include "event/event_title_date_time.html" with active="step1" event=event %}
+            {% include "order/order_event_title_date_time.html" with active="step1" event=event %}
 
         {% if event.is_coming %}
             <div class="order-header">
@@ -48,7 +48,7 @@
                         <ul id="group-events">
                     {% for event in group_events %}
                     {% localtime on %}
-                        {% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
+                        {% url 'order:order_step_1' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug as event_url %}
                         {% if event_url == request.url_path %}
                             <li class="group-event-chosen">
                                 {% if event.caption %}
@@ -59,7 +59,7 @@
                             </li>
                         {% else %}
                             <li>
-                                <a href="{% url 'event:event' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="">
+                                <a href="{% url 'order:order_step_1' year=event.datetime|date:"Y" month=event.datetime|date:"m" day=event.datetime|date:"d" hour=event.datetime|date:"H" minute=event.datetime|date:"i" slug=event.slug %}" title="">
                                 {% if event.caption %}
                                     {{ event.caption }}
                                 {% else %}
@@ -231,6 +231,7 @@
 
     {# compress js inline #}
     <script type="text/javascript">
+    {% include "order/order_cookies.js" %}
     {# Базовый функционал процесса заказа билетов #}
     {% include "order/order_scripts.js" with active="step1" event=event ticket_service=ticket_service venue_scheme_sectors=venue_scheme_sectors %}
     {# AJAX-запросы к внутреннему API сайта #}

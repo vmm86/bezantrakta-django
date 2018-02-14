@@ -1,5 +1,6 @@
 from operator import itemgetter
 
+from django.conf import settings
 from django.db.models import F
 
 from project.cache import cache_factory
@@ -24,7 +25,6 @@ def big_containers(request):
             container_mode=F('event_container__mode')
         ).values(
             'uuid',
-            # 'datetime',
             'is_group',
             'container',
             'order',
@@ -89,8 +89,8 @@ def categories(request):
 
         # Пункт "Все категории"
         category_all = {}
-        category_all['title'] = 'Все события'
-        category_all['slug'] = 'vse'
+        category_all['title'] = settings.BEZANTRAKTA_CATEGORY_ALL_TITLE
+        category_all['slug'] = settings.BEZANTRAKTA_CATEGORY_ALL_SLUG
         cat_all = []
         cat_all.append(category_all)
 

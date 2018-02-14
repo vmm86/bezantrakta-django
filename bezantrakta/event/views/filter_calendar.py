@@ -10,7 +10,7 @@ from project.cache import cache_factory
 from ..models import Event
 
 
-def calendar(request, year, month, day):
+def filter_calendar(request, year, month, day):
     """Фильтр событий, проходящих в выбранную дату и вывод их афиш в позиции ``small_vertical``.
 
     В текущей версии Django ``1.11`` удобнее фильтровать дату по вхождению в диапазон "текущая дата-следующая дата".
@@ -111,4 +111,4 @@ def calendar(request, year, month, day):
         'events_on_date': events_on_date,
     }
 
-    return render(request, 'event/calendar.html', context)
+    return render(request, 'event/filter_calendar.html', context)
