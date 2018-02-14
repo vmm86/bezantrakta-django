@@ -168,7 +168,7 @@ def payment_handler(request):
 
         # Если оплата завершилась успешно - редирект на шаг 3 с информацией о заказе
         if result['success']:
-            return redirect('order:confirmation', order_uuid=order['order_uuid'])
+            return redirect('order:order_step_3', order_uuid=order['order_uuid'])
         # Если оплата завершилась НЕуспешно - редирект на страницу с информацией об ошибке
         else:
             # Сборка очереди сообщений для вывода на странице ошибки

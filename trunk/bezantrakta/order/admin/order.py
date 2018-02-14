@@ -72,7 +72,7 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ('ticket_service_order', 'name', 'phone', 'email',)
 
     def view_on_site(self, obj):
-        url = reverse('order:confirmation', args=[obj.id])
+        url = reverse('order:order_step_3', args=[obj.id])
         return build_absolute_url(obj.domain.slug, url)
 
     @queryset_filter('Domain', 'domain__slug')

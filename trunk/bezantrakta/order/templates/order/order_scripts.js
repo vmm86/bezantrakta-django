@@ -255,9 +255,6 @@ function seat_click_handler(click) {
     var ticket_id = $(this).data('ticket-id');
     var action = undefined;
 
-    // var class_f = 'free';
-    // var class_s = 'selected';
-
     {# Если выбираем НЕ выбранное ранее место #}
     if ($(this).hasClass(window.seat_status.free.class)) {
         action = window.seat_status.free.action;
@@ -353,8 +350,6 @@ function html_basket_update() {
     $('#chosen-tickets').empty();
 
     if (window.order['tickets_count'] > 0) {
-        // var t_ids = _.keys(window.order['tickets']).sort()
-
         for (t in window.order['tickets']) {
             var ticket_id = t;
             var ticket = window.order['tickets'][t];
@@ -365,9 +360,6 @@ function html_basket_update() {
             if (typeof ticket['is_fixed'] === undefined) {
                 ticket['is_fixed'] = false;
             }
-
-            // var class_f = 'free';
-            // var class_s = 'selected';
 
             var is_fixed_seat = ticket['is_fixed'] || ticket['sector_id'] != 0;
 
@@ -449,54 +441,6 @@ function is_agree() {
 {# Получение цены как float с двумя знаками после запятой #}
 function get_price(price) {
     return Math.round(parseFloat(price) * 100) / 100;
-}
-
-{# Сохранение или обновление cookies для заказа билетов #}
-function order_cookies_update(cookies_list) {
-    var cookie_prefix = 'bezantrakta_';
-    var order_cookies = {
-        'event_uuid':          window.event_uuid,
-        'order_uuid':          window.order['order_uuid'],
-
-        'customer_name':       window.customer['name'],
-        'customer_phone':      window.customer['phone'],
-        'customer_email':      window.customer['email'],
-        'customer_address':    window.customer['address'],
-        'customer_order_type': window.customer['order_type']
-    }
-
-    for (var input = 0; input < cookies_list.length; input++) {
-        for (var cookie in order_cookies) {
-            if (cookies_list[input] === cookie) {
-                var cookie_title = cookie_prefix + cookie;
-                var cookie_value = order_cookies[cookie];
-
-                var cookie_options = {};
-                cookie_options['domain'] = '.{{ request.root_domain }}';
-                {# cookies, относящиеся к покупателю, сохраняются на будущее и НЕ являются сессионными #}
-                if (cookie.startsWith('customer_')) {
-                    cookie_options['expires'] = new Date(new Date().getTime() + 60 * 60 * 24 * 366 * 1000);
-                }
-
-                window.cookies.set(cookie_title, cookie_value, cookie_options);
-                {% if debug %}console.log('cookie `' + cookie + '`:\n', cookie_value);{% endif %}
-            }
-        }
-    }
-}
-
-function order_cookies_delete(cookies_list) {
-    var cookie_prefix = 'bezantrakta_';
-    var cookie_title = cookie_prefix + cookie;
-    var cookie_options = {};
-    cookie_options['domain'] = '.{{ request.root_domain }}';
-
-    for (var input = 0; input < cookies_list.length; input++) {
-        var cookie = window.cookies.get(cookie_title);
-        if (cookie !== undefined) {
-            window.cookies.remove(cookie_title, cookie_options);
-        }
-    }
 }
 
 function log_success(data, status) {

@@ -26,10 +26,12 @@ BEZANTRAKTA_IS_SECURE = False
 # Кастомный адрес для админ-панели
 BEZANTRAKTA_ADMIN_URL = 'simsim'
 # Псевдоним категории "Все события"
-BEZANTRAKTA_CATEGORY_ALL = 'vse'
+BEZANTRAKTA_CATEGORY_ALL_SLUG = 'vse'
+# Название категории "Все события"
+BEZANTRAKTA_CATEGORY_ALL_TITLE = 'Все события'
 # Виды, при выполнении которых проходит заказ билетов
 # При их выполнении не должны работать context_processors для вывода событий в базовом шаблоне
-BEZANTRAKTA_ORDER_VIEWS = ('event', 'checkout', 'confirmation')
+BEZANTRAKTA_ORDER_VIEWS = ('order_step_1', 'order_step_2', 'order_step_3')
 # Путь для сохранения электронных билетов в формате PDF
 BEZANTRAKTA_ETICKET_PATH = os.path.join(PARENT_DIR, 'e_tickets')
 

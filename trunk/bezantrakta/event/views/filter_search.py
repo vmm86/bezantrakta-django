@@ -7,7 +7,7 @@ from project.shortcuts import timezone_now
 from ..models import Event
 
 
-def search(request):
+def filter_search(request):
     """Фильтр событий по названию, тегам ``description`` и ``keywords`` и вывод их афиш в позиции ``small_vertical``"""
     text = request.GET.get('text', '')
 
@@ -52,6 +52,6 @@ def search(request):
             'events_found': events_found,
         }
 
-        return render(request, 'event/search.html', context)
+        return render(request, 'event/filter_search.html', context)
     else:
         return redirect('/')

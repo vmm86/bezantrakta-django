@@ -1,5 +1,5 @@
 {% load static %}
-{% url 'event:event' year=item.event_datetime|date:"Y" month=item.event_datetime|date:"m" day=item.event_datetime|date:"d" hour=item.event_datetime|date:"H" minute=item.event_datetime|date:"i" slug=item.event_slug as item_url %}
+{% url 'order:order_step_1' year=item.event_datetime|date:"Y" month=item.event_datetime|date:"m" day=item.event_datetime|date:"d" hour=item.event_datetime|date:"H" minute=item.event_datetime|date:"i" slug=item.event_slug as item_url %}
 
 <div class="poster-small-vertical">
     <div class="poster-small-vertical-image">

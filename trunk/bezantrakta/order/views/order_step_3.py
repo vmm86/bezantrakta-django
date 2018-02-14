@@ -10,7 +10,7 @@ from ..models import Order, OrderTicket
 from ..settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION
 
 
-def confirmation(request, order_uuid):
+def order_step_3(request, order_uuid):
     """Вывод информации об успешном или НЕуспешном заказе.
 
     Args:
@@ -145,4 +145,4 @@ def confirmation(request, order_uuid):
             context['order']['tickets'] = order_tickets
             context['order']['info'] = order_info
 
-            return render(request, 'order/confirmation.html', context)
+            return render(request, 'order/order_step_3.html', context)

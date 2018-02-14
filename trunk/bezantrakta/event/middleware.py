@@ -18,7 +18,7 @@ class EventCalendarMiddleware(MiddlewareMixin):
         try:
             resolved_view = resolve(url_path)
 
-            if resolved_view.view_name == 'event:calendar':
+            if resolved_view.view_name == 'event:filter_calendar':
                 current_timezone = request.city_timezone
                 # Если дата в URL задана НЕкорректно - редирект на главную
                 try:

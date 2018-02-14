@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import admin
 from django.db.models import Q
 from django.utils.translation import ugettext as _
@@ -147,7 +146,7 @@ class EventAdmin(admin.ModelAdmin):
             event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
 
             url = reverse(
-                'event:event',
+                'order:order_step_1',
                 args=[
                     event_datetime_localized.strftime('%Y'),
                     event_datetime_localized.strftime('%m'),

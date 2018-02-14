@@ -28,7 +28,6 @@ def events_on_index(request):
         container_mode=F('event_container__mode'),
     ).values(
         'uuid',
-        # 'datetime',
         'is_group',
         'container',
         'order',

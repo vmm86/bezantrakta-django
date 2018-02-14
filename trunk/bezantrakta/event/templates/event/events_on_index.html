@@ -7,7 +7,7 @@
 <div class="poster-small-vertical-body vip">
 {% for item in small_vertical_vip %}
 {% localtime on %}
-    {% include "event/small_vertical_posters.html" with item=item %}
+    {% include "event/posters_small_vertical.html" with item=item %}
 {% endlocaltime %}
 {% endfor %}
 </div>
@@ -17,7 +17,7 @@
 <div class="poster-small-vertical-body">
 {% for item in small_vertical %}
 {% localtime on %}
-    {% include "event/small_vertical_posters.html" with item=item %}
+    {% include "event/posters_small_vertical.html" with item=item %}
 {% endlocaltime %}
 {% endfor %}
 </div>
@@ -25,17 +25,6 @@
 
 <div class="share-help">
 {% include "share_help.html" %}
-
-{# Иконка для страницы Бельканто выводится только на основном сайте Безантракта #}
-{% comment %}
-{% if request.domain == "vrn" %}
-    <div class="belcanto-banner">
-        <a href="/gastroli">
-            <img src="images/banners/belcanto.png" style="width: 6rem;">
-        </a>
-    </div>
-{% endif %}
-{% endcomment %}
 </div>
 
 {% if debug %}

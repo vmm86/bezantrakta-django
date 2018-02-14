@@ -16,7 +16,7 @@ from ..models import Order, OrderTicket
 from ..settings import ORDER_DELIVERY_CAPTION, ORDER_PAYMENT_CAPTION, ORDER_STATUS_CAPTION, ORDER_TYPE
 
 
-def order(request):
+def order_processing(request):
     """Получение контактных данных покупателя, параметров заказа и проведение заказа выбранного типа.
 
     Сначала собирается необходимая информация о событии, сервисе продажи билетов и онлайн-оплаты, покупателе, заказе.
@@ -358,7 +358,7 @@ def order(request):
                         customer_email.send()
                         logger.info('Email-уведомление покупателю отправлено')
 
-                        return redirect('order:confirmation', order_uuid=order['order_uuid'])
+                        return redirect('order:order_step_3', order_uuid=order['order_uuid'])
                     # Если онлайн-оплата - запрос новой оплаты
                     elif customer['payment'] == 'online':
                         # Создание новой онлайн-оплаты
