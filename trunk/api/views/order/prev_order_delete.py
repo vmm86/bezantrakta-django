@@ -64,12 +64,12 @@ def prev_order_delete(request):
             logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
             logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
 
-            logger.info('order_uuid: {} {}'.format(order_uuid))
+            logger.info('order_uuid: {}'.format(order_uuid))
             logger.info('\nПредыдущий предварительный резерв: {}'.format(basket.order))
 
-            logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id))
-            logger.info('prev_event_id: {} {}'.format(prev_event_id))
-            logger.info('this_event_id: {} {}'.format(this_event_id))
+            logger.info('prev_ticket_service_id: {}'.format(prev_ticket_service_id))
+            logger.info('prev_event_id: {}'.format(prev_event_id))
+            logger.info('this_event_id: {}'.format(this_event_id))
 
             response['success'] = True
             response['tickets'] = {}
