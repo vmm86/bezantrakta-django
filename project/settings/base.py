@@ -21,18 +21,24 @@ INTERNAL_IPS = ['127.0.0.1']
 
 PREPEND_WWW = False
 
-# Кастомный параметр, указывающий, работает ли сайт по HTTPS
+# Кастомные параметры проекта
+
+# Настроен ли сайт для работы по HTTPS
 BEZANTRAKTA_IS_SECURE = False
-# Кастомный адрес для админ-панели
+# Адрес для входа в админ-панель
 BEZANTRAKTA_ADMIN_URL = 'simsim'
+# Cookie, при наличии которой в консоли браузера выводятся диагностические сообщения в console.log
+# window.cookies.set('{TITLE}', '{VALUE}', {domain: '.{root_domain}', expires: new Date(new Date().getTime() + 60 * 60 * 24 * 366 * 1000)})
+BEZANTRAKTA_COOKIE_WATCHER_TITLE = 'sim_sala_bim'
+BEZANTRAKTA_COOKIE_WATCHER_VALUE = '41815162342'
 # Псевдоним категории "Все события"
 BEZANTRAKTA_CATEGORY_ALL_SLUG = 'vse'
 # Название категории "Все события"
 BEZANTRAKTA_CATEGORY_ALL_TITLE = 'Все события'
 # Виды, при выполнении которых проходит заказ билетов
-# При их выполнении не должны работать context_processors для вывода событий в базовом шаблоне
+# При их выполнении не должны работать context_processors, выводящие события в основном шаблоне index.html
 BEZANTRAKTA_ORDER_VIEWS = ('order_step_1', 'order_step_2', 'order_step_3')
-# Путь для сохранения электронных билетов в формате PDF
+# Путь для сохранения PDF-файлов электронных билетов
 BEZANTRAKTA_ETICKET_PATH = os.path.join(PARENT_DIR, 'e_tickets')
 
 # Application definition

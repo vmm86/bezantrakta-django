@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.db.models import F
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -175,6 +176,10 @@ def order_step_1(request, year, month, day, hour, minute, slug):
             context['payment_service'] = payment_service
 
             context['checkout_url'] = build_absolute_url(request.domain_slug, '/afisha/checkout/')
+
+            # Разрешён ли вывод отладочной информации в консоли браузера
+            cookie_debugger = request.COOKIES.get(settings.BEZANTRAKTA_COOKIE_WATCHER_TITLE, None)
+            context['watcher'] = True if cookie_debugger == settings.BEZANTRAKTA_COOKIE_WATCHER_VALUE else False
 
             return render(request, 'order/order_step_1.html', context)
         # Событие НЕ опубликовано

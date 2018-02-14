@@ -24,7 +24,7 @@ function order_cookies_update(cookies_list) {
                 }
 
                 window.cookies.set(cookie_title, cookie_value, cookie_options);
-                {% if debug %}console.log('updated 🍪 ' + cookie + ': ', cookie_value);{% endif %}
+                {% if watcher %}console.log('updated 🍪 ' + cookie + ': ', cookie_value);{% endif %}
             }
         }
     }
