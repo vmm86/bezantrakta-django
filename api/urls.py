@@ -66,13 +66,13 @@ payment_urls = [
 
     # Предобработка успешной оплаты в СНГБ (вынужденный костыль)
     url(
-        r'^payment/sngb_init/$',
+        r'^ps/sngb_init/$',
         sngb_proxy,
         name='sngb_init'
     ),
     # Предобработка НЕуспешной оплаты в СНГБ (вынужденный костыль)
     url(
-        r'^payment/sngb_error/$',
+        r'^ps/sngb_error/$',
         sngb_proxy,
         name='sngb_error'
     ),
