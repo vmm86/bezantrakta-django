@@ -14,8 +14,7 @@ function ajax_order_initialize() {
 
 function ajax_order_initialize_success(response, status, xhr) {
     {% if debug %}
-    console.log('previous order removed: ', response['success']);
-    console.log('order initialized: ',      response['order']);
+    console.log('order initialized: ', response['order']);
     {% endif %}
 
     {# Получение параметров предварительного резерва (нового или существующего) #}
