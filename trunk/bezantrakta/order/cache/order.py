@@ -1,5 +1,5 @@
-import uuid
-from decimal import Decimal
+import pytz
+from dateutil.parser import parse
 
 from django.db.models import F
 
@@ -66,12 +66,11 @@ class OrderCache(ProjectCache):
             return order
 
     def cache_preprocessing(self, **kwargs):
-        pass
+        self.value['city_timezone'] = str(self.value['city_timezone'])
 
     def cache_postprocessing(self, **kwargs):
-        pass
-        # Преобразование типов при получении заказа, если он непустой
-        # if self.value:
-        #     for t in self.value['tickets']:
-        #         t['ticket_uuid'] = uuid.UUID(t['ticket_uuid'])
-        #         t['price'] = self.decimal_price(t['price'])
+        self.value['updated'] = parse(self.value['updated'])
+
+        # for t in self.value['tickets']:
+        #     t['ticket_uuid'] = uuid.UUID(t['ticket_uuid'])
+        #     t['price'] = self.decimal_price(t['price'])

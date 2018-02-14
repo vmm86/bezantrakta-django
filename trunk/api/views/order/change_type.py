@@ -1,10 +1,12 @@
 import logging
+import simplejson as json
+import uuid
 
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
 from bezantrakta.order.order_basket import OrderBasket
-from bezantrakta.order.settings import ORDER_TYPE, ORDER_TYPE_MAPPING
+from bezantrakta.order.settings import ORDER_TYPE
 
 from api.shortcuts import JsonResponseUTF8
 
@@ -13,78 +15,63 @@ def change_type(request):
     if request.is_ajax() and request.method == 'POST':
         logger = logging.getLogger('bezantrakta.reserve')
 
-        # UUID заказа
-        order_uuid = request.POST.get('order_uuid', None)
-        # Выбранный тип заказа
-        order_type = request.POST.get('order_type', None)
+        customer = request.POST.get('customer', None)
+        try:
+            customer = json.loads(customer)
+        except (TypeError, ValueError):
+            response = {'success': False, 'message': 'Реквизиты покупателя некорректны или отсутствуют'}
+            return JsonResponseUTF8(response)
+        else:
+            if type(customer) is not dict:
+                response = {'success': False, 'message': 'Реквизиты покупателя некорректны или отсутствуют'}
+                return JsonResponseUTF8(response)
 
-        if not order_uuid:
-            response = {'success': False, 'message': 'Отсутствует UUID предварительного резерва'}
+        # UUID предварительного резерва
+        order_uuid = request.POST.get('order_uuid', None)
+        try:
+            order_uuid = uuid.UUID(order_uuid)
+        except (TypeError, ValueError):
+            response = {'success': False, 'message': 'UUID предварительного резерва некорректен или отсутствует'}
             return JsonResponseUTF8(response)
 
+        # Выбранный тип заказа
+        order_type = request.POST.get('order_type', None)
         if not order_type:
             response = {'success': False, 'message': 'Отсутствует тип заказа'}
             return JsonResponseUTF8(response)
         else:
             if order_type not in ORDER_TYPE:
-                response = {'success': False, 'message': 'Указан некорректный тип заказа'}
-            return JsonResponseUTF8(response)
+                response = {'success': False, 'message': 'Получен некорректный тип заказа'}
+                return JsonResponseUTF8(response)
 
-        # Класс для работы с заказом (на данный момент - с предварительным резервом)
+        # Получение существующего предварительного резерва
         basket = OrderBasket(order_uuid=order_uuid)
-
-        # Если предварительный резерв не существует - возвращается НЕуспешный ответ с ошибкой
-        if not basket or not basket.order:
+        if not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
             return JsonResponseUTF8(response)
-        # else:
-        #     if not basket.order['tickets']:
-        #         response = {'success': False, 'message': 'В предварительном резерве нет билетов'}
-        #         return JsonResponse(response, safe=False)
 
         # Информация о событии, UUID которого сохранён в предварительном резерве
         event = cache_factory('event', basket.order['event_uuid'])
-
         if not event:
             response = {'success': False, 'message': 'Отсутствует событие с указанным UUID'}
             return JsonResponseUTF8(response)
 
-        # Информация о сервисе продажи билетов
-        ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
-        # Экземпляр класса сервиса продажи билетов
-        ts = ticket_service['instance']
+        # Изменение типа получения и оплаты билетов в предварительном резерве
+        basket.change_order_type(customer, order_type)
 
-        # Информация о сервисе онлайн-оплаты
-        payment_service = cache_factory('payment_service', event['payment_service_id'])
-        # Экземпляр класса сервиса онлайн-оплаты, если она присутствует
-        ps = payment_service['instance'] if payment_service else None
+        response = {}
+        response['success'] = True
+        response['order'] = basket.order
 
-        # Добавление или изменение необходимых параметров предварительного резерва
-        basket.order['order_type'] = order_type
-        basket.order['delivery'] = ORDER_TYPE_MAPPING[order_type]['delivery']
-        basket.order['payment'] = ORDER_TYPE_MAPPING[order_type]['payment']
+        # Получение параметров сайта
+        domain = cache_factory('domain', request.domain_slug)
 
-        basket.order['extra'] = event['settings']['extra'][order_type]
-        # Стоимость доставки курьером, если она используется
-        basket.order['courier_price'] = basket.decimal_price(ticket_service['settings']['courier_price'])
-        # Процент комиссии сервиса онлайн-оплаты, если он используется
-        basket.order['commission'] = basket.decimal_price(
-            payment_service['settings']['init']['commission'] if payment_service else 0
-        )
+        logger.info('\n----------change_order_type----------')
+        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
+        logger.info('Сайт: {}'.format(domain['domain_title']))
 
-        # Получение общей суммы заказа и её подписи в зависимости от возможных наценок/скидок
-        basket.get_overall()
-
-        # Обновление заказа с новыми полученными данными
-        basket.update_order()
-
-        response = basket.order
-
-        logger.info('\n------------------------------------------------------------')
         logger.info('order_uuid: {}'.format(order_uuid))
         logger.info('order_type: {}'.format(order_type))
         logger.info('order: {}'.format(basket.order))
-
-        logger.info('response: {}'.format(response))
 
         return JsonResponseUTF8(response)

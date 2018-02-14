@@ -4,11 +4,11 @@ function order_cookies_update(cookies_list) {
         'event_uuid':          window.event_uuid,
         'order_uuid':          window.order['order_uuid'],
 
-        'customer_name':       window.customer['name'],
-        'customer_phone':      window.customer['phone'],
-        'customer_email':      window.customer['email'],
-        'customer_address':    window.customer['address'],
-        'customer_order_type': window.customer['order_type']
+        'customer_name':       window.order.customer['name'],
+        'customer_phone':      window.order.customer['phone'],
+        'customer_email':      window.order.customer['email'],
+        'customer_address':    window.order.customer['address'],
+        'customer_order_type': window.order.customer['order_type']
     }
 
     for (var c = 0; c < cookies_list.length; c++) {

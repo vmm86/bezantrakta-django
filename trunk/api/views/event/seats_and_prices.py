@@ -27,6 +27,7 @@ def seats_and_prices(request):
         # Информация о сервисе продажи билетов из кэша
         ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
         heartbeat_timeout = ticket_service['settings']['heartbeat_timeout']
+        heartbeat_timeout_ceiling = heartbeat_timeout + 10
         ts = ticket_service['instance']
 
         # Параметры для отправки запроса к сервису продажи билетов
@@ -61,13 +62,17 @@ def seats_and_prices(request):
                 # Очередной запрос состояния мест и цен
                 new = ts.seats_and_prices(**params)
                 # Если очередной запрос успешен - выключаем параметр "в процессе обновления" и инвалидируем кэш
-                if new['success']:
+                if new['success'] and 'seats' in new and 'prices' in new:
                     new['updated'] = timezone_now()
                     new['in_progress'] = False
                     seats_and_prices = cache_factory('seats_and_prices', event_uuid, obj=new, reset=True)
                 # Если получаем ошибку - удаляем кэш для гарантированной инвалидации при следующем запросе
                 else:
                     cache_factory('seats_and_prices', event_uuid, delete=True)
+
+            # Если кэш зависает в состоянии "в процессе обновления" и не обновляется - он принудительно удаляется
+            if heartbeat_delta > heartbeat_timeout_ceiling:
+                cache_factory('seats_and_prices', event_uuid, delete=True)
 
         print('SEATS AND PRICES ', 'updated: ', seats_and_prices['updated'], ' in_progress: ', seats_and_prices['in_progress'])
         # print('\nprices: # ', len(seats_and_prices['prices']), str(seats_and_prices['prices'])[:100])
