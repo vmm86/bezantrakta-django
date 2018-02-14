@@ -60,14 +60,21 @@ class ProjectCache(ABC):
                 try:
                     self.value = dict(self.get_object(object_id, **kwargs))
                 except (ObjectDoesNotExist, TypeError):
-                    debug_console('nothing found in DB')
-                    debug_console('obj after except...')
-                    self.value = kwargs['obj'] if 'obj' in kwargs else None
+                    if 'obj' in kwargs:
+                        debug_console('nothing found in DB - trying kwargs[obj]...')
+                        self.value = kwargs['obj']
+                    else:
+                        debug_console('nothing to save - return None')
+                        return None
             # Получаем значение из входных параметров в **kwargs
             else:
-                debug_console('obj from params...')
-                self.value = kwargs['obj'] if 'obj' in kwargs else None
-                debug_console('self.value', str(self.value)[:200], '...', type(self.value))
+                if 'obj' in kwargs:
+                    debug_console('trying kwargs[obj]...')
+                    self.value = kwargs['obj']
+                    debug_console('self.value', str(self.value)[:200], '...', type(self.value))
+                else:
+                    debug_console('nothing to save - return None')
+                    return None
 
             # При необходимости обрабатываем полученные данные
             self.cache_preprocessing(**kwargs)
