@@ -30,7 +30,7 @@ function start_heartbeat() {
 
     {# Периодические проверки состояния мест с обратным отсчётом до их освобождения #}
     window.countdown_id = setInterval(seat_countdown_timer, 1000);
-    {% if debug %}console.log('started countdown ' + window.countdown_id);{% endif %}
+    {% if watcher %}console.log('started countdown ' + window.countdown_id);{% endif %}
 
     {% if active == 'step1' %}
         window.seat_status = {
@@ -52,7 +52,7 @@ function start_heartbeat() {
 
         {# Периодические запросы списка цен и свободных для продажи мест в событии #}
         window.seats_and_prices_id = setInterval(ajax_seats_and_prices, window.heartbeat_timeout * 1000);
-        {% if debug %}console.log('started heartbeat ' + window.seats_and_prices_id);{% endif %}
+        {% if watcher %}console.log('started heartbeat ' + window.seats_and_prices_id);{% endif %}
 
         {# Добавлять и убирать в предварительном резерве можно только доступные к заказу места #}
         $('#tickets').on('click', '.seat.free, .seat.selected', seat_click_handler);
@@ -66,7 +66,7 @@ function start_heartbeat() {
         {# Текущий средний совокупный таймаут всех билетов в предварительном резерве, #}
         {# по истечении которого блокируется подтверждение заказа на шаге 2 #}
         window.order_timeout = window.seat_timeout * 60 * 1000;
-        {% if debug %}console.log('order_timeout (initial): ', window.order_timeout);{% endif %}
+        {% if watcher %}console.log('order_timeout (initial): ', window.order_timeout);{% endif %}
 
         {# Отключение проверки состояния мест при уходе назад на шаг 1 или при подтверждении заказа #}
         $('#back').on('click', stop_heartbeat);
@@ -80,12 +80,12 @@ function start_heartbeat() {
 function stop_heartbeat() {
     {% if active == 'step1' %}
         clearInterval(window.seats_and_prices_id);
-        {% if debug %}console.log('stopped seats_and_prices ' + window.seats_and_prices_id);{% endif %}
+        {% if watcher %}console.log('stopped seats_and_prices ' + window.seats_and_prices_id);{% endif %}
         $('#tickets-preloader').show();
     {% endif %}
 
     clearInterval(window.countdown_id);
-    {% if debug %}console.log('stopped countdown ' + window.countdown_id);{% endif %}
+    {% if watcher %}console.log('stopped countdown ' + window.countdown_id);{% endif %}
 }
 
 function order_after_initialize() {
@@ -332,13 +332,13 @@ function seat_countdown_timer() {
 
     {% if active == 'step2' %}
         window.order_timeout = order_timeout_ms > 0 ? parseInt(order_timeout_ms / window.order['tickets_count']) : 11000;
-        {% if debug %}console.log('window.order_timeout: ', window.order_timeout);{% endif %}
+        {% if watcher %}console.log('window.order_timeout: ', window.order_timeout);{% endif %}
 
         {# Если средний совокупный таймаут всех билетов в заказе меньше 10 секунд - #}
         {# возможность подтверждения заказа отключается во избежание ошибок #}
         if (window.order_timeout < 10000) {
             $('#agree, #isubmit').prop('disabled', true);
-            {% if debug %}console.log('order_timeout is coming...');{% endif %}
+            {% if watcher %}console.log('order_timeout is coming...');{% endif %}
         }
     {% endif %}
 }
@@ -406,7 +406,7 @@ function html_basket_update() {
             $('#overall-header').html(window.order['overall_header']);
             window.order['overall'] !== window.order['total'] ? $('#overall-block').show() : $('#overall-block').hide();
 
-            {% if debug %}
+            {% if watcher %}
                 console.log('overall_header: ', window.order['overall_header']);
                 console.log('overall: ', window.order['overall']);
             {% endif %}
@@ -427,7 +427,7 @@ function sectors_handler() {
 
     sector_scheme = '.sectors-slider > .' + $(this).attr('id');
     if ($(this).is(':checked')) {
-        {% if debug %}console.log(sector_scheme, 'checked');{% endif %}
+        {% if watcher %}console.log(sector_scheme, 'checked');{% endif %}
         $(sector_scheme).show();
     }
 }

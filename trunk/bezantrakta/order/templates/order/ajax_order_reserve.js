@@ -23,7 +23,7 @@ function ajax_order_reserve_success(response, status, xhr) {
 
     var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
 
-    {% if debug %}
+    {% if watcher %}
     console.log(
         'is_successful: ', success,   '\n',
         'ticket_id',       ticket_id, '\n',
@@ -38,7 +38,7 @@ function ajax_order_reserve_success(response, status, xhr) {
         window.order['tickets_count'] = response['tickets_count']
         window.order['total'] = response['total']
 
-        {% if debug %}
+        {% if watcher %}
         console.log(
             'order_tickets: ', window.order['tickets'],       '\n',
             'order_count: ',   window.order['tickets_count'], '\n',

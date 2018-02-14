@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.db.models import F
 from django.shortcuts import redirect, render
 
@@ -144,5 +145,9 @@ def order_step_3(request, order_uuid):
             context['order'] = order
             context['order']['tickets'] = order_tickets
             context['order']['info'] = order_info
+
+            # Разрешён ли вывод отладочной информации в консоли браузера
+            cookie_debugger = request.COOKIES.get(settings.BEZANTRAKTA_COOKIE_WATCHER_TITLE, None)
+            context['watcher'] = True if cookie_debugger == settings.BEZANTRAKTA_COOKIE_WATCHER_VALUE else False
 
             return render(request, 'order/order_step_3.html', context)

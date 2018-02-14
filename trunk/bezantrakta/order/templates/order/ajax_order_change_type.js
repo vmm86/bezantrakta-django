@@ -25,7 +25,7 @@ function ajax_change_order_type_success(response, status, xhr) {
 
         html_basket_update();
 
-        {% if debug %}
+        {% if watcher %}
             console.log('order after change_type: ', window.order);
             console.log('order_type: ', window.order.customer['order_type']);
             console.log('overall: ', window.order['overall']);

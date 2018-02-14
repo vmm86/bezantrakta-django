@@ -13,7 +13,7 @@ function ajax_order_initialize() {
 }
 
 function ajax_order_initialize_success(response, status, xhr) {
-    {% if debug %}
+    {% if watcher %}
         console.log('order initialized: ', response['order']);
     {% endif %}
 

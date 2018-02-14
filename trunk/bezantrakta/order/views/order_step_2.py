@@ -2,6 +2,7 @@ import simplejson as json
 import uuid
 from collections import OrderedDict
 
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
@@ -115,6 +116,10 @@ def order_step_2(request):
     context['order'] = order
 
     context['order_step_2_form_action'] = build_absolute_url(request.domain_slug, reverse('order:order_processing'))
+
+    # Разрешён ли вывод отладочной информации в консоли браузера
+    cookie_debugger = request.COOKIES.get(settings.BEZANTRAKTA_COOKIE_WATCHER_TITLE, None)
+    context['watcher'] = True if cookie_debugger == settings.BEZANTRAKTA_COOKIE_WATCHER_VALUE else False
 
     # Если корзина заказа пустая
     if order['tickets_count'] == 0:

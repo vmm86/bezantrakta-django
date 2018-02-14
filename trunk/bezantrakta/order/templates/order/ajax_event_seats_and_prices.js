@@ -1,6 +1,6 @@
 {# Периодическое получение списка доступных для продажи билетов и списка цен на билеты в событии #}
 function ajax_seats_and_prices() {
-    {% if debug %}
+    {% if watcher %}
         console.log('ajax_seats_and_prices: ', window.seats_and_prices_id);
     {% endif %}
 
@@ -24,7 +24,7 @@ function ajax_seats_and_prices_success(response, status, xhr) {
             var prices_next = response['prices'];
             var prices_prev_size = _.isEmpty(prices_prev) ? 0 : _.size(prices_prev);
             var prices_next_size = _.size(prices_next);
-            {% if debug %}
+            {% if watcher %}
             console.log('prices_prev_size: ', prices_prev_size);
             console.log('prices_next_size: ', prices_next_size);
             {% endif %}
@@ -45,7 +45,7 @@ function ajax_seats_and_prices_success(response, status, xhr) {
 
             {# Обновление кэша списка цен в памяти #}
             window.prices_cache = prices_next;
-            {% if debug %}console.log('prices_cache set');{% endif %}
+            {% if watcher %}console.log('prices_cache set');{% endif %}
         }
 
         {# Получение списка мест, свободных для заказа #}
@@ -60,7 +60,7 @@ function ajax_seats_and_prices_success(response, status, xhr) {
             var seats_next_keys = _.differenceWith(_.keys(seats_next), _.keys(seats_prev), _.isEqual);
 
             if (_.size(seats_prev_keys) > 0 || _.size(seats_next_keys) > 0) {
-                {% if debug %}
+                {% if watcher %}
                 console.log('seats_prev_size: ', seats_prev_size);
                 console.log('seats_next_size: ', seats_next_size);
                 {% endif %}
@@ -86,7 +86,7 @@ function ajax_seats_and_prices_success(response, status, xhr) {
 
                 {# Обновление кэша свободных мест в памяти #}
                 window.seats_cache = seats_next;
-                {% if debug %}console.log('seats_cache set');{% endif %}
+                {% if watcher %}console.log('seats_cache set');{% endif %}
             }
         }
 
@@ -119,7 +119,7 @@ function ajax_seats_and_prices_error(xhr, status, error) {
 
 {# Обновление только отличающихся цен в html_basket #}
 function prices_update(diff_state, diff) {
-    {% if debug %}
+    {% if watcher %}
     console.log('prices_diff_state: ',  diff_state);
     console.log('prices_diff_size: ', _.size(diff));
     console.log('prices_diff: ', diff);

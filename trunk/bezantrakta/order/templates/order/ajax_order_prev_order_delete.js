@@ -15,7 +15,7 @@ function ajax_order_prev_order_delete() {
 }
 
 function ajax_order_prev_order_delete_success(response, status, xhr) {
-    {% if debug %}
+    {% if watcher %}
     console.log('prev_order_delete: ', response);
     {% endif %}
 }
