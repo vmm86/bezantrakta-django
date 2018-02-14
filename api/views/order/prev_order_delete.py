@@ -44,7 +44,7 @@ def prev_order_delete(request):
         # Получение предварительного резерва в предыдущем событии
         basket = OrderBasket(order_uuid=order_uuid)
 
-        if not basket or not basket.order:
+        if not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
             return JsonResponseUTF8(response)
 
@@ -62,7 +62,7 @@ def prev_order_delete(request):
         if prev_event_id != this_event_id:
             logger.info('\n----------prev_order_remove----------')
             logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
-            logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
+            logger.info('Сайт: {}'.format(domain['domain_title']))
 
             logger.info('order_uuid: {}'.format(order_uuid))
             logger.info('\nПредыдущий предварительный резерв: {}'.format(basket.order))

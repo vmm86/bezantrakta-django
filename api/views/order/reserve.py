@@ -1,5 +1,4 @@
 import logging
-import uuid
 
 from project.cache import cache_factory
 from project.shortcuts import timezone_now
@@ -52,11 +51,10 @@ def reserve(request):
         ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
         ts = ticket_service['instance']
 
-        now = timezone_now()
         logger.info('\n----------reserve----------')
-        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
+        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
 
-        logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
+        logger.info('Сайт: {}'.format(domain['domain_title']))
         logger.info('Сервис продажи билетов: {title} ({id})'.format(
                 title=ticket_service['title'],
                 id=ticket_service['id']
@@ -102,11 +100,8 @@ def reserve(request):
         if reserve['success']:
             if action == 'add':
                 ticket = seats_and_prices['seats'][ticket_id]
-                ticket['ticket_id'] = ticket_id
-                ticket['ticket_uuid'] = uuid.uuid4()
-                ticket['added'] = timezone_now().astimezone(domain['city_timezone'])
                 logger.info('\nticket: {}'.format(ticket))
-                basket.add_ticket(ticket)
+                basket.add_ticket(ticket_id, ticket)
             elif action == 'remove':
                 basket.remove_ticket(ticket_id)
 
@@ -128,15 +123,14 @@ def reserve(request):
             logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
             logger.info('    Сумма цен на билеты: {}'.format(basket.order['total']))
         else:
-            response = {
-                'success': False,
-                'code':    reserve['code'],
-                'message': reserve['message'],
-            }
-
-            logger.info('Код ошибки: {}'.format(reserve['code']))
-            logger.info('Сообщение об ошибке: {}'.format(reserve['message']))
-
-            return JsonResponseUTF8(response)
+            if action == 'add':
+                logger.info('Код ошибки: {}'.format(reserve['code']))
+                logger.info('Сообщение об ошибке: {}'.format(reserve['message']))
+                response = {'success': False, 'code': reserve['code'], 'message': reserve['message']}
+                return JsonResponseUTF8(response)
+            # Даже если при удалении билета получен НЕуспешный ответ -
+            # билет в любом случае удаляется из предварительного резерва
+            elif action == 'remove':
+                basket.remove_ticket(ticket_id)
 
         return JsonResponseUTF8(response)

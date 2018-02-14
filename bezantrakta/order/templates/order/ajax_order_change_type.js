@@ -1,10 +1,12 @@
 {# Выбор типа заказа из имеющихся вавиантов #}
-function ajax_order_change_type(type) {
+function ajax_order_change_type(delivery, order_type) {
     $.ajax({
         url: '/api/order/change_type/',
         type: 'POST',
         data: {
-            'order_type': type,
+            'customer': JSON.stringify(window.order.customer),
+            'order_uuid': window.order_uuid,
+            'order_type': order_type,
 
             'csrfmiddlewaretoken': window.cookies.get('csrftoken')
         },
@@ -14,34 +16,27 @@ function ajax_order_change_type(type) {
 }
 
 function ajax_change_order_type_success(response, status, xhr) {
-    {# Обновить выбранный тип заказа (response == order ) #}
-    window.customer['order_type'] = response['order_type'];
-    order_cookies_update(['customer_order_type']);
+    if (response['success'] === true) {
+        {# Получение обновлённого предварительного резерва #}
+        window.order = response['order'];
 
-    window.customer['delivery'] = response['delivery'];  // ???
-    window.customer['payment'] = response['payment'];  // ???
-    $('#delivery').val(window.customer['delivery']);  // ???
-    $('#payment').val(window.customer['payment']);  // ???
+        {# Обновить выбранный тип заказа в cookies #}
+        order_cookies_update(['customer_order_type']);
 
-    window.order['total'] = response['total'];
-    window.order['overall'] = response['overall'];
+        html_basket_update();
 
-    window.order['courier_price'] = response['courier_price'];  // ???
-    window.order['commission'] = response['commission'];  // ???
-
-    // get_overall();
-
-    html_basket_update();
-
-    {% if debug %}
-        console.log('order_type: ', window.customer['order_type'], '\n',
-                    'overall: ',    window.order['overall']);
-    {% endif %}
+        {% if debug %}
+            console.log('order after change_type: ', window.order);
+            console.log('order_type: ', window.order.customer['order_type']);
+            console.log('overall: ', window.order['overall']);
+            console.log('overall_header: ', window.order['overall_header']);
+        {% endif %}
+    }
 }
 
 function ajax_change_order_type_error(xhr, status, error) {
     console.log(
-        'ajax_prev_order_delete_error!', '\n',
+        'ajax_change_order_type error!', '\n',
         'xhr',    xhr,    '\n',
         'status', status, '\n',
         'error',  error

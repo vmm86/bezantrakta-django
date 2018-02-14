@@ -39,7 +39,7 @@ def initialize(request):
 
         logger.info('\n----------order_initialize----------')
         logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
-        logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
+        logger.info('Сайт: {}'.format(domain['domain_title']))
 
         log_order = {}
         # Если order_uuid получен - пытаемся получить существующий предварительный резерв
@@ -50,7 +50,7 @@ def initialize(request):
             log_order['uuid'] = None
             log_order['state'] = None
             # Если предварительный резерв с полученным order_uuid по каким-то причинам НЕ существует
-            if not basket or not basket.order:
+            if not basket.order:
                 # Создаётся новый пустой предварительный резерв
                 logger.info('\nПредварительный резерв {} НЕ существует'.format(order_uuid))
 

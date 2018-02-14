@@ -54,38 +54,40 @@ function ajax_seats_and_prices_success(response, status, xhr) {
             var seats_next = response['seats'];
             var seats_prev_size = _.isEmpty(seats_prev) ? 0 : _.size(seats_prev);
             var seats_next_size = _.size(seats_next);
-            {% if debug %}
-            console.log('seats_prev_size: ', seats_prev_size);
-            console.log('seats_next_size: ', seats_next_size);
-            {% endif %}
 
             {# Получаем разницу между последующим и предыдущим списком мест: #}
-
             var seats_prev_keys = _.differenceWith(_.keys(seats_prev), _.keys(seats_next), _.isEqual);
             var seats_next_keys = _.differenceWith(_.keys(seats_next), _.keys(seats_prev), _.isEqual);
 
-            {# 1. Число мест осталось прежним, но какие-то места отличаются #}
-            {# Выбранные другими места - отключаем, освободившиеся места - включаем #}
-            if (seats_prev_size === seats_next_size) {
-                var seats_prev_diff = _.pick(seats_prev, seats_prev_keys);
-                seats_update('less', seats_prev_diff);
-                var seats_next_diff = _.pick(seats_next, seats_next_keys);
-                seats_update('more', seats_next_diff);
-            {# 2. Число мест уменьшилось #}
-            {# Выбранные другими места - отключаем #}
-            } else if (seats_prev_size > seats_next_size) {
-                var seats_diff = _.pick(seats_prev, seats_prev_keys);
-                seats_update('less', seats_diff);
-            {# 3. Число мест увеличилось #}
-            {# Освободившиеся места - включаем #}
-            } else if (seats_prev_size < seats_next_size) {
-                var seats_diff = _.pick(seats_next, seats_next_keys);
-                seats_update('more', seats_diff);
-            }
+            if (_.size(seats_prev_keys) > 0 || _.size(seats_next_keys) > 0) {
+                {% if debug %}
+                console.log('seats_prev_size: ', seats_prev_size);
+                console.log('seats_next_size: ', seats_next_size);
+                {% endif %}
 
-            {# Обновление кэша свободных мест в памяти #}
-            window.seats_cache = seats_next;
-            {% if debug %}console.log('seats_cache set');{% endif %}
+                {# 1. Число мест осталось прежним, но какие-то места отличаются #}
+                {# Выбранные другими места - отключаем, освободившиеся места - включаем #}
+                if (seats_prev_size === seats_next_size) {
+                    var seats_prev_diff = _.pick(seats_prev, seats_prev_keys);
+                    seats_update('less', seats_prev_diff);
+                    var seats_next_diff = _.pick(seats_next, seats_next_keys);
+                    seats_update('more', seats_next_diff);
+                {# 2. Число мест уменьшилось #}
+                {# Выбранные другими места - отключаем #}
+                } else if (seats_prev_size > seats_next_size) {
+                    var seats_diff = _.pick(seats_prev, seats_prev_keys);
+                    seats_update('less', seats_diff);
+                {# 3. Число мест увеличилось #}
+                {# Освободившиеся места - включаем #}
+                } else if (seats_prev_size < seats_next_size) {
+                    var seats_diff = _.pick(seats_next, seats_next_keys);
+                    seats_update('more', seats_diff);
+                }
+
+                {# Обновление кэша свободных мест в памяти #}
+                window.seats_cache = seats_next;
+                {% if debug %}console.log('seats_cache set');{% endif %}
+            }
         }
 
         {# Прелоадер с прогресс-баром #}

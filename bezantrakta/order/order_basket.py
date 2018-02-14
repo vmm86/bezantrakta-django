@@ -1,9 +1,11 @@
+import pytz
 import uuid
 from decimal import Decimal
 
-from bezantrakta.order.settings import ORDER_OVERALL_CAPTION
+from bezantrakta.order.settings import ORDER_TYPE_MAPPING, ORDER_OVERALL_CAPTION
 
 from project.cache import cache_factory
+from project.shortcuts import timezone_now
 
 
 class OrderBasket():
@@ -17,22 +19,21 @@ class OrderBasket():
                 * order_uuid (uuid.UUID): UUID заказа.
                 * order_id (int): Идентификатор заказа (после его успешного создания и записи в БД), иначе ``None``.
 
-                * event_uuid (uuid.UUID): UUID события.
-                * event_id (int): Идентификатор события.
+                * domain_slug (str): Псевдоним (поддомен) сайта.
+                * city_timezone (pytz.tzfile): Часовой пояс города сайта.
 
                 * ticket_service_id (str): Идентификатор сервиса продажи билетов.
 
-                * customer_name (str): ФИО покупателя.
-                * customer_phone (str): Телефон покупателя.
-                * customer_email (str): Электронная почта покупателя.
-                * customer_address (str): Адрес доставки (если она нужна), иначе ``None``. ???
+                * event_uuid (uuid.UUID): UUID события.
+                * event_id (int): Идентификатор события.
 
-                * order_type (str): Тип заказа билетов ("способ получения"_"способ оплаты").
-                    Возможные значения ``order_type``:
-                        * self_online:
-                        * email_online:
-                        * self_cash:
-                        * courier_cash:
+                * customer (dict): Реквизиты покупателя.
+                    Содержимое ``customer``:
+                        * name (str): ФИО покупателя.
+                        * phone (str): Телефон покупателя.
+                        * email (str): Электронная почта покупателя.
+                        * address (str): Адрес доставки (если она нужна), иначе ``None``.
+
                 * delivery (str): Способ получения заказа.
                     Возможные значения ``delivery``:
                         * self: Получение покупателем в кассе.
@@ -76,33 +77,25 @@ class OrderBasket():
         if 'order_uuid' in kwargs and kwargs['order_uuid']:
             self.get_order(kwargs['order_uuid'])
         else:
+            # Информация о событии
+            event = cache_factory('event', kwargs['event_uuid']) if 'event_uuid' in kwargs else None
+
             self.order = {}
 
             self.order['order_uuid'] = uuid.uuid4()
-
             self.order['order_id'] = None
 
-            self.order['event_uuid'] = (
-                kwargs['event_uuid'] if
-                'event_uuid' in kwargs else
-                None
-            )
+            self.order['domain_slug'] = event['domain_slug'] if event else None
+            self.order['city_timezone'] = event['city_timezone'] if event else 'Europe/Moscow'
+            self.order['ticket_service_id'] = event['ticket_service_id'] if event else None
+            self.order['event_uuid'] = event['event_uuid'] if event else None
+            self.order['event_id'] = event['ticket_service_event'] if event else None
 
-            self.order['event_id'] = (
-                kwargs['event_id'] if
-                'event_id' in kwargs else
-                None
-            )
-
-            self.order['ticket_service_id'] = (
-                kwargs['ticket_service_id'] if
-                'ticket_service_id' in kwargs else
-                None
-            )
-
-            self.order['customer_name'] = None
-            self.order['customer_phone'] = None
-            self.order['customer_email'] = None
+            self.order['customer'] = {}
+            self.order['customer']['name'] = None
+            self.order['customer']['phone'] = None
+            self.order['customer']['email'] = None
+            self.order['customer']['address'] = None
 
             self.order['delivery'] = None
             self.order['payment'] = None
@@ -118,8 +111,8 @@ class OrderBasket():
             self.order['tickets'] = {}
             self.order['tickets_count'] = 0
             self.order['total'] = self.decimal_price(0)
-            self.order['overall'] = self.decimal_price(0)
 
+            self.order['overall'] = self.decimal_price(0)
             self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_total']
 
             self.update_order()
@@ -136,16 +129,16 @@ class OrderBasket():
 
     def update_order(self):
         # Создать новый или обновить существующий заказ, используя self.order
+        self.order['updated'] = self.now()
         self.order = cache_factory('order', self.order['order_uuid'], obj=self.order, reset=True)
 
     def delete_order(self):
         # Полностью удалить существующий заказ
         cache_factory('order', self.order['order_uuid'], delete=True)
 
-    def add_ticket(self, ticket):
-        ticket_id = ticket['ticket_id']
+    def add_ticket(self, ticket_id, ticket):
         t = {
-            'ticket_uuid':    ticket['ticket_uuid'],
+            'ticket_uuid':    uuid.uuid4(),
             'sector_id':      ticket['sector_id'],
             'sector_title':   ticket['sector_title'],
             'row_id':         ticket['row_id'],
@@ -153,13 +146,12 @@ class OrderBasket():
             'seat_title':     ticket['seat_title'],
             'price':          self.decimal_price(ticket['price']),
             'price_order':    ticket['price_order'],
-            'added':          ticket['added'],
+            'added':          self.now(),
         }
         self.order['tickets'][ticket_id] = t
         self.order['tickets_count'] += 1
         self.order['total'] += self.decimal_price(ticket['price'])
-
-        self.order['overall'] = self.get_overall()
+        self.get_overall()
 
         # Обновление кэша заказа
         self.update_order()
@@ -170,22 +162,48 @@ class OrderBasket():
         self.order['tickets_count'] -= 1
         self.order['total'] -= self.decimal_price(ticket['price'])
         del ticket
-
-        self.order['overall'] = self.get_overall()
+        self.get_overall()
 
         # Обновление кэша заказа
         self.update_order()
 
-    def decimal_price(self, value):
-        """Преобразование входного значения в денежную сумму с 2 знаками после запятой (копейки) типа ``Decimal``.
+    def change_order_type(self, customer, order_type):
+        # Обновление типа получения и типа оплаты билетов
+        self.order['delivery'] = ORDER_TYPE_MAPPING[order_type]['delivery']
+        self.order['payment'] = ORDER_TYPE_MAPPING[order_type]['payment']
 
-        Args:
-            value (str): Входное значение (в любом случае строка - для обхода проблем с округлением ``float``).
+        # Обновление реквизитов покупателя
+        self.order['customer']['name'] = customer['name']
+        self.order['customer']['phone'] = customer['phone']
+        self.order['customer']['email'] = customer['email']
+        self.order['customer']['address'] = customer['address'] if self.order['delivery'] == 'courier' else None
 
-        Returns:
-            Decimal: Денежная сумма.
-        """
-        return Decimal(str(value)).quantize(Decimal('1.00'))
+        # Информация о событии
+        event = cache_factory('event', self.order['event_uuid'])
+        # Информация о сервисе продажи билетов
+        ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
+        # Информация о сервисе онлайн-оплаты
+        payment_service = cache_factory('payment_service', event['payment_service_id'])
+
+        # Процент сервисного сбора на каждый из билетов в заказе
+        self.order['extra'] = (
+            event['settings']['extra'][order_type] if
+            'extra' in event['settings'] and order_type in event['settings']['extra'] else
+            0
+        )
+        # Стоимость доставки курьером, если она используется
+        self.order['courier_price'] = self.decimal_price(
+            ticket_service['settings']['courier_price'] if self.order['delivery'] == 'courier' else 0
+        )
+        # Процент комиссии сервиса онлайн-оплаты, если он используется
+        self.order['commission'] = self.decimal_price(
+            payment_service['settings']['init']['commission'] if payment_service else 0
+        )
+
+        self.get_overall()
+
+        # Обновление кэша заказа
+        self.update_order()
 
     def get_overall(self):
         """Получение общей суммы заказа и её подписи в зависимости от возможных наценок/скидок."""
@@ -266,3 +284,19 @@ class OrderBasket():
         """
         return self.order['total'] + ((self.order['total'] * self.order['commission']) / self.decimal_price(100))
         # return self.order['total'] + (self.order['total'] * (self.order['commission'] / self.decimal_price(100)))
+
+    def decimal_price(self, value):
+        """Преобразование входного значения в денежную сумму с 2 знаками после запятой (копейки) типа ``Decimal``.
+
+        Args:
+            value (str): Входное значение (в любом случае строка - для обхода проблем с округлением ``float``).
+
+        Returns:
+            Decimal: Денежная сумма.
+        """
+        return Decimal(str(value)).quantize(Decimal('1.00'))
+
+    def now(self):
+        return timezone_now().astimezone(
+            pytz.timezone(self.order['city_timezone'])
+        )

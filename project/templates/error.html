@@ -37,7 +37,10 @@
 
 {% compress js inline %}
 <script type="text/javascript">
-    {% include "order/confirmation.js" %}
+    {# Удаление cookies в случае ошибки #}
+    $(document).ready(function() {
+        order_cookies_delete(['event_uuid', 'order_uuid']);
+    });
 </script>
 {% endcompress %}
 

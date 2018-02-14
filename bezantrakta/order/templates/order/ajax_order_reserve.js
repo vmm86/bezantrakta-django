@@ -46,9 +46,6 @@ function ajax_order_reserve_success(response, status, xhr) {
         );
         {% endif %}
 
-        // var class_f = 'free';
-        // var class_s = 'selected';
-
         if (action == window.seat_status.free.action) {
             $(seat_selector).addClass(window.seat_status.selected.class);
             $(seat_selector).removeClass(window.seat_status.free.class);

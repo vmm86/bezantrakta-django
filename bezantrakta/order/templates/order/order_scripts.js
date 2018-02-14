@@ -187,9 +187,9 @@ function order_after_initialize() {
                 }
                 $(this).val(res.join(''));
                 $(this).val($.trim($(this).val()));
-                window.customer['name'] = $(this).val();
-                order_cookies_update('customer_name');
-                return window.customer['name'];
+                window.order.customer['name'] = $(this).val();
+                order_cookies_update(['customer_name']);
+                return window.order.customer['name'];
             });
         });
 
@@ -197,9 +197,9 @@ function order_after_initialize() {
         {# Обрезка лишних пробелов в начале и в конце #}
         $('#customer-phone').blur(function() {
             $(this).val($.trim($(this).val()));
-            window.customer['phone'] = $(this).val();
-            order_cookies_update('customer_phone');
-            return window.customer['phone'];
+            window.order.customer['phone'] = $(this).val();
+            order_cookies_update(['customer_phone']);
+            return window.order.customer['phone'];
         });
 
         {# Поле "Email" #}
@@ -208,9 +208,9 @@ function order_after_initialize() {
             var test_email = /^\s*[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}\s*$/i;
             if (test_email.test(this.value)) {
                 $(this).val($.trim($(this).val()));
-                window.customer['email'] = $(this).val();
-                order_cookies_update('customer_email');
-                return window.customer['email'];
+                window.order.customer['email'] = $(this).val();
+                order_cookies_update(['customer_email']);
+                return window.order.customer['email'];
             } else {
                 alert('Пожалуйста, укажите правильный email-адрес');
             }
@@ -220,9 +220,9 @@ function order_after_initialize() {
         {# Обрезка лишних пробелов в начале и в конце #}
         $('#customer-address').blur(function() {
             $(this).val($.trim($(this).val()));
-            window.customer['address'] = $(this).val();
-            order_cookies_update('customer_address');
-            return window.customer['address'];
+            window.order.customer['address'] = $(this).val();
+            order_cookies_update(['customer_address']);
+            return window.order.customer['address'];
         });
     {% endif %}
 
@@ -367,10 +367,10 @@ function html_basket_update() {
                            ticket['sector_title'] + ',\n' +
                 'ряд '   + ticket['row_id']       + ',\n' +
                 'место ' + ticket['seat_title']   + ',\n' +
-                'цена '  + ticket['price'] * 1
+                'цена '  + get_price(ticket['price'])
             ) : (
                            ticket['sector_title'] + ',\n' +
-                'цена '  + ticket['price'] * 1
+                'цена '  + get_price(ticket['price'])
             );
 
             var seat_timeout_output = window.seat_timeout < 10 ? '0' + window.seat_timeout : window.seat_timeout;
@@ -399,7 +399,7 @@ function html_basket_update() {
 
         $('#tickets-count').html(window.order['tickets_count']);
 
-        $('#total').html(window.order['total']);
+        $('#total').html(get_price(window.order['total']));
 
         {% if active == 'step2' %}
             $('#overall').html(window.order['overall']);

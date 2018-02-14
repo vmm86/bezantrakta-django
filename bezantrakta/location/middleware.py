@@ -1,3 +1,5 @@
+import pytz
+
 from django.conf import settings
 from django.db.models import CharField, Case, When, Value, Q
 from django.http.request import split_domain_port
@@ -54,7 +56,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
 
         request.city_title = domain['city_title']
         request.city_slug = domain['city_slug']
-        request.city_timezone = domain['city_timezone']
+        request.city_timezone = pytz.timezone(domain['city_timezone'])
         request.city_state = domain['city_state']
 
         # URL сайта (прокотол + домен) без слэша в конце (для подстановки к относительным ссылкам)
