@@ -48,38 +48,28 @@ def prev_order_delete(request):
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
             return JsonResponseUTF8(response)
 
-        if not basket.order['tickets']:
-            # Удаление старого предварительного резерва (без билетов)
-            basket.delete_order()
-            response = {
-                'success': True,
-                'tickets': None,
-                'message': 'Старый предварительный резерв (без билетов) успешно удалён'
-            }
-            return JsonResponseUTF8(response)
-
         # Информация из предыдущего события
         prev_ticket_service_id = basket.order['ticket_service_id']
         prev_event_id = basket.order['event_id']
 
         # Информация из текущего события
-        this_event = cache_factory('event', basket.order['event_uuid'])
+        this_event = cache_factory('event', event_uuid)
         this_event_id = this_event['ticket_service_event']
 
         # Формирование ответа
         response = {}
 
         if prev_event_id != this_event_id:
-            logger.info('\n----------prev_order_remove----------'.format(order_uuid))
+            logger.info('\n----------prev_order_remove----------')
             logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
             logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
 
-            logger.info('order_uuid: {} {}'.format(order_uuid, str(type(order_uuid))))
+            logger.info('order_uuid: {} {}'.format(order_uuid))
             logger.info('\nПредыдущий предварительный резерв: {}'.format(basket.order))
 
-            logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id, str(type(prev_ticket_service_id))))
-            logger.info('prev_event_id: {} {}'.format(prev_event_id, str(type(prev_event_id))))
-            logger.info('this_event_id: {} {}'.format(this_event_id, str(type(this_event_id))))
+            logger.info('prev_ticket_service_id: {} {}'.format(prev_ticket_service_id))
+            logger.info('prev_event_id: {} {}'.format(prev_event_id))
+            logger.info('this_event_id: {} {}'.format(this_event_id))
 
             response['success'] = True
             response['tickets'] = {}

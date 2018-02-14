@@ -53,7 +53,7 @@ def reserve(request):
         ts = ticket_service['instance']
 
         now = timezone_now()
-        logger.info('\n----------Предварительный резерв {}----------'.format(order_uuid))
+        logger.info('\n----------reserve----------')
         logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
 
         logger.info('Сайт: {title} ({id})'.format(title=domain['domain_title'], id=domain['domain_id']))
@@ -102,9 +102,10 @@ def reserve(request):
         if reserve['success']:
             if action == 'add':
                 ticket = seats_and_prices['seats'][ticket_id]
-                # ticket['ticket_id'] = ticket_id
+                ticket['ticket_id'] = ticket_id
                 ticket['ticket_uuid'] = uuid.uuid4()
                 ticket['added'] = timezone_now().astimezone(domain['city_timezone'])
+                logger.info('\nticket: {}'.format(ticket))
                 basket.add_ticket(ticket)
             elif action == 'remove':
                 basket.remove_ticket(ticket_id)
