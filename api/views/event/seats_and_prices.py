@@ -54,17 +54,23 @@ def seats_and_prices(request):
 
             if heartbeat_delta > heartbeat_timeout and not seats_and_prices['in_progress']:
                 print('NEW REQUEST to ticket service...')
+                # Включаем параметр "в процессе обновления", чтобы избежать "гонки"" с новыми повторяющимися запросами
                 seats_and_prices['in_progress'] = True
                 seats_and_prices = cache_factory('seats_and_prices', event_uuid, obj=seats_and_prices, reset=True)
 
+                # Очередной запрос состояния мест и цен
                 new = ts.seats_and_prices(**params)
+                # Если очередной запрос успешен - выключаем параметр "в процессе обновления" и инвалидируем кэш
                 if new['success']:
                     new['updated'] = timezone_now()
                     new['in_progress'] = False
                     seats_and_prices = cache_factory('seats_and_prices', event_uuid, obj=new, reset=True)
+                # Если получаем ошибку - удаляем кэш для гарантированной инвалидации при следующем запросе
+                else:
+                    cache_factory('seats_and_prices', event_uuid, delete=True)
 
         print('SEATS AND PRICES ', 'updated: ', seats_and_prices['updated'], ' in_progress: ', seats_and_prices['in_progress'])
-        print('\nprices: # ', len(seats_and_prices['prices']), str(seats_and_prices['prices'])[:100])
+        # print('\nprices: # ', len(seats_and_prices['prices']), str(seats_and_prices['prices'])[:100])
         print('\nseats: # ', len(seats_and_prices['seats']), str(seats_and_prices['seats'])[:100])
 
         # print('seats_and_prices: ', seats_and_prices)
