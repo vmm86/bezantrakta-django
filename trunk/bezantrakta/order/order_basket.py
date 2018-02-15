@@ -1,3 +1,4 @@
+import logging
 import pytz
 import uuid
 from decimal import Decimal
@@ -73,6 +74,8 @@ class OrderBasket():
                 * overall_header (str): Заголовок для общей суммы заказа (с учётом возможных наценок/скидок).
     """
     def __init__(self, **kwargs):
+        self._logger = logging.getLogger('bezantrakta.reserve')
+
         # Получение существующего или создание нового пустого предварительного резерва
         if 'order_uuid' in kwargs and kwargs['order_uuid']:
             self.get_order(kwargs['order_uuid'])
@@ -85,17 +88,31 @@ class OrderBasket():
             self.order['order_uuid'] = uuid.uuid4()
             self.order['order_id'] = None
 
-            self.order['domain_slug'] = event['domain_slug'] if event else None
-            self.order['city_timezone'] = event['city_timezone'] if event else 'Europe/Moscow'
-            self.order['ticket_service_id'] = event['ticket_service_id'] if event else None
-            self.order['event_uuid'] = event['event_uuid'] if event else None
-            self.order['event_id'] = event['ticket_service_event'] if event else None
+            if event:
+                self.order['domain_slug'] = event['domain_slug']
+                self.order['city_timezone'] = event['city_timezone']
+                self.order['ticket_service_id'] = event['ticket_service_id']
+                self.order['event_uuid'] = event['event_uuid']
+                self.order['event_id'] = event['ticket_service_event']
+            else:
+                self.order['domain_slug'] = None
+                self.order['city_timezone'] = 'Europe/Moscow'
+                self.order['ticket_service_id'] = None
+                self.order['event_uuid'] = None
+                self.order['event_id'] = None
 
-            self.order['customer'] = {}
-            self.order['customer']['name'] = None
-            self.order['customer']['phone'] = None
-            self.order['customer']['email'] = None
-            self.order['customer']['address'] = None
+            # Получение реквизитов покупателя
+            customer_attributes = ('name', 'phone', 'email', 'address', 'order_type')
+            if 'customer' in kwargs and kwargs['customer']:
+                self.order['customer'] = {}
+                for attr in customer_attributes:
+                    self.order['customer'][attr] = (
+                        kwargs['customer'][attr] if
+                        attr in kwargs['customer'] and kwargs['customer'][attr] else
+                        None
+                    )
+            else:
+                self.order['customer'] = {attr: None for attr in customer_attributes}
 
             self.order['delivery'] = None
             self.order['payment'] = None
@@ -117,6 +134,13 @@ class OrderBasket():
 
             self.update_order()
 
+        if self.order:
+            # Информация о сервисе продажи билетов
+            ticket_service = cache_factory('ticket_service', self.order['ticket_service_id'])
+
+            self._max_seats_per_order = ticket_service['settings']['max_seats_per_order']
+            self._ts = ticket_service['instance']
+
     def __str__(self):
         return '{cls}({order_uuid})'.format(
             cls=self.__class__.__name__,
@@ -136,36 +160,74 @@ class OrderBasket():
         # Полностью удалить существующий заказ
         cache_factory('order', self.order['order_uuid'], delete=True)
 
-    def add_ticket(self, ticket_id, ticket):
-        t = {
-            'ticket_uuid':    uuid.uuid4(),
-            'sector_id':      ticket['sector_id'],
-            'sector_title':   ticket['sector_title'],
-            'row_id':         ticket['row_id'],
-            'seat_id':        ticket['seat_id'],
-            'seat_title':     ticket['seat_title'],
-            'price':          self.decimal_price(ticket['price']),
-            'price_order':    ticket['price_order'],
-            'added':          self.now(),
-        }
-        self.order['tickets'][ticket_id] = t
-        self.order['tickets_count'] += 1
-        self.order['total'] += self.decimal_price(ticket['price'])
-        self.get_overall()
+    def toggle_ticket(self, ticket_id, action):
+        response = {}
 
-        # Обновление кэша заказа
-        self.update_order()
+        add_condition = action == 'add' and self.order['tickets_count'] < self._max_seats_per_order
+        remove_condition = action == 'remove' and self.order['tickets_count'] > 0
 
-    def remove_ticket(self, ticket_id):
-        ticket = self.order['tickets'][ticket_id].copy()
-        del self.order['tickets'][ticket_id]
-        self.order['tickets_count'] -= 1
-        self.order['total'] -= self.decimal_price(ticket['price'])
-        del ticket
-        self.get_overall()
+        if add_condition or remove_condition:
+            # Параметры для отправки запроса к сервису продажи билетов
+            params = {
+                'event_id':   self.order['event_id'],
+                'order_uuid': self.order['order_uuid'],
+                'ticket_id':  ticket_id,
+                'action':     action
+            }
 
-        # Обновление кэша заказа
-        self.update_order()
+            # Универсальный метод для работы с предварительным резервом мест
+            reserve = self._ts.reserve(**params)
+            # self._logger.info('\nreserve: {}'.format(reserve))
+
+            if add_condition:
+                seats_and_prices = cache_factory('seats_and_prices', self.order['event_uuid'])
+                ticket = seats_and_prices['seats'][ticket_id]
+                # self._logger.info('\nticket: {}'.format(ticket))
+
+                if reserve['success']:
+                    self.order['tickets'][ticket_id] = {
+                        'ticket_uuid':  uuid.uuid4(),
+                        'sector_id':    ticket['sector_id'],
+                        'sector_title': ticket['sector_title'],
+                        'row_id':       ticket['row_id'],
+                        'seat_id':      ticket['seat_id'],
+                        'seat_title':   ticket['seat_title'],
+                        'price':        self.decimal_price(ticket['price']),
+                        'price_order':  ticket['price_order'],
+                        'added':        self.now(),
+                    }
+                    self.order['tickets_count'] += 1
+                    self.order['total'] += self.decimal_price(ticket['price'])
+            elif remove_condition:
+                # Даже если при удалении билета получен НЕуспешный ответ -
+                # билет в любом случае удаляется из предварительного резерва
+                ticket = self.order['tickets'][ticket_id].copy()
+                del self.order['tickets'][ticket_id]
+                self.order['tickets_count'] -= 1
+                self.order['total'] -= self.decimal_price(ticket['price'])
+                del ticket
+
+            self.get_overall()
+
+            # Обновление кэша заказа
+            self.update_order()
+
+            if reserve['success']:
+                response['success'] = True
+                response['message'] = 'Билет успешно удалён из резерва'
+                response['ticket_id'] = ticket_id
+                response['action'] = action
+                response['tickets'] = self.order['tickets']
+                response['tickets_count'] = self.order['tickets_count']
+                response['total'] = self.order['total']
+            else:
+                response['success'] = False
+                response['message'] = reserve['message']
+        else:
+            response['success'] = False
+            response['message'] = 'Невозможно провести резерв билета'
+
+        return response
 
     def change_order_type(self, customer, order_type):
         # Обновление типа получения и типа оплаты билетов
@@ -177,6 +239,7 @@ class OrderBasket():
         self.order['customer']['phone'] = customer['phone']
         self.order['customer']['email'] = customer['email']
         self.order['customer']['address'] = customer['address'] if self.order['delivery'] == 'courier' else None
+        self.order['customer']['order_type'] = order_type
 
         # Информация о событии
         event = cache_factory('event', self.order['event_uuid'])
@@ -257,8 +320,9 @@ class OrderBasket():
         """
         total_plus_extra = self.order['total']
         if self.order['extra'] > 0:
-            for ticket in self.order.tickets:
-                total_plus_extra += ((self.decimal_price(ticket['price']) * self.order['extra']) / 100)
+            for ticket_id in self.order['tickets']:
+                ticket_price = self.order['tickets'][ticket_id]['price']
+                total_plus_extra += ((self.decimal_price(ticket_price) * self.order['extra']) / self.decimal_price(100))
         return total_plus_extra
 
     def total_plus_courier_price(self):

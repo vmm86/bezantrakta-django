@@ -3,12 +3,6 @@ function welcome() {
     {# Прелоадер с прогресс-баром #}
     $('#tickets-preloader').show();
 
-    {# Модификация работы с Cookies, чтобы избежать ненужного urlendoding #}
-    window.cookies = Cookies.withConverter({
-        read:  function (value, name) { return value; },
-        write: function (value, name) { return value; }
-    });
-
     {# Удаление устаревших более не нужных cookies #}
     order_cookies_delete(['ticket_service_id', 'event_id', 'order_tickets', 'order_count', 'order_total']);
 
@@ -25,24 +19,16 @@ function welcome() {
 
 {# Инициализация проверок по таймаутам при загрузке страницы #}
 function start_heartbeat() {
-    {# Таймаут для автоматического освобождения добавленного ранее в предварительный резерв места #}
-    window.seat_timeout = {{ ticket_service.settings.seat_timeout }};
+    window.seat_status = {
+        free:     {class: 'free',     action: 'add'},
+        selected: {class: 'selected', action: 'remove'}
+    }
 
     {# Периодические проверки состояния мест с обратным отсчётом до их освобождения #}
     window.countdown_id = setInterval(seat_countdown_timer, 1000);
     {% if watcher %}console.log('started countdown ' + window.countdown_id);{% endif %}
 
     {% if active == 'step1' %}
-        window.seat_status = {
-            free:     {class: 'free',     action: 'add'},
-            selected: {class: 'selected', action: 'remove'}
-        }
-
-        window.max_seats_per_order = {{ ticket_service.settings.max_seats_per_order }};
-
-        {# Таймаут для повторного запроса списка свободных мест в событии #}
-        window.heartbeat_timeout = {{ ticket_service.settings.heartbeat_timeout }};
-
         {# Кэш запрошенных ранее списка цен и свободных мест для сравнения с вновь пришедшими свободными местами #}
         window.prices_cache = [];
         window.seats_cache  = [];
@@ -106,36 +92,45 @@ function order_after_initialize() {
 
     {# Подготовка полей формы для подтверждения заказа на шаге 2 #}
     {% if active == 'step2' %}
-        {# Значение по умолчанию в поле "Адрес доставки" #}
-        $('#customer-address').val('{{ customer.address }}');
+        {# Заполение реквизитов покупателя из cookies, если они вводились им ранее #}
+        for (property in window.order.customer) {
+            var customer_input = '#customer-' + property;
+            if (window.order.customer[property] != null) {
+                $(customer_input).val(window.order.customer[property]);
+            } else {
+                if (property == 'address') {
+                    $(customer_input).val('{{ domain.city_title }}');
+                }
+            }
+        };
 
         {# При начальной загрузке страницы скрытие всех блоков, появляющихся при выборе чекбоксов #}
         $('#overall-block, .ticket-offices-contacts, .customer-address, .payment-info, .eticket-info').hide();
 
         {# Логика переключения чекбоксов при выборе способа заказа #}
-        var order_types = {
-            'self_cash': {
+        window.order_types = {
+            self_cash: {
                 'field':    '#customer-delivery-self',
                 'hide':     '.customer-address, .online-info',
                 'show':     '.ticket-offices-contacts',
                 'delivery': 'self',
                 'payment':  'cash'
             },
-            'courier_cash': {
+            courier_cash: {
                 'field':    '#customer-delivery-courier',
                 'hide':     '.ticket-offices-contacts, .online-info',
                 'show':     '.customer-address',
                 'delivery': 'courier',
                 'payment':  'cash'
             },
-            'self_online': {
+            self_online: {
                 'field':    '#customer-delivery-payment',
                 'hide':     '.ticket-offices-contacts, .customer-address, .eticket-info',
                 'show':     '.payment-info',
                 'delivery': 'self',
                 'payment':  'online'
             },
-            'email_online': {
+            email_online: {
                 'field':    '#customer-delivery-eticket',
                 'hide':     '.ticket-offices-contacts, .customer-address, .payment-info',
                 'show':     '.eticket-info',
@@ -144,19 +139,18 @@ function order_after_initialize() {
             }
         };
 
-        $.each(order_types, function(type) {
-            $(order_types[type]['field']).change(function(){
-                // сразу или не сразу ???
-                $(order_types[type]['hide']).hide();
-                $(order_types[type]['show']).show();
+        $.each(window.order_types, function(type) {
+            $(window.order_types.type['field']).change(function(){
+                $(window.order_types.type['hide']).hide();
+                $(window.order_types.type['show']).show();
 
-                ajax_change_order_type(type);
+                ajax_order_change_type(type);
             });
         });
 
-        {# Выбор какого-то из возможных вариантов заказа билетов, активных в данном событии #}
-        $('input[name="customer_order_type"][class="{{ customer.order_type }}"').prop('checked', true);
-        $('input[name="customer_order_type"][class="{{ customer.order_type }}"').trigger('change');
+        {# Выбор ккого-то типа заказа билетов по умолчанию, активного в данном событии #}
+        $('input[name="customer_order_type"][class="{{ default_order_type }}"').prop('checked', true);
+        $('input[name="customer_order_type"][class="{{ default_order_type }}"').trigger('change');
 
         is_agree();
         $('#agree').change(is_agree);
@@ -244,13 +238,8 @@ function order_after_initialize() {
 function seat_click_handler(click) {
     click.preventDefault();
 
-    {# Нельзя выбрать больше билетов, чем максимальное значение из настроек сервиса продажи билетов #}
-    if (window.order['tickets_count'] < window.max_seats_per_order) {
-        {# Прелоадер с прогресс-баром #}
-        $('#tickets-preloader').fadeIn(20);
-    } else {
-        return false;
-    }
+    {# Прелоадер с прогресс-баром #}
+    $('#tickets-preloader').fadeIn(20);
 
     var ticket_id = $(this).data('ticket-id');
     var action = undefined;
@@ -350,9 +339,12 @@ function html_basket_update() {
     $('#chosen-tickets').empty();
 
     if (window.order['tickets_count'] > 0) {
-        for (t in window.order['tickets']) {
-            var ticket_id = t;
-            var ticket = window.order['tickets'][t];
+        {# Вывод билетов в предварительном резерве, отсортированных по ключам в order[tickets] #}
+        var sorted_tickets_keys = _.sortBy(Object.keys(window.order['tickets']));
+
+        for (var i = 0; i < sorted_tickets_keys.length; i++) {
+            var ticket_id = sorted_tickets_keys[i];
+            var ticket = window.order['tickets'][ticket_id];
 
             var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
 

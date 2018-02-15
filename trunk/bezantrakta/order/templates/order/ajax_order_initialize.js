@@ -22,6 +22,11 @@ function ajax_order_initialize_success(response, status, xhr) {
 
     order_cookies_update(['event_uuid', 'order_uuid']);
 
+    {# Таймаут для повторного запроса списка свободных мест в событии #}
+    window.heartbeat_timeout = response['heartbeat_timeout'];
+    {# Таймаут для автоматического освобождения добавленного ранее в предварительный резерв места #}
+    window.seat_timeout = response['seat_timeout'];
+
     {# Запуск работы с предварительным резервом билетов на сайте после его получения #}
     start_heartbeat();
     order_after_initialize();

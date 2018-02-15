@@ -42,13 +42,13 @@
 
             <br>
 
-            {% include "order/order_step_2_form.html" with order_step_2_form_action=order_step_2_form_action ticket_service=ticket_service payment_service=payment_service %}
+            {% include "order/order_step_2_form.html" with form_action=form_action domain=domain ticket_service=ticket_service payment_service=payment_service %}
 
             {% if debug %}
             <br><br>
-            customer: <pre>{{ customer|pprint }}</pre>
-            <br><br>
             order: <pre>{{ order|pprint }}</pre>
+            <br><br>
+            default_order_type: <pre>{{ default_order_type }}</pre>
             <br><br>
             event: <pre>{{ event|pprint }}</pre>
             <br><br>
@@ -70,14 +70,14 @@
     <script type="text/javascript">
     {% include "order/order_cookies.js" %}
     {# Базовый функционал процесса заказа билетов #}
-    {% include "order/order_scripts.js" with active="step2" event=event ticket_service=ticket_service order=order order_total_plus_commission=order_total_plus_commission courier_price=courier_price customer=customer %}
+    {% include "order/order_scripts.js" with active="step2" event=event default_order_type=default_order_type %}
 
     {# AJAX-запросы к внутреннему API сайта #}
     {% include "order/ajax_order_prev_order_delete.js" with active="step1" %}
-    {% include "order/ajax_order_initialize.js" with active="step2" %}
-    {% include "order/ajax_event_seats_and_prices.js" with active="step2" %}
-    {% include "order/ajax_order_reserve.js" with active="step2" %}
-    {% include "order/ajax_order_change_type.js" with active="step2" %}
+    {% include "order/ajax_order_initialize.js"        with active="step2" %}
+    {% include "order/ajax_event_seats_and_prices.js"  with active="step2" %}
+    {% include "order/ajax_order_reserve.js"           with active="step2" %}
+    {% include "order/ajax_order_change_type.js"       with active="step2" %}
 
     $(document).ready(function() {
         welcome();

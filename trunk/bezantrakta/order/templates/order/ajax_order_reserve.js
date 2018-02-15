@@ -17,22 +17,22 @@ function ajax_order_reserve(ticket_id, action) {
 }
 
 function ajax_order_reserve_success(response, status, xhr) {
-    var success = response['success'];
-    var ticket_id = response['ticket_id'];
-    var action = response['action'];
-
-    var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
-
     {% if watcher %}
-    console.log(
-        'is_successful: ', success,   '\n',
-        'ticket_id',       ticket_id, '\n',
-        'action: ',        action,    '\n'
-    );
+    console.log('reserve is_successful: ', response['success']);
     {% endif %}
 
     {# Если операция завершилась успешно #}
     if (response['success'] === true) {
+        var ticket_id = response['ticket_id'];
+        var action = response['action'];
+
+        {% if watcher %}
+        console.log('ticket_id: ', ticket_id);
+        console.log('action: ', action);
+        {% endif %}
+
+        var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
+
         {# Обновление предварительного резерва #}
         window.order['tickets'] = response['tickets']
         window.order['tickets_count'] = response['tickets_count']

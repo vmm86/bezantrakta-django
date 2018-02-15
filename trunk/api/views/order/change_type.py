@@ -46,7 +46,7 @@ def change_type(request):
 
         # Получение существующего предварительного резерва
         basket = OrderBasket(order_uuid=order_uuid)
-        if not basket.order:
+        if not basket or not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
             return JsonResponseUTF8(response)
 

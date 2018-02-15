@@ -41,6 +41,25 @@ def initialize(request):
         logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
         logger.info('Сайт: {}'.format(domain['domain_title']))
 
+        # Информация о текущем событии
+        this_event = cache_factory('event', event_uuid)
+        if not this_event:
+            response = {'success': False, 'message': 'Отсуствует информация о событии'}
+            return JsonResponseUTF8(response)
+        this_event_id = this_event['ticket_service_event']
+        # Информация о текущем сервисе продажи билетов
+        this_ticket_service = cache_factory('ticket_service', this_event['ticket_service_id'])
+
+        # Получение реквизитов покупателя из cookies
+        customer = {
+            'name':       request.COOKIES.get('bezantrakta_customer_name',       None),
+            'phone':      request.COOKIES.get('bezantrakta_customer_phone',      None),
+            'email':      request.COOKIES.get('bezantrakta_customer_email',      None),
+            'address':    request.COOKIES.get('bezantrakta_customer_address',    None),
+            'order_type': request.COOKIES.get('bezantrakta_customer_order_type', None)
+        }
+        customer = {k: v for k, v in customer.items() if v}
+
         log_order = {}
         # Если order_uuid получен - пытаемся получить существующий предварительный резерв
         if order_uuid:
@@ -50,24 +69,20 @@ def initialize(request):
             log_order['uuid'] = None
             log_order['state'] = None
             # Если предварительный резерв с полученным order_uuid по каким-то причинам НЕ существует
-            if not basket.order:
+            if not basket or not basket.order:
                 # Создаётся новый пустой предварительный резерв
                 logger.info('\nПредварительный резерв {} НЕ существует'.format(order_uuid))
 
-                basket = new_blank_order(event_uuid)
+                basket = new_blank_order(event_uuid, customer=customer)
                 log_order['uuid'] = basket.order['order_uuid']
                 log_order['state'] = 'Новый пустой предварительный резерв'
             else:
                 log_order['uuid'] = order_uuid
                 log_order['state'] = 'Существующий предварительный резерв'
 
-                # Информация из предыдущего события
-                prev_ticket_service_id = basket.order['ticket_service_id']
+                # Информация о предыдущем событии
                 prev_event_id = basket.order['event_id']
-
-                # Информация из текущего события
-                this_event = cache_factory('event', event_uuid)
-                this_event_id = this_event['ticket_service_event']
+                prev_ticket_service_id = basket.order['ticket_service_id']
 
                 logger.info('prev_ticket_service_id: {}'.format(prev_ticket_service_id))
                 logger.info('prev_event_id: {}'.format(prev_event_id))
@@ -77,13 +92,13 @@ def initialize(request):
                 if prev_event_id != this_event_id:
                     # Этот предварительный резерв будет удалён при параллельном запуске ``prev_order_delete``
                     # Создаётся новый пустой предварительный резерв
-                    basket = new_blank_order(event_uuid)
+                    basket = new_blank_order(event_uuid, customer=customer)
                     log_order['uuid'] = basket.order['order_uuid']
                     log_order['state'] = 'Новый пустой предварительный резерв'
         # Если order_uuid НЕ получен
         else:
             # Создаётся новый пустой предварительный резерв
-            basket = new_blank_order(event_uuid)
+            basket = new_blank_order(event_uuid, customer=customer)
             log_order['uuid'] = basket.order['order_uuid']
             log_order['state'] = 'Новый пустой предварительный резерв'
 
@@ -94,5 +109,7 @@ def initialize(request):
         response = {}
         response['success'] = True
         response['order'] = basket.order
+        response['heartbeat_timeout'] = this_ticket_service['settings']['heartbeat_timeout']
+        response['seat_timeout'] = this_ticket_service['settings']['seat_timeout']
 
         return JsonResponseUTF8(response)
