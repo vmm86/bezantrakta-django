@@ -271,44 +271,58 @@ class OrderBasket():
     def get_overall(self):
         """Получение общей суммы заказа и её подписи в зависимости от возможных наценок/скидок."""
 
-        # Для любого типа заказа без дополнительных условий -
-        # с учётом сервисного сбора для каждого билета в заказе (если он задан)
-        self.order['overall'] = self.total_plus_extra()
-        self.order['overall_header'] = (
-            ORDER_OVERALL_CAPTION['overall_extra'] if
-            self.order['extra'] > 0 else
-            ORDER_OVERALL_CAPTION['overall_total']
-        )
+        # Для любого типа заказа без дополнительных условий - с учётом сервисного сбора (если он задан)
+        if self.order['extra'] > 0:
+            self.order['overall'] = self.overall_with_extra()
+            self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_extra']
+        # Иначе - сумма цен на билеты
+        else:
+            self.order['overall'] = self.order['total']
+            self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_total']
 
         # При доставке курьером - с учётом стоимости доставки курьером (если она задана)
         if self.order['delivery'] == 'courier':
-            # Общая сумма заказа (с учётом сервисного сбора и стоимости доставки курьером)
-            self.order['overall'] = self.total_plus_courier_price()
-            if self.order['courier_price'] > 0:
-                self.order['overall_header'] = (
-                    ORDER_OVERALL_CAPTION['overall_courier_extra'] if
-                    self.order['extra'] > 0 else
-                    ORDER_OVERALL_CAPTION['overall_courier']
-                )
+            if self.order['extra'] > 0:
+                # С учётом доставки курьером и сервисного сбора
+                if self.order['courier_price'] > 0:
+                    self.order['overall'] = self.overall_plus_courier_price()
+                    self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_courier_extra']
+                # Иначе - с учётом сервисного сбора
+                # else:
+                    # self.order['overall'] = self.overall_with_extra()
+                    # self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_extra']
+            else:
+                # С учётом доставки курьером
+                if self.order['courier_price'] > 0:
+                    self.order['overall'] = self.overall_plus_courier_price()
+                    self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_courier']
+                # Иначе - сумма цен на билеты
+                # else:
+                    # self.order['overall'] = self.order['total']
+                    # self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_total']
 
         # При онлайн-оплате - с учётом комиссии сервиса онлайн-оплаты (если она задана)
         if self.order['payment'] == 'online':
-            # Общая сумма заказа (с учётом сервисного сбора и комиссии сервиса онлайн-оплаты)
-            self.order['overall'] = self.total_plus_commission()
-            if self.order['commission'] > 0:
-                self.order['overall_header'] = (
-                    ORDER_OVERALL_CAPTION['overall_commission_extra'] if
-                    self.order['extra'] > 0 else
-                    ORDER_OVERALL_CAPTION['overall_commission']
-                )
+            if self.order['extra'] > 0:
+                # С учётом комиссии платёжной системы и сервисного сбора
+                if self.order['commission'] > 0:
+                    self.order['overall'] = self.overall_with_commission()
+                    self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_commission_extra']
+                # Иначе - с учётом КОМИССИИ ПЛАТЁЖНОЙ СИСТЕМЫ и сервисного сбора
+                else:
+                    self.order['overall'] = self.overall_with_extra()
+                    self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_commission_extra']
             else:
-                self.order['overall_header'] = (
-                    ORDER_OVERALL_CAPTION['overall_commission_extra'] if
-                    self.order['extra'] > 0 else
-                    ORDER_OVERALL_CAPTION['overall_total']
-                )
+                # С учётом комиссии платёжной системы
+                if self.order['commission'] > 0:
+                    self.order['overall'] = self.overall_with_commission()
+                    self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_commission']
+                # Иначе - сумма цен на билеты
+                # else:
+                    # self.order['overall'] = self.order['total']
+                    # self.order['overall_header'] = ORDER_OVERALL_CAPTION['overall_total']
 
-    def total_plus_extra(self):
+    def overall_with_extra(self):
         """Общая сумма заказа с учётом сервисного сбора.
 
         Если процент сервисного сбора больше ``0``,
@@ -318,14 +332,16 @@ class OrderBasket():
         Returns:
             Decimal: Общая сумма заказа ``overall``.
         """
-        total_plus_extra = self.order['total']
+        overall_with_extra = self.order['total']
         if self.order['extra'] > 0:
             for ticket_id in self.order['tickets']:
                 ticket_price = self.order['tickets'][ticket_id]['price']
-                total_plus_extra += ((self.decimal_price(ticket_price) * self.order['extra']) / self.decimal_price(100))
-        return total_plus_extra
+                overall_with_extra += (
+                    (self.decimal_price(ticket_price) * self.order['extra']) / self.decimal_price(100)
+                )
+        return overall_with_extra
 
-    def total_plus_courier_price(self):
+    def overall_plus_courier_price(self):
         """Общая сумма заказа с учётом стоимости доставки курьером.
 
         Если стоимость доставки курьером больше ``0``, то она добавляется к сумме заказа.
@@ -334,9 +350,9 @@ class OrderBasket():
         Returns:
             Decimal: Общая сумма заказа ``overall``.
         """
-        return self.order['total'] + self.order['courier_price']
+        return self.order['overall'] + self.order['courier_price']
 
-    def total_plus_commission(self):
+    def overall_with_commission(self):
         """Общая сумма заказа при онлайн-оплате.
 
         Если комиссия сервиса онлайн-оплаты не равна ``0``,
@@ -346,8 +362,8 @@ class OrderBasket():
         Returns:
             Decimal: Общая сумма заказа ``overall``.
         """
-        return self.order['total'] + ((self.order['total'] * self.order['commission']) / self.decimal_price(100))
-        # return self.order['total'] + (self.order['total'] * (self.order['commission'] / self.decimal_price(100)))
+        return self.order['overall'] + ((self.order['overall'] * self.order['commission']) / self.decimal_price(100))
+        # return self.order['overall'] + (self.order['overall'] * (self.order['commission'] / self.decimal_price(100)))
 
     def decimal_price(self, value):
         """Преобразование входного значения в денежную сумму с 2 знаками после запятой (копейки) типа ``Decimal``.

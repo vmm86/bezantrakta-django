@@ -66,6 +66,8 @@ function ajax_order_reserve_success(response, status, xhr) {
         var no_tickets = _.isEmpty(window.order['tickets']);
         if (no_tickets === false && window.order_timeout > 10000) {
             $('#agree, #isubmit').prop('disabled', false);
+            $('#back').show();
+            $('#back-inactive').hide();
         }
     {% endif %}
 }
@@ -86,6 +88,8 @@ function ajax_order_reserve_error(xhr, status, error) {
         var no_tickets = _.isEmpty(window.order['tickets']);
         if (no_tickets === false && window.order_timeout > 10000) {
             $('#agree, #isubmit').prop('disabled', false);
+            $('#back').show();
+            $('#back-inactive').hide();
         }
     {% endif %}
 }
