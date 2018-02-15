@@ -271,6 +271,15 @@ class OrderBasket():
     def get_overall(self):
         """Получение общей суммы заказа и её подписи в зависимости от возможных наценок/скидок."""
 
+        # Для любого типа заказа без дополнительных условий -
+        # с учётом сервисного сбора для каждого билета в заказе (если он задан)
+        self.order['overall'] = self.total_plus_extra()
+        self.order['overall_header'] = (
+            ORDER_OVERALL_CAPTION['overall_extra'] if
+            self.order['extra'] > 0 else
+            ORDER_OVERALL_CAPTION['overall_total']
+        )
+
         # При доставке курьером - с учётом стоимости доставки курьером (если она задана)
         if self.order['delivery'] == 'courier':
             # Общая сумма заказа (с учётом сервисного сбора и стоимости доставки курьером)
@@ -298,15 +307,6 @@ class OrderBasket():
                     self.order['extra'] > 0 else
                     ORDER_OVERALL_CAPTION['overall_total']
                 )
-
-        # Для любого типа заказа без дополнительных условий -
-        # с учётом сервисного сбора для каждого билета в заказе (если он задан)
-        self.order['overall'] = self.total_plus_extra()
-        self.order['overall_header'] = (
-            ORDER_OVERALL_CAPTION['overall_extra'] if
-            self.order['extra'] > 0 else
-            ORDER_OVERALL_CAPTION['overall_total']
-        )
 
     def total_plus_extra(self):
         """Общая сумма заказа с учётом сервисного сбора.

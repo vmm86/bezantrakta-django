@@ -140,9 +140,9 @@ function order_after_initialize() {
         };
 
         $.each(window.order_types, function(type) {
-            $(window.order_types.type['field']).change(function(){
-                $(window.order_types.type['hide']).hide();
-                $(window.order_types.type['show']).show();
+            $(window.order_types[type]['field']).change(function(){
+                $(window.order_types[type]['hide']).hide();
+                $(window.order_types[type]['show']).show();
 
                 ajax_order_change_type(type);
             });
