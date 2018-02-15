@@ -109,28 +109,28 @@ function order_after_initialize() {
 
         {# Логика переключения чекбоксов при выборе способа заказа #}
         window.order_types = {
-            self_cash: {
+            'self_cash': {
                 'field':    '#customer-delivery-self',
                 'hide':     '.customer-address, .online-info',
                 'show':     '.ticket-offices-contacts',
                 'delivery': 'self',
                 'payment':  'cash'
             },
-            courier_cash: {
+            'courier_cash': {
                 'field':    '#customer-delivery-courier',
                 'hide':     '.ticket-offices-contacts, .online-info',
                 'show':     '.customer-address',
                 'delivery': 'courier',
                 'payment':  'cash'
             },
-            self_online: {
+            'self_online': {
                 'field':    '#customer-delivery-payment',
                 'hide':     '.ticket-offices-contacts, .customer-address, .eticket-info',
                 'show':     '.payment-info',
                 'delivery': 'self',
                 'payment':  'online'
             },
-            email_online: {
+            'email_online': {
                 'field':    '#customer-delivery-eticket',
                 'hide':     '.ticket-offices-contacts, .customer-address, .payment-info',
                 'show':     '.eticket-info',
@@ -141,9 +141,6 @@ function order_after_initialize() {
 
         $.each(window.order_types, function(type) {
             $(window.order_types[type]['field']).change(function(){
-                $(window.order_types[type]['hide']).hide();
-                $(window.order_types[type]['show']).show();
-
                 ajax_order_change_type(type);
             });
         });
@@ -183,8 +180,12 @@ function order_after_initialize() {
                 $(this).val($.trim($(this).val()));
                 window.order.customer['name'] = $(this).val();
                 order_cookies_update(['customer_name']);
-                return window.order.customer['name'];
             });
+
+            if ($(this).val().length > 0) {
+                var type = $('input[name="customer_order_type"]:checked').val();
+                ajax_order_change_type(type);
+            }
         });
 
         {# Поле "Телефон" #}
@@ -193,7 +194,11 @@ function order_after_initialize() {
             $(this).val($.trim($(this).val()));
             window.order.customer['phone'] = $(this).val();
             order_cookies_update(['customer_phone']);
-            return window.order.customer['phone'];
+
+            if ($(this).val().length > 0) {
+                var type = $('input[name="customer_order_type"]:checked').val();
+                ajax_order_change_type(type);
+            }
         });
 
         {# Поле "Email" #}
@@ -204,7 +209,11 @@ function order_after_initialize() {
                 $(this).val($.trim($(this).val()));
                 window.order.customer['email'] = $(this).val();
                 order_cookies_update(['customer_email']);
-                return window.order.customer['email'];
+
+                if ($(this).val().length > 0) {
+                    var type = $('input[name="customer_order_type"]:checked').val();
+                    ajax_order_change_type(type);
+                }
             } else {
                 alert('Пожалуйста, укажите правильный email-адрес');
             }
@@ -216,7 +225,11 @@ function order_after_initialize() {
             $(this).val($.trim($(this).val()));
             window.order.customer['address'] = $(this).val();
             order_cookies_update(['customer_address']);
-            return window.order.customer['address'];
+
+            if ($(this).val().length > 0) {
+                var type = $('input[name="customer_order_type"]:checked').val();
+                ajax_order_change_type(type);
+            }
         });
     {% endif %}
 
@@ -312,6 +325,8 @@ function seat_countdown_timer() {
             {# Временное отключение возможности подтвердить заказ при удалении очередного билета из резерва #}
             if (ticket['order_timeout_ms'] < 5000) {
                 $('#agree, #isubmit').prop('disabled', true);
+                $('#back').hide();
+                $('#back-inactive').show();
             }
 
             order_timeout_ms += ticket['order_timeout_ms'];
@@ -327,6 +342,8 @@ function seat_countdown_timer() {
         {# возможность подтверждения заказа отключается во избежание ошибок #}
         if (window.order_timeout < 10000) {
             $('#agree, #isubmit').prop('disabled', true);
+            $('#back').hide();
+            $('#back-inactive').show();
             {% if watcher %}console.log('order_timeout is coming...');{% endif %}
         }
     {% endif %}
@@ -394,7 +411,7 @@ function html_basket_update() {
         $('#total').html(get_price(window.order['total']));
 
         {% if active == 'step2' %}
-            $('#overall').html(window.order['overall']);
+            $('#overall').html(get_price(window.order['overall']));
             $('#overall-header').html(window.order['overall_header']);
             window.order['overall'] !== window.order['total'] ? $('#overall-block').show() : $('#overall-block').hide();
 
