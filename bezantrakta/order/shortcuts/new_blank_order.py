@@ -1,7 +1,7 @@
 from bezantrakta.order.order_basket import OrderBasket
 
 
-def new_blank_order(event_uuid):
+def new_blank_order(event_uuid, customer=None):
     """Создание нового пустого предварительного резерва в текущем событии.
 
     Args:
@@ -11,4 +11,4 @@ def new_blank_order(event_uuid):
         bezantrakta.order.order_basket.OrderBasket: Новый пустой предварительный резерв.
     """
     # Создание нового пустого предварительного резерва
-    return OrderBasket(order_uuid=None, event_uuid=event_uuid)
+    return OrderBasket(order_uuid=None, event_uuid=event_uuid, customer=customer)

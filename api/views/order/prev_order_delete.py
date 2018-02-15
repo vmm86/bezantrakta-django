@@ -43,8 +43,7 @@ def prev_order_delete(request):
 
         # Получение предварительного резерва в предыдущем событии
         basket = OrderBasket(order_uuid=order_uuid)
-
-        if not basket.order:
+        if not basket or not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
             return JsonResponseUTF8(response)
 

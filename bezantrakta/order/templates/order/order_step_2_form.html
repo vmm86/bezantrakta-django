@@ -1,4 +1,4 @@
-<form id="checkout-form" action="{{ order_step_2_form_action }}" method="POST">
+<form id="checkout-form" action="{{ form_action }}" method="POST">
     {% csrf_token %}
 
     {# Реквизиты покупателя #}
@@ -7,17 +7,17 @@
 
         <p class="input-container step2">
             <label id="customer-name-label" class="label yellow step2" for="customer-name">Фамилия Имя</label>
-            <input id="customer-name" class="input grey step2" type="text" name="customer_name" required="required" placeholder="Фамилия Имя Отчество" max="48" maxlength="48" value="{{ customer.name }}">
+            <input id="customer-name" class="input grey step2" type="text" name="customer_name" required="required" placeholder="Фамилия Имя Отчество" max="48" maxlength="48" value="">
         </p>
 
         <p class="input-container step2">
             <label id="customer-email-label" class="label yellow step2" for="customer-email">Электронная почта</label>
-            <input id="customer-email" class="input grey step2" type="email" name="customer_email" required="required" placeholder="primer@mail.ru" max="32" maxlength="32" value="{{ customer.email }}">
+            <input id="customer-email" class="input grey step2" type="email" name="customer_email" required="required" placeholder="primer@mail.ru" max="32" maxlength="32" value="">
         </p>
 
         <p class="input-container step2">
             <label id="customer-phone-label" class="label yellow step2" for="customer-phone">Контактный телефон</label>
-            <input id="customer-phone" class="input grey step2" type="tel" name="customer_phone" required="required" placeholder="81234567890" pattern="[0-9]{7,}" min="7" max="20" maxlength="20" value="{{ customer.phone }}">
+            <input id="customer-phone" class="input grey step2" type="tel" name="customer_phone" required="required" placeholder="81234567890" pattern="[0-9]{7,}" min="7" max="20" maxlength="20" value="">
         </p>
     </div>
 
@@ -42,7 +42,7 @@
         <div class="input-container">
                 <input id="customer-delivery-payment" class="self_online" type="radio" name="customer_order_type" value="self_online">
                 <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-payment" class="customer-delivery step2"> Оплатить онлайн и получить в кассе {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
+                <label for="customer-delivery-payment" class="customer-delivery step2"> Оплатить онлайн и получить в кассе {% if domain.city_title %}(г. {{ domain.city_title }}){% endif %}</label>
                 <br>
         </div>
     {% endif %}
@@ -62,7 +62,7 @@
                 <br>
                 <input id="customer-delivery-courier" class="courier_cash" type="radio" name="customer_order_type" value="courier_cash">
                 <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-courier" class="customer-delivery step2"> Доставка курьером {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
+                <label for="customer-delivery-courier" class="customer-delivery step2"> Доставка курьером {% if domain.city_title %}(г. {{ domain.city_title }}){% endif %}</label>
                 <br>
         </div>
     {% endif %}
@@ -72,7 +72,7 @@
                 <br>
                 <input id="customer-delivery-self" class="self_cash" type="radio" name="customer_order_type" value="self_cash">
                 <img border="0" style="border: 0; border-style: none">
-                <label for="customer-delivery-self" class="customer-delivery step2"> Забронировать и выкупить в кассе {% if request.city_title %}(г. {{ request.city_title }}){% endif %}</label>
+                <label for="customer-delivery-self" class="customer-delivery step2"> Забронировать и выкупить в кассе {% if domain.city_title %}(г. {{ domain.city_title }}){% endif %}</label>
                 <br>
         </div>
     {% endif %}
@@ -124,7 +124,7 @@
         {% if ticket_service.settings.order.courier_cash and event.settings.order.courier_cash %}
             <div class="customer-address step2">
                 <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
-                <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ request.city_title }}" value="{{ address }}">
+                <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ domain.city_title }}" value="">
                 <p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>
                 {% if ticket_service.settings.courier_price > 0 %}
                     <p>Стоимость доставки {{ ticket_service.settings.courier_price }} р.</p>
@@ -141,7 +141,4 @@
 
     </div>
 {% endif %}
-
-    <input id="delivery" type="hidden" name="customer_delivery" value="{{ delivery }}">
-    <input id="payment"  type="hidden" name="customer_payment"  value="{{ payment }}">
 </form>
