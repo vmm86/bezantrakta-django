@@ -60,7 +60,7 @@ function ajax_order_reserve_success(response, status, xhr) {
 
     {% if active == 'step1' %}
         {# Прелоадер с прогресс-баром #}
-        $('#tickets-preloader').delay(1000).fadeOut(25);
+        $('#tickets-preloader').delay(1000).fadeOut(50);
     {% elif active == 'step2' %}
         {# Включение возможности подтвердить заказ после удаления очередного билета, если заказ ещё не пустой #}
         var no_tickets = _.isEmpty(window.order['tickets']);

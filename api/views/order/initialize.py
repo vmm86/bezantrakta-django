@@ -80,13 +80,15 @@ def initialize(request):
                 log_order['state'] = 'Новый пустой предварительный резерв'
             else:
                 now = timezone_now()
-                seat_timeout_ceiling = this_ticket_service['settings']['seat_timeout'] + 1
-                order_timeout_delta = (now - basket.order['updated']).total_seconds()
-                # Если со времени последнего обновления заказа прошло больше времени,
-                # чем таймаут на автоматическое освобождение мест (с небольшим лагом сверху)
+                seat_timeout_ceiling = this_ticket_service['settings']['seat_timeout']
+                order_timeout_delta = (now - basket.order['updated']).seconds // 60 % 60
+                logger.info('\nseat_timeout_ceiling: {}'.format(seat_timeout_ceiling))
+                logger.info('order_timeout_delta: {}'.format(order_timeout_delta))
+                # Если со времени последнего обновления заказа прошло больше минут,
+                # чем таймаут на автоматическое освобождение мест (по умолчанию - 15 минут)
                 if order_timeout_delta > seat_timeout_ceiling:
                     # Создаётся новый пустой предварительный резерв
-                    logger.info('\nСтарый предварительный резерв {} истёк'.format(order_uuid))
+                    logger.info('\nСтарый предварительный резерв {} истёк\n'.format(order_uuid))
 
                     basket.delete_order()
                     basket = new_blank_order(event_uuid, customer=customer)
