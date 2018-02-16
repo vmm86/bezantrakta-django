@@ -9,7 +9,7 @@ function ajax_order_reserve(ticket_id, action) {
             'ticket_id':  ticket_id,
             'action':     action,
 
-            'csrfmiddlewaretoken': window.cookies.get('csrftoken')
+            'csrfmiddlewaretoken': order_cookies_get('csrftoken')
         },
         success: ajax_order_reserve_success,
         error:   ajax_order_reserve_error

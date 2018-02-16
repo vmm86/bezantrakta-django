@@ -7,7 +7,7 @@ function ajax_order_prev_order_delete() {
             'event_uuid': window.event_uuid,
             'order_uuid': window.order_uuid,
 
-            'csrfmiddlewaretoken': window.cookies.get('csrftoken')
+            'csrfmiddlewaretoken': order_cookies_get('csrftoken')
         },
         success: ajax_order_prev_order_delete_success,
         error:   ajax_order_prev_order_delete_error

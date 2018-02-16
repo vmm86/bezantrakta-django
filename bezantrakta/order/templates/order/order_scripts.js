@@ -8,7 +8,7 @@ function welcome() {
 
     window.event_uuid = '{{ event.event_uuid }}';
 
-    var order_uuid = window.cookies.get('bezantrakta_order_uuid');
+    var order_uuid = order_cookies_get('order_uuid');
     window.order_uuid = order_uuid ? order_uuid : 'None';
 
     {# Попытка удалить старый предварительный резерв из другого события, если он был сделан ранее #}

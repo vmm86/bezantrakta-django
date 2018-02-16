@@ -187,6 +187,7 @@ class OrderBasket():
                 if reserve['success']:
                     self.order['tickets'][ticket_id] = {
                         'ticket_uuid':  uuid.uuid4(),
+                        'ticket_id':    ticket_id,
                         'sector_id':    ticket['sector_id'],
                         'sector_title': ticket['sector_title'],
                         'row_id':       ticket['row_id'],

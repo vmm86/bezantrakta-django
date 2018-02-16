@@ -1,8 +1,26 @@
 {# Модификация работы с Cookies, чтобы избежать ненужного urlendoding #}
-window.cookies = Cookies.withConverter({
-    read:  function (value, name) { return value; },
-    write: function (value, name) { return value; }
-});
+// window.cookies = Cookies.withConverter({
+//     read:  function (value, name) { return value; },
+//     write: function (value, name) { return value; }
+// });
+
+function order_cookies_get(cookie) {
+    var cookie_prefix = 'bezantrakta_';
+    var order_cookies = [
+        'event_uuid',
+        'order_uuid',
+
+        'customer_name',
+        'customer_phone',
+        'customer_email',
+        'customer_address',
+        'customer_order_type',
+    ]
+
+    var cookie_title = order_cookies.indexOf(cookie) > -1 ? cookie_prefix + cookie : cookie;
+
+    return Cookies.get(cookie_title);
+}
 
 function order_cookies_update(cookies_list) {
     var cookie_prefix = 'bezantrakta_';
@@ -24,12 +42,9 @@ function order_cookies_update(cookies_list) {
                 var cookie_value = order_cookies[cookie];
                 var cookie_options = {};
                 cookie_options['domain'] = '.{{ request.root_domain }}';
-                {# cookies, относящиеся к покупателю, сохраняются на будущее и НЕ являются сессионными #}
-                if (cookie.startsWith('customer_')) {
-                    cookie_options['expires'] = new Date(new Date().getTime() + 60 * 60 * 24 * 366 * 1000);
-                }
+                cookie_options['expires'] = new Date(new Date().getTime() + 60 * 60 * 24 * 366 * 1000);
 
-                window.cookies.set(cookie_title, cookie_value, cookie_options);
+                Cookies.set(cookie_title, cookie_value, cookie_options);
                 {% if watcher %}console.log('updated 🍪 ' + cookie + ': ', cookie_value);{% endif %}
             }
         }
@@ -43,10 +58,10 @@ function order_cookies_delete(cookies_list) {
 
     for (var c = 0; c < cookies_list.length; c++) {
         var cookie_title = cookie_prefix + cookies_list[c];
-        var cookie_value = window.cookies.get(cookie_title);
+        var cookie_value = Cookies.get(cookie_title);
 
         if (cookie_value !== undefined) {
-            window.cookies.remove(cookie_title, cookie_options);
+            Cookies.remove(cookie_title, cookie_options);
         }
     }
 }
