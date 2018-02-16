@@ -1,4 +1,5 @@
 import logging
+import urllib
 import uuid
 
 from project.cache import cache_factory
@@ -40,6 +41,7 @@ def initialize(request):
         logger.info('\n----------order_initialize----------')
         logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
         logger.info('Сайт: {}'.format(domain['domain_title']))
+        logger.info('Город: {}'.format(domain['city_title']))
 
         # Информация о текущем событии
         this_event = cache_factory('event', event_uuid)
@@ -55,10 +57,10 @@ def initialize(request):
             'name':       request.COOKIES.get('bezantrakta_customer_name',       None),
             'phone':      request.COOKIES.get('bezantrakta_customer_phone',      None),
             'email':      request.COOKIES.get('bezantrakta_customer_email',      None),
-            'address':    request.COOKIES.get('bezantrakta_customer_address',    None),
+            'address':    request.COOKIES.get('bezantrakta_customer_address',    domain['city_title']),
             'order_type': request.COOKIES.get('bezantrakta_customer_order_type', None)
         }
-        customer = {k: v for k, v in customer.items() if v}
+        customer = {k: urllib.parse.unquote(v) for k, v in customer.items() if v}
 
         log_order = {}
         # Если order_uuid получен - пытаемся получить существующий предварительный резерв
@@ -77,24 +79,38 @@ def initialize(request):
                 log_order['uuid'] = basket.order['order_uuid']
                 log_order['state'] = 'Новый пустой предварительный резерв'
             else:
-                log_order['uuid'] = order_uuid
-                log_order['state'] = 'Существующий предварительный резерв'
-
-                # Информация о предыдущем событии
-                prev_event_id = basket.order['event_id']
-                prev_ticket_service_id = basket.order['ticket_service_id']
-
-                logger.info('prev_ticket_service_id: {}'.format(prev_ticket_service_id))
-                logger.info('prev_event_id: {}'.format(prev_event_id))
-                logger.info('this_event_id: {}'.format(this_event_id))
-
-                # Если существующий предварительный резерв был сделан в другом событии
-                if prev_event_id != this_event_id:
-                    # Этот предварительный резерв будет удалён при параллельном запуске ``prev_order_delete``
+                now = timezone_now()
+                seat_timeout_ceiling = this_ticket_service['settings']['seat_timeout'] + 1
+                order_timeout_delta = (now - basket.order['updated']).total_seconds()
+                # Если со времени последнего обновления заказа прошло больше времени,
+                # чем таймаут на автоматическое освобождение мест (с небольшим лагом сверху)
+                if order_timeout_delta > seat_timeout_ceiling:
                     # Создаётся новый пустой предварительный резерв
+                    logger.info('\nСтарый предварительный резерв {} истёк'.format(order_uuid))
+
+                    basket.delete_order()
                     basket = new_blank_order(event_uuid, customer=customer)
                     log_order['uuid'] = basket.order['order_uuid']
                     log_order['state'] = 'Новый пустой предварительный резерв'
+                else:
+                    log_order['uuid'] = order_uuid
+                    log_order['state'] = 'Существующий предварительный резерв'
+
+                    # Информация о предыдущем событии
+                    prev_event_id = basket.order['event_id']
+                    prev_ticket_service_id = basket.order['ticket_service_id']
+
+                    logger.info('prev_ticket_service_id: {}'.format(prev_ticket_service_id))
+                    logger.info('prev_event_id: {}'.format(prev_event_id))
+                    logger.info('this_event_id: {}'.format(this_event_id))
+
+                    # Если существующий предварительный резерв был сделан в другом событии
+                    if prev_event_id != this_event_id:
+                        # Этот предварительный резерв будет удалён при параллельном запуске ``prev_order_delete``
+                        # Создаётся новый пустой предварительный резерв
+                        basket = new_blank_order(event_uuid, customer=customer)
+                        log_order['uuid'] = basket.order['order_uuid']
+                        log_order['state'] = 'Новый пустой предварительный резерв'
         # Если order_uuid НЕ получен
         else:
             # Создаётся новый пустой предварительный резерв

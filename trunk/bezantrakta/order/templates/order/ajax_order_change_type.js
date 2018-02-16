@@ -8,7 +8,7 @@ function ajax_order_change_type(order_type) {
             'order_uuid': window.order_uuid,
             'order_type': order_type,
 
-            'csrfmiddlewaretoken': window.cookies.get('csrftoken')
+            'csrfmiddlewaretoken': order_cookies_get('csrftoken')
         },
         success: ajax_change_order_type_success,
         error:   ajax_change_order_type_error
