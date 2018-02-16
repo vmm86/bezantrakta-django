@@ -152,13 +152,6 @@ function order_after_initialize() {
         is_agree();
         $('#agree').change(is_agree);
 
-        {# Блокировка повторной отправки формы при подтверждении заказа #}
-        $('#checkout-form').submit(function() {
-            $('#tickets-preloader').show();
-            $(this).find('#submit').prop('disabled', true);
-            return true;
-        });
-
         {# Валидация полей формы с контактными данными на шаге 2 и запоминание их в cookie для будущих заказов #}
         {# Поле "Имя" #}
         {# Каждое слово капитализируется, обрезка лишних пробелов в начале и в конце #}
@@ -231,6 +224,13 @@ function order_after_initialize() {
                 ajax_order_change_type(type);
             }
         });
+
+        {# Блокировка повторной отправки формы при подтверждении заказа #}
+        $('#checkout-form').submit(function() {
+            $('#tickets-preloader').show();
+            $(this).find('#submit').prop('disabled', true);
+            return true;
+        });
     {% endif %}
 
     {% comment %}
@@ -252,7 +252,7 @@ function seat_click_handler(click) {
     click.preventDefault();
 
     {# Прелоадер с прогресс-баром #}
-    $('#tickets-preloader').fadeIn(20);
+    $('#tickets-preloader').fadeIn(25);
 
     var ticket_id = $(this).data('ticket-id');
     var action = undefined;
@@ -274,16 +274,14 @@ function seat_countdown_timer() {
     {# Таймаут для выделения места в миллисекундах #}
     var seat_timeout_ms = window.seat_timeout * 60 * 1000;
     {% if active == 'step2' %}
-    var order_timeout_ms = 0;
+        var order_timeout_ms = 0;
 
-    {# Если все билеты удалены из предварительного резерва - перезагрузить страницу #}
-    if (window.order['tickets_count'] == 0) {
-        stop_heartbeat();
-
-        html_basket_update();
-
-        location.reload();
-    }
+        {# Если все билеты удалены из предварительного резерва - перезагрузить страницу #}
+        if (window.order['tickets_count'] == 0) {
+            stop_heartbeat();
+            html_basket_update();
+            location.reload();
+        }
     {% endif %}
 
     {# Выбранные ранее билеты: #}
@@ -356,12 +354,16 @@ function html_basket_update() {
     $('#chosen-tickets').empty();
 
     if (window.order['tickets_count'] > 0) {
-        {# Вывод билетов в предварительном резерве, отсортированных по ключам в order[tickets] #}
-        var sorted_tickets_keys = _.sortBy(Object.keys(window.order['tickets']));
+        {# Билеты в предварительном резерве выводятся отсортированными по названию сектора, ряду и названию места #}
+        var sorted_tickets = _.sortBy(window.order['tickets'],
+            function(t) {return t.sector_title;},
+            function(t) {return t.row_id;},
+            function(t) {return typeof(parseInt(t.seat_title)) == 'number' ? parseInt(t.seat_title) : t.seat_id;}
+        );
 
-        for (var i = 0; i < sorted_tickets_keys.length; i++) {
-            var ticket_id = sorted_tickets_keys[i];
-            var ticket = window.order['tickets'][ticket_id];
+        for (var t = 0; t < sorted_tickets.length; t++) {
+            var ticket_id = sorted_tickets[t]['ticket_id'];
+            var ticket = sorted_tickets[t];
 
             var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
 
@@ -447,15 +449,19 @@ function is_agree() {
     $('#isubmit').prop('disabled', is_agree);
 }
 
-{# Получение цены как float с двумя знаками после запятой #}
+{# Получение цены как integer или float в зависимости от десятичной части #}
 function get_price(price) {
     return Math.round(parseFloat(price) * 100) / 100;
 }
 
 function log_success(data, status) {
-    console.log('Success!', '\nStatus: ', status, '\nData: ', data);
+    {% if watcher %}
+        console.log('Success!', '\nStatus: ', status, '\nData: ', data);
+    {% endif %}
 }
 
 function log_error(data, status, error) {
-    console.log('Error!', '\nStatus: ', status, '\nError: ', error, '\nData: ', data.responseText);
+    {% if watcher %}
+        console.log('Error!', '\nStatus: ', status, '\nError: ', error, '\nData: ', data.responseText);
+    {% endif %}
 }

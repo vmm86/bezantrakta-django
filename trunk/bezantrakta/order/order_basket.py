@@ -239,7 +239,7 @@ class OrderBasket():
         self.order['customer']['name'] = customer['name']
         self.order['customer']['phone'] = customer['phone']
         self.order['customer']['email'] = customer['email']
-        self.order['customer']['address'] = customer['address'] if self.order['delivery'] == 'courier' else None
+        self.order['customer']['address'] = customer['address']
         self.order['customer']['order_type'] = order_type
 
         # Информация о событии
