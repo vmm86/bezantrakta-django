@@ -1,9 +1,3 @@
-{# Модификация работы с Cookies, чтобы избежать ненужного urlendoding #}
-// window.cookies = Cookies.withConverter({
-//     read:  function (value, name) { return value; },
-//     write: function (value, name) { return value; }
-// });
-
 function order_cookies_get(cookie) {
     var cookie_prefix = 'bezantrakta_';
     var order_cookies = [
