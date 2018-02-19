@@ -1,0 +1,8 @@
+{% load static %}
+{% if banner.href %}
+    <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+{% endif %}
+        <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}" title="{{ banner.title }}">
+{% if banner.href %}
+    </a>
+{% endif %}
