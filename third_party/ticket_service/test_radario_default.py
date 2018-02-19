@@ -33,7 +33,7 @@ data = {
         'scheme_id': 7528,
         'event_id': 73811,
         'group_id': None,
-        'sector_id': 341031,
+        'sector_id': 2702934,
     },
     # Трамвай "Желание" (с местами на сцене)
     'desire': {
@@ -58,8 +58,8 @@ data = {
     },
 }
 
-# test_data = data['test_no_hall']
-test_data = data['test_big_hall']
+test_data = data['test_no_hall']
+# test_data = data['test_big_hall']
 # test_data = data['desire']
 # test_data = data['gogol']
 # test_data = data['karenin']
@@ -93,7 +93,7 @@ test_data = data['test_big_hall']
 # SECTORS
 # py_result = ts.sectors(event_id=test_data['event_id'])
 # SEATS AND PRICES
-py_result = ts.seats_and_prices(event_id=test_data['event_id'])
+# py_result = ts.seats_and_prices(event_id=test_data['event_id'])
 
 # RESERVE (ADD OR REMOVE)
 # action = 'add'
@@ -109,24 +109,30 @@ py_result = ts.seats_and_prices(event_id=test_data['event_id'])
 # customer = {
 #     'name': 'TestClient', 'email': 'test@rterm.ru', 'phone': '+74732000111',
 # }
-# tickets = [
-#     {
-#         'ticket_uuid': uuid.UUID('c4ccb2c3-1278-4a71-a169-7b8db6e872c1'),
-#         'sector_id': test_data['sector_id'], 'sector_id': 3, 'seat_id': 127,
+# tickets = {
+#     '10': {
+#         'ticket_uuid': uuid.uuid4(),
+#         'sector_id': test_data['sector_id'], 'row_id': 0, 'seat_id': 10,
 #     }
-# ]
+# }
 # py_result = ts.order_create(event_id=test_data['event_id'], customer=customer, tickets=tickets)
 
 # ORDER
-# order_id = 2309295
+# order_id = 2509480
 # py_result = ts.order(order_id=order_id)
 
 # ORDER_CANCEL
-# order_id = 2395321
+# order_id = 2508941
 # py_result = ts.order_cancel(order_id=order_id)
 
 # ORDER_APPROVE
+# order_id = 2508952
 # py_result = ts.order_approve(order_id=order_id)
+
+# ORDER_REFUND
+# order_id = 2508833
+# reason = 'Посторонним В'
+# py_result = ts.order_refund(order_id=order_id, reason=reason)
 
 try:
     print(type(py_result))

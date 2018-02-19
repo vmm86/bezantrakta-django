@@ -89,17 +89,15 @@ class PaymentService(ABC):
 
         Args:
             event_uuid (uuid.UUID): Уникальный UUID события в БД.
-            event_id (int): Идентификатор события.
+            event_id (int): Идентификатор события в сервисе продажи билетов.
+            order_uuid (uuid.UUID): Уникальный UUID заказа.
+            order_id (int): Идентификатор заказа.
+            overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
             customer (dict): Реквизиты покупателя.
                 Содержимое ``customer``:
                     * **name** (str): ФИО.
                     * **email** (str): Электронная почта.
                     * **phone** (str): Телефон.
-            order (dict): Параметры заказа.
-                Содержимое ``order``:
-                    * **order_uuid** (uuid.UUID): Уникальный UUID заказа.
-                    * **order_id** (int): Идентификатор заказа.
-                    * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Параметры новой оплаты.

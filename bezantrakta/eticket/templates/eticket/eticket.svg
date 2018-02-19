@@ -372,7 +372,7 @@
             id="_3_order_id-text"
             x="1260"
             y="28878"
-            style="font-size:300px;font-weight:bold;fill:#000000;font-family:Roboto">{{ ticket_service_order }}</text>
+            style="font-size:300px;font-weight:bold;fill:#000000;font-family:Roboto">{{ order_id }}</text>
     </g>
     <g id="_3_ticket_id">
         <path
@@ -387,7 +387,7 @@
             id="_3_ticket_id-text"
             x="5410"
             y="28878"
-            style="font-size:300px;font-weight:bold;fill:#000000;font-family:Roboto">{{ ticket_id }}</text>
+            style="font-size:300px;font-weight:bold;fill:#000000;font-family:Roboto">{{ ticket_uuid }}</text>
     </g>
 
 

@@ -30,7 +30,7 @@
         </div>
         {% if item.event_min_price %}
             <div class="poster-small-vertical-min_price">
-                <a href="{{ item_url }}">от {{ item.event_min_price|floatformat }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></a>
+                <a href="{{ item_url }}">от {{ item.event_min_price|floatformat:"-2" }} <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></a>
             </div>
         {% endif %}
     </div>

@@ -44,10 +44,6 @@ function start_heartbeat() {
         $('#tickets').on('click', '.seat.free, .seat.selected', seat_click_handler);
         {# Селектор `#tickets` указан для того, чтобы работали клики по схемам отдельных секторов в больших залах, когда эти схемы ещё добавлялись "на лету" в jQuery #}
         {# Селектор `#tickets`, к которому применяется `.on()`, НЕ должен генерироваться уже после загрузки страницы, будучи при этом родителем для вновь генерируемых элементов #}
-
-        {# Отключение запроса мест при переходе на шаг 2, #}
-        {# чтобы очередной запуск `ajax_seats_and_prices` не мог бы завершился с ошибкой #}
-        $('#buy-tickets').on('click', stop_heartbeat);
     {% elif active == 'step2' %}
         {# Текущий средний совокупный таймаут всех билетов в предварительном резерве, #}
         {# по истечении которого блокируется подтверждение заказа на шаге 2 #}
@@ -55,7 +51,6 @@ function start_heartbeat() {
         {% if watcher %}console.log('order_timeout (initial): ', window.order_timeout);{% endif %}
 
         {# Отключение проверки состояния мест при уходе назад на шаг 1 или при подтверждении заказа #}
-        $('#back').on('click', stop_heartbeat);
         $('#checkout-form').on('submit', stop_heartbeat);
     {% endif %}
 
@@ -77,6 +72,19 @@ function stop_heartbeat() {
 function order_after_initialize() {
     html_basket_update();
 
+    {% comment %}
+    {# Фиксированное позиционирование легенды заказа и кнопок "Назад"/"Оформить" при прокручивании страницы #}
+    $(window).scroll(function(){
+        console.log('scroll:', $(window).scrollTop());
+        legend_position = $('#basket-container').position().top;
+        if ($(window).scrollTop() >= legend_position) {
+            $('#basket-container').css('position', 'fixed');
+        } else {
+            $('#basket-container').css('position', 'static');
+        }
+    });
+    {% endcomment %}
+
     {# Работа с секторами в больших или составных залах #}
     {% if active == 'step1' and venue_scheme_sectors %}
         {# Максимальная ширина блока с секторами - текущая ширина общей схемы зала #}
@@ -92,6 +100,9 @@ function order_after_initialize() {
 
     {# Подготовка полей формы для подтверждения заказа на шаге 2 #}
     {% if active == 'step2' %}
+        {# Заполение скрытого поля с UUID заказа #}
+        $('#order-uuid').val(window.order['order_uuid']);
+
         {# Заполение реквизитов покупателя из cookies, если они вводились им ранее #}
         for (property in window.order.customer) {
             var customer_input = '#customer-' + property;
@@ -228,23 +239,12 @@ function order_after_initialize() {
         {# Блокировка повторной отправки формы при подтверждении заказа #}
         $('#checkout-form').submit(function() {
             $('#tickets-preloader').show();
-            $(this).find('#submit').prop('disabled', true);
+
+            $('#submit').prop('disabled', true);
+
             return true;
         });
     {% endif %}
-
-    {% comment %}
-    {# Фиксированное позиционирование легенды заказа и кнопок "Назад"/"Оформить" при прокручивании страницы #}
-    $(window).scroll(function(){
-        console.log('scroll:', $(window).scrollTop());
-        legend_position = $('#basket-container').position().top;
-        if ($(window).scrollTop() >= legend_position) {
-            $('#basket-container').css('position', 'fixed');
-        } else {
-            $('#basket-container').css('position', 'static');
-        }
-    });
-    {% endcomment %}
 }
 
 {# Обработка клика на свободном месте в схеме зала #}
@@ -255,6 +255,8 @@ function seat_click_handler(click) {
     $('#tickets-preloader').fadeIn(25);
 
     var ticket_id = $(this).data('ticket-id');
+    var is_fixed = $(this).data('is-fixed');
+    {% if watcher %}console.log(ticket_id, ' is-fixed ', is_fixed);{% endif %}
     var action = undefined;
 
     {# Если выбираем НЕ выбранное ранее место #}
@@ -265,7 +267,7 @@ function seat_click_handler(click) {
         action = window.seat_status.selected.action;
     }
 
-    ajax_order_reserve(ticket_id, action);
+    ajax_order_reserve(ticket_id, is_fixed, action);
 }
 
 {# Обратный отсчёт до освобождения добавленных в предварительный резерв мест #}
@@ -314,7 +316,11 @@ function seat_countdown_timer() {
 
                 $('#' + ticket_id).remove();
 
-                ajax_order_reserve(ticket_id, 'remove');
+                var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
+                var is_fixed = $(seat_selector).data('is-fixed');
+                {% if watcher %}console.log(ticket_id, ' is-fixed ', is_fixed);{% endif %}
+
+                ajax_order_reserve(ticket_id, is_fixed, 'remove');
             }
     {% if active == 'step2' %}
         } else {
@@ -367,14 +373,7 @@ function html_basket_update() {
 
             var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
 
-            ticket['is_fixed'] = $(seat_selector).data('fixed');
-            if (typeof ticket['is_fixed'] === undefined) {
-                ticket['is_fixed'] = false;
-            }
-
-            var is_fixed_seat = ticket['is_fixed'] || ticket['sector_id'] != 0;
-
-            var ticket_title = is_fixed_seat ? (
+            var ticket_title = ticket['is_fixed'] ? (
                            ticket['sector_title'] + ',\n' +
                 'ряд '   + ticket['row_id']       + ',\n' +
                 'место ' + ticket['seat_title']   + ',\n' +
@@ -452,6 +451,22 @@ function is_agree() {
 {# Получение цены как integer или float в зависимости от десятичной части #}
 function get_price(price) {
     return Math.round(parseFloat(price) * 100) / 100;
+}
+
+{# Фиксированное ли это место или место со свободной рассадкой #}
+function is_fixed_seat(selector) {
+    var is_fixed = selector.data('is-fixed');
+    if (is_fixed === undefined) {
+        if (selector.parent().hasClass('no-fixed-seats')) {
+            return false;
+        } else if (selector.data('row-id') == 0) {
+            return false;
+        } else {
+            return true;
+        }
+    } else{
+        return is_fixed;
+    }
 }
 
 function log_success(data, status) {

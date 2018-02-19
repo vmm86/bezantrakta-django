@@ -248,17 +248,15 @@ class Sberbank(PaymentService):
 
         Args:
             event_uuid (uuid.UUID): Уникальный UUID события в БД.
-
+            event_id (int): Идентификатор события в сервисе продажи билетов.
+            order_uuid (uuid.UUID): Уникальный UUID заказа.
+            order_id (int): Идентификатор заказа.
             customer (dict): Реквизиты покупателя.
                 Содержимое ``customer``:
                     * **name** (str): ФИО.
                     * **email** (str): Электронная почта.
                     * **phone** (str): Телефон.
-            order (dict): Параметры заказа.
-                Содержимое ``order``:
-                    * **order_uuid** (uuid.UUID): Уникальный UUID заказа.
-                    * **order_id** (int): Идентификатор заказа.
-                    * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
+            overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Параметры новой оплаты.
@@ -276,20 +274,20 @@ class Sberbank(PaymentService):
 
         data = {}
         # Идентификатор заказа
-        data['orderNumber'] = kwargs['order']['order_id']
+        data['orderNumber'] = kwargs['order_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(kwargs['order']['overall'] * 100)
+        data['amount'] = int(kwargs['overall'] * 100)
         # URL возврата после успешной оплаты
         data['returnUrl'] = '{url}?event_uuid={event_uuid}&order_uuid={order_uuid}'.format(
             url=str(self.__success_url),
             event_uuid=kwargs['event_uuid'],
-            order_uuid=kwargs['order']['order_uuid'],
+            order_uuid=kwargs['order_uuid'],
         )
         # URL возврата после НЕуспешной оплаты
         data['failUrl'] = '{url}?event_uuid={event_uuid}&order_uuid={order_uuid}'.format(
             url=str(self.__error_url),
             event_uuid=kwargs['event_uuid'],
-            order_uuid=kwargs['order']['order_uuid'],
+            order_uuid=kwargs['order_uuid'],
         )
         # Время на оплату заказа в секундах
         data['sessionTimeoutSecs'] = self.timeout * 60
@@ -312,8 +310,8 @@ class Sberbank(PaymentService):
         create['success'] = True if 'payment_url' in create else False
 
         if not create['success']:
-            create['action_code'] = create.pop('errorcode')
-            create['action_message'] = create.pop('errormessage')
+            create['code'] = create.pop('errorcode')
+            create['message'] = create.pop('errormessage')
 
         return create
 
@@ -397,7 +395,7 @@ class Sberbank(PaymentService):
 
         Args:
             payment_id (str): Идентификатор оплаты.
-            * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
+            overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Информация о возврате.

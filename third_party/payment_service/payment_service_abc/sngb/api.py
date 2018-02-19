@@ -182,16 +182,14 @@ class SurgutNefteGazBank(PaymentService):
         Args:
             event_uuid (uuid.UUID): Уникальный UUID события в БД.
             event_id (int): Идентификатор события в сервисе продажи билетов.
+            order_uuid (uuid.UUID): Уникальный UUID заказа.
+            order_id (int): Идентификатор заказа.
             customer (dict): Реквизиты покупателя.
                 Содержимое ``customer``:
                     * **name** (str): ФИО.
                     * **email** (str): Электронная почта.
                     * **phone** (str): Телефон.
-            order (dict): Параметры заказа.
-                Содержимое ``order``:
-                    * **order_uuid** (uuid.UUID): Уникальный UUID заказа.
-                    * **order_id** (int): Идентификатор заказа.
-                    * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
+            overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Параметры новой оплаты.
@@ -212,9 +210,9 @@ class SurgutNefteGazBank(PaymentService):
         data['terminal'] = self.__terminal_alias
         data['action'] = SurgutNefteGazBank.PAYMENT_ACTIONS['PURCHASE']
         # Идентификатор заказа
-        data['trackid'] = kwargs['order']['order_id']
+        data['trackid'] = kwargs['order_id']
         # Полная сумма заказа
-        data['amt'] = kwargs['order']['overall']
+        data['amt'] = str(kwargs['overall'])
         # Кастомные параметры заказа (можно отправлять любые данные)
         # |-- Идентификатор события
         data['udf1'] = kwargs['event_id']
@@ -223,7 +221,7 @@ class SurgutNefteGazBank(PaymentService):
         # |-- Email покупателя
         data['udf3'] = kwargs['customer']['name']
         # |-- Уникальный UUID заказа
-        data['udf4'] = str(kwargs['order']['order_uuid']) if kwargs['order']['order_uuid'] is not None else None
+        data['udf4'] = str(kwargs.get('order_uuid', '-'))
 
         create = self.request(method, url, data).rstrip()
 
@@ -248,12 +246,10 @@ class SurgutNefteGazBank(PaymentService):
             # Если запрос НЕуспешен
             else:
                 response['success'] = False
-                response['action_code'] = parsed_result['error']
-                response['action_message'] = parsed_result['errortext']
+                response['code'] = parsed_result['error']
+                response['message'] = parsed_result['errortext']
         else:
             response['success'] = False
-
-        # print('response: ', response, '\n')
 
         return response
 
@@ -364,8 +360,17 @@ class SurgutNefteGazBank(PaymentService):
         """Возврат суммы по ранее успешно завершённой оплате.
 
         Args:
+            event_uuid (uuid.UUID): Уникальный UUID события в БД.
+            event_id (int): Идентификатор события в сервисе продажи билетов.
+            order_uuid (uuid.UUID): Уникальный UUID заказа.
+            order_id (int): Идентификатор заказа.
+            customer (dict): Реквизиты покупателя.
+                Содержимое ``customer``:
+                    * **name** (str): ФИО.
+                    * **email** (str): Электронная почта.
+                    * **phone** (str): Телефон.
+            overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
             payment_id (str): Идентификатор оплаты.
-            * **overall** (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Информация о возврате.
@@ -385,7 +390,7 @@ class SurgutNefteGazBank(PaymentService):
         data['action'] = SurgutNefteGazBank.PAYMENT_ACTIONS['CREDIT']
         # Полная сумма заказа
         data['amt'] = kwargs['overall']
-        data['trackid'] = kwargs['order']['order_id']
+        data['trackid'] = kwargs['order_id']
         data['paymentid'] = kwargs['payment_id']
         # data['tranid'] = tranid ???
 
@@ -397,7 +402,7 @@ class SurgutNefteGazBank(PaymentService):
         # |-- Email покупателя
         data['udf3'] = kwargs['customer']['name']
         # |-- Уникальный UUID заказа
-        data['udf4'] = str(kwargs['order']['order_uuid']) if kwargs['order']['order_uuid'] is not None else None
+        data['udf4'] = str(kwargs['order_uuid']) if kwargs['order_uuid'] else None
 
         refund = self.request(method, url, data)
 

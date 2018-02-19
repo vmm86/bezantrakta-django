@@ -15,8 +15,8 @@ from ..models import Order, OrderTicket
 class OrderTicketInline(admin.TabularInline):
     model = OrderTicket
     extra = 0
-    fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
-    readonly_fields = ('id', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
+    fields = ('id', 'ticket_id', 'is_fixed', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
+    readonly_fields = ('id', 'ticket_id', 'is_fixed', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
     show_change_link = True
     template = 'admin/tabular_custom.html'
 
@@ -47,13 +47,13 @@ class OrderAdmin(admin.ModelAdmin):
         (
             'Билеты',
             {
-                'fields': ('total', 'tickets_count',),
+                'fields': ('tickets_count', 'total', 'overall',),
             }
         ),
     )
     inlines = (OrderTicketInline,)
     list_display = ('ticket_service_order', 'datetime',
-                    'total', 'tickets_count',
+                    'total', 'overall', 'tickets_count',
                     'name', 'email', 'phone',
                     'delivery', 'payment',
                     'status',

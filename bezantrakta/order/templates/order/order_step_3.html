@@ -72,9 +72,9 @@
     {% include "order/order_cookies.js" %}
 
     {# Удаление cookies при завершении заказа на шаге 3 заказа билетов #}
-    // $(document).ready(function() {
-    //     order_cookies_delete(['event_uuid', 'order_uuid']);
-    // });
+    $(document).ready(function() {
+        order_cookies_delete(['event_uuid', 'order_uuid']);
+    });
     </script>
     {% endcompress %}
 

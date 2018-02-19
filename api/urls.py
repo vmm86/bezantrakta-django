@@ -3,7 +3,7 @@ from django.conf.urls import url
 # События
 from api.views.event import seats_and_prices
 # Заказы
-from api.views.order import prev_order_delete, initialize, reserve, change_type
+from api.views.order import prev_order_delete, initialize, reserve, change_type, processing
 # Оплата
 from api.views.payment import payment_handler, sngb_proxy
 
@@ -14,7 +14,7 @@ event_urls = [
     url(
         r'^event/seats_and_prices/$',
         seats_and_prices,
-        name='seats_and_prices'
+        name='event__seats_and_prices'
     ),
 ]
 
@@ -23,30 +23,34 @@ order_urls = [
     url(
         r'^order/prev_order_delete/$',
         prev_order_delete,
-        name='prev_order_delete'
+        name='order__prev_order_delete'
     ),
-
     # Получение информации о текущем предварительном резерве или создание нового пустого предварительного резерва
     url(
         r'^order/initialize/$',
         initialize,
-        name='initialize'
+        name='order__initialize'
     ),
-
     # Добавление/удаление билета в предварительном резерве
     # В зависимости от сервиса продажи билетов может работать или НЕ работать
     # В последнем случае всегда возвращается успешный результат со всеми переданными аргументами
     url(
         r'^order/reserve/$',
         reserve,
-        name='reserve'
+        name='order__reserve'
     ),
-
     # Изменение типа заказа на шаге 2 заказа билетов (ДО создания заказа)
     url(
         r'^order/change_type/$',
         change_type,
-        name='change_type'
+        name='order__change_type'
+    ),
+    # Обработка заказа после отправки формы на шаге 2 заказа билетов
+    # Завершение заказа для оплаты наличными либо редирект на запрошенную форму для онлайн-оплаты
+    url(
+        r'^order/processing/$',
+        processing,
+        name='order__processing'
     ),
 ]
 
@@ -55,26 +59,26 @@ payment_urls = [
     url(
         r'^payment/success/$',
         payment_handler,
-        name='payment_success'
+        name='payment__success'
     ),
     # Проверка и обработка НЕуспешной оплаты
     url(
         r'^payment/error/$',
         payment_handler,
-        name='payment_error'
+        name='payment__error'
     ),
 
     # Предобработка успешной оплаты в СНГБ (вынужденный костыль)
     url(
-        r'^ps/sngb_init/$',
+        r'^payment/sngb_init/$',
         sngb_proxy,
-        name='sngb_init'
+        name='payment__sngb_init'
     ),
     # Предобработка НЕуспешной оплаты в СНГБ (вынужденный костыль)
     url(
-        r'^ps/sngb_error/$',
+        r'^payment/sngb_error/$',
         sngb_proxy,
-        name='sngb_error'
+        name='payment__sngb_error'
     ),
 ]
 

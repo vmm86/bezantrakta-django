@@ -30,14 +30,14 @@ def render_eticket(context, logger):
                 'event_seller' (str):      Продавец билетов (агент).
                 'poster' (str):            Относительный путь к файлу афиши ``small_vertical`` внутри папки ``MEDIA``.
 
-                'ticket_service_order' (int): Идентификатор заказа в сервисе продажи билетов.
+                'order_id' (int):          Идентификатор заказа в сервисе продажи билетов.
 
-                'ticket_id' (uuid.UUID): Идентификатор билета в БД.
-                'bar_code' (str):        Штрих-код.
-                'sector_title' (str):    Название сектора.
-                'row_id' (int):          Идентификатор ряда.
-                'seat_title' (str):      Название места.
-                'price' (Decimal):       Цена билета.
+                'ticket_uuid' (uuid.UUID): Идентификатор билета в БД.
+                'bar_code' (str):          Штрих-код.
+                'sector_title' (str):      Название сектора.
+                'row_id' (int):            Идентификатор ряда.
+                'seat_title' (str):        Название места.
+                'price' (Decimal):         Цена билета.
         logger (logging.RootLogger): Файл для логирования процесса генерации PDF-билета.
 
     Returns:
@@ -87,9 +87,9 @@ def render_eticket(context, logger):
     context['bar_code_v_base64'] = bar_code_to_base64('code128', context['bar_code'], 588, 125)
 
     # Генерация и сохранение файла билета
-    output_name = '{order_id}_{ticket_id}.pdf'.format(
-        order_id=context['ticket_service_order'],
-        ticket_id=context['ticket_id']
+    output_name = '{order_id}_{ticket_uuid}.pdf'.format(
+        order_id=context['order_id'],
+        ticket_uuid=context['ticket_uuid']
     )
     full_output_path = os.path.join(
         settings.BEZANTRAKTA_ETICKET_PATH,

@@ -44,7 +44,7 @@ class PaymentServiceCache(ProjectCache):
         # URL для завершения заказа после удачной или НЕудачной оплаты
         domain_slug = (
             kwargs['domain_slug'] if
-            'domain_slug' in kwargs and kwargs['domain_slug'] is not None else
+            'domain_slug' in kwargs and kwargs['domain_slug'] else
             settings.BEZANTRAKTA_ROOT_DOMAIN_SLUG
         )
         self.value['settings']['init']['success_url'] = build_absolute_url(domain_slug, '/api/payment/success/')

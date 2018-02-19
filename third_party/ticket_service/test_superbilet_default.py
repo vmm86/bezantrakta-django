@@ -65,7 +65,7 @@ group_id = 214
 # event_id = 1913  # arh test
 # event_id = 1914  # vluki test
 # event_id = 1915  # vluki test
-event_id = 2281  # test 2199
+event_id = 2292  # test 2199
 # event_id = 116  # test Сургут
 sector_id = 509
 
@@ -103,7 +103,7 @@ sector_id = 509
 # SECTORS
 # py_result = ts.sector_seats(event_id=event_id, sector_id=sector_id)
 # SEATS AND PRICES
-py_result = ts.seats_and_prices(event_id=event_id)
+# py_result = ts.seats_and_prices(event_id=event_id)
 #
 # SCHEME
 # py_result = ts.scheme(event_id=event_id)
@@ -133,13 +133,18 @@ py_result = ts.seats_and_prices(event_id=event_id)
 #     'is_courier': True, 'address': 'Воронеж',
 #     # 'is_courier': False, 'address': '',
 # }
-# tickets = [
-#     {'ticket_uuid': uuid.UUID('c909a29e-9001-4382-8308-fb612bcc95c1'), 'sector_id': 5, 'row_id': 1, 'seat_id': 26, },
-# ]
+# tickets = {
+#     '5_1_26': {'ticket_uuid': uuid.UUID('c909a29e-9001-4382-8308-fb612bcc95c1'), 'sector_id': 5, 'row_id': 1, 'seat_id': 26, },
+# }
 # py_result = ts.order_create(event_id=event_id, order_uuid=order_uuid, customer=customer, tickets=tickets)
 
 # ORDER_CANCEL
-# order_id = 13331
+# order_uuid = uuid.UUID('04f54215-066c-4877-8c7c-083264b82564')
+# order_id = 47616
+# tickets = {
+#     '509_16_9': {'ticket_uuid': uuid.UUID('45974da2-547e-4185-812e-4560e5586eec'),
+#     'sector_id': 509, 'row_id': 16, 'seat_id': 9, },
+# }
 # py_result = ts.order_cancel(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
 
 # ORDER_APPROVE
@@ -147,10 +152,12 @@ py_result = ts.seats_and_prices(event_id=event_id)
 # order_uuid = uuid.UUID('b004469f-1be6-42be-9c91-14301c0cca9e')
 # payment_id = '3141333342280100'
 # payment_datetime = datetime.now()
-# tickets = [
-#     {'ticket_uuid': uuid.UUID('64127eb5-1487-4597-a603-45e94a7b27c0'), 'sector_id': 22, 'row_id': 14, 'seat_id': 31, },
-#     {'ticket_uuid': uuid.UUID('dd3d3f7c-abc2-49d0-9991-0655a8dce53b'), 'sector_id': 22, 'row_id': 14, 'seat_id': 32, },
-# ]
+# tickets = {
+#     '22_14_31': {'ticket_uuid': uuid.UUID('64127eb5-1487-4597-a603-45e94a7b27c0'),
+#     'sector_id': 22, 'row_id': 14, 'seat_id': 31, },
+#     '22_14_32': {'ticket_uuid': uuid.UUID('dd3d3f7c-abc2-49d0-9991-0655a8dce53b'),
+#     'sector_id': 22, 'row_id': 14, 'seat_id': 32, },
+# }
 
 # for ticket in tickets:
 #     ticket['event_id'] = event_id

@@ -1,4 +1,3 @@
-import logging
 import simplejson as json
 import uuid
 
@@ -6,15 +5,12 @@ from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
 from bezantrakta.order.order_basket import OrderBasket
-from bezantrakta.order.settings import ORDER_TYPE
 
 from api.shortcuts import JsonResponseUTF8
 
 
 def change_type(request):
     if request.is_ajax() and request.method == 'POST':
-        logger = logging.getLogger('bezantrakta.reserve')
-
         customer = request.POST.get('customer', None)
         try:
             customer = json.loads(customer)
@@ -39,15 +35,15 @@ def change_type(request):
         if not order_type:
             response = {'success': False, 'message': 'Отсутствует тип заказа'}
             return JsonResponseUTF8(response)
-        else:
-            if order_type not in ORDER_TYPE:
-                response = {'success': False, 'message': 'Получен некорректный тип заказа'}
-                return JsonResponseUTF8(response)
 
         # Получение существующего предварительного резерва
         basket = OrderBasket(order_uuid=order_uuid)
         if not basket or not basket.order:
             response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
+            return JsonResponseUTF8(response)
+
+        if order_type not in basket.ORDER_TYPE:
+            response = {'success': False, 'message': 'Получен некорректный тип заказа'}
             return JsonResponseUTF8(response)
 
         # Информация о событии, UUID которого сохранён в предварительном резерве
@@ -57,21 +53,20 @@ def change_type(request):
             return JsonResponseUTF8(response)
 
         # Изменение типа получения и оплаты билетов в предварительном резерве
-        basket.change_order_type(customer, order_type)
+        basket.order_type_change(customer, order_type)
 
         response = {}
         response['success'] = True
         response['order'] = basket.order
 
-        # Получение параметров сайта
-        domain = cache_factory('domain', request.domain_slug)
+        basket.logger.info('\n----------Изменение типа заказа----------')
+        basket.logger.info('{:%Y-%m-%d %H:%M:%S} (UTC)'.format(timezone_now()))
 
-        logger.info('\n----------change_order_type----------')
-        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
-        logger.info('Сайт: {}'.format(domain['domain_title']))
+        basket.logger.info('UUID предварительного резерва: {}'.format(basket.order['order_uuid']))
 
-        logger.info('order_uuid: {}'.format(order_uuid))
-        logger.info('order_type: {}'.format(order_type))
-        logger.info('order: {}'.format(basket.order))
+        basket.logger.info('\nПолучение билетов: {}'.format(basket.order['delivery']))
+        basket.logger.info('Оплата билетов: {}'.format(basket.order['payment']))
+
+        basket.logger.info('\nРеквизиты покупателя: {}'.format(basket.order['customer']))
 
         return JsonResponseUTF8(response)

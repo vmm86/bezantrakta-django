@@ -85,7 +85,7 @@
         <div class="order-buttons step2">
             <div class="button-prev">
                 <a id="back-inactive">Назад</a>
-                <a id="back" class="step2" href="javascript: history.go(-1)">Назад</a>
+                <a id="back" class="step2" href="{{ event.url }}">Назад</a>
             </div>
 
             <div class="button-next">
@@ -128,7 +128,7 @@
                 <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ domain.city_title }}" value="">
                 <p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>
                 {% if ticket_service.settings.courier_price > 0 %}
-                    <p>Стоимость доставки {{ ticket_service.settings.courier_price }} р.</p>
+                    <p>Стоимость доставки {{ ticket_service.settings.courier_price|floatformat:"-2" }} р.</p>
                 {% endif %}
                 {{ ticket_service.settings.order_description.courier_cash|safe }}
            </div>
@@ -140,6 +140,7 @@
             </div>
         {% endif %}
 
+        <input id="order-uuid" type="hidden" name="order_uuid" value="">
     </div>
 {% endif %}
 </form>
