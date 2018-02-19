@@ -26,9 +26,7 @@ function ajax_change_order_type_success(response, status, xhr) {
         $(window.order_types[order_type]['show']).show();
 
         {# Обновить выбранный тип заказа в cookies #}
-        order_cookies_update(
-            ['customer_order_type']
-        );
+        order_cookies_update(['customer_order_type']);
 
         html_basket_update();
 

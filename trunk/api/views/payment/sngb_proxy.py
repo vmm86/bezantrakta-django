@@ -14,7 +14,7 @@ def sngb_proxy(request):
     now = timezone_now()
     logger = logging.getLogger('bezantrakta.order')
     logger.info('\n----Предоработка оплаты в СНГБ----')
-    logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
+    logger.info('{:%Y-%m-%d %H:%M:%S} (UTC)'.format(now))
 
     response_params = {
         'result':       'payment_status',
@@ -89,7 +89,7 @@ def sngb_proxy(request):
         redirect_url = '{redirect_base}{redirect_url}?{urlencoded_qs}'.format(
             redirect_base=redirect_base,
             redirect_url=build_absolute_url(
-                request.domain_slug, reverse('payment_service:payment_success')
+                request.domain_slug, reverse('api:payment__success')
             ),
             urlencoded_qs=urlencoded_qs,
         )
@@ -115,7 +115,7 @@ def sngb_proxy(request):
         redirect_url = '{redirect_base}{redirect_url}?{urlencoded_qs}'.format(
             redirect_base=redirect_base,
             redirect_url=build_absolute_url(
-                request.domain_slug, reverse('payment_service:payment_error')
+                request.domain_slug, reverse('api:payment__error')
             ),
             urlencoded_qs=urlencoded_qs,
         )

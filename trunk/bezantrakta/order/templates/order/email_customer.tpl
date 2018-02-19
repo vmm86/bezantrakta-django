@@ -24,42 +24,14 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
 
     <p><strong>Билеты в заказе</strong>:</p>
     <ul style="list-style-type: none; margin-left: 0; padding-left: 0;">
-    {% for t in order.tickets %}
-        <li style="margin-left: 0; padding-left: 0;">🎫 {% if t.sector_id != 0 %}{{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}{% else %}{{ t.sector_title }}{% endif %}, цена {{ t.price }} р.</li>
+    {% for tid, t in order.tickets.items %}
+        <li style="margin-left: 0; padding-left: 0;">🎫 {% if t.is_fixed %}{{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}{% else %}{{ t.sector_title }}{% endif %}, цена {{ t.price|floatformat:"-2" }} р.</li>
     {% endfor %}
     </ul>
 
-    <p><strong>Общая сумма заказа</strong>: {{ order.overall }} р.
-    {% if customer.payment == "cash" %}
-        {% if customer.delivery == "self" %}
-            {% if order.extra > 0 %}
-                <br>С учётом сервисного сбора.
-            {% endif %}
-        {% elif customer.delivery == "courier" %}
-            {% if ticket_service.settings.courier_price > 0 %}
-                {% if order.extra > 0 %}
-                    <br>С учётом доставки курьером и сервисного сбора.
-                {% else %}
-                    <br>С учётом доставки курьером.
-                {% endif %}
-            {% else %}
-                {% if order.extra > 0 %}
-                    <br>С учётом сервисного сбора.
-                {% endif %}
-            {% endif %}
-        {% endif %}
-    {% elif customer.payment == "online" %}
-        {% if payment_service.settings.commission > 0 %}
-            {% if order.extra > 0 %}
-                <br>С учётом комиссии платёжной системы и сервисного сбора.
-            {% else %}
-                <br>С учётом комиссии платёжной системы.
-            {% endif %}
-        {% else %}
-            {% if order.extra > 0 %}
-                <br>С учётом комиссии платёжной системы и сервисного сбора.
-            {% endif %}
-        {% endif %}
+    <p><strong>Общая сумма заказа</strong>: {{ order.overall|floatformat:"-2" }} р.
+    {% if order.overall != order.total %}
+        <br>{{ order.overall_header }}.
     {% endif %}
     </p>
 
@@ -72,13 +44,13 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
         <strong>Телефон</strong>: <a href="tel:{{ customer.phone|cut:" "|cut:"-"|cut:"("|cut:")" }}">{{ customer.phone }}</a>.
     </p>
 
-    <p><strong>Получение билетов</strong>: {{ customer.delivery_description }}.
+    <p><strong>Получение билетов</strong>: {{ order.delivery_caption }}.
     {% if customer.delivery == "courier" %}
         <br><strong>Адрес доставки</strong>: {% if customer.address or customer.address != "" %}{{ customer.address }}{% else %}не указан{% endif %}.
     {% endif %}
     </p>
 
-    <p><strong>Оплата</strong>: {{ customer.payment_description }}.
+    <p><strong>Оплата</strong>: {{ order.payment_caption }}.
     {% if customer.payment == "online" %}
         <br><strong>Номер оплаты</strong>: {{ order.payment_id }}.
     {% endif %}

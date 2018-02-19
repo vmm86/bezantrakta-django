@@ -744,11 +744,8 @@ class SuperBilet(TicketService):
             for s in seats:
                 if s['result_code'] == 0:
                     seat = {}
-                    # Уникальный идентификатор билета (сочетание идентификаторов сектора, ряда и места)
-                    # padding_zeroes_length = 5 - len(str(s['seat_id']))
-                    # padding_zeroes = '0' * padding_zeroes_length if padding_zeroes_length != 0 else ''
-
-                    ticket_id = '{}_{}_{}'.format(s['sector_id'], s['row_id'], s['seat_id'])
+                    # Уникальный идентификатор билета
+                    ticket_id = self._compose_ticket_id(s['sector_id'], s['row_id'], s['seat_id'])
 
                     seat['sector_id'] = s['sector_id']
                     # Название сектора (если оно получено без ошибок)
@@ -832,10 +829,8 @@ class SuperBilet(TicketService):
         elif kwargs['action'] == 'remove':
             method = 'FreePreReservation'
 
-        # Разбиваем идентификатор билета на составляющие (с преобразованием к целым числам),
-        # чтобы отправить их для резерва в отдельных переменных
-        ticket_id_items = kwargs['ticket_id'].split('_')
-        kwargs['sector_id'], kwargs['row_id'], kwargs['seat_id'] = [int(i) for i in ticket_id_items]
+        # Разбиваем идентификатор билета на составляющие, чтобы отправить их в отдельных переменных
+        kwargs['sector_id'], kwargs['row_id'], kwargs['seat_id'] = self._decompose_ticket_id(kwargs['ticket_id'])
 
         input_mapping = {
             'NomBilKn': 'event_id',
@@ -885,10 +880,7 @@ class SuperBilet(TicketService):
 
         Args:
             event_id (int): Идентификатор события.
-            ticket_uuid (str): Уникальный UUID билета.
-            sector_id (int): Идентификатор сектора.
-            row_id (int): Идентификатор ряда.
-            seat_id (int): Идентификатор места.
+            ticket_id (str): Идентификатор билета (``сектор_ряд_место``).
 
             from_date (str, optional): Фильтр по начальной дате.
             to_date (str, optional): Фильтр по начальному времени.
@@ -902,6 +894,10 @@ class SuperBilet(TicketService):
                     * **status** (str): Статус места, сопоставляемый из словаря ``SEAT_STATUSES``.
         """
         method = 'GetCurrentState'
+
+        # Разбиваем идентификатор билета на составляющие, чтобы отправить их в отдельных переменных
+        kwargs['sector_id'], kwargs['row_id'], kwargs['seat_id'] = self._decompose_ticket_id(kwargs['ticket_id'])
+
         input_mapping = {
             'NomBilKn': 'event_id',
             'cod_sec':  'sector_id',
@@ -941,7 +937,7 @@ class SuperBilet(TicketService):
             'status':         None,
         }
         status = self.request(method, input_mapping, data, output_mapping)
-        print('status: ', status)
+        print(kwargs['ticket_id'], ' status: ', status)
 
         response = {}
 
@@ -970,9 +966,9 @@ class SuperBilet(TicketService):
 
         Args:
             event_id (int): Идентификатор события.
-            order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
+            order_uuid (uuid.UUID): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             customer (dict): Реквизиты покупателя.
-            tickets (list): Список словарей с параметрами заказываемых билетов.
+            tickets (dict): Словарь, содержащий словари с параметрами заказываемых билетов.
 
         Customer keys:
             name (str): ФИО покупателя.
@@ -988,13 +984,12 @@ class SuperBilet(TicketService):
 
         Returns:
             dict: Список словарей с информацией о билетах в заказе.
-
-            Содержимое словаря:
-
-            order_id (int): Идентификатор заказа в сервисе заказа билетов.
-            tickets (list): Информация о заказанных билетах.
-            tickets[ticket_uuid] (str): Уникальный UUID билета (на данный момент генерируется на клиенте).
-            tickets[bar_code] (str): Штрих-код билета (**20 символов**).
+                Содержимое результата:
+                    order_id (int): Идентификатор заказа в сервисе заказа билетов.
+                    tickets (dict): Словарь, содержащий словари с информацией о заказанных билетах.
+                        Содержимое словарей в **tickets**:
+                            ticket_uuid (uuid.UUID): Уникальный UUID билета.
+                            bar_code (str): Штрих-код билета (20 символов).
         """
         if self.__mode == 'agency':
             method = 'SetReservation'
@@ -1014,16 +1009,20 @@ class SuperBilet(TicketService):
             'seat':    'seat_id',
             'Session': 'order_uuid',
         }
-        # Объединение всех входных параметров для каждого билета в одном словаре
-        for t in kwargs['tickets']:
-            t['event_id'] = kwargs['event_id']
-            t['order_uuid'] = kwargs['order_uuid']
-            t['name'] = kwargs['customer']['name']
-            t['email'] = kwargs['customer']['email']
-            t['phone'] = kwargs['customer']['phone']
-            t['is_courier'] = '1' if kwargs['customer']['is_courier'] else '0'
-            t['address'] = kwargs['customer']['address'] if kwargs['customer']['is_courier'] else ''
-        data = kwargs['tickets']
+        # Формирование списка билетов для отправки и объединение всех входных параметров в каждом билете в этом списке
+        tickets_input = []
+        for ticket_id in kwargs['tickets']:
+            kwargs['tickets'][ticket_id]['event_id'] = kwargs['event_id']
+            kwargs['tickets'][ticket_id]['order_uuid'] = kwargs['order_uuid']
+            kwargs['tickets'][ticket_id]['name'] = kwargs['customer']['name']
+            kwargs['tickets'][ticket_id]['email'] = kwargs['customer']['email']
+            kwargs['tickets'][ticket_id]['phone'] = kwargs['customer']['phone']
+            kwargs['tickets'][ticket_id]['is_courier'] = '1' if kwargs['customer']['is_courier'] else '0'
+            kwargs['tickets'][ticket_id]['address'] = (
+                kwargs['customer']['address'] if kwargs['customer']['is_courier'] else ''
+            )
+            tickets_input.append(kwargs['tickets'][ticket_id])
+        data = tickets_input
         output_mapping = {
             'namespektator':  self.internal('name', str,),
             'telspektator':   self.internal('phone', str,),
@@ -1054,7 +1053,7 @@ class SuperBilet(TicketService):
         elif self.__mode == 'theatre':
             output_mapping['barcode'] = self.internal('bar_code', str, '')
 
-        order = self.request(method, input_mapping, data, output_mapping)
+        order_created = self.request(method, input_mapping, data, output_mapping)
         # self.logger.info('\norder response: {}'.format(order))
 
         # order []:
@@ -1065,54 +1064,44 @@ class SuperBilet(TicketService):
         # 'bar_code': '01564651417635228226',
 
         response = {}
-        response['tickets'] = []
+        response['tickets'] = {}
 
-        if type(order) is list:
-            for o in order:
-                if o['result_code'] == 0:
+        if type(order_created) is list:
+            for ot in order_created:
+                # Уникальный идентификатор билета
+                ot['ticket_id'] = self._compose_ticket_id(ot['sector_id'], ot['row_id'], ot['seat_id'])
+
+                if ot['result_code'] == 0:
                     # Идентификатор заказа берётся из списка удачно заказанных билетов
                     # В одном заказе он будет один и тот же
                     response['success'] = True
-                    response['order_id'] = o['order_id']
-                    ticket = {}
-                    for t in kwargs['tickets']:
-                        if (
-                            o['sector_id'] == t['sector_id'] and
-                            o['row_id'] == t['row_id'] and
-                            o['seat_id'] == t['seat_id']
-                        ):
-                            # self.logger.info('\n{o_sector} == {t_sector}: {cond}'.format(
-                            #     o_sector=o['sector_id'],
-                            #     t_sector=t['sector_id'],
-                            #     cond=o['sector_id'] == t['sector_id'])
+                    response['order_id'] = ot['order_id']
+                    for ticket_id in kwargs['tickets']:
+                        if ot['ticket_id'] == kwargs['tickets'][ticket_id]['ticket_id']:
+                            # self.logger.info('\n{ot_ticket_id} == {t_ticket_id}: {cond}'.format(
+                            #     ot_ticket_id=ot['ticket_id'],
+                            #     t_ticket_id=kwargs['tickets'][ticket_id]['ticket_id'],
+                            #     cond=ot['ticket_id'] == kwargs['tickets'][ticket_id]['ticket_id'])
                             # )
-                            # self.logger.info('{o_row} == {t_row}: {cond}'.format(
-                            #     o_row=o['row_id'],
-                            #     t_row=t['row_id'],
-                            #     cond=o['row_id'] == t['row_id'])
-                            # )
-                            # self.logger.info('{o_seat} == {t_seat}: {cond}\n'.format(
-                            #     o_seat=o['seat_id'],
-                            #     t_seat=t['seat_id'],
-                            #     cond=o['seat_id'] == t['seat_id'])
-                            # )
-
-                            ticket['ticket_uuid'] = t['ticket_uuid']
-                            ticket['bar_code'] = o['bar_code']  # 20 символов
-                            response['tickets'].append(ticket.copy())
+                            ticket = {}
+                            ticket['ticket_uuid'] = kwargs['tickets'][ticket_id]['ticket_uuid']
+                            ticket['bar_code'] = ot['bar_code']
+                            response['tickets'][ticket_id] = ticket.copy()
                         else:
                             continue
-                else:
-                    response['success'] = False
+                # else:
+                #     response['success'] = False
 
-                    response['code'] = o['result_code']
-                    response['message'] = self.RESPONSE_CODES[response['code']]
+                #     response['code'] = ot['result_code']
+                #     response['message'] = self.RESPONSE_CODES[response['code']]
         else:
             response['success'] = False
             del response['tickets']
 
-            response['code'] = order['code']
-            response['message'] = order['message']
+            response['code'] = order_created['code']
+            response['message'] = order_created['message']
+
+        del order_created
 
         return response
 
@@ -1123,11 +1112,7 @@ class SuperBilet(TicketService):
             event_id (int): Идентификатор события.
             order_uuid (str): Уникальный UUID как номер сессии (любая строка до 50 однобайтовых символов).
             order_id (int): Идентификатор заказа.
-            tickets (list): Список словарей с параметрами заказываемого места.
-                Содержимое ``tickets``:
-                    * **sector_id** (int): Идентификатор сектора.
-                    * **row_id** (int): Идентификатор ряда.
-                    * **seat_id** (int): Идентификатор места.
+            tickets (dict): Словарь, содержащий словари с параметрами заказываемых билетов.
 
         Returns:
             dict: Информация об удалении заказа.
@@ -1140,21 +1125,23 @@ class SuperBilet(TicketService):
             'session':  'order_uuid',
             'reservID': 'order_id',
             'NomBilKn': 'event_id',
+
             'cod_sec':  'sector_id',
             'row':      'row_id',
             'seat':     'seat_id',
         }
-        tickets = []
-        for t in kwargs['tickets']:
+        # Формирование списка билетов для отправки и объединение всех входных параметров в каждом билете в этом списке
+        tickets_input = []
+        for ticket_id in kwargs['tickets']:
             ticket = {}
-            ticket['sector_id'] = t['sector_id']
-            ticket['row_id'] = t['row_id']
-            ticket['seat_id'] = t['seat_id']
+            ticket['sector_id'] = kwargs['tickets'][ticket_id]['sector_id']
+            ticket['row_id'] = kwargs['tickets'][ticket_id]['row_id']
+            ticket['seat_id'] = kwargs['tickets'][ticket_id]['seat_id']
             ticket['event_id'] = kwargs['event_id']
             ticket['order_uuid'] = kwargs['order_uuid']
             ticket['order_id'] = kwargs['order_id']
-            tickets.append(ticket)
-        data = tickets
+            tickets_input.append(ticket)
+        data = tickets_input
         output_mapping = {
             'session':     self.internal('order_uuid', str,),
             'reservid':    self.internal('order_id', str,),
@@ -1200,10 +1187,7 @@ class SuperBilet(TicketService):
             order_id (int): Идентификатор заказа.
             payment_id (int): Идентификатор оплаты.
             payment_datetime (datetime.datetime): Дата и время оплаты.
-            tickets (list): Список словарей с параметрами заказываемого места.
-                sector_id (int): Идентификатор сектора.
-                row_id (int): Идентификатор ряда.
-                seat_id (int): Идентификатор места.
+            tickets (dict): Словарь, содержащий словари с параметрами заказываемых билетов.
 
         Returns:
             dict: Информация об успешной или НЕуспешной оплате.
@@ -1226,19 +1210,20 @@ class SuperBilet(TicketService):
             'PaymentDate':   'payment_date',
             'PaymentTime':   'payment_time',
         }
-        tickets = []
-        for t in kwargs['tickets']:
+        # Формирование списка билетов для отправки и объединение всех входных параметров в каждом билете в этом списке
+        tickets_input = []
+        for ticket_id in kwargs['tickets']:
             ticket = {}
-            ticket['sector_id'] = t['sector_id']
-            ticket['row_id'] = t['row_id']
-            ticket['seat_id'] = t['seat_id']
+            ticket['sector_id'] = kwargs['tickets'][ticket_id]['sector_id']
+            ticket['row_id'] = kwargs['tickets'][ticket_id]['row_id']
+            ticket['seat_id'] = kwargs['tickets'][ticket_id]['seat_id']
             ticket['event_id'] = kwargs['event_id']
             ticket['order_uuid'] = kwargs['order_uuid']
             ticket['payment_id'] = kwargs['payment_id']
             ticket['payment_date'] = kwargs['payment_datetime'].strftime('%d.%m.%Y')
             ticket['payment_time'] = kwargs['payment_datetime'].strftime('%H:%M:%S')
-            tickets.append(ticket)
-        data = tickets
+            tickets_input.append(ticket)
+        data = tickets_input
         output_mapping = {
             'session':        self.internal('order_uuid', str,),
             'reservid':       self.internal('order_id', int,),    # в случае ошибки = 0
@@ -1275,6 +1260,8 @@ class SuperBilet(TicketService):
 
             response['code'] = approve['code']
             response['message'] = approve['message']
+
+        del approve
 
         return response
 
@@ -1472,6 +1459,35 @@ class SuperBilet(TicketService):
             return log
 
         return log
+
+    def _compose_ticket_id(self, sector_id, row_id, seat_id):
+        """Получение идентификатора билета (сочетание идентификаторов сектора, ряда и места).
+
+        Args:
+            sector_id (int): Идентификатор сектора.
+            row_id (int): Идентификатор ряда.
+            seat_id (int): Идентификатор места.
+
+        Returns:
+            str: Идентификатор билета.
+        """
+        return '{sector_id}_{row_id}_{seat_id}'.format(
+            sector_id=sector_id,
+            row_id=row_id,
+            seat_id=seat_id
+        )
+
+    def _decompose_ticket_id(self, ticket_id):
+        """Разбор полученного ранее идентификатора билета на идентификаторы сектора, ряда и места.
+
+        Args:
+            ticket_id (str): Идентификатор билета.
+
+        Returns:
+            list: Список параметров билета.
+        """
+        ticket_id_items = ticket_id.split('_')
+        return [int(i) for i in ticket_id_items]
 
     # SoldGift(Login, Password, SoldGiftRequest: ns0:TSoldGiftRequest) -> return: ns0:TSoldGiftAnswer
     # RefundOrder(Value) -> return: xsd:string (только в СуперБилет Агентство)

@@ -21,6 +21,7 @@ class ProjectCache(ABC):
     entities = ()
     cache_backend = 'default'
     database_first = True
+    in_memory = False
     key = ''
     value = None
 
@@ -66,7 +67,7 @@ class ProjectCache(ABC):
                     else:
                         debug_console('nothing to save - return None')
                         return None
-            # Получаем значение из входных параметров в **kwargs
+            # Получаем значение из входного параметра obj в **kwargs
             else:
                 if 'obj' in kwargs:
                     debug_console('trying kwargs[obj]...')
@@ -86,6 +87,7 @@ class ProjectCache(ABC):
         else:
             # Получаем данные из имеющейся в кэше JSON-строки
             self.value = json.loads(self.value, parse_float=decimal.Decimal)
+
             # При необходимости обрабатываем полученные из кэша данные
             self.cache_postprocessing(**kwargs)
             debug_console('cache_value_postprocessed:', str(self.value)[:200], '...', type(self.value))

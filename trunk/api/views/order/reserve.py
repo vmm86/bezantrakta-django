@@ -1,7 +1,4 @@
-import logging
-
-from project.cache import cache_factory
-from project.shortcuts import timezone_now
+from project.shortcuts import BOOLEAN_VALUES, timezone_now
 
 from bezantrakta.order.order_basket import OrderBasket
 
@@ -11,8 +8,6 @@ from api.shortcuts import JsonResponseUTF8
 def reserve(request):
     """Добавление или удаление места в предварительном резерве мест."""
     if request.is_ajax() and request.method == 'POST':
-        logger = logging.getLogger('bezantrakta.reserve')
-
         # UUID события
         event_uuid = request.POST.get('event_uuid', None)
         if not event_uuid:
@@ -31,67 +26,39 @@ def reserve(request):
             response = {'success': False, 'message': 'Отсутствует идентификатор билета для резерва'}
             return JsonResponseUTF8(response)
 
+        is_fixed = request.POST.get('is_fixed', None)
+        is_fixed = True if is_fixed in BOOLEAN_VALUES else False
+
         action = request.POST.get('action', 'add')
-
-        # Получение параметров сайта
-        domain = cache_factory('domain', request.domain_slug)
-
-        # Информация о событии из кэша
-        event = cache_factory('event', event_uuid)
-        if not event:
-            response = {'success': False, 'message': 'Отсутствует запрошенное событие'}
-            return JsonResponseUTF8(response)
-
-        # Информация о сервисе продажи билетов из кэша
-        ticket_service = cache_factory('ticket_service', event['ticket_service_id'])
 
         # Получение существующего ранее инициализированного предварительного резерва
         basket = OrderBasket(order_uuid=order_uuid)
 
-        logger.info('\n----------reserve----------')
-        logger.info('{:%Y-%m-%d %H:%M:%S}'.format(timezone_now()))
+        basket.logger.info('\n----------Добавление/удаление билета в предварительном резерве----------')
+        basket.logger.info('{:%Y-%m-%d %H:%M:%S} (UTC)'.format(timezone_now()))
 
-        logger.info('Сайт: {}'.format(domain['domain_title']))
-        logger.info('Сервис продажи билетов: {title} ({id})'.format(
-                title=ticket_service['title'],
-                id=ticket_service['id']
-            )
-        )
-
-        logger.info('Название события: "{}"'.format(event['event_title']))
-        logger.info('UUID события: "{}"'.format(event_uuid))
-        logger.info('Идентификатор события: {}'.format(event['ticket_service_event']))
-
-        logger.info('UUID заказа: "{}"'.format(order_uuid))
-        if action == 'add':
-            logger.info('\nДействие: добавить')
-        elif action == 'remove':
-            logger.info('\nДействие: удалить')
-
-        logger.info('\nПредыдущее состояние заказа:')
+        basket.logger.info('\nПредыдущее состояние заказа:')
         if basket.order['tickets']:
-            logger.info('    Билеты в заказе:')
-            for t in basket.order['tickets']:
-                logger.info('    * {}'.format(t))
+            basket.logger.info('    Билеты в заказе:')
+            for tid in basket.order['tickets']:
+                basket.logger.info('    * {}'.format(basket.order['tickets'][tid]))
         else:
-            logger.info('    Билеты в заказе: []')
-        logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
-        logger.info('    Сумма цен на билеты: {}'.format(basket.order['total']))
+            basket.logger.info('    Билеты в заказе: []')
+        basket.logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
+        basket.logger.info('    Сумма цен на билеты: {}'.format(basket.order['total']))
 
         # Добавление или удаление билета в предварительном резерве
-        response = basket.toggle_ticket(ticket_id, action)
+        response = basket.ticket_toggle(ticket_id, is_fixed, action)
 
         if (action == 'add' and response['success']) or action == 'remove':
-            logger.info('\nИдентификатор билета: {}'.format(ticket_id))
-
-            logger.info('\nПоследующее состояние заказа:')
+            basket.logger.info('\nПоследующее состояние заказа:')
             if basket.order['tickets']:
-                logger.info('    Билеты в заказе:')
-                for t in basket.order['tickets']:
-                    logger.info('    * {}'.format(t))
+                basket.logger.info('    Билеты в заказе:')
+                for tid in basket.order['tickets']:
+                    basket.logger.info('    * {}'.format(basket.order['tickets'][tid]))
             else:
-                logger.info('    Билеты в заказе: []')
-            logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
-            logger.info('    Сумма цен на билеты: {}'.format(basket.order['total']))
+                basket.logger.info('    Билеты в заказе: []')
+            basket.logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
+            basket.logger.info('    Сумма цен на билеты: {}'.format(basket.order['total']))
 
         return JsonResponseUTF8(response)

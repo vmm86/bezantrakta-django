@@ -1,7 +1,9 @@
 {# Периодическое получение списка доступных для продажи билетов и списка цен на билеты в событии #}
 function ajax_seats_and_prices() {
     {% if watcher %}
-        console.log('ajax_seats_and_prices: ', window.seats_and_prices_id);
+        if (window.seats_and_prices_id !== undefined) {
+            console.log('ajax_seats_and_prices: ', window.seats_and_prices_id);
+        }
     {% endif %}
 
     $.ajax({
@@ -94,7 +96,6 @@ function ajax_seats_and_prices_success(response, status, xhr) {
         if (_.isEmpty(seats_prev)) {
             $('#tickets-preloader').delay(1000).fadeOut(500);
         }
-
     } else {
         console.log('Error: ', response);
     }
@@ -115,6 +116,8 @@ function ajax_seats_and_prices_error(xhr, status, error) {
     {# Деактивировать все свободные и выбранные места на схеме зала #}
     $('.seat.free').removeClass('free');
     $('.seat.selected').removeClass('selected');
+
+    html_basket_update();
 }
 
 {# Обновление только отличающихся цен в html_basket #}
@@ -148,17 +151,9 @@ function seats_update(diff_state, diff) {
 
         var seat_selector = '.seat[data-ticket-id="' + ticket_id + '"]';
 
-        seat['is_fixed'] = $(seat_selector).data('fixed');
-        if (typeof seat['is_fixed'] === undefined) {
-            seat['is_fixed'] = false;
-        }
+        var is_fixed = is_fixed_seat($(seat_selector));
 
-        // var class_f = 'free';
-        // var class_s = 'selected';
-
-        var is_fixed_seat = seat['is_fixed'] || seat['sector_id'] != 0;
-
-        var ticket_title = is_fixed_seat ? (
+        var ticket_title = is_fixed ? (
                        seat['sector_title'] + ',\n' +
             'ряд '   + seat['row_id']       + ',\n' +
             'место ' + seat['seat_title']   + ',\n' +
@@ -178,6 +173,8 @@ function seats_update(diff_state, diff) {
             $(seat_selector).attr('data-price',          seat['price']);
             $(seat_selector).attr('data-price-order',    seat['price_order']);
 
+            $(seat_selector).attr('data-is-fixed',       is_fixed);
+
             $(seat_selector).attr('title', ticket_title + ' ₽');
 
             $(seat_selector).addClass(window.seat_status.free.class);
@@ -192,6 +189,8 @@ function seats_update(diff_state, diff) {
             $(seat_selector).removeClass(window.seat_status.free.class);
         }
     }
+
+    html_basket_update();
 
     {% if ticket_service.hide_sold_non_fixed_seats %}
         {# Оставить только актуальные кликабельные билеты без мест, если они выводятся в маркированных списках #}

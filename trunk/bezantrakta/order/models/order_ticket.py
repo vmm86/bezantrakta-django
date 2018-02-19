@@ -36,7 +36,7 @@ class OrderTicket(models.Model):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name=_('order_ticket_id'),
+        verbose_name=_('order_ticket_uuid'),
     )
     order = models.ForeignKey(
         'order.Order',
@@ -55,6 +55,10 @@ class OrderTicket(models.Model):
         db_column='ticket_service_order_id',
         verbose_name=_('order_ticket_ticket_service_order'),
     )
+    is_fixed = models.BooleanField(
+        default=True,
+        verbose_name=_('order_ticket_is_fixed'),
+    )
     is_punched = models.BooleanField(
         default=False,
         verbose_name=_('order_ticket_is_punched'),
@@ -63,6 +67,11 @@ class OrderTicket(models.Model):
         null=True,
         max_length=32,
         verbose_name=_('order_ticket_bar_code'),
+    )
+    ticket_id = models.CharField(
+        null=True,
+        max_length=32,
+        verbose_name=_('order_ticket_ticket_id'),
     )
     sector_id = models.PositiveIntegerField(
         null=True,

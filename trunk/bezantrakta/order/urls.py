@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import order_step_1, order_step_2, order_processing, order_step_3
+from .views import order_step_1, order_step_2, order_step_3
 
 app_name = 'order'
 
@@ -18,16 +18,9 @@ urlpatterns = [
         order_step_2,
         name='order_step_2'
     ),
-    # Обработка заказа после отправки формы на шаге 2 заказа билетов
-    # Завершение заказа для оплаты наличными либо редирект на запрошенную форму онлайн-оплаты
-    url(
-        r'^afisha/order/$',
-        order_processing,
-        name='order_processing'
-    ),
     # Шаг 3 заказа билетов (подтверждение успешного заказа с информацией о нём)
     url(
-        r'^afisha/order/(?P<order_uuid>[0-9A-Fa-f\-]+)/$',
+        r'^afisha/order/(?P<order_uuid>[0-9A-f-]+)/$',
         order_step_3,
         name='order_step_3'
     ),

@@ -1,5 +1,6 @@
 {% load static %}
 {# Список билетов в предварительном резерве/заказе #}
+{% if not active == "step3" %}
 <div id="chosen-tickets-block">
     <h3 id="chosen-tickets-header">Выбранные места</h3>
     <div id="chosen-tickets-content">
@@ -8,6 +9,18 @@
         </ul>
     </div>
 </div>
+{% else %}
+<div id="chosen-tickets-block">
+    <h3 id="chosen-tickets-header">Билеты в заказе</h3>
+    <div id="chosen-tickets-content">
+        <ul id="chosen-tickets">
+        {% for tid, t in order.tickets.items %}
+            <li>{% if t.is_fixed %}{{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}{% else %}{{ t.sector_title }}{% endif %}, цена {{ t.price|floatformat:"-2" }} р.</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
 
 {% if not active == "step3" %}
 {# Сумма цен на билеты (без наценок/скидок) #}
@@ -55,14 +68,14 @@
     <div id="overall-block">
         <h3 id="overall-header">{{ order.overall_header }}</h3>
         <p id="overall-content">
-            <span id="overall-text">Билетов <span id="tickets-count">{{ order.tickets_count }}</span> на сумму <span id="overall">{{ order.total }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
+            <span id="overall-text">Билетов <span id="tickets-count">{{ order.tickets_count }}</span> на сумму <span id="overall">{{ order.overall|floatformat:"-2" }}</span> <img class="ruble-sign" src="{% static "global/ico/ruble_sign.svg" %}"></span>
         </p>
     </div>
 
     <div id="order-info-block">
         <h3 id="order-info-header">Информация о заказе</h3>
         <ul id="order-info">
-        {% for i in order.info %}
+        {% for i in order_info %}
             <li>{{ i.key }} {{ i.value|safe }}</li>
         {% endfor %}
         </ul>

@@ -109,7 +109,7 @@ ______________________________________________________________________________
         now = timezone_now()
 
         self.logger.info('\n--------------------------------------------------')
-        self.logger.info('{:%Y-%m-%d %H:%M:%S}'.format(now))
+        self.logger.info('{:%Y-%m-%d %H:%M:%S} (UTC)'.format(now))
         self.stdout.write('Поиск активных сервисов продажи билетов...')
 
         active_ticket_services = list(

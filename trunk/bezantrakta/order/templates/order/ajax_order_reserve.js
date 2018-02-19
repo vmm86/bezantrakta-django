@@ -1,5 +1,5 @@
 {# Добавление или удаление места в предварительном резерве #}
-function ajax_order_reserve(ticket_id, action) {
+function ajax_order_reserve(ticket_id, is_fixed, action) {
     $.ajax({
         url: '/api/order/reserve/',
         type: 'POST',
@@ -7,6 +7,7 @@ function ajax_order_reserve(ticket_id, action) {
             'event_uuid': window.event_uuid,
             'order_uuid': window.order['order_uuid'],
             'ticket_id':  ticket_id,
+            'is_fixed':   is_fixed,
             'action':     action,
 
             'csrfmiddlewaretoken': order_cookies_get('csrftoken')

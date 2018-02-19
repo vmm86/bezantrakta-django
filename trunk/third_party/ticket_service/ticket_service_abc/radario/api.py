@@ -730,10 +730,7 @@ class Radario(TicketService):
 
         Args:
             event_id (int): Идентификатор события.
-            ticket_uuid (str): Уникальный UUID билета.
-            sector_id (int): Идентификатор сектора.
-            row_id (int): Идентификатор ряда.
-            seat_id (int): Идентификатор места.
+            ticket_id (str): Идентификатор билета (совпадает с идентификатором места).
 
         Returns:
             dict: Информация о состоянии места.
@@ -754,12 +751,12 @@ class Radario(TicketService):
         Args:
             event_id (int): Идентификатор события.
             customer (dict): Информация о покупателе.
-                Содержимое **tickets**:
+                Содержимое **customer**:
                     name (str): ФИО покупателя.
                     email (str): Электронная почта покупателя.
-            tickets (list): Информация о зарезервированных билетах.
-                Содержимое **tickets**:
-                    ticket_uuid (str): Уникальный UUID билета.
+            tickets (dict): Словарь, содержащий словари с параметрами заказываемых билетов.
+                Содержимое словарей в **tickets**:
+                    ticket_uuid (uuid.UUID): Уникальный UUID билета.
                     sector_id (int): Идентификатор сектора.
                     seat_id (int): Идентификатор места.
 
@@ -767,17 +764,17 @@ class Radario(TicketService):
             dict: Информация о созданном заказе.
             Содержимое результата:
                 order_id (int): Идентификатор заказа в сервисе заказа билетов.
-                tickets (list): Информация о заказанных билетах.
-                    Содержимое **tickets**:
-                        ticket_uuid (str): Уникальный UUID билета.
+                tickets (dict): ловарь, содержащий словари с информацией о заказанных билетах.
+                    Содержимое словарей в **tickets**:
+                        ticket_uuid (uuid.UUID): Уникальный UUID билета.
                         bar_code (str): Штрих-код билета (12 символов).
         """
         method = 'POST'
         url = '/orders/reserve'
         data = {
-            'EventId': kwargs['event_id'],
-            'Tickets': [],
-            'Email': kwargs['customer']['email'],
+            'eventId': kwargs['event_id'],
+            'tickets': [],
+            'email': kwargs['customer']['email'],
             # 'PartnerId': 'int',
             # 'Promocode': 'str',
             # 'UtmData': {
@@ -789,13 +786,15 @@ class Radario(TicketService):
             #     'UtmUserId': 'str'
             # }
         }
-        for t in kwargs['tickets']:
+        for ticket_id in kwargs['tickets']:
             ticket_info = {
-                'TicketTypeId': t['sector_id'],
-                'SeatNumber': t['seat_id'] if t['row_id'] != 0 else None,  # ???
-                'ParticipantName': kwargs['customer']['name']
+                'ticketTypeId': kwargs['tickets'][ticket_id]['sector_id'],
+                'seatNumber': (
+                    kwargs['tickets'][ticket_id]['seat_id'] if kwargs['tickets'][ticket_id]['row_id'] != 0 else None
+                ),
+                'participantName': kwargs['customer']['name']
             }
-            data['Tickets'].append(ticket_info.copy())
+            data['tickets'].append(ticket_info.copy())
         output_mapping = {
             'id':      self.internal('order_id', int,),
             'tickets': self.internal('tickets', list),
@@ -809,8 +808,8 @@ class Radario(TicketService):
             'isPaid':       None,
         }
 
-        create = self.request(method, url, data, output_mapping)
-        # self.logger.info('radario_create: {}'.format(create))
+        order_created = self.request(method, url, data, output_mapping)
+        print('order_created:', order_created)
 
         # Резерв билета С фиксированной рассадкой
         # {
@@ -823,7 +822,6 @@ class Radario(TicketService):
         #         'barcodekey': '112853663161',
         #         'tickettypeid': 341031,
         #         'tickettypetitle': 'партер',
-        #         'tickettypezoneid': 0,
         #         'rowname': '7',
         #         'seatnumber': 127,
         #         'seatname': '10',
@@ -844,7 +842,6 @@ class Radario(TicketService):
         #         'barcodekey': '114187651661',
         #         'tickettypeid': 382752,
         #         'tickettypetitle': 'малый зал',
-        #         'tickettypezoneid': None,
         #         'rowname': None,
         #         'seatnumber': None,
         #         'seatname': None,
@@ -855,34 +852,38 @@ class Radario(TicketService):
         # }
 
         response = {}
-        response['tickets'] = []
+        response['tickets'] = {}
 
-        if 'success' not in create and 'order_id' in create:
+        if ('success' not in order_created or order_created['success']) and 'order_id' in order_created:
             response['success'] = True
-            response['order_id'] = create['order_id']
+            response['order_id'] = order_created['order_id']
 
-            for idx, ord_ticket in enumerate(create['tickets']):
+            for idx, ot in enumerate(order_created['tickets']):
                 ticket = {}
-                for kwa_ticket in kwargs['tickets']:
-                    if ord_ticket['tickettypeid'] == kwa_ticket['sector_id']:
-                        # self.logger.info('    ord_ticket[{}] == kwa_ticket[{}]'.format(
-                        #     ord_ticket['tickettypeid'],
+                for ticket_id in kwargs['tickets']:
+                    if ot['tickettypeid'] == kwargs['tickets'][ticket_id]['sector_id']:
+                        # self.logger.info('    ot[{}] == kwa_ticket[{}]'.format(
+                        #     ot['tickettypeid'],
                         #     kwa_ticket['sector_id'])
                         # )
                         # Если билет БЕЗ фиксированной рассадки
                         ticket['ticket_uuid'] = (
-                            kwa_ticket['ticket_uuid'] if
-                            ord_ticket['seatnumber'] is None or ord_ticket['seatnumber'] == kwa_ticket['seat_id'] else
+                            kwargs['tickets'][ticket_id]['ticket_uuid'] if
+                            not ot['seatnumber'] or ot['seatnumber'] == kwargs['tickets'][ticket_id]['seat_id'] else
                             uuid.uuid4()
                         )
+                        ticket['bar_code'] = ot['barcodekey']
+                        response['tickets'][ticket_id] = ticket.copy()
                         # self.logger.info('    ticket[ticket_uuid] == {}'.format(ticket['ticket_uuid']))
                     else:
                         continue
 
-                ticket['bar_code'] = ord_ticket['barcodekey']  # 12 символов
-                response['tickets'].append(ticket.copy())
+                # ticket['bar_code'] = ot['barcodekey']
+                # response['tickets'][ticket_id] = ticket.copy()
         else:
-            return create
+            return order_created
+
+        del order_created
 
         return response
 
@@ -914,16 +915,45 @@ class Radario(TicketService):
         order = self.request(method, url, data, output_mapping)
         print('order:', order)
 
-        if 'success' not in order or order['success']:
-            order['tickets'] = []
+        # Билеты С фиксированной рассадкой
+        # {
+        #     'order_id': 2508708,
+        #     'is_paid': True,
+        #     'tickets_list': [{
+        #         'seatname': '18',
+        #         'userorderid': 2508708,
+        #         'rowname': '7',
+        #         'discount': 0.0,
+        #         'tickettypetitle': 'партер',
+        #         'seatnumber': 119,
+        #         'tickettypezoneid': 0,
+        #         'number': '4019890878',
+        #         'barcodekey': '113484653512',
+        #         'id': 5896786,
+        #         'price': 1.0,
+        #         'participantname': '-',
+        #         'tickettypeid': 2702934,
+        #         'isused': False
+        #     }],
+        #     'ticket_count': 1,
+        #     'total': Decimal('1.00')
+        # }
+
+        response = {}
+        response['tickets'] = {}
+
+        if ('success' not in order or order['success']) and 'order_id' in order:
+            response['success'] = True
+
+            response['is_paid'] = order['is_paid']
 
             for idx, t in enumerate(order['tickets_list']):
                 ticket = {}
-                ticket['bar_code'] = t['barcodekey']  # 12 символов
+                ticket['bar_code'] = t['barcodekey']
                 ticket['sector_id'] = t['tickettypeid']
                 ticket['sector_title'] = t['tickettypetitle']
-                if t['tickettypezoneid'] is not None:
-                    ticket['sector_id'] = t['tickettypezoneid']
+                if t['seatnumber']:
+                    ticket['sector_id'] = t['tickettypeid']
                     ticket['row_id'] = int(t['rowname'])
                     ticket['seat_id'] = int(t['seatnumber'])
                     ticket['seat_title'] = t['seatname']
@@ -932,11 +962,22 @@ class Radario(TicketService):
                     ticket['row_id'] = 0
                     ticket['seat_id'] = idx + 1
                     ticket['seat_title'] = 0
-                order['tickets'].append(ticket.copy())
+                ticket_id = str(ticket['seat_id'])
+                ticket['ticket_id'] = ticket_id
 
-            del order['tickets_list']
+                response['tickets'][ticket_id] = ticket
 
-        return order
+                response['tickets_count'] = order['ticket_count']
+                response['total'] = order['total']
+        else:
+            response['success'] = False
+
+            response['code'] = order['code']
+            response['message'] = order['message']
+
+        del order
+
+        return response
 
     def order_cancel(self, **kwargs):
         """Отмена ранее созданного заказа.
@@ -957,6 +998,7 @@ class Radario(TicketService):
         output_mapping = {}
 
         cancel = self.request(method, url, data, output_mapping)
+        print('cancel:', cancel)
 
         return cancel
 
@@ -997,48 +1039,54 @@ class Radario(TicketService):
         method = 'POST'
         url = '/orders/refund'
         data = {
-            # 'Method': 7,
-            'UserOrderId': kwargs['order_id'],
-            'TicketNumber': None,  # ???
-            'RefundInitiator': 'Company',
-            'Comment': '',
-            'Reason': kwargs['reason'],
+            # 'method': 7,
+            'userOrderId': kwargs['order_id'],
+            'ticketNumber': None,  # ???
+            'refundInitiator': 'Company',
+            'comment': '',
+            'reason': kwargs['reason'],
         }
-        output_mapping = {}
+        output_mapping = {
+            'refundId':      self.internal('refund_id', int,),
+            'refundedMoney': self.internal('refunded_sum', Decimal),
+        }
 
         refund = self.request(method, url, data, output_mapping)
         print('refund:', refund)
 
         # {
-        #   "success": "bool",
-        #   "data": {
-        #     "refundId": "int",
-        #     "companyId": "int",
-        #     "refundedMoney": "decimal",
-        #     "refundedUserCash": "decimal",
-        #     "refundMethod": "int",
-        #     "refundType": "int",
-        #     "tickets": [
-        #         {
-        #             "ticketTypeId": "int",
-        #             "seatNumber": "int",
-        #             "seatInfo":
-        #             {
-        #                 "rowName" : "string",
-        #                 "colName" : "string",
-        #                 "zoneName" : "string"
-        #             },
-        #             "price": "decimal",
-
-        #         }
-        #     ],
-        #     "ticketNumbers": "string"
-        #   },
-        #   "error": {
-        #     "errorCode": "int",
-        #     "message": "string"
-        #   }
+        #     'refundId': 44347,
+        #     'ticketNumbers': '№3852494138',
+        #     'companyId': 1671,
+        #     'tickets': [{
+        #         'seatNumber': None,
+        #         'seatInfo': {
+        #             "rowName": "string",
+        #             "colName": "string",
+        #             "zoneName": "string"
+        #         },
+        #         'number': '3852494138',
+        #         'ticketTypeId': 382752,
+        #         'barcodeKey': '112264553893',
+        #         'price': 1.0
+        #     }],
+        #     'refundMethod': 'ExternalApi',
+        #     'refundType': 'Order',
+        #     'refundedUserCash': 0.0,
+        #     'refundedMoney': 1.0
         # }
+
+        response = {}
+
+        if 'refund_id' in refund:
+            response['success'] = True
+
+            response['refunded_sum'] = refund['refunded_sum']
+        else:
+            response['success'] = False
+
+            response['code'] = refund['code']
+            response['message'] = refund['message']
 
         return refund
 
