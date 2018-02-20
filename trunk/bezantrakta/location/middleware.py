@@ -64,6 +64,10 @@ class CurrentLocationMiddleware(MiddlewareMixin):
         # Полный абсолютный URL текущей страницы
         request.url_full = build_absolute_url(request.domain_slug, path)
 
+        # Разрешён ли вывод отладочной информации в консоли браузера
+        cookie_debugger = request.COOKIES.get(settings.BEZANTRAKTA_COOKIE_WATCHER_TITLE, None)
+        watcher = True if cookie_debugger == settings.BEZANTRAKTA_COOKIE_WATCHER_VALUE else False
+
         # Если пользователь находится на сайте
         if settings.BEZANTRAKTA_ADMIN_URL not in request.url_path:
             # Если город отключен - такой город не существует (ошибка 500)
@@ -84,8 +88,8 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                 return render(request, 'error.html', status=503)
             # Если город включен
             elif request.city_state is True:
-                # Если домен не опубликован - сайт недоступен (ошибка 503)
-                if not request.domain_is_published:
+                # Если домен НЕ опубликован и НЕ используется cookie для дебаггинга - сайт недоступен (ошибка 503)
+                if not request.domain_is_published and not watcher:
                     # Сообщение об ошибке
                     msgs = [
                         message('error', 'К сожалению, сайт временно недоступен.'),
