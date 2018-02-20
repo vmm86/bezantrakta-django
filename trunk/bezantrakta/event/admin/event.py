@@ -107,10 +107,10 @@ class EventAdmin(admin.ModelAdmin):
             None,
             {
                 'fields': ('settings',),
-                'classes': ('json_settings',),
+                'classes': ('help_text',),
                 'description': _('event_settings_help_text'),
             }
-         ),
+        ),
     )
     filter_horizontal = ('event_container',)
     form = EventForm
@@ -275,12 +275,7 @@ class EventAdmin(admin.ModelAdmin):
 
         Считаются все афиши, кроме маленьких вертикальных в любой позиции и маленькие верикальные в позиции больше 0.
         """
-        return obj.event_container.filter(
-            ~Q(mode='small_vertical') |
-            (
-                Q(mode='small_vertical') & Q(eventcontainerbinder__order__gt=0)
-            )
-        ).count()
+        return obj.event_container.count()
     container_count.short_description = _('event_container_count')
 
     def ticket_service_event_short_description(self, obj):
