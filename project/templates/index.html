@@ -212,67 +212,20 @@
         </div>
 
         <div class="banners-body">
-
             {# Нижние баннеры (слева) - Мы в сети #}
             {% if banner_group_items.banner_social %}
-            <div class="banners banners-left">
-                <div class="bannergroup">
-                    <div class="bannerheader">{{ banner_group.banner_social }}</div>
-                    {% for banner in banner_group_items.banner_social %}
-                        <div class="banneritem">
-                            {% if banner.href %}
-                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-                            {% endif %}
-                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
-                            {% if banner.href %}
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+                {% include "banner/banners_bottom.html" with class="banners-left" header=banner_group.banner_social banners=banner_group_items.banner_social %}
             {% endif %}
 
             {# Нижние баннеры (центр) - Наши партнёры #}
             {% if banner_group_items.banner_partners %}
-            <div class="banners banners-center">
-                <div class="bannergroup">
-                    <div class="bannerheader">{{ banner_group.banner_partners }}</div>
-                    {% for banner in banner_group_items.banner_partners %}
-                        <div class="banneritem">
-                            {% if banner.href %}
-                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-                            {% endif %}
-                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
-                            {% if banner.href %}
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+                {% include "banner/banners_bottom.html" with class="banners-center" header=banner_group.banner_partners banners=banner_group_items.banner_partners %}
             {% endif %}
 
             {# Нижние баннеры (справа) - Наши партнёры #}
             {% if banner_group_items.banner_payment %}
-            <div class="banners banners-right">
-                <div class="bannergroup">
-                    <div class="bannerheader">{{ banner_group.banner_payment }}</div>
-                    {% for banner in banner_group_items.banner_payment %}
-                        <div class="banneritem">
-                            {% if banner.href %}
-                                <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
-                            {% endif %}
-                                    <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
-                            {% if banner.href %}
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+                {% include "banner/banners_bottom.html" with class="banners-right" header=banner_group.banner_payment banners=banner_group_items.banner_payment %}
             {% endif %}
-
         </div>
 
     </div>
@@ -281,20 +234,11 @@
     <div id="choose-city-modal" class="modal" style="display: none;">
         <div>
             <div class="modal-body">
-            {# <span class="close">&times;</span> #}
                 <div>
                     <img class="bzlogo" src="{% static "global/svg/bzlogo.svg" %}">
                     <p>&nbsp;</p>
                     <p>&nbsp;</p>
                     <p>&nbsp;</p>
-
-                {% comment %}
-                {% if debug%}
-                    <p>cities: {{ request.cities }}</p>
-                    <br><br>
-                    <p>cookies['bezantrakta_city']: {{ request.bezantrakta_city }}</p>
-                {% endif %}
-                {% endcomment %}
 
                     <ul id="choose-city-list" class="choose-city-list">
                     {% for city in request.cities %}
