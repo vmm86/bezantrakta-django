@@ -33,7 +33,6 @@ def events_on_index(request):
         'order',
     ).filter(
         container_mode='small_vertical',
-        order__gt=0,
         event__is_published=True,
         event__is_on_index=True,
         datetime__gt=today,
