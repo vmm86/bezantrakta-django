@@ -1,4 +1,0 @@
-{% load static %}
-<a href="{% url 'order:order_step_1' year=item.event_datetime|date:"Y" month=item.event_datetime|date:"m" day=item.event_datetime|date:"d" hour=item.event_datetime|date:"H" minute=item.event_datetime|date:"i" slug=item.event_slug %}" title="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
-    <img src="{% get_media_prefix %}{{ item.img }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
-</a>
