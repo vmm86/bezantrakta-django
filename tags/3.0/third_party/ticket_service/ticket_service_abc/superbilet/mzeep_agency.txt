@@ -1,0 +1,205 @@
+Prefixes:
+    xsd: http://www.w3.org/2001/XMLSchema
+    ns0: urn:STicketIntf
+    ns1: http://schemas.xmlsoap.org/soap/encoding/
+
+Global elements:
+    ns1:Array(ns1:Array)
+    ns1:ENTITIES(ns1:ENTITIES)
+    ns1:ENTITY(ns1:ENTITY)
+    ns1:ID(ns1:ID)
+    ns1:IDREF(ns1:IDREF)
+    ns1:IDREFS(ns1:IDREFS)
+    ns1:NCName(ns1:NCName)
+    ns1:NMTOKEN(ns1:NMTOKEN)
+    ns1:NMTOKENS(ns1:NMTOKENS)
+    ns1:NOTATION(ns1:NOTATION)
+    ns1:Name(ns1:Name)
+    ns1:QName(ns1:QName)
+    ns1:Struct(ns1:Struct)
+    ns1:anyType(xsd:anyType)
+    ns1:anyURI(ns1:anyURI)
+    ns1:base64Binary(ns1:base64Binary)
+    ns1:boolean(ns1:boolean)
+    ns1:byte(ns1:byte)
+    ns1:date(ns1:date)
+    ns1:dateTime(ns1:dateTime)
+    ns1:decimal(ns1:decimal)
+    ns1:double(ns1:double)
+    ns1:duration(ns1:duration)
+    ns1:float(ns1:float)
+    ns1:gDay(ns1:gDay)
+    ns1:gMonth(ns1:gMonth)
+    ns1:gMonthDay(ns1:gMonthDay)
+    ns1:gYear(ns1:gYear)
+    ns1:gYearMonth(ns1:gYearMonth)
+    ns1:hexBinary(ns1:hexBinary)
+    ns1:int(ns1:int)
+    ns1:integer(ns1:integer)
+    ns1:language(ns1:language)
+    ns1:long(ns1:long)
+    ns1:negativeInteger(ns1:negativeInteger)
+    ns1:nonNegativeInteger(ns1:nonNegativeInteger)
+    ns1:nonPositiveInteger(ns1:nonPositiveInteger)
+    ns1:normalizedString(ns1:normalizedString)
+    ns1:positiveInteger(ns1:positiveInteger)
+    ns1:short(ns1:short)
+    ns1:string(ns1:string)
+    ns1:time(ns1:time)
+    ns1:token(ns1:token)
+    ns1:unsignedByte(ns1:unsignedByte)
+    ns1:unsignedInt(ns1:unsignedInt)
+    ns1:unsignedLong(ns1:unsignedLong)
+    ns1:unsignedShort(ns1:unsignedShort)
+    
+Global types:
+    xsd:anyType
+    ns1:Array(_value_1: ANY[], arrayType: xsd:string, offset: ns1:arrayCoordinate, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:ENTITIES(xsd:ENTITIES, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:ENTITY(xsd:ENTITY, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:ID(xsd:ID, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:IDREF(xsd:IDREF, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:IDREFS(xsd:IDREFS, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:NCName(xsd:NCName, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:NMTOKEN(xsd:NMTOKEN, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:NMTOKENS(xsd:NMTOKENS, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:NOTATION(xsd:QName, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:Name(xsd:Name, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:QName(xsd:QName, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:Struct(_value_1: ANY[], id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:anyURI(xsd:anyURI, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:arrayCoordinate
+    ns1:base64
+    ns1:base64Binary(xsd:base64Binary, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:boolean(xsd:boolean, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:byte(xsd:byte, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:date(xsd:date, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:dateTime(xsd:dateTime, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:decimal(xsd:decimal, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:double(xsd:double, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:duration(xsd:duration, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:float(xsd:float, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:gDay(xsd:gDay, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:gMonth(xsd:gMonth, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:gMonthDay(xsd:gMonthDay, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:gYear(xsd:gYear, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:gYearMonth(xsd:gYearMonth, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:hexBinary(xsd:hexBinary, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:int(xsd:int, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:integer(xsd:integer, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:language(xsd:language, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:long(xsd:long, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:negativeInteger(xsd:negativeInteger, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:nonNegativeInteger(xsd:nonNegativeInteger, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:nonPositiveInteger(xsd:nonPositiveInteger, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:normalizedString(xsd:normalizedString, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:positiveInteger(xsd:positiveInteger, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:short(xsd:short, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:string(xsd:string, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:time(xsd:time, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:token(xsd:token, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:unsignedByte(xsd:unsignedByte, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:unsignedInt(xsd:unsignedInt, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:unsignedLong(xsd:unsignedLong, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns1:unsignedShort(xsd:unsignedShort, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    xsd:ENTITIES
+    xsd:ENTITY
+    xsd:ID
+    xsd:IDREF
+    xsd:IDREFS
+    xsd:NCName
+    xsd:NMTOKEN
+    xsd:NMTOKENS
+    xsd:NOTATION
+    xsd:Name
+    xsd:QName
+    xsd:anySimpleType
+    xsd:anyURI
+    xsd:base64Binary
+    xsd:boolean
+    xsd:byte
+    xsd:date
+    xsd:dateTime
+    xsd:decimal
+    xsd:double
+    xsd:duration
+    xsd:float
+    xsd:gDay
+    xsd:gMonth
+    xsd:gMonthDay
+    xsd:gYear
+    xsd:gYearMonth
+    xsd:hexBinary
+    xsd:int
+    xsd:integer
+    xsd:language
+    xsd:long
+    xsd:negativeInteger
+    xsd:nonNegativeInteger
+    xsd:nonPositiveInteger
+    xsd:normalizedString
+    xsd:positiveInteger
+    xsd:short
+    xsd:string
+    xsd:time
+    xsd:token
+    xsd:unsignedByte
+    xsd:unsignedInt
+    xsd:unsignedLong
+    xsd:unsignedShort
+
+    ns0:TGift(OrderSeatBarcode: xsd:string)
+    ns0:TGiftArray(_value_1: TGift[], arrayType: xsd:string, offset: ns1:arrayCoordinate, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns0:TSoldGiftAnswer(ErrorCode: xsd:int, ErrorMessage: xsd:string, Gift: ns0:TGiftArray)
+    ns0:TSoldGiftRequest(WebSession: xsd:int, dtOrder: xsd:dateTime, WebOrderId: xsd:string, WebTransactionId: xsd:string, GiftCount: xsd:int, SpectatorId: xsd:int, SpektatorName: xsd:string, SpektatorPhone: xsd:string, SpektatorEmail: xsd:string)
+    ns0:TStatAnswer(dtBegin: xsd:dateTime, dtEnd: xsd:dateTime, ErrorCode: xsd:int, ErrorMessage: xsd:string, OrgName: xsd:string, DBVersion: xsd:string, GateVersion: xsd:string, OrderServiceCount: xsd:int, OrderServiceSum: xsd:double, SellServiceCount: xsd:int, SellServiceSum: xsd:double)
+    ns0:TStatRequest(dtBegin: xsd:dateTime, dtEnd: xsd:dateTime)
+    ns0:TTestItem(IntData: xsd:int, FloatData: xsd:double, StringData: xsd:string)
+    ns0:TTestItemArray(_value_1: TTestItem[], arrayType: xsd:string, offset: ns1:arrayCoordinate, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns0:TTestServerAnswer(ErrorCode: xsd:int, ErrorMessage: xsd:string, TestItemArray: ns0:TTestItemArray)
+    ns0:TTestServerRequest(IntData: xsd:int, FloatData: xsd:double, StringData: xsd:string)
+    ns0:TViewEventsForPassesAnswer(ErrorCode: xsd:int, ErrorMessage: xsd:string, ViewEventsForPassesItem: ns0:TViewEventsForPassesItemArray)
+    ns0:TViewEventsForPassesItem(eventId: xsd:int, eventName: xsd:string, showDateTime: xsd:dateTime)
+    ns0:TViewEventsForPassesItemArray(_value_1: TViewEventsForPassesItem[], arrayType: xsd:string, offset: ns1:arrayCoordinate, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns0:TViewPlacesWithBarcodeListAnswer(ErrorCode: xsd:int, ErrorMessage: xsd:string, ViewPlacesWithBarcodeListItem: ns0:TViewPlacesWithBarcodeListItemArray)
+    ns0:TViewPlacesWithBarcodeListItem(barcode: xsd:string, price: xsd:double, seatType: xsd:string, rowNumber: xsd:string, seatNumber: xsd:int, peopleCount: xsd:int, fio: xsd:string, saleDate: xsd:dateTime, AllowPassage: xsd:boolean)
+    ns0:TViewPlacesWithBarcodeListItemArray(_value_1: TViewPlacesWithBarcodeListItem[], arrayType: xsd:string, offset: ns1:arrayCoordinate, id: xsd:ID, href: xsd:anyURI, _attr_1: {})
+    ns0:TViewPlacesWithBarcodeListRequest(eventId: xsd:int)
+
+Bindings:
+    Soap11Binding: {http://tempuri.org/}ISTicketbinding
+
+Service: ISTicketservice
+    Port: ISTicketPort (Soap11Binding: {http://tempuri.org/}ISTicketbinding)
+        Operations:
+            CheckSoldTickets(Login: xsd:string, Password: xsd:string, Value: xsd:string) -> return: xsd:string
+            FreePreReservation(Value: xsd:string) -> return: xsd:string
+            FreeReservation(Value: xsd:string) -> return: xsd:string
+            GetCategoriesList(Value: xsd:string) -> return: xsd:string
+            GetCurrentState(Value: xsd:string) -> return: xsd:string
+            GetEvailPlaceList(Value: xsd:string) -> return: xsd:string
+            GetEventList(Value: xsd:string) -> return: xsd:string
+            GetHallList(Value: xsd:string) -> return: xsd:string
+            GetLocationList(Value: xsd:string) -> return: xsd:string
+            GetLog(Value: xsd:string) -> return: xsd:string
+            GetLogExt(Value: xsd:string) -> return: xsd:string
+            GetPlaceForSector(Value: xsd:string) -> return: xsd:string
+            GetSchemaHallList(Value: xsd:string) -> return: xsd:string
+            GetSectorList(Value: xsd:string) -> return: xsd:string
+            GetShowCategoriesList(Value: xsd:string) -> return: xsd:string
+            GetShowList(Value: xsd:string) -> return: xsd:string
+            GetStat(Login: xsd:string, Password: xsd:string, TonlineAdminPassword: xsd:string, Request: ns0:TStatRequest) -> return: ns0:TStatAnswer
+            GetVersion() -> return: xsd:string
+            PreSetReservation(Value: xsd:string) -> return: xsd:string
+            SetReservation(Value: xsd:string) -> return: xsd:string
+            SetReservationExt(Value: xsd:string) -> return: xsd:string
+            SetSold(Value: xsd:string) -> return: xsd:string
+            SetSoldExt(Value: xsd:string) -> return: xsd:string
+            SetSoldTickets(Login: xsd:string, Password: xsd:string, Value: xsd:string) -> return: xsd:string
+            SoldGift(Login: xsd:string, Password: xsd:string, SoldGiftRequest: ns0:TSoldGiftRequest) -> return: ns0:TSoldGiftAnswer
+            RefundOrder(Value: xsd:string) -> return: xsd:string
+            TestServer(Request: ns0:TTestServerRequest) -> return: ns0:TTestServerAnswer
+            TestServerLoopback(Request: ns0:TTestServerRequest) -> return: ns0:TTestServerRequest
+            ViewEventsForPasses(Login: xsd:string, Password: xsd:string) -> return: ns0:TViewEventsForPassesAnswer
+            ViewPlacesWithBarcodeList(Login: xsd:string, Password: xsd:string, ViewPlacesWithBarcodeListRequest: ns0:TViewPlacesWithBarcodeListRequest) -> return: ns0:TViewPlacesWithBarcodeListAnswer
+
