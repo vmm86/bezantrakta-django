@@ -15,7 +15,7 @@ $(document).ready(function() {
                 handler: function(direction) {
                     if (direction == 'down') {
                         block.css('position', 'fixed');
-                        $('#content').css('padding-bottom', block.height());
+                        $('#content').css('padding-bottom', block.height() * 2);
                     } else if (direction == 'up') {
                         block.css('position', 'static');
                         $('#content').css('padding-bottom', block.height() / 2);

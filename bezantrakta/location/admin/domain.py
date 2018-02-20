@@ -37,7 +37,7 @@ class DomainAdmin(admin.ModelAdmin):
             None,
             {
                 'fields': ('settings',),
-                'classes': ('json_settings',),
+                'classes': ('help_text',),
                 'description': _('domain_settings_help_text'),
             }
         ),

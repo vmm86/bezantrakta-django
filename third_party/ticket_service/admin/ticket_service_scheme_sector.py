@@ -17,7 +17,8 @@ class TicketServiceSchemeSectorAdmin(admin.ModelAdmin):
             None,
             {
                 'fields': ('ticket_service_sector_id', 'ticket_service_sector_title',
-                           'scheme', 'sector',)
+                           'scheme', 'sector',),
+                'description': _('ticketserviceschemesector_sector_help_text'),
             }
         ),
     )

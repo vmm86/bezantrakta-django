@@ -30,7 +30,7 @@ class PaymentServiceAdmin(admin.ModelAdmin):
             None,
             {
                 'fields': ('settings',),
-                'classes': ('json_settings',),
+                'classes': ('help_text',),
                 'description': _('payment_service_help_text'),
             }
         ),
