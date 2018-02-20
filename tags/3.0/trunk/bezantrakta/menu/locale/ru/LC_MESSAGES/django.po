@@ -1,0 +1,85 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-02-20 09:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: admin/menu_item.py:19
+msgid "menuitem_slug_help_text"
+msgstr ""
+"Ссылка на главную страницу – <strong>/</strong> (прямой слэш или косая "
+"черта).<br>Ссылка на какую-либо страницу внутри сайта обрамляется символами "
+"<strong>/</strong> в начале и в конце.<br>Ссылка на статическую HTML-"
+"страницу должна совпадать с псевдонимом этой страницы (например, ссылка "
+"<strong>/kontakty/</strong> для HTML-страницы с псевдонимом "
+"<strong>kontakty</strong>).<br>Ссылка на другие сайты должна быть абсолютной "
+"(начинается с <strong>http://</strong> или <strong>https://</strong> и "
+"заканчивается символом <strong>/</strong>)."
+
+#: models/menu.py:23
+msgid "menu_title"
+msgstr "Название"
+
+#: models/menu.py:27
+msgid "menu_slug"
+msgstr "Псевдоним"
+
+#: models/menu.py:31
+msgid "menu_order"
+msgstr "Порядок"
+
+#: models/menu.py:37
+msgid "menu"
+msgstr "меню"
+
+#: models/menu.py:38
+msgid "menus"
+msgstr "меню"
+
+#: models/menu_item.py:34
+msgid "menuitem_title"
+msgstr "Название"
+
+#: models/menu_item.py:39
+msgid "menuitem_slug"
+msgstr "Ссылка"
+
+#: models/menu_item.py:43
+msgid "menuitem_is_published"
+msgstr "Публикация"
+
+#: models/menu_item.py:47
+msgid "menuitem_order"
+msgstr "Порядок"
+
+#: models/menu_item.py:53
+msgid "menuitem_menu"
+msgstr "Меню"
+
+#: models/menu_item.py:59
+msgid "menuitem_domain"
+msgstr "Сайт"
+
+#: models/menu_item.py:65
+msgid "menuitem"
+msgstr "пункт меню"
+
+#: models/menu_item.py:66
+msgid "menuitems"
+msgstr "пункты меню"
