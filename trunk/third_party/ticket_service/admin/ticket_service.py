@@ -47,7 +47,7 @@ class TicketServiceAdmin(admin.ModelAdmin):
             None,
             {
                 'fields': ('settings',),
-                'classes': ('json_settings',),
+                'classes': ('help_text',),
                 'description': _('ticket_service_help_text'),
             }
         ),

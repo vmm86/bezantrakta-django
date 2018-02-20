@@ -60,7 +60,6 @@ class TicketServiceSchemeVenueBinder(models.Model):
     scheme = RichTextField(
         default='',
         config_name='scheme',
-        help_text=_('ticketserviceschemevenuebinder_scheme_help_text'),
         verbose_name=_('ticketserviceschemevenuebinder_scheme'),
     )
 

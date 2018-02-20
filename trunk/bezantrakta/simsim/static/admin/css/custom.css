@@ -1059,11 +1059,11 @@ p.file-upload {
 }
 
 .aligned .vCheckboxLabel {
-    display: block; 
-    vertical-align: baseline; 
-    padding: 0; 
-    width: 160px; 
-    float: left; 
+    display: block;
+    vertical-align: baseline;
+    padding: 0;
+    width: 160px;
+    float: left;
 }
 
 .timezonewarning {
@@ -1143,37 +1143,43 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     display: none;
 }
 
-/* Порядок отображения настроек в JSON */
+/* Порядок отображения справочного текста при редактировании объекта модели */
 
-fieldset.json_settings {
+fieldset.module {
+    margin-bottom: 0;
+}
+
+fieldset.help_text {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: flex-start;
+
+    margin-bottom: 0;
 }
 
-fieldset.json_settings h2 {
+fieldset.help_text h2 {
     width: 100%;
     order: -1;
 }
 
-fieldset.json_settings .form-row {
+fieldset.help_text .form-row {
     width: 100%;
 }
 
-fieldset.json_settings .form-row.field-settings {
+fieldset.help_text .form-row.field-settings {
     padding: 0;
     width: 100%;
     order: 2;
 }
 
-fieldset.json_settings .description {
+fieldset.help_text .description {
     padding: 0;
     order: 3;
 }
 
-fieldset.json_settings .description ul {
+fieldset.help_text .description ul {
     margin-left: 0;
 }
 

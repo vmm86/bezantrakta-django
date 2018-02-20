@@ -48,7 +48,6 @@ class TicketServiceSchemeSector(models.Model):
     sector = RichTextField(
         default='',
         config_name='scheme',
-        help_text=_('ticketserviceschemesector_sector_help_text'),
         verbose_name=_('ticketserviceschemesector_sector'),
     )
 

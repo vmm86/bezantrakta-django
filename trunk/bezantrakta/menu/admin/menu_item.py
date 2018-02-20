@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext as _
 
 from adminsortable2.admin import SortableAdminMixin
 
@@ -11,6 +12,22 @@ from ..models import MenuItem
 
 @admin.register(MenuItem)
 class MenuItemAdmin(SortableAdminMixin, admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                'fields': ('title', 'slug',),
+                'classes': ('help_text',),
+                'description': _('menuitem_slug_help_text'),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('is_published', 'menu', 'domain',),
+            }
+        )
+    )
     list_display = ('title', 'slug', 'is_published', 'menu', 'domain',)
     list_filter = (
         ('menu', RelatedOnlyFieldDropdownFilter),

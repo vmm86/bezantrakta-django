@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='OrderTicket',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='ID билета')),
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='Уникальный идентификатор билета')),
                 ('ticket_service_order', models.PositiveIntegerField(db_column='ticket_service_order_id', null=True, verbose_name='ID заказа')),
                 ('is_punched', models.BooleanField(default=False, verbose_name='Пробит ли на входе')),
                 ('bar_code', models.CharField(max_length=32, null=True, verbose_name='Штрих-код')),

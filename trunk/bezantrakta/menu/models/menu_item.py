@@ -36,7 +36,6 @@ class MenuItem(models.Model):
     slug = models.CharField(
         max_length=128,
         blank=True,
-        help_text=_('menuitem_slug_help_text'),
         verbose_name=_('menuitem_slug'),
     )
     is_published = models.BooleanField(
