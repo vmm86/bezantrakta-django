@@ -1,7 +1,7 @@
 from dateutil.parser import parse
-# from operator import itemgetter
 
 from project.cache import ProjectCache
+from project.shortcuts import timezone_now
 
 
 class EventSeatsPricesCache(ProjectCache):
@@ -15,6 +15,6 @@ class EventSeatsPricesCache(ProjectCache):
         pass
 
     def cache_postprocessing(self, **kwargs):
-        self.value['updated'] = parse(self.value['updated'])
-        # self.value['seats'] = sorted(self.value['seats'], key=itemgetter('ticket_id'))
-        self.value['prices'] = sorted(self.value['prices'])
+        self.value['updated'] = parse(self.value['updated']) if 'updated' in self.value else timezone_now()
+        self.value['seats'] = self.value['seats'] if 'seats' in self.value else {}
+        self.value['prices'] = sorted(self.value['prices']) if 'prices' in self.value else []
