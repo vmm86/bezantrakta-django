@@ -57,7 +57,7 @@ def processing(request):
 
             basket.update()
 
-        basket.logger.info('\ncustomer: {}'.format(basket.order['customer']))
+            basket.logger.info('\ncustomer: {}'.format(basket.order['customer']))
 
         # Логирование базовой информации о заказе
         basket.logger.info('\n----------Обработка заказа {}----------'.format(basket.order['order_uuid']))
@@ -94,10 +94,10 @@ def processing(request):
             # Получение штрих-кодов для билетов в заказе
             basket.tickets_barcode(order_create)
 
+            basket.logger.info('\nbasket.order create: {}'.format(basket.order))
+
             # Сохранение созданного зааза и билетов в БД
             order_create_db = basket.order_create_db()
-
-            basket.logger.info('\nbasket.order create: {}'.format(basket.order))
 
             if not order_create_db['success']:
                 # Сообщение об ошибке
