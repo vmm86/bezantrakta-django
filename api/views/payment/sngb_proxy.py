@@ -50,14 +50,14 @@ def sngb_proxy(request):
         for external, internal in response_params.items():
             data[internal] = request.GET.get(external, None)
 
+    logger.info('data: ', data)
+
     # Приведение кода оплаты к int, если строка является числом
     # (у успешной оплаты статус равен '00')
     try:
         data['payment_code'] = int(data['payment_code'])
     except ValueError:
         pass
-
-    logger.info('data: ', data)
 
     # Логирование полученных данных
     for param in response_params.values():
