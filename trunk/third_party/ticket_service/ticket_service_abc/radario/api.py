@@ -635,6 +635,8 @@ class Radario(TicketService):
             list: Список словарей с информацией о доступных к заказу местах.
         """
         response = {}
+        response['seats'] = {}
+        response['prices'] = []
 
         sectors = self.sectors(event_id=kwargs['event_id'])
 
@@ -645,7 +647,6 @@ class Radario(TicketService):
             response['prices'] = prices
             # print('\nsectors:\n', sectors, '\n')
 
-            response['seats'] = {}
             for sec in sectors:
                 # Билеты с местами
                 if sec['seats'] is not None:
