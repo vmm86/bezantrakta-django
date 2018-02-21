@@ -715,16 +715,14 @@ class OrderBasket():
                 order_id=self.order['order_id']
                 )
             )
-
-            self.logger.info('\nbasket.order approved: {}'.format(self.order))
-
-            # Обновление статуса заказа в БД
-            self.order_status_db('approved')
         else:
             self.logger.info('Заказ {order_id} НЕ удалось отметить в сервисе продажи билетов как оплаченный'.format(
                 order_id=self.order['order_id']
                 )
             )
+
+        # Обновление статуса заказа в БД
+        self.order_status_db('approved')
 
         return order_approve
 
