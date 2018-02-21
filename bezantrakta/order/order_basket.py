@@ -105,7 +105,7 @@ class OrderBasket():
     # Подписи способов оплаты
     ORDER_PAYMENT_CAPTION = {
         None:     '-',
-        'cash':   'наличные или банковская карта',
+        'cash':   'оплата при получении',
         'online': 'онлайн-оплата',
     }
 
@@ -583,6 +583,8 @@ class OrderBasket():
                     self.logger.info('t[bar_code]: {barcode}'.format(barcode=self.order['tickets'][tid]['bar_code']))
                 else:
                     continue
+
+        self.logger.info('\ntickets with bar_codes: {}'.format(self.order['tickets']))
 
         self.update()
 
