@@ -411,14 +411,12 @@ class OrderBasket():
         response['tickets'] = {}
 
         if self.order['tickets_count'] > 0:
-            for ticket_id in self.order['tickets']:
-                self.logger.info('\n    * {}'.format(self.order['tickets'][ticket_id]))
+            tickets = self.order['tickets'].copy()
 
-                remove = self.ticket_toggle(ticket_id, 'remove')
+            for ticket_id, ticket in tickets.items():
+                remove = self.ticket_toggle(ticket_id, True, 'remove')
 
-                response['tickets'][ticket_id] = self.order['tickets'][ticket_id]
-
-                self.logger.info('    remove: {}'.format(remove))
+                response['tickets'][ticket_id] = ticket
 
                 if remove['success']:
                     response['tickets'][ticket_id]['removed'] = True
@@ -552,8 +550,6 @@ class OrderBasket():
             tickets=self.order['tickets']
         )
 
-        self.logger.info('order_create: {}'.format(order_create))
-
         if order_create['success']:
             self.order['status'] = 'ordered'
             self.logger.info('Статус заказа: {}'.format(self.order['status_caption']))
@@ -561,7 +557,12 @@ class OrderBasket():
             self.order['order_id'] = order_create['order_id']
             self.logger.info('Идентификатор заказа: {}'.format(self.order['order_id']))
 
+            # Получение штрих-кодов для билетов в заказе
+            self.tickets_barcode(order_create)
+
         self.update()
+
+        self.logger.info('\nbasket.order created: {}'.format(self.order))
 
         return order_create
 
@@ -586,8 +587,6 @@ class OrderBasket():
                     continue
 
         self.logger.info('\ntickets with bar_codes: {}'.format(self.order['tickets']))
-
-        self.update()
 
     def order_create_db(self):
         response = {}
@@ -683,7 +682,7 @@ class OrderBasket():
     def payment_status(self):
         payment_status = self._ps.payment_status(payment_id=self.order['payment_id'])
 
-        self.logger.info('Статус оплаты: {}'.format(self.order['payment_id']))
+        self.logger.info('Идентификатор оплаты: {}'.format(self.order['payment_id']))
         self.logger.info('payment_status: {}'.format(payment_status))
 
         if payment_status['success']:
@@ -717,6 +716,8 @@ class OrderBasket():
                 )
             )
 
+            self.logger.info('\nbasket.order approved: {}'.format(self.order))
+
             # Обновление статуса заказа в БД
             self.order_status_db('approved')
         else:
@@ -744,14 +745,14 @@ class OrderBasket():
                 order_id=self.order['order_id']
                 )
             )
-
-            # Обновление статуса заказа в БД
-            self.order_status_db('cancelled')
         else:
             self.logger.info('Заказ {order_id} НЕ удалось отменить в сервисе продажи билетов'.format(
                 order_id=self.order['order_id']
                 )
             )
+
+        # Обновление статуса заказа в БД
+        self.order_status_db('cancelled')
 
         return order_cancel
 

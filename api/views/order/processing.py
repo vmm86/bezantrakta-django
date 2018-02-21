@@ -91,11 +91,6 @@ def processing(request):
             # Проверка состояния билетов в созданном заказе
             basket.tickets_check('ordered')
 
-            # Получение штрих-кодов для билетов в заказе
-            basket.tickets_barcode(order_create)
-
-            basket.logger.info('\nbasket.order create: {}'.format(basket.order))
-
             # Сохранение созданного зааза и билетов в БД
             order_create_db = basket.order_create_db()
 
@@ -114,8 +109,6 @@ def processing(request):
             if basket.order['payment'] == 'cash':
                 # Подтверждение оплаты заказа в БД
                 basket.order_status_db('approved')
-
-                basket.logger.info('\nbasket.order approved: {}'.format(basket.order))
 
                 # Отправка email администратору и покупателю
                 basket.email_admin()

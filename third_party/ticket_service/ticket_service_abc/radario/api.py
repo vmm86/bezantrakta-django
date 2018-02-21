@@ -814,7 +814,9 @@ class Radario(TicketService):
         }
 
         order_created = self.request(method, url, data, output_mapping)
-        print('order_created:', order_created)
+
+        # self.logger.info('order_created: {}'.format(order_created))
+        # self.logger.info('kwargs: {}'.format(kwargs))
 
         # Резерв билета С фиксированной рассадкой
         # {
@@ -859,34 +861,53 @@ class Radario(TicketService):
         response = {}
         response['tickets'] = {}
 
-        if ('success' not in order_created or order_created['success']) and 'order_id' in order_created:
+        success_condition = 'success' not in order_created or order_created['success']
+        if success_condition and 'order_id' in order_created:
             response['success'] = True
             response['order_id'] = order_created['order_id']
 
-            for idx, ot in enumerate(order_created['tickets']):
-                ticket = {}
-                for ticket_id in kwargs['tickets']:
-                    if ot['tickettypeid'] == kwargs['tickets'][ticket_id]['sector_id']:
-                        # self.logger.info('    ot[{}] == kwa_ticket[{}]'.format(
-                        #     ot['tickettypeid'],
-                        #     kwa_ticket['sector_id'])
-                        # )
-                        # Если билет БЕЗ фиксированной рассадки
-                        ticket['ticket_uuid'] = (
-                            kwargs['tickets'][ticket_id]['ticket_uuid'] if
-                            not ot['seatnumber'] or ot['seatnumber'] == kwargs['tickets'][ticket_id]['seat_id'] else
-                            uuid.uuid4()
-                        )
-                        ticket['bar_code'] = ot['barcodekey']
-                        response['tickets'][ticket_id] = ticket.copy()
-                        # self.logger.info('    ticket[ticket_uuid] == {}'.format(ticket['ticket_uuid']))
-                    else:
-                        continue
+            created_fixed_tickets = [t for t in order_created['tickets'] if t['seatnumber']]
+            created_non_fixed_tickets = [t for t in order_created['tickets'] if not t['seatnumber']]
 
-                # ticket['bar_code'] = ot['barcodekey']
-                # response['tickets'][ticket_id] = ticket.copy()
+            kwargs_fixed_tickets = [t for tid, t in kwargs['tickets'].items() if t['is_fixed']]
+            kwargs_non_fixed_tickets = [t for tid, t in kwargs['tickets'].items() if not t['is_fixed']]
+
+            added_tids = set()
+            added_barcodes = set()
+
+            # Билеты С фиксированной рассадкой (штрих-коды сопоставляются по совпадению идентификатора места)
+            if created_fixed_tickets:
+                for cft in created_fixed_tickets:
+                    for kft in kwargs_fixed_tickets:
+                        if cft['seatnumber'] == kft['seat_id']:
+                            ticket_id = kft['ticket_id']
+                            if cft['barcodekey'] not in added_barcodes and ticket_id not in added_tids:
+                                ticket = {}
+                                ticket['ticket_uuid'] = kft['ticket_uuid']
+                                ticket['bar_code'] = cft['barcodekey']
+                                added_tids.add(ticket_id)
+                                added_barcodes.add(ticket['bar_code'])
+                                response['tickets'][ticket_id] = ticket.copy()
+                        else:
+                            continue
+
+            # Билеты БЕЗ фиксированной рассадки (штрих-коды распределяются между всеми такими билетами)
+            if created_non_fixed_tickets:
+                cnft_barcodes = [t['barcodekey'] for t in created_non_fixed_tickets]
+
+                for knft in kwargs_non_fixed_tickets:
+                    ticket_id = knft['ticket_id']
+                    ticket = {}
+                    ticket['ticket_uuid'] = knft['ticket_uuid']
+                    ticket['bar_code'] = cnft_barcodes.pop()
+                    response['tickets'][ticket_id] = ticket.copy()
+                    added_tids.add(ticket_id)
+                    added_barcodes.add(ticket['bar_code'])
+
         else:
             return order_created
+
+        # self.logger.info('response with bar_codes: {}'.format(response))
 
         del order_created
 
@@ -945,12 +966,11 @@ class Radario(TicketService):
         # }
 
         response = {}
-        response['tickets'] = {}
 
         if ('success' not in order or order['success']) and 'order_id' in order:
             response['success'] = True
-
             response['is_paid'] = order['is_paid']
+            response['tickets'] = {}
 
             for idx, t in enumerate(order['tickets_list']):
                 ticket = {}
