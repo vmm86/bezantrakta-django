@@ -40,8 +40,8 @@ def reserve(request):
         basket.logger.info('\nПредыдущее состояние заказа:')
         if basket.order['tickets']:
             basket.logger.info('    Билеты в заказе:')
-            for tid in basket.order['tickets']:
-                basket.logger.info('    * {}'.format(basket.order['tickets'][tid]))
+            for tid, t in basket.order['tickets'].items():
+                basket.logger.info('    * {}: {}'.format(tid, t))
         else:
             basket.logger.info('    Билеты в заказе: []')
         basket.logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
@@ -54,8 +54,8 @@ def reserve(request):
             basket.logger.info('\nПоследующее состояние заказа:')
             if basket.order['tickets']:
                 basket.logger.info('    Билеты в заказе:')
-                for tid in basket.order['tickets']:
-                    basket.logger.info('    * {}'.format(basket.order['tickets'][tid]))
+                for tid, t in basket.order['tickets'].items():
+                    basket.logger.info('    * {}: {}'.format(tid, t))
             else:
                 basket.logger.info('    Билеты в заказе: []')
             basket.logger.info('    Число билетов: {}'.format(basket.order['tickets_count']))
