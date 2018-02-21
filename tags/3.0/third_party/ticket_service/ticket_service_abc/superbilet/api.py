@@ -727,6 +727,8 @@ class SuperBilet(TicketService):
         seats = self.request(method, input_mapping, data, output_mapping)
 
         response = {}
+        response['seats'] = {}
+        response['prices'] = []
 
         if type(seats) is list:
             response['success'] = True
@@ -740,7 +742,6 @@ class SuperBilet(TicketService):
             response['prices'] = prices
 
             # Получение перечня свободных для продажи мест
-            response['seats'] = {}
             for s in seats:
                 if s['result_code'] == 0:
                     seat = {}
@@ -1078,7 +1079,7 @@ class SuperBilet(TicketService):
                     response['order_id'] = ot['order_id']
                     for ticket_id in kwargs['tickets']:
                         if ot['ticket_id'] == kwargs['tickets'][ticket_id]['ticket_id']:
-                            # self.logger.info('\n{ot_ticket_id} == {t_ticket_id}: {cond}'.format(
+                            # self.logger.info('    {ot_ticket_id} == {t_ticket_id}: {cond}'.format(
                             #     ot_ticket_id=ot['ticket_id'],
                             #     t_ticket_id=kwargs['tickets'][ticket_id]['ticket_id'],
                             #     cond=ot['ticket_id'] == kwargs['tickets'][ticket_id]['ticket_id'])
@@ -1089,11 +1090,6 @@ class SuperBilet(TicketService):
                             response['tickets'][ticket_id] = ticket.copy()
                         else:
                             continue
-                # else:
-                #     response['success'] = False
-
-                #     response['code'] = ot['result_code']
-                #     response['message'] = self.RESPONSE_CODES[response['code']]
         else:
             response['success'] = False
             del response['tickets']
