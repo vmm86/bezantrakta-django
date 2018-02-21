@@ -94,8 +94,6 @@ def processing(request):
             # Получение штрих-кодов для билетов в заказе
             basket.tickets_barcode(order_create)
 
-            basket.logger.info('\ntickets with bar_codes: {}'.format(basket.order['tickets']))
-
             # Сохранение созданного зааза и билетов в БД
             order_create_db = basket.order_create_db()
 
