@@ -113,9 +113,13 @@ class Radario(TicketService):
         Returns:
             list, dict: Обработанный ответ конкретного метода API.
         """
-        response_success = True if response['success'] else False
-        response_code = response['error']['errorCode'] if not response_success else 0
-        response_message = response['error']['message'] if not response_success else 'OK'
+        response_success = True if 'success' in response and response['success'] else False
+        if 'error' in response and response['error']:
+            response_code = response['error'].get('errorCode', 0)
+            response_message = response['error'].get('message', 'OK')
+        else:
+            response_code = response.get('ErrorCode', 0)
+            response_message = response.get('Message', 'OK')
 
         # Если ответ успешен
         if response_success:
