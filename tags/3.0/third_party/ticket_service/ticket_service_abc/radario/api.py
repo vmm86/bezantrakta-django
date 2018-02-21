@@ -918,7 +918,7 @@ class Radario(TicketService):
             'orderNumber':  None,
         }
         order = self.request(method, url, data, output_mapping)
-        print('order:', order)
+        # print('order:', order)
 
         # Билеты С фиксированной рассадкой
         # {
@@ -983,6 +983,18 @@ class Radario(TicketService):
         del order
 
         return response
+
+    def orders(self, **kwargs):
+        """Список заказов."""
+        method = 'GET'
+        url = '/host/orders/'
+        data = None
+        output_mapping = {}
+
+        orders = self.request(method, url, data, output_mapping)
+        # print('orders:', orders)
+
+        return orders
 
     def order_cancel(self, **kwargs):
         """Отмена ранее созданного заказа.
