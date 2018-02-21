@@ -210,7 +210,7 @@ function order_after_initialize() {
         $('#customer-email').blur(function() {
             var test_email = /^\s*[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}\s*$/i;
             if (test_email.test(this.value)) {
-                $(this).val($.trim($(this).val()));
+                $(this).val($.trim($(this).val())).toLowerCase;
                 window.order.customer['email'] = $(this).val();
                 order_cookies_update(['customer_email']);
 
