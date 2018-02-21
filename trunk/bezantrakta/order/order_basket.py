@@ -410,24 +410,25 @@ class OrderBasket():
         response['success'] = True
         response['tickets'] = {}
 
-        for ticket_id in self.order['tickets']:
-            self.logger.info('\n    * {}'.format(self.order['tickets'][ticket_id]))
+        if self.order['tickets_count'] > 0:
+            for ticket_id in self.order['tickets']:
+                self.logger.info('\n    * {}'.format(self.order['tickets'][ticket_id]))
 
-            remove = self.ticket_toggle(ticket_id, 'remove')
+                remove = self.ticket_toggle(ticket_id, 'remove')
 
-            response['tickets'][ticket_id] = self.order['tickets'][ticket_id]
+                response['tickets'][ticket_id] = self.order['tickets'][ticket_id]
 
-            self.logger.info('    remove: {}'.format(remove))
+                self.logger.info('    remove: {}'.format(remove))
 
-            if remove['success']:
-                response['tickets'][ticket_id]['removed'] = True
-                self.logger.info('    Билет успешно удалён из предварительного резерва')
-            else:
-                response['tickets'][ticket_id]['removed'] = False
-                self.logger.info('    Билет НЕ удалось удалить из предварительного резерва')
+                if remove['success']:
+                    response['tickets'][ticket_id]['removed'] = True
+                    self.logger.info('    Билет успешно удалён из предварительного резерва')
+                else:
+                    response['tickets'][ticket_id]['removed'] = False
+                    self.logger.info('    Билет НЕ удалось удалить из предварительного резерва')
 
-            # Задержка в несколько секунд во избежание возможных ошибок
-            sleep(randint(2, 5))
+                # Задержка в несколько секунд во избежание возможных ошибок
+                sleep(randint(2, 5))
 
         self.delete()
 
