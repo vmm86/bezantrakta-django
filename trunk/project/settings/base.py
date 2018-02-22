@@ -264,7 +264,7 @@ ADMIN_REORDER = (
 DATABASES = {
     'default': {
         'ENGINE':    'django.db.backends.mysql',
-        'NAME':      'belcanto_bezantrakta_django_2',
+        'NAME':      'belcanto_bezantrakta_django_3',
         'USER':      'belcanto',
         'PASSWORD':  'wrtwefsf352',
         'HOST':      'localhost',
