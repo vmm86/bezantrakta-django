@@ -395,7 +395,7 @@ class Sberbank(PaymentService):
 
         Args:
             payment_id (str): Идентификатор оплаты.
-            overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
+            amount (Decimal): Сумма возврата в рублях.
 
         Returns:
             dict: Информация о возврате.
@@ -413,7 +413,7 @@ class Sberbank(PaymentService):
         # Идентификатор оплаты
         data['orderId'] = kwargs['payment_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(kwargs['overall'] * 100)
+        data['amount'] = int(kwargs['amount'] * 100)
 
         output_mapping = {
             'errorcode':    self.internal('action_code', int,),
@@ -421,13 +421,15 @@ class Sberbank(PaymentService):
         }
 
         refund = self.request(method, url, data, output_mapping)
-        # print('refund:', refund)
+        print('refund:', refund)
 
         # Успешный возврат
         # {'success': True, 'action_code': 0, 'action_message': 'Успешно'}
 
         # НЕуспешный возврат
         # {'success': False, 'action_code': 7, 'action_message': 'Платёж должен быть в корректном состоянии'}
+
+        response = {}
 
         # Результат успешен, только если платёж был успешно возвращён
         if (
@@ -436,8 +438,11 @@ class Sberbank(PaymentService):
             # Код успешного завершения операции
             refund['action_code'] == 0
         ):
-            refund['success'] = True
+            response['success'] = True
         else:
-            refund['success'] = False
+            response['success'] = False
 
-        return refund
+            response['code'] = refund['action_code']
+            response['message'] = refund['action_message']
+
+        return response
