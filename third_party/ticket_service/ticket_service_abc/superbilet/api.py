@@ -1323,6 +1323,29 @@ class SuperBilet(TicketService):
     # 3. Новый обязательный входной параметр ReservID
     # 4. Новый обязательный входной параметр price
 
+    def order_refund(self, **kwargs):
+        """Возврат стоимости билетов (с удалением заказа и освобождением билетов для продажи).
+
+        Возвраты в СуперБилет не делаются - метод оставлен для обратной совместимости.
+
+        Args:
+            order_id (int): Идентификатор заказа.
+            payment_id (str): Идентификатор оплаты.
+            amount (Decimal): Сумма возврата в рублях.
+            reason (str): Причина возврата.
+
+        Returns:
+            dict: Информация об успешном или НЕуспешном возврате.
+                Содержимое результата:
+                    * success (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
+                    * amount (Decimal): Сумма возврата в рублях.
+        """
+        response = {}
+        response['success'] = True
+        response['amount'] = kwargs['amount'] if 'amount' in kwargs else Decimal(0.00)
+
+        return response
+
     def scheme(self, **kwargs):
         """Схема зала для события/сектора.
 

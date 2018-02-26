@@ -359,6 +359,11 @@ class SurgutNefteGazBank(PaymentService):
     def payment_refund(self, **kwargs):
         """Возврат суммы по ранее успешно завершённой оплате.
 
+        Сейчас НЕТ возможности использовать этот метод в текущей реализации работы с онлайн-эквайрингом СНГБ.
+
+        1) Метод требует дополнительного ``transaction_id``, который не сохраняетс в БД.
+        2) При попытке выполнить метод с вручную указанным ``transaction_id`` получаем ошибку *CGW000316 Batch Transaction Processing Not Enabled for Terminal*.
+
         Args:
             event_uuid (uuid.UUID): Уникальный UUID события в БД.
             event_id (int): Идентификатор события в сервисе продажи билетов.
@@ -369,7 +374,7 @@ class SurgutNefteGazBank(PaymentService):
                     * **name** (str): ФИО.
                     * **email** (str): Электронная почта.
                     * **phone** (str): Телефон.
-            overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
+            amount (Decimal): Сумма возврата в рублях.
             payment_id (str): Идентификатор оплаты.
 
         Returns:
@@ -388,21 +393,20 @@ class SurgutNefteGazBank(PaymentService):
         data['merchant'] = self.__merchant_id
         data['terminal'] = self.__terminal_alias
         data['action'] = SurgutNefteGazBank.PAYMENT_ACTIONS['CREDIT']
-        # Полная сумма заказа
-        data['amt'] = kwargs['overall']
+        data['amt'] = kwargs['amount']
         data['trackid'] = kwargs['order_id']
         data['paymentid'] = kwargs['payment_id']
-        # data['tranid'] = tranid ???
+        data['tranid'] = kwargs['transaction_id']
 
         # Кастомные параметры заказа (можно отправлять любые данные)
         # |-- Идентификатор события
-        data['udf1'] = kwargs['event_id']
+        data['udf1'] = kwargs['event_id'] if 'event_id' in kwargs else None
         # |-- Уникальный UUID события
-        data['udf2'] = kwargs['event_uuid']
+        data['udf2'] = kwargs['event_uuid'] if 'event_uuid' in kwargs else None
         # |-- Email покупателя
-        data['udf3'] = kwargs['customer']['name']
+        data['udf3'] = kwargs['customer']['name'] if 'customer' in kwargs else None
         # |-- Уникальный UUID заказа
-        data['udf4'] = str(kwargs['order_uuid']) if kwargs['order_uuid'] else None
+        data['udf4'] = str(kwargs['order_uuid']) if 'order_uuid' in kwargs else None
 
         refund = self.request(method, url, data)
 

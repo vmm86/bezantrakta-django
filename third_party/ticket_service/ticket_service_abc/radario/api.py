@@ -1,6 +1,7 @@
 import dateutil.parser
 import logging
 import requests
+import simplejson as json
 import uuid
 from collections import defaultdict
 from datetime import datetime
@@ -94,7 +95,8 @@ class Radario(TicketService):
         elif method == 'POST':
             response = session.post(url_path, json=data, headers=headers)
 
-        # pprint(response.json(), indent=4, width=160)
+        # print('\n')
+        # print('response: ', response.json())
         # print('\n')
 
         # Если тестируем работу метода - получаем JSON-ответ без обработки
@@ -146,6 +148,7 @@ class Radario(TicketService):
             elif type(iterable) is dict:
                 # Конвертация ключей в человекопонятные значения
                 self.humanize_with_type_casting(iterable, output_mapping)
+                iterable['success'] = True
             return iterable
         # Если ответ НЕуспешен
         else:
@@ -237,7 +240,7 @@ class Radario(TicketService):
         }
         places = self.request(method, url, data, output_mapping)
 
-        if type(places) is list:
+        if type(places) is list and places:
             places = sorted(places, key=itemgetter('place_id'))
 
         return places
@@ -282,8 +285,12 @@ class Radario(TicketService):
             # 'exists' (bool): Существует место или нет (?)
             'seatCount': None,
             'image':     None,
+            'descriptor': self.internal('scheme_data', list,),
         }
         scheme = self.request(method, url, data, output_mapping)
+
+        if 'raw' in kwargs and kwargs['raw']:
+            scheme['scheme_data'] = json.loads(scheme['scheme_data'])
 
         return scheme
 
@@ -319,7 +326,7 @@ class Radario(TicketService):
                 )
             discovered_schemes.append(scheme)
 
-        if type(discovered_schemes) is list:
+        if type(discovered_schemes) is list and discovered_schemes:
             discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
 
         return discovered_schemes
@@ -346,7 +353,7 @@ class Radario(TicketService):
         }
         groups = self.request(method, url, data, output_mapping)
 
-        if type(groups) is list:
+        if type(groups) is list and groups:
             groups = sorted(groups, key=itemgetter('group_id'))
 
         return groups
@@ -383,7 +390,7 @@ class Radario(TicketService):
                         0
                     )
 
-        if type(groups) is list:
+        if type(groups) is list and groups:
             groups = sorted(groups, key=itemgetter('group_datetime'))
 
         return groups
@@ -644,7 +651,7 @@ class Radario(TicketService):
 
         sectors = self.sectors(event_id=kwargs['event_id'])
 
-        if type(sectors) is list:
+        if type(sectors) is list and sectors:
             response['success'] = True
 
             prices = sorted([sec['price'] for sec in sectors])
@@ -1047,7 +1054,6 @@ class Radario(TicketService):
 
         Returns:
             dict: Информация об успешной или НЕуспешной оплате.
-
                 Содержимое результата:
                     * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
         """
@@ -1068,30 +1074,36 @@ class Radario(TicketService):
 
         Args:
             order_id (int): Идентификатор заказа.
+            payment_id (str): Идентификатор оплаты.
+            amount (Decimal): Сумма возврата в рублях.
             reason (str): Причина возврата.
 
         Returns:
             dict: Информация об успешном или НЕуспешном возврате.
+                Содержимое результата:
+                    * success (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
+                    * amount (Decimal): Сумма возврата в рублях.
         """
         method = 'POST'
         url = '/orders/refund'
         data = {
-            # 'method': 7,
             'userOrderId': kwargs['order_id'],
-            'ticketNumber': None,  # ???
+            'ticketNumber': None,
             'refundInitiator': 'Company',
             'comment': '',
             'reason': kwargs['reason'],
         }
         output_mapping = {
             'refundId':      self.internal('refund_id', int,),
-            'refundedMoney': self.internal('refunded_sum', Decimal),
+            'refundedMoney': self.internal('amount', Decimal),
         }
 
         refund = self.request(method, url, data, output_mapping)
         print('refund:', refund)
 
         # {
+        #     'success': True
+        #     'error': None,
         #     'refundId': 44347,
         #     'ticketNumbers': '№3852494138',
         #     'companyId': 1671,
@@ -1115,17 +1127,18 @@ class Radario(TicketService):
 
         response = {}
 
-        if 'refund_id' in refund:
+        if refund['success'] and refund['refund_id']:
             response['success'] = True
 
-            response['refunded_sum'] = refund['refunded_sum']
+            # response['refund_id'] = refund['refund_id']
+            response['amount'] = refund['amount']
         else:
             response['success'] = False
 
             response['code'] = refund['code']
             response['message'] = refund['message']
 
-        return refund
+        return response
 
     def promoters(self):
         """Организаторы событий для конкретного акканута Радарио.
@@ -1159,7 +1172,7 @@ class Radario(TicketService):
         }
         promoters = self.request(method, url, data, output_mapping)
 
-        if type(promoters) is list:
+        if type(promoters) is list and promoters:
             promoters = sorted(promoters, key=itemgetter('promoter_id'))
 
         return promoters
