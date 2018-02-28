@@ -19,7 +19,7 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
 
     <h2>{% if order.order_id %}Заказ билетов № &#8203;{{ order.order_id }}{% else %}Заказ билетов{% endif %}</h2>
 
-    <h3>{{ event.event_date }} {{ event.event_title }}</h3>
+    <h3>{{ event.event_date }} {{ event.event_time }} {{ event.event_title }}</h3>
     <h3>{{ event.event_venue_title }} {% if event.event_venue_city %}({{ event.event_venue_city }}){% endif %}</h3>
 
     <p><strong>Билеты в заказе</strong>:</p>
