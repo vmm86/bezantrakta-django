@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.utils.translation import ugettext as _
 
 from project.decorators import queryset_filter
+
 from third_party.ticket_service.models import TicketServiceSchemeVenueBinder
+
 from ..models import EventVenue
 
 
@@ -27,7 +29,7 @@ class EventVenueAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug': ('title',),
     }
-    search_fields = ('title',)
+    search_fields = ('title', 'slug',)
 
     @queryset_filter('City', 'city__slug')
     def get_queryset(self, request):
