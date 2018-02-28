@@ -61,22 +61,24 @@
         {% endif %}
         <div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
             {% block filters %}
-                {% if cl.has_filters %}
-                    <div id="changelist-filter">
+                <div id="changelist-filter">
+                    {% if cl.has_filters %}
                         <h2>{% trans 'Filter' %}</h2>
-                        <div class="filters horizontal">
-                            <div class="filter">{% block search %}{% search_form cl %}{% endblock %}</div>
-                            <div class="filter">{% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}</div>
-                        </div>
-                        <div class="filters vertical">
-                            {% for spec in cl.filter_specs %}
-                                <div class="filter">
-                                    {% admin_list_filter cl spec %}
-                                </div>
-                            {% endfor %}
-                        </div>
+                    {% endif %}
+                    <div class="filters horizontal">
+                        <div class="filter">{% block search %}{% search_form cl %}{% endblock %}</div>
+                        <div class="filter">{% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}</div>
+                    </div>
+                {% if cl.has_filters %}
+                    <div class="filters vertical">
+                        {% for spec in cl.filter_specs %}
+                            <div class="filter">
+                                {% admin_list_filter cl spec %}
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endif %}
+                </div>
             {% endblock %}
 
             <form id="changelist-form" method="post"{% if cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>{% csrf_token %}
