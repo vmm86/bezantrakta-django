@@ -399,7 +399,10 @@ class SuperBilet(TicketService):
         }
         places = self.request(method, input_mapping, data, output_mapping)
 
-        places = sorted(places, key=itemgetter('place_id'))
+        if type(places) is list:
+            places = sorted(places, key=itemgetter('place_id'))
+        else:
+            places = []
 
         return places
 
@@ -431,7 +434,10 @@ class SuperBilet(TicketService):
         }
         schemes = self.request(method, input_mapping, data, output_mapping)
 
-        schemes = sorted(schemes, key=itemgetter('scheme_id'))
+        if type(schemes) is list:
+            schemes = sorted(schemes, key=itemgetter('scheme_id'))
+        else:
+            schemes = []
 
         return schemes
 
@@ -448,16 +454,17 @@ class SuperBilet(TicketService):
         for p in places:
             if p['result_code'] == 0:
                 schemes = self.schemes(place_id=p['place_id'])
-                for s in schemes:
-                    # Формирование названия схемы зала
-                    s['scheme_title'] = '{place_title} ({scheme_title})'.format(
-                        place_title=p['place_title'],
-                        scheme_title=s['scheme_title'].lower()
-                    )
-                    del s['result_code']
-                    discovered_schemes.append(s)
+                if type(schemes) is list:
+                    for s in schemes:
+                        # Формирование названия схемы зала
+                        s['scheme_title'] = '{place_title} ({scheme_title})'.format(
+                            place_title=p['place_title'],
+                            scheme_title=s['scheme_title'].lower()
+                        )
+                        del s['result_code']
+                        discovered_schemes.append(s)
 
-        discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
+                    discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
 
         return discovered_schemes
 
@@ -501,7 +508,10 @@ class SuperBilet(TicketService):
         }
         groups = self.request(method, input_mapping, data, output_mapping)
 
-        groups = sorted(groups, key=itemgetter('group_id'))
+        if type(groups) is list:
+            groups = sorted(groups, key=itemgetter('group_id'))
+        else:
+            groups = []
 
         return groups
 
@@ -516,28 +526,34 @@ class SuperBilet(TicketService):
 
         # Группировка событий по их группам
         events_by_groups = defaultdict(list)
-        for e in events:
-            events_by_groups[(e['group_id'])].append(e)
-        # Для сохранения в БД остаются только группы, содержащие более одного события
-        # Единственное событие в группе рассматривается как самостоятельное событие без включения в группу.
-        for i in list(events_by_groups):
-            if len(events_by_groups[i]) <= 1:
-                del events_by_groups[i]
-        groups[:] = [g for g in groups if g['group_id'] in events_by_groups.keys() and g['result_code'] == 0]
+        if type(events) is list:
+            for e in events:
+                events_by_groups[(e['group_id'])].append(e)
+            # Для сохранения в БД остаются только группы, содержащие более одного события
+            # Единственное событие в группе рассматривается как самостоятельное событие без включения в группу.
+            for i in list(events_by_groups):
+                if len(events_by_groups[i]) <= 1:
+                    del events_by_groups[i]
+            groups[:] = [g for g in groups if g['group_id'] in events_by_groups.keys() and g['result_code'] == 0]
+        else:
+            events = []
 
         # Добавление в группу недостающей информации из самого раннего на данный момент входящего в неё события
-        for g in groups:
-            for e in events:
-                if g['group_id'] == e['group_id']:
-                    if g['group_text'] == '':
-                        g['group_text'] = events_by_groups[(e['group_id'])][0]['event_text']
-                    g['group_datetime'] = events_by_groups[(e['group_id'])][0]['event_datetime']
-                    g['group_min_price'] = events_by_groups[(e['group_id'])][0]['event_min_price']
-                    g['scheme_id'] = events_by_groups[(e['group_id'])][0]['scheme_id']
-            del g['result_code']
+        if type(groups) is list:
+            for g in groups:
+                for e in events:
+                    if g['group_id'] == e['group_id']:
+                        if g['group_text'] == '':
+                            g['group_text'] = events_by_groups[(e['group_id'])][0]['event_text']
+                        g['group_datetime'] = events_by_groups[(e['group_id'])][0]['event_datetime']
+                        g['group_min_price'] = events_by_groups[(e['group_id'])][0]['event_min_price']
+                        g['scheme_id'] = events_by_groups[(e['group_id'])][0]['scheme_id']
+                del g['result_code']
 
-        # Сортировка групп по дате/времени
-        groups = sorted(groups, key=itemgetter('group_datetime'))
+            # Сортировка групп по дате/времени
+            groups = sorted(groups, key=itemgetter('group_datetime'))
+        else:
+            groups = []
 
         return groups
 
@@ -606,36 +622,45 @@ class SuperBilet(TicketService):
         }
         events = self.request(method, input_mapping, data, output_mapping)
 
-        for e in events:
-            # Преобразование даты/времени
-            date, month, year = e['event_date'].split('.')
-            event_datetime = '{year}-{month}-{date} {time}'.format(
-                year=year,
-                month=month,
-                date=date,
-                time=e['event_time']
-            )
-            e['event_datetime'] = datetime.strptime(event_datetime, '%Y-%m-%d %H:%M:%S')
-            del e['event_date']
-            del e['event_time']
+        if type(events) is list:
+            for e in events:
+                if e['result_code'] == 0:
+                    del e['place_id']
+                    del e['result_code']
+                else:
+                    del events[e]
 
-            # Получение остальных параметров либо значения по умолчанию
-            if 'event_text' not in e:
-                e['event_text'] = ''
+                # Преобразование даты/времени
+                date, month, year = e['event_date'].split('.')
+                event_datetime = '{year}-{month}-{date} {time}'.format(
+                    year=year,
+                    month=month,
+                    date=date,
+                    time=e['event_time']
+                )
+                e['event_datetime'] = datetime.strptime(event_datetime, '%Y-%m-%d %H:%M:%S')
+                del e['event_date']
+                del e['event_time']
 
-            if 'event_min_price' not in e:
-                e['event_min_price'] = self.decimal_price(0)
+                # Получение остальных параметров либо значения по умолчанию
+                if 'event_text' not in e:
+                    e['event_text'] = ''
 
-            e['event_min_age'] = (
-                int(e['event_min_age'][:-1]) if
-                'event_min_age' in e and e['event_min_age'].endswith('+') else
-                0
-            )
+                if 'event_min_price' not in e:
+                    e['event_min_price'] = self.decimal_price(0)
 
-            if 'promoter' not in e:
-                e['promoter'] = ''
+                e['event_min_age'] = (
+                    int(e['event_min_age'][:-1]) if
+                    'event_min_age' in e and e['event_min_age'].endswith('+') else
+                    0
+                )
 
-        events = sorted(events, key=itemgetter('event_datetime'))
+                if 'promoter' not in e:
+                    e['promoter'] = ''
+
+            events = sorted(events, key=itemgetter('event_datetime'))
+        else:
+            events = []
 
         return events
 
@@ -645,18 +670,7 @@ class SuperBilet(TicketService):
         Returns:
             list: Список словарей с информацией о событиях.
         """
-        events = self.events()
-
-        for e in events:
-            if e['result_code'] == 0:
-                del e['place_id']
-                del e['result_code']
-            else:
-                del events[e]
-
-        events = sorted(events, key=itemgetter('event_datetime'))
-
-        return events
+        return self.events()
 
     def sectors(self, **kwargs):
         """Список секторов в конкретном событии.
@@ -809,7 +823,8 @@ class SuperBilet(TicketService):
         }
         sector_seats = self.request(method, input_mapping, data, output_mapping)
 
-        sector_seats = sorted(sector_seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
+        if type(sector_seats) is list:
+            sector_seats = sorted(sector_seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
 
         return sector_seats
 
