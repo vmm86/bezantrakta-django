@@ -45,7 +45,8 @@ $(document).ready(function() {
         Cookies.set('bezantrakta_admin_city_id', city_id, {expires: expires, domain: domain});
         {# Запись в cookie текущего часового пояса для локализации отображения даты/времени в админке #}
         Cookies.set('bezantrakta_admin_timezone', timezone, {expires: expires, domain: domain});
-        location.reload();
+        {# Обновление страницы с отбрасыванием query string #}
+        location.replace(window.location.href.split("?")[0]);
     });
 
     {# При создании новых записей #}
