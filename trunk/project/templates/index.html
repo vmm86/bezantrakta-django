@@ -242,7 +242,6 @@
 
                     <ul id="choose-city-list" class="choose-city-list">
                     {% for city in request.cities %}
-                {% if city.slug != "adm" %}
                     {# Если город найден в cookie `city` - пункту с ним присваивается класс `chosen` #}
                     {% if request.bezantrakta_city == city.slug %}
                         <li class="{{ city.status }} chosen" data-city="{{ city.slug }}">
@@ -257,7 +256,6 @@
                             <span class="city-status-text">скоро открытие</span>
                         {% endif %}
                         </li>
-                {% endif %}
                     {% endfor %}
                     </ul>
                 </div>
