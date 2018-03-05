@@ -262,6 +262,12 @@ class SurgutNefteGazBank(PaymentService):
         Returns:
             dict: Информация о статусе оплаты.
         """
+        if not kwargs['payment_id']:
+            response = {}
+            response['success'] = False
+            response['message'] = 'Отсутствует идентификатор онлайн-оплаты'
+            return response
+
         method = 'GET'
         url = 'https://{token}:@ecm.sngb.ru/{payment_type}/v1/payments/{payment_id}'.format(
             token=self.__token,
@@ -330,6 +336,8 @@ class SurgutNefteGazBank(PaymentService):
             response['order_id'] = int(status['data'][0]['track'])
             # Идентификатор оплаты
             response['payment_id'] = status['data'][0]['id']
+            # Идентификатор транзакции
+            response['transaction_id'] = status['data'][0]['tranid']
             # Общая сумма заказа
             response['overall'] = self.decimal_price(status['data'][0]['amount'])
             # Был ли платёж возвращён
@@ -359,10 +367,9 @@ class SurgutNefteGazBank(PaymentService):
     def payment_refund(self, **kwargs):
         """Возврат суммы по ранее успешно завершённой оплате.
 
-        Сейчас НЕТ возможности использовать этот метод в текущей реализации работы с онлайн-эквайрингом СНГБ.
+        Для получения ``transaction_id`` выполняется метод ``payment_status``.
 
-        1) Метод требует дополнительного ``transaction_id``, который не сохраняетс в БД.
-        2) При попытке выполнить метод с вручную указанным ``transaction_id`` получаем ошибку *CGW000316 Batch Transaction Processing Not Enabled for Terminal*.
+        При попытке выполнить метод с вручную указанным ``transaction_id`` получаем ошибку *CGW000316 Batch Transaction Processing Not Enabled for Terminal*.
 
         Args:
             event_uuid (uuid.UUID): Уникальный UUID события в БД.
@@ -396,7 +403,11 @@ class SurgutNefteGazBank(PaymentService):
         data['amt'] = kwargs['amount']
         data['trackid'] = kwargs['order_id']
         data['paymentid'] = kwargs['payment_id']
-        data['tranid'] = kwargs['transaction_id']
+
+        # Статус оплаты
+        payment_status = self.payment_status(payment_id=kwargs['payment_id'])
+        # Идентификатор транзакции
+        data['tranid'] = payment_status['transaction_id']
 
         # Кастомные параметры заказа (можно отправлять любые данные)
         # |-- Идентификатор события
