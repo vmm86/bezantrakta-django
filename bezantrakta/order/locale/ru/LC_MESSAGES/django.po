@@ -42,7 +42,7 @@ msgstr "ID события"
 
 #: models/order.py:89
 msgid "order_datetime"
-msgstr "Дата и время"
+msgstr "Дата и время заказа"
 
 #: models/order.py:93
 msgid "order_name"
