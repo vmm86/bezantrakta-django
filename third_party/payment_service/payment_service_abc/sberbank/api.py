@@ -324,6 +324,12 @@ class Sberbank(PaymentService):
         Returns:
             dict: Информация о статусе оплаты.
         """
+        if not kwargs['payment_id']:
+            response = {}
+            response['success'] = False
+            response['message'] = 'Отсутствует идентификатор онлайн-оплаты'
+            return response
+
         method = 'POST'
         url = 'getOrderStatusExtended.do'
         data = {}
