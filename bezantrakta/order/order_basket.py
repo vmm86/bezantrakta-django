@@ -708,7 +708,7 @@ class OrderBasket():
             tickets=self.order['tickets'],
         )
 
-        self.logger.info('order_approve: ', order_approve)
+        self.logger.info('order_approve: {}'.format(order_approve))
 
         if order_approve['success']:
             self.logger.info('Заказ {order_id} в сервисе продажи билетов отмечен как оплаченный'.format(
@@ -736,7 +736,7 @@ class OrderBasket():
             tickets=self.order['tickets'],
         )
 
-        self.logger.info('order_cancel: ', order_cancel)
+        self.logger.info('order_cancel: {}'.format(order_cancel))
 
         if order_cancel['success']:
             self.logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
