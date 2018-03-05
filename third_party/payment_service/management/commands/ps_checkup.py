@@ -82,7 +82,7 @@ ______________________________________________________________________________
                 if now_minus_updated > timedelta(minutes=timeout):
                     self.log('\nЗаказ с незавершённой оплатой:')
                     self.log('------------------------------')
-                    self.log('\nbasket.order ps_checkup start{}'.format(basket.order))
+                    self.log('\nbasket.order: {}'.format(basket.order))
                     self.log('\nНезавершённая оплата: {}'.format(basket.order['payment_id']))
                     self.log('Таймаут на оплату: {}'.format(timeout))
                     self.log('Дата заказа: {:%Y-%m-%d %H:%M:%S}'.format(updated))
@@ -112,7 +112,7 @@ ______________________________________________________________________________
                             )
                         )
 
-                    basket.delete()
+                basket.delete()
 
         # Если в БД нет незавершённых оплат
         else:
