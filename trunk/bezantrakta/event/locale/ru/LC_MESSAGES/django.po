@@ -134,7 +134,7 @@ msgstr "Возрастное ограничение"
 
 #: models/event.py:127
 msgid "event_datetime"
-msgstr "Дата и время"
+msgstr "Дата и время события"
 
 #: models/event.py:135
 msgid "event_event_category"
@@ -347,7 +347,7 @@ msgstr "Группа"
 
 #: models/event_container_binder.py:140 models/event_link_binder.py:87
 msgid "eventcontainerbinder_event_datetime"
-msgstr "Дата и время"
+msgstr "Дата и время события"
 
 #: models/event_group_binder.py:34
 msgid "eventgroupbinder_event_group"
