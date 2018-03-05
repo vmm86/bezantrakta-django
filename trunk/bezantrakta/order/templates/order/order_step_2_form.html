@@ -101,6 +101,9 @@
 
         {% if ticket_service.settings.order.self_online and event.settings.order.self_online %}
             <div class="online-info payment-info step2">
+                {# Напоминание о времени на оплату заказа #}
+                {% include "order/order_step2_text.html" with payment_service=payment_service %}
+                <br>
                 {{ ticket_service.settings.order_description.self_online|safe }}
                 <br>
                 {{ payment_service.settings.description|safe }}
@@ -109,7 +112,11 @@
 
         {% if ticket_service.settings.order.email_online and event.settings.order.email_online %}
             <div class="online-info eticket-info step2">
+                {# Напоминание о времени на оплату заказа #}
+                {% include "order/order_step2_text.html" with payment_service=payment_service %}
+                <br>
                 {{ ticket_service.settings.order_description.email_online|safe }}
+                <br>
                 <p>После успешного подтверждения оплаты PDF-файлы с билетами будут отправлены на указанную Вами электронную почту.<br>Корректно указывайте свой адрес электронной почты! В противном случае Вам необходимо связаться с администратором сайта для повторной отправки билетов.
                 <br>
                 Полученные электронные билеты необходимо <strong>распечатать на листе формата А4</strong> и предъявить при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно</strong>! Для удобства его можно сложить по пунктирным линиям сгиба.
