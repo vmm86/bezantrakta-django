@@ -27,7 +27,7 @@ PREPEND_WWW = False
 BEZANTRAKTA_IS_SECURE = False
 # Адрес для входа в админ-панель
 BEZANTRAKTA_ADMIN_URL = 'simsim'
-# Cookie, при наличии которой в консоли браузера выводятся диагностические сообщения в console.log
+# Cookie, при наличии которой в консоли браузера в production выводятся диагностические сообщения в console.log
 # Cookies.set('{title}', '{value}', {domain:'.{root_domain}', expires:new Date(new Date().getTime()+60*60*24*366*1000})
 BEZANTRAKTA_COOKIE_WATCHER_TITLE = 'sim_sala_bim'
 BEZANTRAKTA_COOKIE_WATCHER_VALUE = '41815162342'
@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     'phonenumber_field',
 
     'rangefilter',
+
+    'import_export',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -536,3 +538,8 @@ PHONENUMBER_DEFAULT_REGION = 'RU'
 # The messages framework
 # https://docs.djangoproject.com/en/1.11/ref/contrib/messages/
 # MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
+
+
+# IMPORT_EXPORT_USE_TRANSACTIONS = False
+# IMPORT_EXPORT_SKIP_ADMIN_LOG = False
+# IMPORT_EXPORT_TMP_STORAGE_CLASS = 'TempFolderStorage'
