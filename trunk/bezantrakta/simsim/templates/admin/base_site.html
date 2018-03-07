@@ -2,7 +2,8 @@
 {% load i18n static admin_urls compress %}
 
 {% block title %}
-    {% trans "bezantrakta_admin" %}
+{% if opts and not has_change_permission %}{{ opts.verbose_name_plural|capfirst }} &rsaquo; {% endif %}
+{{ block.super }}
 {% endblock %}
 
 {% block extrastyle %}
