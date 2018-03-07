@@ -27,7 +27,7 @@ msgstr "Админ-панель Безантракта"
 
 #: templates/admin/base_site.html:50
 msgid "choose_city_warning"
-msgstr "Обязательно выбирайте сайт перед добавлением в него информации!"
+msgstr "Обязательно выбирайте город/сайт перед добавлением в него информации!"
 
 #: templates/admin/base_site.html:57
 msgid "domain_icon_help_text"

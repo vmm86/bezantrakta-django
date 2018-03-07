@@ -107,7 +107,7 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                     else:
                         timezone.deactivate()
 
-                # Получение списка городов для выбора
+                # Получение списка городов для выбора, в которых есть хотя бы один сайт
                 try:
                     cities = City.objects.annotate(
                         status=Case(
@@ -116,13 +116,16 @@ class CurrentLocationMiddleware(MiddlewareMixin):
                             output_field=CharField()
                         ),
                     ).filter(
-                        Q(state=True) | Q(state=None),
+                        Q(
+                            Q(state=True) | Q(state=None),
+                            Q(domain__isnull=False)
+                        )
                     ).values(
                         'title',
                         'slug',
                         'state',
                         'status'
-                    )
+                    ).distinct()
                 except City.DoesNotExist:
                     # Сообщение об ошибке
                     msgs = [
