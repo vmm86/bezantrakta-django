@@ -11,7 +11,7 @@ cssselect==1.0.3
 cssselect2==0.2.1
 defusedxml==0.5.0
 diff-match-patch==20121119
-Django==1.11.10
+Django==1.11.11
 django-admin-list-filter-dropdown==1.0.1
 django-admin-rangefilter==0.3.1
 django-admin-sortable2==0.6.19
@@ -21,6 +21,7 @@ django-ckeditor==5.4.0
 django-compressor==2.2
 django-debug-toolbar==1.9.1
 django-flat-theme==1.1.4
+django-import-export==1.0.0
 django-js-asset==1.0.0
 django-jsoneditor==0.0.12
 django-mail-templated==2.6.5
@@ -60,7 +61,7 @@ PyQRCode==1.2.1
 python-dateutil==2.6.1
 python-memcached==1.59
 pytidylib==0.3.2
-pytz==2017.3
+pytz==2018.3
 pyup-django==0.4.0
 PyYAML==3.12
 rcssmin==1.0.6

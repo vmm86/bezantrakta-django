@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
+from import_export import resources
+from import_export.admin import ImportMixin, ExportMixin, ImportExportMixin
+
 from rangefilter.filter import DateRangeFilter
 
 from project.decorators import queryset_filter
@@ -15,8 +18,10 @@ from ..models import Order, OrderTicket
 class OrderTicketInline(admin.TabularInline):
     model = OrderTicket
     extra = 0
-    fields = ('id', 'ticket_id', 'is_fixed', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
-    readonly_fields = ('id', 'ticket_id', 'is_fixed', 'price', 'bar_code', 'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
+    fields = ('id', 'ticket_id', 'is_fixed', 'price', 'bar_code',
+              'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
+    readonly_fields = ('id', 'ticket_id', 'is_fixed', 'price', 'bar_code',
+                       'sector_id', 'sector_title', 'row_id', 'seat_id', 'seat_title', )
     show_change_link = True
     template = 'admin/tabular_custom.html'
 
@@ -27,8 +32,36 @@ class OrderTicketInline(admin.TabularInline):
         return True if request.user.is_superuser else False
 
 
+class OrderImportResource(resources.ModelResource):
+    class Meta:
+        model = Order
+        fields = ('id', 'ticket_service', 'ticket_service_order', 'event', 'ticket_service_event',
+                  'datetime', 'name', 'email', 'phone', 'address',
+                  'delivery', 'payment', 'payment_id', 'status',
+                  'tickets_count', 'total', 'overall', 'domain')
+        skip_unchanged = True
+
+
+class OrderExportResource(resources.ModelResource):
+    class Meta:
+        model = Order
+        fields = ('id', 'ticket_service_order',
+                  'datetime', 'name', 'email', 'phone',
+                  'delivery', 'payment', 'status',
+                  'tickets_count', 'total', 'overall')
+
+
 @admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
+class OrderAdmin(ExportMixin, admin.ModelAdmin):
+    # Resource class for import
+    # resource_class = OrderImportResource
+
+    # Resource class for export
+    def get_export_resource_class(self):
+        return OrderExportResource
+
+    # date_hierarchy = 'event__datetime'
+
     fieldsets = (
         (
             'Параметры заказа',
@@ -63,7 +96,7 @@ class OrderAdmin(admin.ModelAdmin):
         'status', 'delivery', 'payment',
         ('event', RelatedOnlyFieldDropdownFilter),
         ('event__datetime', DateRangeFilter),
-        ('ticket_service', admin.RelatedOnlyFieldListFilter),
+        ('ticket_service', RelatedOnlyFieldDropdownFilter),
     )
     list_per_page = 20
     radio_fields = {
@@ -87,7 +120,7 @@ class OrderAdmin(admin.ModelAdmin):
             'order_uuid', 'ticket_service', 'ticket_service_order', 'event', 'ticket_service_event',
             'datetime',
             'delivery', 'payment', 'payment_id',
-            'total', 'tickets_count',
+            'total', 'overall', 'tickets_count',
             'domain',
         ]
         if obj is not None:
