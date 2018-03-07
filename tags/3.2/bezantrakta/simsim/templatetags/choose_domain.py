@@ -1,7 +1,7 @@
 from operator import itemgetter
 
 from django import template
-from django.db.models import F, Q
+from django.db.models import F
 
 from bezantrakta.location.models import City, Domain
 
@@ -10,7 +10,7 @@ register = template.Library()
 
 @register.inclusion_tag('admin/choose_domain.html', takes_context=True)
 def choose_domain(context):
-    """Список всех городов без сайтов и всех сайтов, статус города у которых "в процессе подготовки" или "включён"."""
+    """Список всех городов без сайтов, но с залами и всех сайтов, статус города у которых "в процессе подготовки" или "включён"."""
     # Все сайты
     domains = list(Domain.objects.select_related(
         'city',
@@ -36,7 +36,7 @@ def choose_domain(context):
         'timezone',
     ))
 
-    # Города без привязанных к ним сайтов
+    # Города без привязанных к ним сайтов, но с привязанными к ним залами
     cities = list(City.objects.annotate(
         domain_title=F('title'),
         domain_slug=F('slug'),
@@ -45,10 +45,8 @@ def choose_domain(context):
         city_slug=F('slug'),
         city_state=F('state'),
     ).filter(
-        Q(
-            Q(state=True) | Q(state=None),
-            Q(domain__isnull=True)
-        )
+        domain__isnull=True,
+        eventvenue__isnull=False,
     ).values(
         'domain_title',
         'domain_slug',
