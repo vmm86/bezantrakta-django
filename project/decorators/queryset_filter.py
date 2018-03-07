@@ -1,3 +1,6 @@
+from functools import wraps
+
+
 def queryset_filter(model_name, field_name):
     """
     Фильтрация записей в админ-панели по специфическому полю *field_name* модели *model_name*,
@@ -11,6 +14,7 @@ def queryset_filter(model_name, field_name):
         function: Результаты исходного запроса с фильтрацией или без.
     """
     def queryset_filter_wrapper(get_queryset):
+        @wraps(get_queryset)
         def wrapper(self, request):
             qs = get_queryset(self, request)
             qs_filters = {
