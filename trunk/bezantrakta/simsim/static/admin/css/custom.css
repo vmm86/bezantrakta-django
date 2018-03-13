@@ -489,6 +489,15 @@ a.section:visited {
     max-width: 100px;
 }
 
+#result_list .column-ico_preview {
+    width: 64px;
+}
+
+#result_list .field-ico_preview {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 #result_list tr:hover .field-event_venue {
     background-color: #ffc;
     overflow: visible;

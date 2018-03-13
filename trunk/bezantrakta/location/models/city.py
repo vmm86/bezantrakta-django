@@ -1,9 +1,34 @@
 import datetime
+import os
+from random import randint
 
+from django.conf import settings
 from django.db import models
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 from timezone_field import TimeZoneField
+
+
+def img_path(instance, filename):
+    name, dot, extension = filename.rpartition('.')
+    # Относительный путь до файла
+    file_path = os.path.join(
+        'global',
+        'city',
+        '{slug}.{ext}'.format(slug=instance.slug, ext=extension)
+    )
+    # Абсолютный путь до файла
+    full_file_path = os.path.join(settings.MEDIA_ROOT, file_path)
+    # Создание дерева папок до файла со стандартными правами 755
+    if not os.path.exists(full_file_path):
+        os.makedirs(os.path.dirname(full_file_path), mode=0o755, exist_ok=True)
+    # Если файл уже был загружен ранее,
+    # удаляем его и сохраняем новый файл с таким же именем
+    if os.path.isfile(full_file_path):
+        os.remove(full_file_path)
+
+    return file_path
 
 
 def timezone_offset_humanized(timezone):
@@ -65,6 +90,10 @@ class City(models.Model):
         default='Europe/Moscow',
         verbose_name=_('city_timezone'),
     )
+    icon = models.ImageField(
+        upload_to=img_path,
+        verbose_name=_('city_icon')
+    )
     STATE_DISABLED = False
     STATE_PROGRESS = None
     STATE_ENABLED = True
@@ -91,6 +120,40 @@ class City(models.Model):
     def __str__(self):
         return '{title} - {slug}'.format(title=self.title, slug=self.slug)
 
+    def img_preview(self):
+        if self.icon:
+            return mark_safe('<img class="img_preview_city" src="{media}{url}?{reload}" width="100" height="100">'.format(
+                media=settings.MEDIA_URL,
+                url=self.icon,
+                reload=randint(1, 100))
+            )
+        else:
+            return ''
+    img_preview.short_description = _('city_img_preview')
+
+    def ico_preview(self):
+        if self.icon:
+            return mark_safe('<img class="img_preview_city" src="{media}{url}?{reload}" width="32" height="32">'.format(
+                media=settings.MEDIA_URL,
+                url=self.icon,
+                reload=randint(1, 100))
+            )
+        else:
+            return ''
+    ico_preview.short_description = _('city_img_preview')
+
+    def timezone_offset(self):
+        """Вывод разницы во времени с ``UTC`` у часового пояса города.
+
+        Returns:
+            str: Строка с указанием разницы во времени.
+        """
+        return '{offset} {timezone}'.format(
+            offset=timezone_offset_humanized(self.timezone),
+            timezone=self.timezone,
+        )
+    timezone_offset.short_description = _('city_timezone')
+
     def state_icons(self):
         """Вывод иконок для обозначения статуса города в списке записей в админ-панели.
 
@@ -106,15 +169,4 @@ class City(models.Model):
         elif self.state is True:
             return _boolean_icon(True)
     state_icons.short_description = _('city_state_icons')
-
-    def timezone_offset(self):
-        """Вывод разницы во времени с ``UTC`` у часового пояса города.
-
-        Returns:
-            str: Строка с указанием разницы во времени.
-        """
-        return '{offset} {timezone}'.format(
-            offset=timezone_offset_humanized(self.timezone),
-            timezone=self.timezone,
-        )
-    timezone_offset.short_description = _('city_timezone')
+    state_icons.admin_order_field = 'state'
