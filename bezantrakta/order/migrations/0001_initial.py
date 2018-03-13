@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('ticket_service_order', models.PositiveIntegerField(blank=True, db_column='ticket_service_order_id', null=True, verbose_name='ID заказа')),
                 ('ticket_service_event', models.PositiveIntegerField(db_column='ticket_service_event_id', verbose_name='ID события')),
-                ('datetime', models.DateTimeField(verbose_name='Дата и время')),
+                ('datetime', models.DateTimeField(verbose_name='Дата и время заказа')),
                 ('name', models.CharField(max_length=128, verbose_name='ФИО')),
                 ('email', models.EmailField(max_length=254, verbose_name='Email')),
                 ('phone', phonenumber_field.modelfields.PhoneNumberField(max_length=20, verbose_name='Телефон')),
