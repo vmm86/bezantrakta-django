@@ -11,7 +11,7 @@ class SurgutNefteGazBank(PaymentService):
     Любой метод, делающий запросы к API, вызывает для этого конструктор запросов ``request``.
 
     Атрибуты класса:
-        **slug** (str): Псевдоним для инстанцирования класса (``sngb``).
+        slug (str): Псевдоним для инстанцирования класса (``sngb``).
 
     Attributes:
         commission (Decimal): Процент комиссии.
@@ -185,22 +185,26 @@ class SurgutNefteGazBank(PaymentService):
             order_uuid (uuid.UUID): Уникальный UUID заказа.
             order_id (int): Идентификатор заказа.
             customer (dict): Реквизиты покупателя.
+
                 Содержимое ``customer``:
-                    * **name** (str): ФИО.
-                    * **email** (str): Электронная почта.
-                    * **phone** (str): Телефон.
+                    * name (str): ФИО.
+                    * email (str): Электронная почта.
+                    * phone (str): Телефон.
+
             overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
 
         Returns:
             dict: Параметры новой оплаты.
+
                 Успешный ответ:
-                    * **success** (bool): Запрос успешный (``True``).
-                    * **payment_id** (str): Идентификатор оплаты.
-                    * **payment_url** (str): URL платёжной формы.
+                    * success (bool): Запрос успешный (``True``).
+                    * payment_id (str): Идентификатор оплаты.
+                    * payment_url (str): URL платёжной формы.
+
                 НЕуспешный ответ:
-                    * **success** (bool): Запрос НЕуспешный (``False``).
-                    * **code** (str): Код ошибки.
-                    * **message** (str): Сообщение об ошибке.
+                    * success (bool): Запрос НЕуспешный (``False``).
+                    * code (str): Код ошибки.
+                    * message (str): Сообщение об ошибке.
         """
         method = 'POST'
         url = 'PaymentInitServlet'
@@ -377,22 +381,32 @@ class SurgutNefteGazBank(PaymentService):
             order_uuid (uuid.UUID): Уникальный UUID заказа.
             order_id (int): Идентификатор заказа.
             customer (dict): Реквизиты покупателя.
+
                 Содержимое ``customer``:
-                    * **name** (str): ФИО.
-                    * **email** (str): Электронная почта.
-                    * **phone** (str): Телефон.
+                    * name (str): ФИО.
+                    * email (str): Электронная почта.
+                    * phone (str): Телефон.
+
             amount (Decimal): Сумма возврата в рублях.
             payment_id (str): Идентификатор оплаты.
 
         Returns:
             dict: Информация о возврате.
+
                 Успешный ответ:
-                    * **success** (bool): Запрос успешный (``True``).
+                    * success (bool): Запрос успешный (``True``).
+
                 НЕуспешный ответ:
-                    * **success** (bool): Запрос НЕуспешный (``False``).
-                    * **code** (str): Код ошибки.
-                    * **message** (str): Сообщение об ошибке.
+                    * success (bool): Запрос НЕуспешный (``False``).
+                    * code (str): Код ошибки.
+                    * message (str): Сообщение об ошибке.
         """
+        if not kwargs['payment_id']:
+            response = {}
+            response['success'] = False
+            response['message'] = 'Отсутствует идентификатор онлайн-оплаты'
+            return response
+
         method = 'POST'
         url = 'PaymentTranServlet'
 
@@ -409,6 +423,8 @@ class SurgutNefteGazBank(PaymentService):
         # Идентификатор транзакции
         data['tranid'] = payment_status['transaction_id']
 
+        print('payment_status: ', payment_status)
+
         # Кастомные параметры заказа (можно отправлять любые данные)
         # |-- Идентификатор события
         data['udf1'] = kwargs['event_id'] if 'event_id' in kwargs else None
@@ -420,5 +436,7 @@ class SurgutNefteGazBank(PaymentService):
         data['udf4'] = str(kwargs['order_uuid']) if 'order_uuid' in kwargs else None
 
         refund = self.request(method, url, data)
+
+        print('refund: ', refund)
 
         return refund

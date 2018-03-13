@@ -151,7 +151,8 @@ class SuperBilet(TicketService):
 
     def request(self, method, input_mapping, data, output_mapping, test=False):
         """Конструктор запросов к API СуперБилет.
-        Даже если в ответе всего одна запись, она в люом случае кладётся в список.
+
+        Даже если в ответе всего одна запись, она в любом случае кладётся в список.
 
         Args:
             method (str): HTTP-метод (``GET`` или ``POST``).
@@ -905,6 +906,7 @@ class SuperBilet(TicketService):
 
         Returns:
             dict: Информация о состоянии места.
+
                 Содержимое результата:
                     * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
                     * **status** (str): Статус места, сопоставляемый из словаря ``SEAT_STATUSES``.
@@ -1000,9 +1002,11 @@ class SuperBilet(TicketService):
 
         Returns:
             dict: Список словарей с информацией о билетах в заказе.
+
                 Содержимое результата:
                     order_id (int): Идентификатор заказа в сервисе заказа билетов.
                     tickets (dict): Словарь, содержащий словари с информацией о заказанных билетах.
+
                         Содержимое словарей в **tickets**:
                             ticket_uuid (uuid.UUID): Уникальный UUID билета.
                             bar_code (str): Штрих-код билета (20 символов).
@@ -1351,6 +1355,7 @@ class SuperBilet(TicketService):
 
         Returns:
             dict: Информация об успешном или НЕуспешном возврате.
+
                 Содержимое результата:
                     * success (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
                     * amount (Decimal): Сумма возврата в рублях.
