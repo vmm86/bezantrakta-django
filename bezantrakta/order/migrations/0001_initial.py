@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('phone', phonenumber_field.modelfields.PhoneNumberField(max_length=20, verbose_name='Телефон')),
                 ('address', models.CharField(blank=True, max_length=128, null=True, verbose_name='Адрес доставки')),
                 ('delivery', models.CharField(choices=[('self', 'Выкуп в кассе'), ('courier', 'Доставка курьером'), ('email', 'Электронный билет на email')], default='self', max_length=16, verbose_name='Получение билетов')),
-                ('payment', models.CharField(choices=[('cash', 'Наличные'), ('online', 'Онлайн-оплата')], default='cash', max_length=16, verbose_name='Оплата билетов')),
+                ('payment', models.CharField(choices=[('cash', 'При получении'), ('online', 'Онлайн-оплата')], default='cash', max_length=16, verbose_name='Оплата билетов')),
                 ('payment_id', models.CharField(blank=True, max_length=64, null=True, verbose_name='ID онлайн-оплаты')),
                 ('status', models.CharField(choices=[('ordered', 'создан'), ('cancelled', 'отменён'), ('approved', 'подтверждён'), ('refunded', 'возвращён')], default='ordered', max_length=16, verbose_name='Статус')),
                 ('tickets_count', models.PositiveSmallIntegerField(default=0, verbose_name='Билетов')),
