@@ -1,0 +1,142 @@
+/* Общие стили */
+
+*, *:before, *:after,
+html, html:before, html:after,
+body, body:before, body:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    color: #111;
+}
+
+h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend {
+    color: #333;
+}
+
+a {
+    color: #111;
+}
+
+a:visited {
+    color: #999;
+}
+
+/* Заголовок */
+
+.wy-nav-side {
+    background: #999;
+    border-right: 1px solid #999;
+    padding-bottom: 0;
+}
+
+.wy-side-nav-search {
+    background-color: #999;
+    color: #fff;
+}
+
+.wy-side-nav-search > a,
+.wy-side-nav-search .wy-dropdown > a {
+    color: #fff;
+    text-shadow: 0px 1px 0 #111;
+}
+
+.wy-side-nav-search > div.version {
+    color: #fff;
+    text-shadow: 0px 1px 0 #111;
+}
+
+.wy-side-nav-search input[type="text"] {
+    border: none;
+}
+
+/* Левое меню */
+
+.wy-menu-vertical header,
+.wy-menu-vertical p.caption {
+    background: #fc0;
+    color: #111;
+    text-shadow: 0px 1px 0px #fff;
+    line-height: 34px;
+}
+
+.toctree-l1,
+.toctree-l2,
+.toctree-l3,
+.toctree-l4,
+.toctree-l5 {
+    background: #fff;
+}
+
+.wy-menu-vertical a,
+.wy-menu-vertical li.current a {
+    color: #111;
+}
+
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current a:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0px 1px 0px #fff;
+}
+
+.wy-menu-vertical li.on a, .wy-menu-vertical li.current > a {
+    background: #f0f0f0;
+}
+
+.wy-menu-vertical li code,
+.wy-menu-vertical li .rst-content tt,
+.rst-content .wy-menu-vertical li tt {
+    color: #E74C3C;
+}
+
+/* Содержимое страницы */
+
+.wy-nav-content {
+    border-right: 1px solid #999;
+    padding: 1.5em 2em;
+    max-width: unset;
+}
+
+.wy-nav-content .document a{
+    color: #2980B9 !important;
+    font-weight: bold;
+    text-decoration: underline;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+code,
+.rst-content tt,
+.rst-content code {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 90%;
+    font-weight: bold;
+}
+
+.rst-content dl:not(.docutils) dt {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.wy-table thead th,
+.rst-content table.docutils thead th,
+.rst-content table.field-list thead th {
+    background-color: #e1e4e5;
+    border-bottom: 4px solid #e1e4e5;
+}
+
+.wy-table thead th p,
+.rst-content table.docutils thead th p,
+.rst-content table.field-list thead th p {
+    margin-bottom: 0;
+}
+
+.fa, .wy-menu-vertical li span.toctree-expand, .wy-menu-vertical li.on a span.toctree-expand, .wy-menu-vertical li.current > a span.toctree-expand, .rst-content .admonition-title, .rst-content h1 .headerlink, .rst-content h2 .headerlink, .rst-content h3 .headerlink, .rst-content h4 .headerlink, .rst-content h5 .headerlink, .rst-content h6 .headerlink, .rst-content dl dt .headerlink, .rst-content p.caption .headerlink, .rst-content tt.download span:first-child, .rst-content code.download span:first-child, .icon {
+    display: initial;
+}

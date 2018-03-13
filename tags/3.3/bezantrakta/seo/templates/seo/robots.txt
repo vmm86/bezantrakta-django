@@ -1,0 +1,17 @@
+{% spaceless %}{% if debug %}
+User-agent: *
+Disallow: /
+{% else %}
+User-agent: *
+Crawl-delay: {{ crawl_delay|safe }}
+Disallow: /admin/
+Disallow: /bezantrakta/
+Disallow: /project/
+Allow: /media/
+Allow: /static/
+
+User-agent: Twitterbot
+Disallow:
+{% endif %}{% endspaceless %}
+
+Host: {{ host }}

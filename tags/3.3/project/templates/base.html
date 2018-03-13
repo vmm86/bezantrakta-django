@@ -1,0 +1,131 @@
+{% load static compress %}
+<!DOCTYPE html>
+<html lang="ru">
+{% spaceless %}
+<head>
+    <title>{% spaceless %}{% block head_title %}{% endblock %}{% endspaceless %}</title>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="description" content="{% spaceless %}{% block head_description %}{% endblock %}{% endspaceless %}">
+    <meta name="keywords" content="{% spaceless %}{% block head_keywords %}{% endblock %}{% endspaceless %}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    {# Не индексировать тестовую версию сайта #}
+    {% if debug %}<meta name="robots" content="noindex, nofollow">{% endif %}
+    {# Не индексировать тестовую версию сайта #}
+    <meta name="robots" body="NOODP">
+
+{% if request.domain_settings.webmaster.google != "" %}
+    <meta name="google-site-verification" content="{{ request.domain_settings.webmaster.google }}">
+{% endif %}
+{% if request.domain_settings.webmaster.yandex != "" %}
+    <meta name="yandex-verification" content="{{ request.domain_settings.webmaster.yandex }}">
+{% endif %}
+
+    {% block head_stylesheet %}{% endblock %}
+
+    {% if debug %}<link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/dev.css" %}">{% endif %}
+
+    {# Метатеги для выбора городов #}
+    <meta name="city" content="{{ request.city_slug }}">
+    <meta name="domain" content="{{ request.root_domain }}">
+    {# Метатеги для выбора городов #}
+
+    {# `tel:` links NO auto-detection #}
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="x-rim-auto-match" content="none">
+    {# `tel:` links NO auto-detection #}
+
+    {# Метатеги для кнопок "Поделиться" #}
+    <meta property="og:site_name" content="{{ request.domain_settings.domain.title }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://{{ request.url_full }}">
+    <link rel="image_src" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
+    <meta property="og:image" content="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
+    <meta property="og:image:width"  content="192">
+    <meta property="og:image:height" content="192">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:title" content="{{ request.domain_settings.domain.title }}{{ title }}">
+    <meta property="og:description" content="{{ request.domain_settings.domain.description }}">
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:site" content="@bezantrakta">
+    <meta property="twitter:title" content="{{ request.domain_settings.domain.title }}{{ title }}">
+    <meta property="twitter:description" content="{{ request.domain_settings.domain.description }}">
+    <meta property="twitter:image" content="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}">
+    <meta property="twitter:image:width"  content="192">
+    <meta property="twitter:image:height" content="192">
+    {# Метатеги для кнопок "Поделиться" #}
+
+    {# favicons #}
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon.png" %}">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-57x57.png" %}" sizes="57x57">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-60x60.png" %}" sizes="60x60">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-72x72.png" %}" sizes="72x72">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-76x76.png" %}" sizes="76x76">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-114x114.png" %}" sizes="114x114">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-120x120.png" %}" sizes="120x120">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-144x144.png" %}" sizes="144x144">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-152x152.png" %}" sizes="152x152">
+    <link rel="apple-touch-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/apple-touch-icon-180x180.png" %}" sizes="180x180">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-32x32.png" %}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-36x36.png" %}" sizes="36x36">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-48x48.png" %}" sizes="48x48">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-72x72.png" %}" sizes="72x72">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-96x96.png" %}" sizes="96x96">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-144x144.png" %}" sizes="144x144">
+    <link rel="icon" type="image/png" href="{{ request.url_protocol_domain }}{% static "global/ico/android-chrome-192x192.png" %}" sizes="192x192">
+    <link rel="manifest" href="{{ request.url_protocol_domain }}/manifest.json">
+    <meta name="msapplication-config" content="{{ request.url_protocol_domain }}/browserconfig.xml">
+    <meta name="msapplication-TileColor" content="#FFCC00">
+    <meta name="msapplication-TileImage" content="{% static "global/ico/mstile-144x144.png" %}">
+    <meta name="theme-color" content="#FFE57F">
+    <link rel="yandex-tableau-widget" href="{{ request.url_protocol_domain }}/yandex.manifest.json">
+    <link rel="icon" type="image/x-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/favicon.ico" %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ request.url_protocol_domain }}{% static "global/ico/favicon.ico" %}">
+    {# favicons #}
+
+    {# Контакты разработчика #}
+    <meta name="developer" content="Michail Vasilyev (vmm)">
+    <link rel="developer" content="https://github.com/vmm86">
+    {# Контакты разработчика #}
+</head>
+{% endspaceless %}
+<body>
+{% block body %}{% endblock %}
+
+<footer class="footer">
+    {% if not debug %}
+    {% spaceless %}
+    <div class="counters">
+    {% compress js inline %}
+        {% include "counters.html" %}
+    {% endcompress %}
+    </div>
+    {% endspaceless %}
+    {% endif %}
+</footer>
+
+<script type="text/javascript" src="{% static "global/js/jquery/3.2.1/jquery-3.2.1.min.js" %}"></script>
+
+{# Подключение лайтбоксов для изображений #}
+<script type="text/javascript" src="{% static "global/js/lightbox2/2.9.0/lightbox.min.js" %}"></script>
+<script type="text/javascript">
+lightbox.option({
+    'alwaysShowNavOnTouchDevices': true,
+    'albumLabel': '',
+    'fadeDuration': 200,
+    'resizeDuration': 200,
+    'wrapAround': true
+});
+</script>
+{# Подключение лайтбоксов для изображений #}
+
+{% if debug %}
+    {# Вывод размеров viewport в dev-версии сайта #}
+    <script type="text/javascript">{% include "viewport_size_debugger.js" %}</script>
+{% endif %}
+
+{% block scripts %}{% endblock %}
+
+</body>
+</html>
