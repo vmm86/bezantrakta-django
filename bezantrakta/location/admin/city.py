@@ -37,7 +37,7 @@ class CityAdmin(admin.ModelAdmin):
         ),
     )
     list_display = ('ico_preview', 'title', 'slug', 'timezone_offset', 'state_icons',)
-    list_display_links = 'title'
+    list_display_links = ('title',)
     list_per_page = 10
     prepopulated_fields = {
         'slug': ('title',),
