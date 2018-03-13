@@ -66,6 +66,8 @@ INSTALLED_APPS = [
 
     'import_export',
 
+    'docs',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -537,9 +539,20 @@ PHONENUMBER_DEFAULT_REGION = 'RU'
 
 # The messages framework
 # https://docs.djangoproject.com/en/1.11/ref/contrib/messages/
+
 # MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
+
+# django-import-export
+# https://github.com/django-import-export/django-import-export
 
 # IMPORT_EXPORT_USE_TRANSACTIONS = False
 # IMPORT_EXPORT_SKIP_ADMIN_LOG = False
 # IMPORT_EXPORT_TMP_STORAGE_CLASS = 'TempFolderStorage'
+
+
+# django-docs
+# https://github.com/littlepea/django-docs
+
+DOCS_ROOT = os.path.join(PARENT_DIR, 'docs_adm', 'html')
+DOCS_ACCESS = 'staff'

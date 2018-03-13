@@ -94,6 +94,7 @@ class PaymentService(ABC):
             order_id (int): Идентификатор заказа.
             overall (Decimal): Общая сумма заказа в рублях (**С возможными наценками или скидками**).
             customer (dict): Реквизиты покупателя.
+
                 Содержимое ``customer``:
                     * name (str): ФИО.
                     * email (str): Электронная почта.
@@ -101,10 +102,12 @@ class PaymentService(ABC):
 
         Returns:
             dict: Параметры новой оплаты.
+
                 Успешный ответ:
                     * success (bool): Запрос успешный (``True``).
                     * payment_id (str): Идентификатор оплаты.
                     * payment_url (str): URL платёжной формы.
+
                 НЕуспешный ответ:
                     * success (bool): Запрос НЕуспешный (``False``).
                     * code (str): Код ошибки.
@@ -149,8 +152,10 @@ class PaymentService(ABC):
 
         Returns:
             dict: Информация о возврате.
+
                 Успешный ответ:
                     * success (bool): Запрос успешный (``True``).
+
                 НЕуспешный ответ:
                     * success (bool): Запрос НЕуспешный (``False``).
                     * code (str): Код ошибки.

@@ -19,6 +19,7 @@ def render_eticket(context, logger):
 
     Args:
         context (dict): Информация, необходимая для генерации файла билета.
+
             Содержимое ``context``, используемое при генерации PDF-билета:
                 'url' (str):               URL станицы события на сайте.
                 'event_title' (str):       Название события.
@@ -38,6 +39,7 @@ def render_eticket(context, logger):
                 'row_id' (int):            Идентификатор ряда.
                 'seat_title' (str):        Название места.
                 'price' (Decimal):         Цена билета.
+
         logger (logging.RootLogger): Файл для логирования процесса генерации PDF-билета.
 
     Returns:

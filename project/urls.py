@@ -23,6 +23,7 @@ urlpatterns = [
     # Сообщения об ошибках
     url(r'^error(?:/(?P<http_code>\d+))?/$', error, name='error'),
 
+    url(r'^simsim/help/', include('docs.urls')),
     url(r'^simsim/', admin.site.urls),
 
     url(r'^api/', include('api.urls')),
