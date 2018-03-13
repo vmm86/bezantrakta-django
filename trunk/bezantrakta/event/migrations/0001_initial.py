@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('is_on_index', models.BooleanField(default=False, verbose_name='На главной')),
                 ('min_price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Минимальная цена билета')),
                 ('min_age', models.PositiveSmallIntegerField(choices=[(0, '0+'), (6, '6+'), (12, '12+'), (16, '16+'), (18, '18+')], default=0, verbose_name='Возрастное ограничение')),
-                ('datetime', models.DateTimeField(verbose_name='Дата и время')),
+                ('datetime', models.DateTimeField(verbose_name='Дата и время события')),
                 ('is_group', models.BooleanField(default=False, verbose_name='Группа')),
                 ('ticket_service_event', models.PositiveIntegerField(blank=True, db_column='ticket_service_event_id', null=True, verbose_name='ID события или группы')),
                 ('ticket_service_scheme', models.PositiveIntegerField(blank=True, db_column='ticket_service_scheme_id', null=True, verbose_name='ID схемы зала')),
@@ -101,7 +101,7 @@ class Migration(migrations.Migration):
             name='EventGroupBinder',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('caption', models.CharField(blank=True, help_text='<ul><li>Если событие в группе имеет особый статус, например, отдельные секторы зала в одном событии (танцпол, фанзона и т.п.). - указывается необходимое название.</li><li>Если это просто отдельные события в группе - оставляется пустым.</li></ul>', max_length=64, verbose_name='Подпись события в группе')),
+                ('caption', models.CharField(blank=True, help_text='<ul><li>Если событие в группе имеет особый статус, например, отдельные секторы зала в одном событии (танцпол, фанзона и т.п.). - указывается необходимое название.</li><li>Если это просто отдельные события в группе - поле остаётся пустым.</li></ul>', max_length=64, verbose_name='Подпись события в группе')),
                 ('event', models.ForeignKey(db_column='event_id', on_delete=django.db.models.deletion.CASCADE, related_name='events', to='event.Event', verbose_name='Событие')),
                 ('group', models.ForeignKey(db_column='group_id', on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='event.Event', verbose_name='Группа')),
             ],
