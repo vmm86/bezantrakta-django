@@ -39,7 +39,7 @@ class Order(models.Model):
         payment (CharField): Способ оплаты билетов.
 
             Содержимое ``PAYMENT_CHOICES``:
-                * **PAYMENT_CASH** (str): Наличные, фактически - любая оффлайн-оплата (``cash``).
+                * **PAYMENT_CASH** (str): Оплата при получении, фактически - любая оффлайн-оплата (``cash``).
                 * **PAYMENT_ONLINE** (str): Онлайн-оплата (``online``).
 
         payment_id (CharField): Идентификатор онлайн-оплаты.
