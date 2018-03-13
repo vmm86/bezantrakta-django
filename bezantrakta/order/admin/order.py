@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.utils.translation import ugettext as _
 from django.urls import reverse
@@ -52,9 +53,10 @@ class OrderExportResource(resources.ModelResource):
 
 
 @admin.register(Order)
-class OrderAdmin(ExportMixin, admin.ModelAdmin):
+class OrderAdmin(ImportExportMixin, admin.ModelAdmin):
     # Resource class for import
-    # resource_class = OrderImportResource
+    if settings.DEBUG:
+        resource_class = OrderImportResource
 
     # Resource class for export
     def get_export_resource_class(self):

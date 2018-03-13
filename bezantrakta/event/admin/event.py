@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.contrib import admin
-from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.urls import reverse
+
+from import_export import resources
+from import_export.admin import ImportMixin, ExportMixin, ImportExportMixin
 
 from rangefilter.filter import DateRangeFilter
 
@@ -18,7 +21,7 @@ from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder
 # Чтобы избежать множества избыточных SQL-запросов при выводе выпадающих списков в каждом связанном с группой событии,
 # эти события выводятся в первой инлайн-форме без выбора событий в выпадающих списках,
 # но с возможностью редактировать подпись события либо удалить события из группы.
-# Привязать новое событие к группе можно из второй инлайн-формы с возможнотью добавления,
+# Привязать новое событие к группе можно из второй инлайн-формы с возможностью добавления,
 # но без возможности редактирования (без вывода уже добавленных событий).
 
 
@@ -88,8 +91,22 @@ class EventContainerBinderInline(admin.TabularInline):
     template = 'admin/tabular_custom.html'
 
 
+class EventResource(resources.ModelResource):
+    class Meta:
+        model = Event
+        fields = ('id', 'title', 'slug', 'description', 'keywords', 'text',
+                  'is_published', 'is_on_index', 'min_price', 'min_age',
+                  'datetime', 'event_category', 'event_venue', 'domain', 'is_group',
+                  'ticket_service', 'ticket_service_event', 'ticket_service_scheme',
+                  'promoter', 'seller', 'settings')
+        skip_unchanged = True
+
+
 @admin.register(Event)
-class EventAdmin(admin.ModelAdmin):
+class EventAdmin(ImportMixin, admin.ModelAdmin):
+    if settings.DEBUG:
+        resource_class = EventResource
+
     actions = ('publish_or_unpublish_items', 'batch_set_cache', 'delete_non_ticket_service_items')
     fieldsets = (
         (
