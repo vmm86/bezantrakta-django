@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-28 09:58+0000\n"
+"POT-Creation-Date: 2018-03-12 13:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,22 +20,44 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: templates/admin/base_site.html:4 templates/admin/base_site.html:40
-#: templates/admin/base_site.html:41 templates/admin/base_site.html:56
+#: templates/admin/base.html:6 templates/admin/base_site.html:51
+#: templates/admin/base_site.html:52 templates/admin/base_site.html:65
 msgid "bezantrakta_admin"
 msgstr "Админ-панель Безантракта"
 
-#: templates/admin/base_site.html:50
+#: templates/admin/base.html:35
+msgid "view_site"
+msgstr "На сайт"
+
+#: templates/admin/base.html:39
+msgid "docs"
+msgstr "Справка"
+
+#: templates/admin/base.html:42
+msgid "change_password"
+msgstr "Пароль"
+
+#: templates/admin/base.html:44
+msgid "log_out"
+msgstr "Выйти"
+
+#: templates/admin/base.html:54
+msgid "home"
+msgstr "Главная"
+
+#: templates/admin/base_site.html:61
 msgid "choose_city_warning"
 msgstr "Обязательно выбирайте город/сайт перед добавлением в него информации!"
 
-#: templates/admin/base_site.html:57
+#: templates/admin/base_site.html:66
 msgid "domain_icon_help_text"
 msgstr "Иконкой 🔗 обозначены компоненты, привязанные к конкретному сайту."
 
 #: templates/admin/choose_domain.html:3
 msgid "choose_domain_help_text"
-msgstr "Цветом обозначено состояние города.&#013;Если сайт отключен - его название зачёркнуто."
+msgstr ""
+"Цветом обозначено состояние города.&#013;Если сайт отключен - его название "
+"зачёркнуто."
 
 #: templates/admin/index.html:8
 msgid "Recent actions"
