@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext as _
 
 from project.cache import cache_factory
 
@@ -19,12 +20,30 @@ class CityAdmin(admin.ModelAdmin):
         search_fields (tuple): Поля для текстового поиска.
     """
     form = CityForm
-    list_display = ('title', 'slug', 'timezone_offset', 'state_icons',)
+    fieldsets = (
+        (
+            None,
+            {
+                'fields': ('title', 'slug', 'timezone',),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('icon', 'img_preview',),
+                'classes': ('help_text',),
+                'description': _('city_icon_help_text'),
+            }
+        ),
+    )
+    list_display = ('ico_preview', 'title', 'slug', 'timezone_offset', 'state_icons',)
+    list_display_links = 'title'
     list_per_page = 10
     prepopulated_fields = {
         'slug': ('title',),
     }
     radio_fields = {'state': admin.VERTICAL, }
+    readonly_fields = ('img_preview',)
     search_fields = ('title',)
 
     def save_model(self, request, obj, form, change):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-09 13:12+0000\n"
+"POT-Creation-Date: 2018-03-13 14:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,15 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: admin/city.py:37
+msgid "city_icon_help_text"
+msgstr "Иконка города - векторное изображение в формате <strong><a href='https://developer.mozilla.org/ru/docs/Web/SVG' target='_blank'>SVG</a></strong>:"
+"<ul>"
+"<li>ширина <strong>width</strong> и высота <strong>height</strong> - <em>52.5mm</em>, <strong>viewBox</strong> - <em>0 0 148.82 148.82</em>;</li>"
+"<li>после редактирования (в Adobe Illustrator или Inkscape) должна быть очищена от ненужных атрибутов (<em>inkscape</em>, <em>sodipodi</em> и т.п.);</li>"
+"<li>должна содержать <strong>минимум визуальных деталей</strong> для уменьшения размера файла и времени его загрузки.</li>"
+"</ul>"
 
 #: admin/domain.py:41
 msgid "domain_settings_help_text"
@@ -65,58 +74,66 @@ msgstr "Опубликовать или снять с публикации"
 msgid "domain_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных сайтов"
 
-#: models/city.py:53
+#: models/city.py:78
 msgid "city_id_help_text"
 msgstr "Идентификатор города - его телефонный код."
 
-#: models/city.py:54
+#: models/city.py:79
 msgid "city_id"
 msgstr "Идентификатор"
 
-#: models/city.py:58
+#: models/city.py:83
 msgid "city_title"
 msgstr "Название"
 
-#: models/city.py:62
+#: models/city.py:87
 msgid "city_slug"
 msgstr "Псевдоним"
 
-#: models/city.py:66 models/city.py:120
+#: models/city.py:91 models/city.py:155
 msgid "city_timezone"
 msgstr "Часовой пояс"
 
-#: models/city.py:72
+#: models/city.py:95
+msgid "city_icon"
+msgstr "Герб города"
+
+#: models/city.py:101
 msgid "city_state_disabled"
 msgstr "отключен"
 
-#: models/city.py:73
+#: models/city.py:102
 msgid "city_state_progress"
 msgstr "подготовка"
 
-#: models/city.py:74
+#: models/city.py:103
 msgid "city_state_enabled"
 msgstr "включен"
 
-#: models/city.py:80
+#: models/city.py:109
 msgid "city_state_help_text"
 msgstr ""
 "<ul><li>отключен - НЕ виден в списке городов и НЕ работает;</"
 "li><li>подготовка - виден в списке городов, но НЕ доступен для выбора (скоро "
 "открытие);</li><li>включен - виден в списке городов и работает.</li></ul>"
 
-#: models/city.py:81
+#: models/city.py:110
 msgid "city_state"
 msgstr "Состояние"
 
-#: models/city.py:87
+#: models/city.py:116
 msgid "city"
 msgstr "город"
 
-#: models/city.py:88
+#: models/city.py:117
 msgid "cities"
 msgstr "города"
 
-#: models/city.py:108
+#: models/city.py:132 models/city.py:143
+msgid "city_img_preview"
+msgstr "Иконка"
+
+#: models/city.py:171
 msgid "city_state_icons"
 msgstr "Состояние"
 

@@ -4,6 +4,8 @@ from django import forms
 
 from dal import autocomplete
 
+from bezantrakta.simsim.fields import SVGField
+
 from .models import City, timezone_offset_humanized
 
 
@@ -49,3 +51,6 @@ class CityForm(forms.ModelForm):
         model = City
         fields = ('__all__')
         autocomplete_fields = ('timezone')
+        field_classes = {
+            'icon': SVGField,
+        }

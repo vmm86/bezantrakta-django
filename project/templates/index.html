@@ -36,8 +36,8 @@
         <div class="top-left">
             {# Вывод города текущего сайта #}
             <div id="choose-city-button" class="choose-city-button">
-            {% with city_icon="global/svg/city/"|add:request.city_slug|add:".svg" %}
-                <img class="icon" src="{% static city_icon %}">
+            {% with city_icon="global/city/"|add:request.city_slug|add:".svg" %}
+                <img class="icon" src="{% get_media_prefix %}{{ city_icon }}">
             {% endwith %}
                 <span class="title" title="Выбрать город">{{ request.city_title }}</span>
             </div>
@@ -248,8 +248,8 @@
                     {% else %}
                         <li class="{{ city.status }}" data-city="{{ city.slug }}">
                     {% endif %}
-                        {% with city_icon="global/svg/city/"|add:city.slug|add:".svg" %}
-                            <img class="city-icon" src="{% static city_icon %}">
+                        {% with city_icon="global/city/"|add:city.slug|add:".svg" %}
+                            <img class="city-icon" src="{% get_media_prefix %}{{ city_icon }}">
                         {% endwith %}
                             <span class="city-name">{{ city.title }}</span>
                         {% if city.state == None %}
