@@ -24,7 +24,7 @@ class CityAdmin(admin.ModelAdmin):
         (
             None,
             {
-                'fields': ('title', 'slug', 'timezone',),
+                'fields': ('id', 'title', 'slug', 'timezone', 'state',),
             }
         ),
         (

@@ -146,7 +146,7 @@ class EventAdmin(ImportMixin, admin.ModelAdmin):
         ('ticket_service', RelatedOnlyFieldDropdownFilter),
     )
     list_select_related = ('event_category', 'event_venue', 'domain',)
-    list_per_page = 20
+    list_per_page = 50
     prepopulated_fields = {
         'slug': ('title',),
     }
@@ -154,7 +154,7 @@ class EventAdmin(ImportMixin, admin.ModelAdmin):
         'event_category': admin.VERTICAL,
         'min_age': admin.HORIZONTAL,
     }
-    search_fields = ('title',)
+    search_fields = ('title', 'ticket_service_scheme',)
 
     today = timezone_now()
 
