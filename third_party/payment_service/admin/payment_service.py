@@ -40,6 +40,7 @@ class PaymentServiceAdmin(admin.ModelAdmin):
         'id': ('title',),
     }
     radio_fields = {'slug': admin.VERTICAL, }
+    search_fields = ('title',)
 
     def save_model(self, request, obj, form, change):
         """Пересоздать кэш:
