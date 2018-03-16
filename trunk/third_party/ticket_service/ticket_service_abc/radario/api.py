@@ -474,6 +474,7 @@ class Radario(TicketService):
             'discountPercent': None,
             'superTagId': None,
             'videoUrl': None,
+            'barcodeType': None  # 'Code128b       '
         }
         events = self.request(method, url, data, output_mapping)
 
@@ -547,6 +548,7 @@ class Radario(TicketService):
             'discountPercent': None,
             'superTagId': None,
             'videoUrl': None,
+            'barcodeType': None  # 'Code128b       '
         }
         event = self.request(method, url, data, output_mapping)
 
