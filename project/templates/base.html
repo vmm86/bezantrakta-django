@@ -88,6 +88,12 @@
     <meta name="developer" content="Michail Vasilyev (vmm)">
     <link rel="developer" content="https://github.com/vmm86">
     {# Контакты разработчика #}
+
+    {# Пиксель вКонтакте - почему-то обязательн одолжен размещаться в <head> #}
+    {% if request.domain_settings.counter.vkontakte != "" %}
+    <script type="text/javascript">(window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={{ request.domain_settings.counter.vkontakte }}';</script>
+    {# Пиксель вКонтакте - почему-то обязательн одолжен размещаться в <head> #}
+    {% endif %}
 </head>
 {% endspaceless %}
 <body>
@@ -97,9 +103,7 @@
     {% if not debug %}
     {% spaceless %}
     <div class="counters">
-    {% compress js inline %}
         {% include "counters.html" %}
-    {% endcompress %}
     </div>
     {% endspaceless %}
     {% endif %}
