@@ -266,6 +266,7 @@
 {% endblock %}
 
 {% block scripts %}
+    {# Графический progress-bar, обозначающий текущее положение при прокрутке страницы по вертикали #}
     <script type="text/javascript" src="{% static "global/js/prognroll/prognroll.min.js" %}"></script>
     <script type="text/javascript">
     $(document).ready(function(e) {
@@ -276,6 +277,7 @@
         });
     });
     </script>
+    {# Графический progress-bar, обозначающий текущее положение при прокрутке страницы по вертикали #}
 
     {# "Карусель" больших горизонтальных афиш #}
     <script type="text/javascript" src="{% static "global/js/bxslider/4.2.12/jquery.bxslider.min.js" %}"></script>

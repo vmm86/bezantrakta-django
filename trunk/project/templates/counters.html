@@ -55,7 +55,8 @@
     {# Пиксель вКонтакте #}
     <div id="vkontakte-pixel">
         <script type="text/javascript">
-            (window.Image ? (new Image()) : document.createElement('img')).src = 'https://vk.com/rtrg?p={{ request.domain_settings.counter.vkontakte }}';
+            var vk_pixel = window.Image ? (new Image()) : document.createElement('img');
+            vk_pixel.src = 'https://vk.com/rtrg?p={{ request.domain_settings.counter.vkontakte }}';
         </script>
     </div>
     {# Пиксель вКонтакте #}
@@ -63,7 +64,7 @@
 {% if request.domain_settings.counter.facebook != "" %}
     {# Пиксель Facebook #}
     <div id="facebook-pixel">
-        <script>
+        <script type="text/javascript">
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -78,4 +79,16 @@
         <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ request.domain_settings.counter.facebook }}&amp;ev=PageView&amp;noscript=1" /></noscript>
     </div>
     {# Пиксель Facebook #}
+{% endif %}
+
+{% if request.domain_settings.custom_scripts %}
+{# Кастомные скрипты #}
+    <div id="custom-scripts">
+    {% for script_title, script in request.domain_settings.custom_scripts.items %}
+        <div class="{{ script_title}}">
+            <script type="text/javascript">{{ script|safe }}</script>
+        </div>
+    {% endfor %}
+    </div>
+{# Кастомные скрипты #}
 {% endif %}
