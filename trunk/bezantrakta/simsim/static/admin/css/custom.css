@@ -10,6 +10,8 @@ body, body:before, body:after {
 html,
 body.login,
 .login #container {
+    display: inline-flex;
+
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -150,6 +152,8 @@ em {
 /* Заголовок */
 
 #header {
+    display: inline-flex;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -189,6 +193,8 @@ em {
 }
 
 #branding {
+    display: inline-flex;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -301,6 +307,8 @@ ul.messagelist li {
 /* Модули */
 
 .dashboard #content {
+    display: inline-flex;
+
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -408,6 +416,8 @@ a.section:visited {
 }
 
 #content-related .actionlist {
+    display: inline-flex;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -425,6 +435,8 @@ a.section:visited {
 }
 
 #content-related .actionlist li {
+    display: inline-flex;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -648,6 +660,8 @@ a.section:visited {
 }
 
 #changelist-filter .filters {
+    display: inline-flex;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -665,6 +679,8 @@ a.section:visited {
 }
 
 #changelist-filter .filters .filter {
+    display: inline-flex;
+
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -716,6 +732,8 @@ a.section:visited {
 }
 
 #changelist-filter a {
+    display: inline-flex;
+
     display: inline-block;
     border-radius: 1rem;
     border-bottom: none;
@@ -860,6 +878,8 @@ a.section:visited {
     display: none !important;
 }
 .admindatefilter .datetimeshortcuts > a[id^="calendarlink"] {
+    display: inline-flex !important;
+
     display: flex !important;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -899,6 +919,8 @@ a.section:visited {
 }
 
 #changelist .actions {
+    display: inline-flex;
+
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -923,6 +945,7 @@ input[type=password],
 input[type=email],
 input[type=url],
 input[type=number],
+input[type=tel],
 select,
 textarea,
 .vTextField {
@@ -930,8 +953,19 @@ textarea,
     border-radius: 0.33rem;
 }
 
-input[type="number"] {
-    padding: 5px 1px 5px 6px;
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+input[type=tel],
+.vTextField {
+    padding: 5px 6px;
+}
+
+input[type=tel],
+.vTextField {
+    width: 20em;
 }
 
 input[type=text]:focus,
@@ -939,6 +973,7 @@ input[type=password]:focus,
 input[type=email]:focus,
 input[type=url]:focus,
 input[type=number]:focus,
+input[type=tel]:focus,
 select:focus,
 textarea:focus,
 .vTextField:focus {
@@ -1170,6 +1205,22 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
     width: 80vw;
 }
 
+.order_email_link,
+.order_phone_link,
+.order_ticket_pdf_ticket {
+    color: #1976D2 !important;
+}
+
+.order_ticket_pdf_ticket:before {
+    content: '';
+    background-image: url('/static/admin/img/pdf.svg');
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+}
+
 /* Оформление двух инлайн-форм (одна - для отображения добавленных данных, другая - только для добавления) */
 #groups-group {
     margin-bottom: 0;
@@ -1186,6 +1237,8 @@ fieldset.module {
 }
 
 fieldset.help_text {
+    display: inline-flex;
+
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -1202,6 +1255,7 @@ fieldset.help_text h2 {
 
 fieldset.help_text .form-row {
     width: 100%;
+    order: 1;
 }
 
 fieldset.help_text .form-row.field-settings {
