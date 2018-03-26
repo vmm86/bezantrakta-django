@@ -19,6 +19,13 @@
             <label id="customer-phone-label" class="label yellow step2" for="customer-phone">Контактный телефон</label>
             <input id="customer-phone" class="input grey step2" type="tel" name="customer_phone" required="required" placeholder="81234567890" pattern="[0-9]{7,}" min="7" max="20" maxlength="20" value="">
         </p>
+
+    {% if ticket_service.settings.order.courier_cash and event.settings.order.courier_cash %}
+        <div class="input-container customer-address step2">
+            <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
+            <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ domain.city_title }}" value="">
+       </div>
+    {% endif %}
     </div>
 
 {% if ticket_service.settings.order %}
@@ -131,12 +138,10 @@
 
         {% if ticket_service.settings.order.courier_cash and event.settings.order.courier_cash %}
             <div class="customer-address step2">
-                <label id="customer-delivery-self-label" class="label yellow" for="customer-address"> Адрес</label>
-                <input id="customer-address" class="input grey" type="text" name="customer_address" rows="6" placeholder="{{ domain.city_title }}" value="">
                 <p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>
-                {% if ticket_service.settings.courier_price > 0 %}
-                    <p>Стоимость доставки {{ ticket_service.settings.courier_price|floatformat:"-2" }} р.</p>
-                {% endif %}
+            {% if ticket_service.settings.courier_price > 0 %}
+                <p>Стоимость доставки {{ ticket_service.settings.courier_price|floatformat:"-2" }} р.</p>
+            {% endif %}
                 {{ ticket_service.settings.order_description.courier_cash|safe }}
            </div>
         {% endif %}
