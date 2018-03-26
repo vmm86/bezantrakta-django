@@ -64,7 +64,12 @@ msgstr ""
 "<ul><li><strong>title</strong> строка - название соцсети.</"
 "li><li><strong>slug</strong> строка - псевдоним соцсети.</"
 "li><li><strong>href</strong> строка - ссылка на страницу в соцсети.</li></"
-"ul></li></ul></li></ul>"
+"ul></li></ul></li>"
+"<li><strong>custom_scripts</strong> { словарь 'ключ': 'значение' } - "
+"сторонние js-скрипты для добавления на сайт."
+"<br>Ключ - человекопонятное название скрипта в латиннице (например, <em>jivosite</em>)."
+"<br>Значение - код самого скрипта (БЕЗ обрамляющих его тегов <em>&lt;script&gt;&lt;/script&gt;</em>).</li>"
+"</ul>"
 
 #: admin/domain.py:63
 msgid "domain_admin_publish_or_unpublish_items"
