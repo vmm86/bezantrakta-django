@@ -141,6 +141,8 @@
                 <p>Курьер свяжется с Вами и обсудит удобное время доставки.</p>
             {% if ticket_service.settings.courier_price > 0 %}
                 <p>Стоимость доставки {{ ticket_service.settings.courier_price|floatformat:"-2" }} р.</p>
+            {% else %}
+                <p>Доставка курьером - бесплатная.</p>
             {% endif %}
                 {{ ticket_service.settings.order_description.courier_cash|safe }}
            </div>
