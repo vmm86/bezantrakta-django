@@ -162,7 +162,7 @@ msgstr "Контейнеры, в которых отображается соб�
 
 #: models/event.py:176
 msgid "event_event_link"
-msgstr "Ссылки, добавленные к событию"
+msgstr "Внешние ссылки, добавленные к событию"
 
 #: models/event.py:184
 msgid "event_ticket_service"
@@ -327,11 +327,11 @@ msgstr "Афиша"
 
 #: models/event_container_binder.py:95
 msgid "eventcontainerbinder"
-msgstr "привязка к контейнерам"
+msgstr "привязка афиш группы/события к контейнерам"
 
 #: models/event_container_binder.py:96
 msgid "eventcontainerbinders"
-msgstr "привязки к контейнерам"
+msgstr "привязка афиш группы/события к контейнерам"
 
 #: models/event_container_binder.py:123
 msgid "eventcontainerbinder_img_preview"
@@ -371,11 +371,11 @@ msgstr "Подпись события в группе"
 
 #: models/event_group_binder.py:53
 msgid "eventgroupbinder"
-msgstr "привязка к группе"
+msgstr "привязка событий к группе"
 
 #: models/event_group_binder.py:54
 msgid "eventgroupbinders"
-msgstr "привязки к группе"
+msgstr "привязка событий к группе"
 
 #: models/event_link.py:50
 msgid "eventlink_title"
@@ -395,11 +395,11 @@ msgstr "Логотип"
 
 #: models/event_link.py:67
 msgid "eventlink"
-msgstr "ссылка"
+msgstr "внешняя ссылка в событии"
 
 #: models/event_link.py:68
 msgid "eventlinks"
-msgstr "ссылки"
+msgstr "внешние ссылки в событиях"
 
 #: models/event_link.py:83
 msgid "eventlinks_img_preview"
@@ -423,11 +423,11 @@ msgstr "Порядок"
 
 #: models/event_link_binder.py:55
 msgid "eventlinkbunder"
-msgstr "привязка к ссылкам"
+msgstr "привязка внешних ссылок к событиям"
 
 #: models/event_link_binder.py:56
 msgid "eventlinkbunders"
-msgstr "привязки к ссылкам"
+msgstr "привязка внешних ссылок к событиям"
 
 #: models/event_link_binder.py:74
 msgid "eventlinkbunder_img_preview"

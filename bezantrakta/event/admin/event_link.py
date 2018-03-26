@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from project.decorators import queryset_filter
+from project.shortcuts import timezone_now
 from ..models import EventLink, EventLinkBinder
 
 
@@ -11,11 +12,17 @@ class EventLinkBinderInline(admin.TabularInline):
     readonly_fields = ('event', 'event_datetime_localized',)
     template = 'admin/tabular_custom.html'
 
+    today = timezone_now()
+
     @queryset_filter('Domain', 'event__domain__slug')
     def get_queryset(self, request):
-        return super(EventLinkBinderInline, self).get_queryset(request)
+        """Фильтрация по выбранному сайту."""
+        return EventLinkBinder.objects.filter(
+            event__datetime__gt=self.today
+        )
 
     def has_add_permission(self, request):
+        """Внешние ссылки, добавленные в конкретных событиях, здесь выводятся без возможности редактирования."""
         return False
 
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-18 12:35+0000\n"
+"POT-Creation-Date: 2018-03-19 14:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,9 +20,21 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/order.py:105
+#: admin/order.py:154
 msgid "order_admin_order_uuid"
 msgstr "Уникальный ID заказа"
+
+#: admin/order.py:160
+msgid "order_email_link"
+msgstr "Email"
+
+#: admin/order.py:166
+msgid "order_phone_link"
+msgstr "Телефон"
+
+#: admin/order_ticket.py:83
+msgid "order_ticket_pdf_ticket"
+msgstr "PDF-билет"
 
 #: models/order.py:70
 msgid "order_ticket_service"
@@ -62,7 +74,7 @@ msgstr "Адрес доставки"
 
 #: models/order.py:118
 msgid "order_mode_self"
-msgstr "Выкуп в кассе"
+msgstr "Получение в кассе"
 
 #: models/order.py:119
 msgid "order_mode_courier"
@@ -178,7 +190,7 @@ msgstr "Сектор"
 
 #: models/order_ticket.py:87
 msgid "order_ticket_row"
-msgstr "Ряд"
+msgstr "ID ряда"
 
 #: models/order_ticket.py:91
 msgid "order_ticket_seat"
@@ -202,4 +214,4 @@ msgstr "билет"
 
 #: models/order_ticket.py:114
 msgid "order_tickets"
-msgstr "список билетов"
+msgstr "билеты"

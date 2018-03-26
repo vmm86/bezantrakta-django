@@ -4,7 +4,6 @@ from django.utils.translation import ugettext as _
 from project.cache import cache_factory
 from project.decorators import queryset_filter
 
-from bezantrakta.event.models import EventVenue
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 
 from ..models import TicketServiceSchemeVenueBinder, TicketServiceSchemeSector
@@ -24,9 +23,14 @@ class TicketServiceSchemeVenueBinderAdmin(admin.ModelAdmin):
         (
             None,
             {
-                'fields': ('ticket_service_scheme_title',
-                           'ticket_service', 'ticket_service_scheme_id',
-                           'event_venue', 'scheme',),
+                'fields': ('ticket_service_scheme_title', 'ticket_service', 'ticket_service_scheme_id',
+                           'event_venue',),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('scheme',),
                 'classes': ('help_text',),
                 'description': _('ticketserviceschemevenuebinder_scheme_help_text'),
             }

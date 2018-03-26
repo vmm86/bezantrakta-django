@@ -18,14 +18,14 @@ from ..forms import EventForm
 from ..models import Event, EventCategory, EventContainerBinder, EventLinkBinder, EventGroupBinder
 
 
-# Чтобы избежать множества избыточных SQL-запросов при выводе выпадающих списков в каждом связанном с группой событии,
-# эти события выводятся в первой инлайн-форме без выбора событий в выпадающих списках,
-# но с возможностью редактировать подпись события либо удалить события из группы.
-# Привязать новое событие к группе можно из второй инлайн-формы с возможностью добавления,
-# но без возможности редактирования (без вывода уже добавленных событий).
-
-
 class ListEventGroupBinderInline(admin.TabularInline):
+    """
+    Чтобы избежать множества избыточных SQL-запросов
+    при выводе выпадающих списков в каждом связанном с группой событии,
+    эти события выводятся в первой инлайн-форме
+    без выбора событий в выпадающих списках,
+    но с возможностью редактировать подпись события либо удалить события из группы.
+    """
     model = EventGroupBinder
     extra = 0
     fk_name = 'group'
@@ -36,15 +36,22 @@ class ListEventGroupBinderInline(admin.TabularInline):
     today = timezone_now()
 
     def get_queryset(self, request):
+        """Вывод только актуальных на данный момент событий, ранее добавленных в группу."""
         return EventGroupBinder.objects.filter(
             event__datetime__gt=self.today
         )
 
     def has_add_permission(self, request):
+        """При выводе имеющихся в группе событий возможность добавления отключена."""
         return False
 
 
 class AddEventGroupBinderInline(admin.TabularInline):
+    """
+    Привязать новое событие к группе можно из второй инлайн-формы
+    с возможностью добавления, но без возможности редактирования
+    (без вывода уже добавленных событий).
+    """
     model = EventGroupBinder
     extra = 0
     fk_name = 'group'
@@ -53,11 +60,11 @@ class AddEventGroupBinderInline(admin.TabularInline):
     today = timezone_now()
 
     def has_change_permission(self, request, obj=None):
+        """При добавлении новых событий в группу возможность редактирования отключена."""
         return False
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """Фильтр события для добавления в группу.
-
+        """
         Для добавления в группу выводятся только актуальные события,
         привязанные к выбранному домену и ЕЩЁ НЕ добавленные в группу
         (одно событие нельзя добавить более чем в одну группу!).
@@ -159,6 +166,7 @@ class EventAdmin(ImportMixin, admin.ModelAdmin):
     today = timezone_now()
 
     def get_view_on_site_url(self, obj=None):
+        """Формирование ссылки "Смотреть на сайте"."""
         if obj is not None and obj.is_group is False:
             event_datetime_localized = obj.datetime.astimezone(obj.domain.city.timezone)
 
@@ -180,6 +188,7 @@ class EventAdmin(ImportMixin, admin.ModelAdmin):
 
     @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):
+        """Фильтрация по выбранному сайту."""
         return super(EventAdmin, self).get_queryset(request)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -235,7 +244,7 @@ class EventAdmin(ImportMixin, admin.ModelAdmin):
         return super(EventAdmin, self).has_delete_permission(request, obj=obj)
 
     def get_actions(self, request):
-        """Отключение пакетного удаления по умолчанию."""
+        """Отключение пакетного удаления по умолчанию для обычных администраторов."""
         actions = super(EventAdmin, self).get_actions(request)
         if 'delete_selected' in actions and not request.user.is_superuser:
             del actions['delete_selected']
