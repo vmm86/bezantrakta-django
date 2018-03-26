@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from .views import order_step_1, order_step_2, order_step_3
+from .views import order_step_1, order_step_2, order_step_3, download_pdf_ticket
 
 app_name = 'order'
 
@@ -23,5 +23,12 @@ urlpatterns = [
         r'^afisha/order/(?P<order_uuid>[0-9A-f-]+)/$',
         order_step_3,
         name='order_step_3'
+    ),
+
+    # Скачать PDF-билет
+    url(
+        r'^afisha/domain/(?P<domain_slug>[A-z-]+)/order/(?P<order_id>[0-9-]+)/pdf_ticket/(?P<ticket_uuid>[0-9A-f-]+)/$',
+        download_pdf_ticket,
+        name='download_pdf_ticket'
     ),
 ]
