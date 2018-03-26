@@ -91,8 +91,8 @@ class Migration(migrations.Migration):
                 ('event_container', models.ForeignKey(db_column='event_container_id', on_delete=django.db.models.deletion.CASCADE, to='event.EventContainer', verbose_name='Контейнер')),
             ],
             options={
-                'verbose_name_plural': 'привязки к контейнерам',
-                'verbose_name': 'привязка к контейнерам',
+                'verbose_name_plural': 'привязка афиш группы/события к контейнерам',
+                'verbose_name': 'привязка афиш группы/события к контейнерам',
                 'db_table': 'bezantrakta_event_container_binder',
                 'ordering': ('order', 'event_container', 'event'),
             },
@@ -106,8 +106,8 @@ class Migration(migrations.Migration):
                 ('group', models.ForeignKey(db_column='group_id', on_delete=django.db.models.deletion.CASCADE, related_name='groups', to='event.Event', verbose_name='Группа')),
             ],
             options={
-                'verbose_name': 'привязка к группе',
-                'verbose_name_plural': 'привязки к группе',
+                'verbose_name': 'привязка событий к группе',
+                'verbose_name_plural': 'привязка событий к группе',
                 'db_table': 'bezantrakta_event_group_binder',
                 'ordering': ('group__datetime', '-event__datetime', 'caption'),
             },
@@ -121,8 +121,8 @@ class Migration(migrations.Migration):
                 ('img', models.ImageField(blank=True, help_text='Размер логотипа 192x64 px.', null=True, upload_to=bezantrakta.event.models.event_link.img_path, verbose_name='Логотип')),
             ],
             options={
-                'verbose_name': 'ссылка',
-                'verbose_name_plural': 'ссылки',
+                'verbose_name': 'внешняя ссылка в событии',
+                'verbose_name_plural': 'внешние ссылки в событиях',
                 'db_table': 'bezantrakta_event_link',
                 'ordering': ('title',),
             },
@@ -137,8 +137,8 @@ class Migration(migrations.Migration):
                 ('event_link', models.ForeignKey(db_column='event_link_id', on_delete=django.db.models.deletion.CASCADE, to='event.EventLink', verbose_name='Ссылка')),
             ],
             options={
-                'verbose_name_plural': 'привязки к ссылкам',
-                'verbose_name': 'привязка к ссылкам',
+                'verbose_name_plural': 'привязка внешних ссылок к событиям',
+                'verbose_name': 'привязка внешних ссылок к событиям',
                 'db_table': 'bezantrakta_event_link_binder',
                 'ordering': ('order', 'event', 'event_link'),
             },
@@ -176,7 +176,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='event',
             name='event_link',
-            field=models.ManyToManyField(blank=True, related_name='event_links', through='event.EventLinkBinder', to='event.EventLink', verbose_name='Ссылки, добавленные к событию'),
+            field=models.ManyToManyField(blank=True, related_name='event_links', through='event.EventLinkBinder', to='event.EventLink', verbose_name='Внешние ссылки, добавленные к событию'),
         ),
         migrations.AddField(
             model_name='event',

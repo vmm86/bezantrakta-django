@@ -8,7 +8,7 @@ from ckeditor.fields import RichTextField
 
 
 class ArticleManager(models.Manager):
-    """Менеджер модели Article."""
+    """Менеджер модели ``Article``."""
     def get_queryset(self):
         return super(ArticleManager, self).get_queryset().select_related('domain')
 
@@ -17,12 +17,12 @@ class Article(models.Model):
     """Статические HTML-страницы.
 
     Attributes:
-        objects (ArticleManager): Менеджер модели Article.
+        objects (ArticleManager): Менеджер модели ``Article``.
         id (UUIDField): Уникальный идентификатор.
-        title (CharField): Название (всего не более 60-65 символов).
+        title (CharField): Название.
         slug (SlugField): Псевдоним.
-        description (TextField): Метатег ``description`` (краткое описание страницы, не более 150-200 символов).
-        keywords (TextField): Метатег ``keywords`` (ключевые слова/фразы, разделённые запятыми, описывающие содержимое страницы, всего не более 100-150 символов).
+        description (TextField): Метатег ``description``.
+        keywords (TextField): Метатег ``keywords``.
         text (RichTextField): Содержимое страницы.
         is_published (BooleanField): Опубликована ли страница на сайте или нет.
         domain (ForeignKey): Сайт.
@@ -81,4 +81,4 @@ class Article(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('article', args=[self.slug])
+        return reverse('article:article', args=[self.slug])

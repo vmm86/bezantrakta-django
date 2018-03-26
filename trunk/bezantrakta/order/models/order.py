@@ -204,7 +204,7 @@ class Order(models.Model):
 
     def get_absolute_url(self):
         return reverse(
-            'order',
+            'order:order_step_3',
             args=[
                 str(self.id),
             ]

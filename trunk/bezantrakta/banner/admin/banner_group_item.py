@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext as _
 
 from adminsortable2.admin import SortableAdminMixin
 
@@ -11,6 +12,28 @@ from ..models import BannerGroupItem
 
 @admin.register(BannerGroupItem)
 class BannerGroupItemAdmin(SortableAdminMixin, admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                'fields': ('title', 'slug', 'img',),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('href',),
+                'classes': ('help_text',),
+                'description': _('bannergroupitem_href_help_text'),
+            }
+        ),
+        (
+            None,
+            {
+                'fields': ('is_published', 'banner_group', 'domain',),
+            }
+        )
+    )
     list_display = ('title', 'slug', 'is_published', 'banner_group', 'domain',)
     list_filter = (
         ('banner_group', RelatedOnlyFieldDropdownFilter),
@@ -24,4 +47,5 @@ class BannerGroupItemAdmin(SortableAdminMixin, admin.ModelAdmin):
 
     @queryset_filter('Domain', 'domain__slug')
     def get_queryset(self, request):
+        """Фильтрация по выбранному сайту."""
         return super(BannerGroupItemAdmin, self).get_queryset(request)
