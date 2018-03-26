@@ -208,10 +208,10 @@ ADMIN_REORDER = (
         'app': 'event',
         'models':
         (
-            {'model': 'event.Event', 'label': 'События / группы 🔗 '},
             {'model': 'event.EventVenue', 'label': 'Залы (места проведения событий) 🔗 '},
             {'model': 'ticket_service.TicketServiceSchemeVenueBinder', 'label': '└─ Схемы залов 🔗 '},
             {'model': 'ticket_service.TicketServiceSchemeSector', 'label': '      └─ Секторы в схемах залов 🔗 '},
+            {'model': 'event.Event', 'label': 'События / группы 🔗 '},
             {'model': 'event.EventCategory', 'label': 'Категории'},
             {'model': 'event.EventLink', 'label': 'Внешние ссылки в событиях'},
             {'model': 'event.EventContainer', 'label': 'Контейнеры'},
@@ -554,5 +554,5 @@ PHONENUMBER_DEFAULT_REGION = 'RU'
 # django-docs
 # https://github.com/littlepea/django-docs
 
-DOCS_ROOT = os.path.join(PARENT_DIR, 'docs_adm', 'html')
+DOCS_ROOT = os.path.join(BASE_DIR, 'docs', 'adm', 'html')
 DOCS_ACCESS = 'staff'
