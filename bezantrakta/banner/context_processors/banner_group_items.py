@@ -2,11 +2,11 @@ from django.db.models import BooleanField, Case, When, Value
 
 from project.shortcuts import base_template_context_processor
 
-from .models import BannerGroup, BannerGroupItem
+from ..models import BannerGroup, BannerGroupItem
 
 
 def banner_group_items(request):
-    """Получение информации о баннерах и её добавление в контекст шаблона."""
+    """Получение информации о группах баннеров и привязанным к ним баннерам и её добавление в контекст шаблона."""
     if base_template_context_processor(request):
         banner_group_values = BannerGroup.objects.values('id', 'slug', 'title')
 
