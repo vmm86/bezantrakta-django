@@ -44,30 +44,30 @@ bezantrakta.ru: {% if order.order_id %}Заказ билетов № {{ order.or
         <strong>Телефон</strong>: <a href="tel:{{ customer.phone|cut:" "|cut:"-"|cut:"("|cut:")" }}">{{ customer.phone }}</a>.
     </p>
 
-    <p><strong>Получение билетов</strong>: {{ order.delivery_caption }}.
-    {% if customer.delivery == "courier" %}
+    <p><strong>Получение билетов</strong>: {% if order.delivery == "self" %}<a href="{{ domain.url_protocol_domain }}/kontakty/" target="_blank">{{ order.delivery_caption }}</a>{% else %}{{ order.delivery_caption }}{% endif %}.
+    {% if order.delivery == "courier" %}
         <br><strong>Адрес доставки</strong>: {% if customer.address or customer.address != "" %}{{ customer.address }}{% else %}не указан{% endif %}.
     {% endif %}
     </p>
 
     <p><strong>Оплата</strong>: {{ order.payment_caption }}.
-    {% if customer.payment == "online" %}
+    {% if order.payment == "online" %}
         <br><strong>Номер оплаты</strong>: {{ order.payment_id }}.
     {% endif %}
     </p>
 
-    {% if customer.delivery == "self" %}
-        {% if customer.payment == "cash" %}
+    {% if order.delivery == "self" %}
+        {% if order.payment == "cash" %}
             {{ ticket_service.settings.order_email_description.self_cash|safe }}
-        {% elif customer.payment == "online" %}
+        {% elif order.payment == "online" %}
             <p>Перед посещением мероприятия, пожалуйста, получите свои билеты в любой кассе Безантракта.</p>
             <p>Список касс и схемы проезда вы можете увидеть <a href="{{ domain.url_protocol_domain }}/kontakty/" target="_blank">на странице "Контакты"</a>.</p>
             {{ ticket_service.settings.order_email_description.self_online|safe }}
         {% endif %}
-    {% elif customer.delivery == "courier" %}
+    {% elif order.delivery == "courier" %}
         <p>Наш курьер свяжется с Вами по телефону в течение 24-х часов и доставит билеты по указанному адресу в удобное для Вас время.</p>
         {{ ticket_service.settings.order_email_description.courier_cash|safe }}
-    {% elif customer.delivery == "email" %}
+    {% elif order.delivery == "email" %}
         <p>PDF-файлы с билетами вложены в это письмо. Для того, чтобы их открыть, потребуется программа <a href="https://get.adobe.com/ru/reader/" target="_blank">Adobe Reader</a> или любая другая программа, открывающая файлы формата PDF.</p>
         <p>Вам необходимо распечатать каждый билет на отдельном листе формата A4 и предъявить его при входе на мероприятие. <strong>Билет на листе A4 обрезать не нужно</strong>! Для удобства его можно сложить по пунктирным линиям сгиба.</p>
         <p>При проходе на мероприятия <strong>необходимо иметь при себе документ, удостоверяющий личность</strong>.</p>
