@@ -44,13 +44,13 @@
     </p>
 
     <p><strong>Получение билетов</strong>: {{ order.delivery_caption }}.
-    {% if customer.delivery == "courier" %}
+    {% if order.delivery == "courier" %}
         <br><strong>Адрес доставки</strong>: {% if customer.address or customer.address != "" %}{{ customer.address }}{% else %}не указан{% endif %}.
     {% endif %}
     </p>
 
     <p><strong>Оплата</strong>: {{ order.payment_caption }}.
-    {% if customer.payment == "online" %}
+    {% if order.payment == "online" %}
         <br><strong>Номер оплаты</strong>: {{ order.payment_id }}.
     {% endif %}
     </p>
