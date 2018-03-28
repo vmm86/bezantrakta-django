@@ -25,7 +25,7 @@ class Article(models.Model):
         keywords (TextField): Метатег ``keywords``.
         text (RichTextField): Содержимое страницы.
         is_published (BooleanField): Опубликована ли страница на сайте или нет.
-        domain (ForeignKey): Сайт.
+        domain (ForeignKey): Сайт, к которому привязана страница.
     """
     objects = ArticleManager()
 

@@ -6,7 +6,7 @@ from api.shortcuts import JsonResponseUTF8
 
 
 def reserve(request):
-    """Добавление или удаление места в предварительном резерве мест."""
+    """Добавление или удаление места в предварительном резерве."""
     if request.is_ajax() and request.method == 'POST':
         # UUID события
         event_uuid = request.POST.get('event_uuid', None)

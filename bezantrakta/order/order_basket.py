@@ -121,8 +121,9 @@ class OrderBasket():
 
     # Подписи статусов заказа и их визуальное оформление
     ORDER_STATUS_CAPTION = {
+        # Статус предварительного резерва мест, когда заказ ещё не создан
         'reserved':  {'color': 'black',  'description': 'предварительный резерв'},
-
+        # Статусы созданного заказа
         'ordered':   {'color': 'blue',   'description': 'создан'},
         'cancelled': {'color': 'red',    'description': 'отменён'},
         'approved':  {'color': 'green',  'description': 'успешно завершён'},

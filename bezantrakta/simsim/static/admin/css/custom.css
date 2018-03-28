@@ -121,7 +121,7 @@ li, dt, dd {
     font-size: 14px;
 }
 
-em {
+em, code {
     background: #FFE57F;
     border-radius: 0.25rem;
     font-style: normal;
@@ -226,31 +226,31 @@ em {
     padding-left: 1rem;
 }
 
-#choose_domain {
+#choose_domain_or_city {
     background-color: #fff;
 }
 
-#choose_domain option {
+#choose_domain_or_city option {
     color: #111;
 }
 
-#choose_domain .enabled {
+#choose_domain_or_city .enabled {
     background-color: #4caf50;
 }
 
-#choose_domain .progress {
+#choose_domain_or_city .progress {
     background-color: #fc0;
 }
 
-#choose_domain .disabled {
+#choose_domain_or_city .disabled {
     background-color: #f44336;
 }
 
-#choose_domain .published {
+#choose_domain_or_city .published {
     text-decoration: none;
 }
 
-#choose_domain .not_published {
+#choose_domain_or_city .not_published {
     text-decoration: line-through;
 }
 
@@ -886,7 +886,7 @@ a.section:visited {
     justify-content: center;
     align-items: center;
     border-radius: 0 1rem 1rem 0 !important;
-    height: 2.1rem;
+    height: 2.05rem;
     top: 0;
 }
 .admindatefilter .datetimeshortcuts > a[id^="calendarlink"] .date-icon {

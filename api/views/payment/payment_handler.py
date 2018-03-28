@@ -10,7 +10,7 @@ from bezantrakta.order.order_basket import OrderBasket
 
 
 def payment_handler(request):
-    """Проверка и обработка успешной или НЕуспешной оплаты после возвращения с формы онлайн-оплаты."""
+    """Проверка и обработка заказа с онлайн-оплатой после возвращения с платёжной формы."""
     # Получение уникальных идентификаторов события и заказа из GET-парамеров
     event_uuid = request.GET.get('event_uuid', None)
     try:
