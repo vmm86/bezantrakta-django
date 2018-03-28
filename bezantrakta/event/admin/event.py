@@ -111,7 +111,7 @@ class EventResource(resources.ModelResource):
 
 
 # Опциональная возможность импорта старых событий в development-окружении
-inheritance = (ImportMixin,) if settings.DEBUG else None
+inheritance = (ImportMixin,) if settings.DEBUG else tuple()
 
 
 @admin.register(Event)
