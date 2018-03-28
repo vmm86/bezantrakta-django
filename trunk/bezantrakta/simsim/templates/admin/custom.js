@@ -26,8 +26,8 @@ $(document).ready(function() {
     });
 
     {# Сохранение данных выбранного для фильтрации сайта в cookie #}
-    $('#choose_domain').change(function() {
-        var selected = $('#choose_domain option:selected');
+    $('#choose_domain_or_city').change(function() {
+        var selected = $('#choose_domain_or_city option:selected');
         var domain_slug = selected.val();
         var domain_id = selected.data('domain-id');
         var city_slug = selected.data('city-slug');

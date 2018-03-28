@@ -54,8 +54,8 @@
     </div>
     {% if user.is_authenticated %}
     <div id="branding_choose_domain">
-        {% load choose_domain %}
-        {% choose_domain %}
+        {% load choose_domain_or_city %}
+        {% choose_domain_or_city %}
     </div>
     {% endif %}
     <div class="warning">{% trans 'choose_city_warning' %}</div>

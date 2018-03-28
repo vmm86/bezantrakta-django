@@ -8,9 +8,9 @@ from bezantrakta.location.models import City, Domain
 register = template.Library()
 
 
-@register.inclusion_tag('admin/choose_domain.html', takes_context=True)
-def choose_domain(context):
-    """Список всех городов без сайтов, но с залами и всех сайтов."""
+@register.inclusion_tag('admin/choose_domain_or_city.html', takes_context=True)
+def choose_domain_or_city(context):
+    """Список всех сайтов и всех городов без сайтов, но с залами."""
     # Все сайты
     domains = list(Domain.objects.select_related(
         'city',
