@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<select id="choose_domain" name="choose_domain" title="{% trans 'choose_domain_help_text' %}">
+<select id="choose_domain_or_city" name="choose_domain_or_city" title="{% trans 'choose_domain_or_city_help_text' %}">
     <option value="all" data-domain-id="0" data-city-slug="all" data-city-id="0" data-timezone="UTC">все сайты</option>
 {% for domain in domains %}
     {% with state=domain.city_state|yesno:'enabled,disabled,progress' is_published=domain.domain_is_published|yesno:'published,not_published' %}
