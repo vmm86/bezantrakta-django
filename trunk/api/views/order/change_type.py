@@ -10,6 +10,7 @@ from api.shortcuts import JsonResponseUTF8
 
 
 def change_type(request):
+    """Изменение типа заказа на шаге 2 заказа билетов."""
     if request.is_ajax() and request.method == 'POST':
         customer = request.POST.get('customer', None)
         try:

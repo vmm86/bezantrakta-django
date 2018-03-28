@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-12 13:23+0000\n"
+"POT-Creation-Date: 2018-03-27 14:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: templates/admin/app_index.html:13 templates/admin/change_form.html:22
+#: templates/admin/change_list.html:31
+msgid "Home"
+msgstr ""
 
 #: templates/admin/base.html:6 templates/admin/base_site.html:51
 #: templates/admin/base_site.html:52 templates/admin/base_site.html:65
@@ -53,11 +58,46 @@ msgstr "Обязательно выбирайте город/сайт перед
 msgid "domain_icon_help_text"
 msgstr "Иконкой 🔗 обозначены компоненты, привязанные к конкретному сайту."
 
-#: templates/admin/choose_domain.html:3
-msgid "choose_domain_help_text"
+#: templates/admin/change_form.html:5
+#, python-format
+msgid "Добавить %(name)s &rsaquo; "
 msgstr ""
-"Цветом обозначено состояние города.&#013;Если сайт отключен - его название "
-"зачёркнуто."
+
+#: templates/admin/change_form.html:25 templates/admin/change_list.html:49
+#, python-format
+msgid "Add %(name)s"
+msgstr ""
+
+#: templates/admin/change_form.html:37
+msgid "History"
+msgstr ""
+
+#: templates/admin/change_form.html:40 templates/admin/tabular_custom.html:46
+msgid "View on site"
+msgstr "На сайт"
+
+#: templates/admin/change_form.html:55 templates/admin/change_list.html:58
+msgid "Please correct the error below."
+msgstr ""
+
+#: templates/admin/change_form.html:55 templates/admin/change_list.html:58
+msgid "Please correct the errors below."
+msgstr ""
+
+#: templates/admin/change_list.html:66
+msgid "Filter"
+msgstr ""
+
+#: templates/admin/choose_domain_or_city.html:3
+msgid "choose_domain_or_city_help_text"
+msgstr ""
+"Цветом обозначено состояние города.&#013;"
+"Если сайт отключен - его название зачёркнуто."
+
+#: templates/admin/dropdown_filter.html:3
+#, python-format
+msgid " By %(filter_title)s "
+msgstr ""
 
 #: templates/admin/index.html:8
 msgid "Recent actions"
@@ -70,3 +110,7 @@ msgstr "Ничего не обнаружено"
 #: templates/admin/index.html:24
 msgid "Unknown content"
 msgstr "?"
+
+#: templates/admin/tabular_custom.html:21
+msgid "Delete?"
+msgstr ""

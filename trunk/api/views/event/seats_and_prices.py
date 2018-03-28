@@ -7,7 +7,7 @@ from api.shortcuts import JsonResponseUTF8
 
 
 def seats_and_prices(request):
-    """Получение списка мест на запрошенное событие из соответствующего сервиса продажи билетов."""
+    """Получение списка мест и цен на билетов в событии из сервиса продажи билетов."""
     if request.is_ajax() and request.method == 'GET':
         # UUID события
         event_uuid = request.GET.get('event_uuid', None)

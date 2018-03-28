@@ -105,12 +105,6 @@ class Order(models.Model):
         null=True,
         verbose_name=_('order_address'),
     )
-    # delivery | payment
-    # ---------|---------
-    # self     | cash
-    # courier  | cash
-    # self     | online
-    # email    | online
     DELIVERY_SELF = 'self'
     DELIVERY_COURIER = 'courier'
     DELIVERY_EMAIL = 'email'
@@ -145,7 +139,6 @@ class Order(models.Model):
         null=True,
         verbose_name=_('order_payment_id'),
     )
-    # STATUS_RESERVED = 'reserved'  # Статус предварительно зарезервированных мест, когда заказ ещё не создан
     STATUS_ORDERED = 'ordered'
     STATUS_CANCELLED = 'cancelled'
     STATUS_APPROVED = 'approved'

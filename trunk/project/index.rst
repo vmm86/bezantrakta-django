@@ -9,12 +9,12 @@
 
   db
   cities
-  cache/index_dev
-  decorators/index_dev
-  settings/index_dev
-  shortcuts/index_dev
+  cache/index
+  decorators/index
+  settings/index
+  shortcuts/index
   static
   templates
-  views/index_dev
+  views/index
   urls
   wsgi

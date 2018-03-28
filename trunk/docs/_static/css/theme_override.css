@@ -146,12 +146,17 @@ code,
     align-items: flex-start;
 }
 
-article ul,
+.rst-content .section ol p,
+.rst-content .section ul p {
+    margin-bottom: 0;
+}
+
+/*article ul,
 .wy-plain-list-disc,
 .rst-content .section ul,
 .rst-content .toctree-wrapper ul {
-    margin-bottom: 8px !important;
-}
+    margin-bottom: 8px;
+}*/
 
 .wy-table thead th,
 .rst-content table.docutils thead th,
@@ -170,27 +175,6 @@ article ul,
 .main-page-blocks .rst-content .section ul p,
 .main-page-blocks .rst-content .section ul {
     margin-bottom: 0;
-}
-
-.wy-alert-title,
-.rst-content .admonition-title {
-    border-radius: 0.5rem 0.5rem 0 0;
-}
-
-.wy-alert,
-.rst-content .note,
-.rst-content .attention,
-.rst-content .caution,
-.rst-content .danger,
-.rst-content .error,
-.rst-content .hint,
-.rst-content .important,
-.rst-content .tip,
-.rst-content .warning,
-.rst-content .seealso,
-.rst-content .admonition-todo {
-    margin-bottom: 8px;
-    border-radius: 0.5rem;
 }
 
 .wy-plain-list-disc li li,
@@ -214,21 +198,191 @@ article ul li p:only-child {
     margin-bottom: 0;
 }
 
-/*.main-page-blocks ul,
-.main-page-blocks ul ul {
-    list-style-type: none !important;
+/* Google Material Colors */
+/* https://material.io/guidelines/style/color.html */
+/* header background color:  400 */
+/* header text-shadow color: 800 */
+/* body background color:    50  */
+/* body border color:        500 */
+
+.wy-alert-title,
+.rst-content .admonition-title {
+    border-radius: 0.4rem 0.4rem 0 0;
+    margin-bottom: 10px !important;
 }
 
-.main-page-blocks ul > li,
-.main-page-blocks ul > li ul > li {
-    list-style-type: none !important;
-    padding-left: 1em;
-    text-indent: -1em;
+.admonition p:not(.admonition-title),
+.admonition ul {
+    margin-bottom: 0 !important;
 }
 
-.main-page-blocks ul > li:before,
-.main-page-blocks ul > li ul > li:before {
-    content: "\2514\2500";
-    padding-right: 5px;
+.wy-alert,
+.rst-content .admonition-todo,
+.rst-content .seealso,
+.rst-content .note,
+.rst-content .tip,
+.rst-content .hint,
+.rst-content .important,
+.rst-content .attention,
+.rst-content .caution,
+.rst-content .warning,
+.rst-content .danger,
+.rst-content .error {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 0.5rem;
 }
-*/
+
+/* ToDo */
+.rst-content .admonition-todo .wy-alert-title,
+.rst-content .admonition-todo .admonition-title,
+.rst-content .wy-alert-warning.admonition-tod .wy-alert-title,
+.rst-content .wy-alert-warning.admonition-tod .admonition-title {
+    background-color: #FFA726;
+    text-shadow: 1px 1px #EF6C00;
+}
+.rst-content .admonition-todo,
+.rst-content .wy-alert-warning.admonition-todo {
+    background-color: #FFF3E0;
+    border: 1px solid #FF9800;
+}
+
+/* SeeAlso */
+.rst-content .seealso .wy-alert-title,
+.rst-content .seealso .admonition-title,
+.rst-content .wy-alert-warning.seealso .wy-alert-title,
+.rst-content .wy-alert-warning.seealso .admonition-title {
+    background-color: #FFA726;
+    text-shadow: 1px 1px #EF6C00;
+}
+.rst-content .seealso,
+.rst-content .wy-alert-warning.seealso {
+    background-color: #FFF3E0;
+    border: 1px solid #FF9800;
+}
+
+/* Note */
+.rst-content .note .wy-alert-title,
+.rst-content .note .admonition-title,
+.rst-content .wy-alert-warning.note .wy-alert-title,
+.rst-content .wy-alert-warning.note .admonition-title {
+    background-color: #42A5F5;
+    text-shadow: 1px 1px #1565C0;
+}
+.rst-content .note,
+.rst-content .wy-alert-warning.note {
+    background-color: #E3F2FD;
+    border: 1px solid #2196F3;
+}
+
+/* Hint */
+.rst-content .hint .wy-alert-title,
+.rst-content .hint .admonition-title,
+.rst-content .wy-alert-warning.hint .wy-alert-title,
+.rst-content .wy-alert-warning.hint .admonition-title {
+    background-color: #42A5F5;
+    text-shadow: 1px 1px #1565C0;
+}
+.rst-content .hint,
+.rst-content .wy-alert-warning.hint {
+    background-color: #E3F2FD;
+    border: 1px solid #2196F3;
+}
+
+/* Tip */
+.rst-content .tip .wy-alert-title,
+.rst-content .tip .admonition-title,
+.rst-content .wy-alert-warning.tip .wy-alert-title,
+.rst-content .wy-alert-warning.tip .admonition-title {
+    background-color: #42A5F5;
+    text-shadow: 1px 1px #1565C0;
+}
+.rst-content .tip,
+.rst-content .wy-alert-warning.tip {
+    background-color: #E3F2FD;
+    border: 1px solid #2196F3;
+}
+
+/* Important */
+.rst-content .important .wy-alert-title,
+.rst-content .important .admonition-title,
+.rst-content .wy-alert-warning.important .wy-alert-title,
+.rst-content .wy-alert-warning.important .admonition-title {
+    background-color: #66BB6A;
+    text-shadow: 1px 1px #2E7D32;
+}
+.rst-content .important,
+.rst-content .wy-alert-warning.important {
+    background-color: #E8F5E9;
+    border: 1px solid #4CAF50;
+}
+
+/* Attention */
+.rst-content .attention .wy-alert-title,
+.rst-content .attention .admonition-title,
+.rst-content .wy-alert-warning.attention .wy-alert-title,
+.rst-content .wy-alert-warning.attention .admonition-title {
+    background-color: #66BB6A;
+    text-shadow: 1px 1px #2E7D32;
+}
+.rst-content .attention,
+.rst-content .wy-alert-warning.attention {
+    background-color: #E8F5E9;
+    border: 1px solid #4CAF50;
+}
+
+/* Caution */
+.rst-content .caution .wy-alert-title,
+.rst-content .caution .admonition-title,
+.rst-content .wy-alert-warning.caution .wy-alert-title,
+.rst-content .wy-alert-warning.caution .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .caution,
+.rst-content .wy-alert-warning.caution {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}
+
+/* Warning */
+.rst-content .warning .wy-alert-title,
+.rst-content .warning .admonition-title,
+.rst-content .wy-alert.wy-alert-warning .wy-alert-title,
+.rst-content .wy-alert.wy-alert-warning .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .warning,
+.wy-alert.wy-alert-warning {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}
+
+/* Danger */
+.rst-content .danger .wy-alert-title,
+.rst-content .danger .admonition-title,
+.rst-content .wy-alert-warning.danger .wy-alert-title,
+.rst-content .wy-alert-warning.danger .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .danger,
+.rst-content .wy-alert-warning.danger {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}
+
+/* Error */
+.rst-content .error .wy-alert-title,
+.rst-content .error .admonition-title,
+.rst-content .wy-alert-warning.error .wy-alert-title,
+.rst-content .wy-alert-warning.error .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .error,
+.rst-content .wy-alert-warning.error {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}
