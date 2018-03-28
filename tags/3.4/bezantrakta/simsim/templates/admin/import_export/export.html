@@ -1,0 +1,10 @@
+{% extends "admin/import_export/export.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with name=opts.verbose_name_plural %}Экспортировать {{ name }} &rsaquo; {% endblocktrans %}{% trans "bezantrakta_admin" %}{% endblock %}
+
+{% block content %}
+    <p>Рекомендуется экспортировать данные в формате <strong>XLS</strong>, <strong>ODS</strong> или <strong>CSV</strong>.
+    <br>С другими форматами могут возникать ошибки при экспорте.</p>
+    {{ block.super }}
+{% endblock %}

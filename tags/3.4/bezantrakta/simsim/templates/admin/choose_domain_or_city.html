@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<select id="choose_domain_or_city" name="choose_domain_or_city" title="{% trans 'choose_domain_or_city_help_text' %}">
+    <option value="all" data-domain-id="0" data-city-slug="all" data-city-id="0" data-timezone="UTC">все сайты</option>
+{% for domain in domains %}
+    {% with state=domain.city_state|yesno:'enabled,disabled,progress' is_published=domain.domain_is_published|yesno:'published,not_published' %}
+        <option class="{{ state }} {{ is_published }}" value="{{ domain.domain_slug }}" data-domain-id="{{ domain.domain_id }}"  data-city-slug="{{ domain.city_slug }}" data-timezone="{{ domain.timezone }}" data-city-id="{{ domain.city_id }}" {% if domain.domain_slug == bezantrakta_admin_domain_slug %}selected=""{% endif %}><s>{{ domain.domain_title }} - {{ domain.domain_slug }}</s></option>
+    {% endwith %}
+{% endfor %}
+</select>
