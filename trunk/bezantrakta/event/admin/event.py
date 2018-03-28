@@ -81,7 +81,6 @@ class AddEventGroupBinderInline(admin.TabularInline):
 
 
 class EventLinkBinderInline(admin.TabularInline):
-
     model = EventLinkBinder
     extra = 0
     fields = ('order', 'event_link', 'href', 'img_preview',)
@@ -99,6 +98,8 @@ class EventContainerBinderInline(admin.TabularInline):
 
 
 class EventResource(resources.ModelResource):
+    """Настройки импорта событий из старой версии сайта."""
+
     class Meta:
         model = Event
         fields = ('id', 'title', 'slug', 'description', 'keywords', 'text',
@@ -109,8 +110,12 @@ class EventResource(resources.ModelResource):
         skip_unchanged = True
 
 
+# Опциональная возможность импорта старых событий в development-окружении
+inheritance = (ImportMixin,) if settings.DEBUG else None
+
+
 @admin.register(Event)
-class EventAdmin(ImportMixin, admin.ModelAdmin):
+class EventAdmin(*inheritance, admin.ModelAdmin):
     if settings.DEBUG:
         resource_class = EventResource
 

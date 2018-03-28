@@ -2,6 +2,7 @@ import os
 
 from django.conf import settings
 from django.contrib import admin
+from django.core.exceptions import FieldDoesNotExist
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.urls import reverse
@@ -14,8 +15,10 @@ from rangefilter.filter import DateRangeFilter
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
 
+from bezantrakta.event.models import Event
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 
+from bezantrakta.order.order_basket import OrderBasket
 from ..models import Order, OrderTicket
 
 
@@ -71,9 +74,12 @@ class OrderTicketInline(admin.TabularInline):
 
 
 class OrderImportResource(resources.ModelResource):
+    """Настройки импорта заказов из старой версии сайта."""
+
     class Meta:
         model = Order
-        fields = ('id', 'ticket_service', 'ticket_service_order', 'event', 'ticket_service_event',
+        fields = ('id', 'ticket_service', 'ticket_service_order',
+                  'event', 'ticket_service_event',
                   'datetime', 'name', 'email', 'phone', 'address',
                   'delivery', 'payment', 'payment_id', 'status',
                   'tickets_count', 'total', 'overall', 'domain')
@@ -81,21 +87,61 @@ class OrderImportResource(resources.ModelResource):
 
 
 class OrderExportResource(resources.ModelResource):
+    """Настройки экспорта заказов."""
+    fk_model = Event
+
     class Meta:
         model = Order
-        fields = ('id', 'ticket_service_order',
-                  'datetime', 'name', 'email', 'phone',
-                  'delivery', 'payment', 'status',
-                  'tickets_count', 'total', 'overall')
+        fields = (
+            'event__datetime', 'event__title',
+            'ticket_service_order',
+            'name', 'email', 'phone',
+            'delivery', 'payment',
+            'tickets_count', 'total', 'overall',
+            'status',
+        )
+
+    def dehydrate_delivery(self, order):
+        """Русскоязычное название способа получения билетов."""
+        return OrderBasket.ORDER_DELIVERY_CAPTION[order.delivery]
+
+    def dehydrate_payment(self, order):
+        """Русскоязычное название способа оплаты."""
+        return OrderBasket.ORDER_PAYMENT_CAPTION[order.payment]
+
+    def dehydrate_status(self, order):
+        """Русскоязычное название статуса заказа."""
+        return OrderBasket.ORDER_STATUS_CAPTION[order.status]['description']
+
+    def get_export_headers(self):
+        """Получение русскоязычных заголовков для экспортируемых полей.
+
+        Названия связей по внешнему ключу берутся из заданной модели ``fk_model``.
+        """
+        headers = []
+        for field in self.fields:  # get_export_fields()
+            try:
+                field_title = self._meta.model._meta.get_field(field).verbose_name
+            except FieldDoesNotExist:
+                try:
+                    field = field.split('__')[1]
+                    field_title = self.fk_model._meta.get_field(field).verbose_name
+                except FieldDoesNotExist:
+                    field_title = field
+            headers.append(field_title)
+
+        return headers
+
+
+# Опциональная возможность импорта старых заказов в development-окружении (экспорт в любом случае возможен)
+inheritance = (ImportExportMixin,) if settings.DEBUG else (ExportMixin,)
 
 
 @admin.register(Order)
-class OrderAdmin(ImportExportMixin, admin.ModelAdmin):
-    # Resource class for import
+class OrderAdmin(*inheritance, admin.ModelAdmin):
     if settings.DEBUG:
         resource_class = OrderImportResource
 
-    # Resource class for export
     def get_export_resource_class(self):
         return OrderExportResource
 
