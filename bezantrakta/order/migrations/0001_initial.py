@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'заказы',
                 'verbose_name': 'заказ',
                 'db_table': 'bezantrakta_order',
-                'ordering': ('domain', 'ticket_service', '-event__datetime'),
+                'ordering': ('-datetime', 'domain', 'ticket_service'),
             },
         ),
         migrations.CreateModel(

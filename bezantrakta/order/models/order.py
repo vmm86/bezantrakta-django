@@ -182,7 +182,7 @@ class Order(models.Model):
         db_table = 'bezantrakta_order'
         verbose_name = _('order')
         verbose_name_plural = _('orders')
-        ordering = ('domain', 'ticket_service', '-event__datetime')
+        ordering = ('-datetime', 'domain', 'ticket_service')
         unique_together = (
             ('domain', 'id',),
         )
