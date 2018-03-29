@@ -223,11 +223,11 @@ class Event(models.Model):
         )
 
     def __str__(self):
-        return '({datetime}) {event_or_group} {ts_event_id} {title} - {domain}'.format(
-            event_or_group='группа' if self.is_group else 'событие',
-            title=self.title,
-            ts_event_id=self.ticket_service_event if self.ticket_service_event is not None else '',
+        return '({datetime}) {title} - {event_or_group} {ts_id} {domain}'.format(
             datetime=self.datetime.strftime('%d.%m.%Y'),
+            title=self.title,
+            event_or_group='группа' if self.is_group else 'событие',
+            ts_id=self.ticket_service_event if self.ticket_service_event is not None else '',
             domain=self.domain.title,
         )
 
