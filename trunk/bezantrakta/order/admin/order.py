@@ -9,11 +9,12 @@ from django.urls import reverse
 
 from import_export import resources
 from import_export.admin import ImportMixin, ExportMixin, ImportExportMixin
+from import_export.formats import base_formats
 
 from rangefilter.filter import DateRangeFilter
 
 from project.decorators import queryset_filter
-from project.shortcuts import build_absolute_url
+from project.shortcuts import build_absolute_url, timezone_now
 
 from bezantrakta.event.models import Event
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
@@ -92,13 +93,12 @@ class OrderExportResource(resources.ModelResource):
 
     class Meta:
         model = Order
-        fields = (
+        fields = export_order = (
             'event__datetime', 'event__title',
-            'ticket_service_order',
-            'name', 'email', 'phone',
-            'delivery', 'payment',
+            'ticket_service_order', 'datetime',
             'tickets_count', 'total', 'overall',
-            'status',
+            'name', 'email', 'phone',
+            'delivery', 'payment', 'status',
         )
 
     def dehydrate_delivery(self, order):
@@ -119,7 +119,7 @@ class OrderExportResource(resources.ModelResource):
         Названия связей по внешнему ключу берутся из заданной модели ``fk_model``.
         """
         headers = []
-        for field in self.fields:  # get_export_fields()
+        for field in self._meta.fields:
             try:
                 field_title = self._meta.model._meta.get_field(field).verbose_name
             except FieldDoesNotExist:
@@ -144,6 +144,36 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
     def get_export_resource_class(self):
         return OrderExportResource
+
+    # Рекомендуется экспортировать данные в формате XLS, ODS или CSV.
+    # С другими форматами могут возникать ошибки при экспорте.
+    formats = (
+        base_formats.CSV,
+        base_formats.XLS,
+        # base_formats.XLSX,
+        # base_formats.TSV,
+        base_formats.ODS,
+        # base_formats.JSON,
+        # base_formats.YAML,
+        # base_formats.HTML,
+    )
+
+    def get_export_queryset(self, request):
+        """Упорядочить экспортируемые заказы по дате/времени события по убыванию."""
+        list_display = self.get_list_display(request)
+        list_display_links = self.get_list_display_links(request, list_display)
+
+        change_list = self.get_changelist(request)
+        cl = change_list(
+            request, self.model, list_display,
+            list_display_links, self.list_filter,
+            self.date_hierarchy, self.search_fields,
+            self.list_select_related, self.list_per_page,
+            self.list_max_show_all, self.list_editable,
+            self
+        )
+
+        return cl.queryset.order_by('-event__datetime')
 
     # date_hierarchy = 'event__datetime'
 
