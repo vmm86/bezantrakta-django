@@ -284,10 +284,9 @@ class OrderBasket():
         """Логирование информации о полученном предварительном резерве или созданном заказе."""
         self.logger.info('Сайт: {title} ({id})'.format(title=self.domain_title, id=self.domain_id))
         self.logger.info('Сервис продажи билетов: {title} ({id})'.format(
-                title=self.ticket_service['title'],
-                id=self.ticket_service['id']
-            )
-        )
+            title=self.ticket_service['title'],
+            id=self.ticket_service['id']
+        ))
 
         self.logger.info('UUID события: {}'.format(self.order['event_uuid']))
         self.logger.info('Идентификатор события: {}'.format(self.order['event_id']))
@@ -349,11 +348,13 @@ class OrderBasket():
                 if not seats_and_prices:
                     response['success'] = False
                     response['message'] = 'Не получена информация о билетах в событии'
+                    return response
                 ticket = seats_and_prices['seats'].get(ticket_id, None)
                 self.logger.info('\nticket: {}'.format(ticket))
                 if not ticket:
                     response['success'] = False
                     response['message'] = 'Не получена информация о билете'
+                    return response
 
                 if reserve['success']:
                     self.order['tickets'][ticket_id] = {

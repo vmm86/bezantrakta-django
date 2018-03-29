@@ -34,6 +34,10 @@ def reserve(request):
         # Получение существующего ранее инициализированного предварительного резерва
         basket = OrderBasket(order_uuid=order_uuid)
 
+        if not basket or not basket.order:
+            response = {'success': False, 'message': 'Отсутствует предварительный резерв с указанным UUID'}
+            return JsonResponseUTF8(response)
+
         basket.logger.info('\n----------Добавление/удаление билета в предварительном резерве----------')
         basket.logger.info('{:%Y-%m-%d %H:%M:%S} (UTC)'.format(timezone_now()))
 
