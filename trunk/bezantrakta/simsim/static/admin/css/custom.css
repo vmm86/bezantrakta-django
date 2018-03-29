@@ -500,6 +500,9 @@ a.section:visited {
 #result_list .field-event_venue {
     max-width: 100px;
 }
+#result_list .field-event {
+    max-width: 200px;
+}
 
 #result_list .column-ico_preview {
     width: 64px;
