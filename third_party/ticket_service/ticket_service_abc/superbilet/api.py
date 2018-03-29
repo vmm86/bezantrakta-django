@@ -12,7 +12,7 @@ from operator import itemgetter
 
 from zeep import Client, CachingClient, xsd
 from zeep.cache import SqliteCache
-from zeep.exceptions import Fault
+from zeep.exceptions import Error
 from zeep.transports import Transport
 
 try:
@@ -132,7 +132,7 @@ class SuperBilet(TicketService):
         try:
             self.client = Client(self.__host, transport=self.__transport)
         except requests.exceptions.RequestException as exc:
-            self.logger.error('__init__ exception: {}'.format(exc))
+            self.logger.error('__init__ exception: {}'.format(repr(exc)))
 
         init_dt_end = datetime.now()
         init_dt_delta = (init_dt_end - init_dt_start).total_seconds()
@@ -217,8 +217,8 @@ class SuperBilet(TicketService):
         # Обработка возможных исключений в грёбаном СуперГовне
         try:
             response = self.client.service[method](**data)
-        except Fault as exc:
-            self.logger.error('request exception: {}'.format(exc))
+        except Error as exc:
+            self.logger.error('request exception: {}'.format(repr(exc)))
 
             response = {}
             response['success'] = False
