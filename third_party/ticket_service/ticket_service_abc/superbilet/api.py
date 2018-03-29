@@ -134,7 +134,6 @@ class SuperBilet(TicketService):
         except requests.exceptions.RequestException as exc:
             self.logger.error('__init__ exception: {}'.format(exc))
 
-            return exc
         init_dt_end = datetime.now()
         init_dt_delta = (init_dt_end - init_dt_start).total_seconds()
         # Логирование слишком длительных запросов
