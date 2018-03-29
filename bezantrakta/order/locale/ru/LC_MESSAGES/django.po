@@ -54,7 +54,7 @@ msgstr "ID события"
 
 #: models/order.py:89
 msgid "order_datetime"
-msgstr "Дата и время заказа"
+msgstr "Дата заказа"
 
 #: models/order.py:93
 msgid "order_name"
@@ -82,7 +82,7 @@ msgstr "Доставка курьером"
 
 #: models/order.py:120
 msgid "order_mode_email"
-msgstr "Электронный билет на email"
+msgstr "Электронный билет"
 
 #: models/order.py:127
 msgid "order_delivery"
