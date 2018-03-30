@@ -223,7 +223,7 @@ class Event(models.Model):
         )
 
     def __str__(self):
-        return '({datetime}) {title} - {event_or_group} {ts_id} {domain}'.format(
+        return '({datetime}) {title} - {event_or_group} - {ts_id} {domain}'.format(
             datetime=self.datetime.strftime('%d.%m.%Y'),
             title=self.title,
             event_or_group='группа' if self.is_group else 'событие',

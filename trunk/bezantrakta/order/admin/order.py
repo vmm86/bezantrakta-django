@@ -14,7 +14,7 @@ from import_export.formats import base_formats
 from rangefilter.filter import DateRangeFilter
 
 from project.decorators import queryset_filter
-from project.shortcuts import build_absolute_url, timezone_now
+from project.shortcuts import build_absolute_url
 
 from bezantrakta.event.models import Event
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
