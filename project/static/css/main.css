@@ -469,9 +469,9 @@ button {
     display: inline-block;
 }
 
-#yandex-metrika-counter, 
-#mailru-rating-counter, 
-#rambler-top100-counter, 
+#yandex-metrika-counter,
+#mailru-rating-counter,
+#rambler-top100-counter,
 #superbilet-banner {
     display: none;
 }
@@ -548,29 +548,66 @@ button {
 
 .debug-info {
     display: block;
+
     background: url(/static/global/svg/search-input.svg) no-repeat;
     background-size: 100% 100%;
     -moz-background-size: 100% 100%;
     -webkit-background-size: 100% 100%;
+
     color: #000;
     font-size: 0.75rem;
     text-align: center;
     text-transform: uppercase;
-    width: 90%;
+
     padding: 0.25rem 0;
+
+    width: 90%;
+
     position: absolute;
-    top: 4%;
+    top: 53%;
     left: 6%;
 }
 
-.cancelled {
-    background-color: red;
-    font-size: 1.25rem;
-    transform: rotate(-45deg);
-    width: 100%;
+.overlay {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.2rem;
+    letter-spacing: 0.05rem;
+    text-align: center;
+    text-transform: uppercase;
+
+    padding: 0.25rem;
+
+    width: 120%;
+    height: 2rem;
+
     position: absolute;
-    top: 10%;
-    left: -33%;
+    top: 18%;
+    left: -30%;
+
+    transform: rotate(-45deg);
+}
+
+.overlay.title {
+    background-color: #FFE57F;
+    color: #000;
+    text-shadow: -1px 1px 0 #FFF;
+}
+
+.overlay.cancelled {
+    background-color: #E53935;
+    color: #FFF;
+    text-shadow: -1px 1px 0 #9a1818;
+}
+
+.overlay.rescheduled {
+    background-color: #1E88E5;
+    color: #FFF;
+    text-shadow: -1px 1px 0 #0D47A1;
 }
 
 /* Lightbox2 */

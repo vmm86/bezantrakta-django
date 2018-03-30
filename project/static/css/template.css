@@ -411,7 +411,7 @@
     margin-right: 0 !important;
 }
 
-.calendar .fc-header-toolbar .fc-day-header, 
+.calendar .fc-header-toolbar .fc-day-header,
 .calendar .fc-view-container .fc-head-container table th {
     background: url(/static/global/svg/calendar-day-header.svg) center center no-repeat;
     background-size: 95% 90%;
@@ -629,9 +629,8 @@
 
     position: relative;
     top: -0.9rem;
-    left: 13vw;
 
-    width: 80%;
+    width: 100%;
 
     z-index: 5;
 }
@@ -685,7 +684,7 @@
 
     font-size: 1rem;
     text-align: justify;
-    
+
     padding: 1% 2%;
 
     position: relative;
@@ -1286,7 +1285,7 @@
     color:#fdce06;
     width:100%;
     text-align: center;
-} 
+}
 .copyright a {
     font:normal 11px Tahoma, Geneva, sans-serif;
     color:#fdce06;
@@ -1343,8 +1342,8 @@
     height: auto;
 }
 
-#phocagallery-pane .phocagallery-box-file, 
-#phocagallery .phocagallery-box-file, 
+#phocagallery-pane .phocagallery-box-file,
+#phocagallery .phocagallery-box-file,
 .phocagallery-box-file {
     display: inline-block;
     background: transparent;
@@ -1356,8 +1355,8 @@
     float: none;
 }
 
-#phocagallery .pgcenter, 
-#phocagallery-upload .pgcenter, 
+#phocagallery .pgcenter,
+#phocagallery-upload .pgcenter,
 #phocagallery-subcategory-creating .pgcenter {
     font-size: 0.9rem;
     margin-top: 2rem;
