@@ -12,6 +12,19 @@
                     <br>{% if item.event_category_title %}{{ item.event_category_title }}{% endif %}
                 </span>
             {% endif %}
+
+            {% if item.settings.title %}
+                <span class="overlay title">{{ item.settings.title }}</span>
+            {% endif %}
+
+            {% if item.settings.cancelled %}
+                <span class="overlay cancelled">Отмена</span>
+            {% endif %}
+
+            {% if item.settings.rescheduled %}
+                <span class="overlay rescheduled">Перенос</span>
+            {% endif %}
+
             <img src="{% get_media_prefix %}{{ item.poster }}" alt="{{ item.event_datetime }} {{ item.event_title }} {{ item.event_venue_title }}">
         </a>
     </div>
