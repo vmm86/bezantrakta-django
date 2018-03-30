@@ -101,6 +101,14 @@ class OrderExportResource(resources.ModelResource):
             'delivery', 'payment', 'status',
         )
 
+    def dehydrate_datetime(self, order):
+        """Человекопонятная дата/время заказа."""
+        return '{:%d.%m.%Y %H:%M}'.format(order.datetime)
+
+    def dehydrate_event__datetime(self, order):
+        """Человекопонятная дата/время события."""
+        return '{:%d.%m.%Y %H:%M}'.format(order.event.datetime)
+
     def dehydrate_delivery(self, order):
         """Русскоязычное название способа получения билетов."""
         return OrderBasket.ORDER_DELIVERY_CAPTION[order.delivery]
