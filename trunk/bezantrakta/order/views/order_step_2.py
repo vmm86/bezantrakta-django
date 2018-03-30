@@ -17,14 +17,29 @@ def order_step_2(request):
     try:
         event_uuid = uuid.UUID(event_uuid)
     except (TypeError, ValueError):
-        redirect('/')
+        event_uuid = None
 
     # UUID предварительного резерва
     order_uuid = request.COOKIES.get('bezantrakta_order_uuid', None)
     try:
         order_uuid = uuid.UUID(order_uuid)
     except (TypeError, ValueError):
-        redirect('/')
+        order_uuid = None
+
+    if not event_uuid or not order_uuid:
+        # Сообщение об ошибке
+        msgs = [
+            message(
+                'warning',
+                'К сожалению, при оформлении заказа произошла ошибка. 🙁'
+            ),
+            message(
+                'info',
+                '<a href="https://yandex.ru/support/common/browsers-settings/browsers-cookies.html" target="_blank">👉 Включите cookies в вашем браузере для того, чтобы успешно завершить заказ</a>.'
+            ),
+        ]
+        render_messages(request, msgs)
+        return redirect('error')
 
     # Информация о событии из кэша
     event = cache_factory('event', event_uuid)
