@@ -132,6 +132,8 @@ class OrderBasket():
 
     CUSTOMER_ATTRIBUTES = ('name', 'phone', 'email', 'address', 'order_type')
 
+    OVERALL_EXTRA_MULTIPLIER = 50
+
     def __init__(self, **kwargs):
         self.logger = logging.getLogger(kwargs.get('logger', 'bezantrakta.reserve'))
 
@@ -715,13 +717,11 @@ class OrderBasket():
         if order_approve['success']:
             self.logger.info('Заказ {order_id} в сервисе продажи билетов отмечен как оплаченный'.format(
                 order_id=self.order['order_id']
-                )
-            )
+            ))
         else:
             self.logger.info('Заказ {order_id} НЕ удалось отметить в сервисе продажи билетов как оплаченный'.format(
                 order_id=self.order['order_id']
-                )
-            )
+            ))
 
         # Обновление статуса заказа в БД
         self.order_status_db('approved')
@@ -743,13 +743,11 @@ class OrderBasket():
         if order_cancel['success']:
             self.logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
                 order_id=self.order['order_id']
-                )
-            )
+            ))
         else:
             self.logger.info('Заказ {order_id} НЕ удалось отменить в сервисе продажи билетов'.format(
                 order_id=self.order['order_id']
-                )
-            )
+            ))
 
         # Обновление статуса заказа в БД
         self.order_status_db('cancelled')
@@ -890,7 +888,7 @@ class OrderBasket():
                 if self.markup['commission'] > 0:
                     self.order['overall'] = self.overall_with_commission()
                     self.order['overall_header'] = OrderBasket.ORDER_OVERALL_CAPTION['overall_commission_extra']
-                # Иначе - с учётом КОМИССИИ ПЛАТЁЖНОЙ СИСТЕМЫ и сервисного сбора
+                # Иначе - также с учётом комиссии платёжной системы и сервисного сбора
                 else:
                     self.order['overall'] = self.overall_with_extra(extra)
                     self.order['overall_header'] = OrderBasket.ORDER_OVERALL_CAPTION['overall_commission_extra']
@@ -903,6 +901,13 @@ class OrderBasket():
                 # else:
                     # self.order['overall'] = self.order['total']
                     # self.order['overall_header'] = OrderBasket.ORDER_OVERALL_CAPTION['overall_total']
+
+        # Пересчёт общей суммы заказа для удобства оффлайн-оплаты (кратно значению в OVERALL_EXTRA_MULTIPLIER)
+        if self.order['payment'] == 'cash':
+            overall = self.order['overall']
+            multiplier = OrderBasket.OVERALL_EXTRA_MULTIPLIER
+
+            self.order['overall'] = (overall - (overall % multiplier)) + multiplier
 
     def overall_with_extra(self, extra):
         """Общая сумма заказа с учётом сервисного сбора.
