@@ -124,7 +124,9 @@ class SuperBilet(TicketService):
         self.__mode = init['mode']
 
         wsdl_cache = '/tmp/{}.db'.format(SuperBilet.slug)
-        self.__cache = SqliteCache(path=wsdl_cache, timeout=3600)
+        # Таймаут в секундах (30 дней) на повторный запрос WSDL
+        timeout = 60 * 60 * 24 * 30
+        self.__cache = SqliteCache(path=wsdl_cache, timeout=timeout)
         self.__transport = Transport(cache=self.__cache)
 
         # Экземпляр SOAP-клиента (обработка возможных исключений в грёбаном СуперГовне)
