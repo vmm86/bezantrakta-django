@@ -85,6 +85,12 @@ def order_step_1(request, year, month, day, hour, minute, slug):
         # Информация о событии из кэша
         event = cache_factory('event', event['event_uuid'])
 
+        # Возможное перенаправление на другое (более позднее) событие
+        event_redirect = event['settings'].get('redirect', None)
+        if event_redirect:
+            redirect_url = build_absolute_url(request.domain_slug, event_redirect)
+            return redirect(redirect_url, permanent=True)
+
         # Событие предстоит или уже прошло
         today = timezone_now()
         event['is_coming'] = True if event['event_datetime'] > today else False
