@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('is_on_index', models.BooleanField(default=False, verbose_name='На главной')),
                 ('min_price', models.DecimalField(decimal_places=2, max_digits=10, verbose_name='Минимальная цена билета')),
                 ('min_age', models.PositiveSmallIntegerField(choices=[(0, '0+'), (6, '6+'), (12, '12+'), (16, '16+'), (18, '18+')], default=0, verbose_name='Возрастное ограничение')),
-                ('datetime', models.DateTimeField(verbose_name='Дата и время события')),
+                ('datetime', models.DateTimeField(verbose_name='Дата события')),
                 ('is_group', models.BooleanField(default=False, verbose_name='Группа')),
                 ('ticket_service_event', models.PositiveIntegerField(blank=True, db_column='ticket_service_event_id', null=True, verbose_name='ID события или группы')),
                 ('ticket_service_scheme', models.PositiveIntegerField(blank=True, db_column='ticket_service_scheme_id', null=True, verbose_name='ID схемы зала')),
