@@ -76,7 +76,7 @@ class OrderCache(ProjectCache):
                 # Преобразование списка билетов к словарю из словарей, ключи которго - ``ticket_id``
                 order['tickets'] = {t['ticket_id']: t for t in order['tickets']}
 
-            print('from database!')
+            # print('from database!')
             return order
 
     def cache_preprocessing(self, **kwargs):

@@ -85,7 +85,7 @@ def processing(request):
             # Проверка состояния билетов в созданном заказе
             basket.tickets_check('ordered')
 
-            # Сохранение созданного зааза и билетов в БД
+            # Сохранение созданного заказа и билетов в БД
             order_create_db = basket.order_create_db()
 
             if not order_create_db['success']:
