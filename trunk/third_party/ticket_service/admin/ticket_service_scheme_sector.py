@@ -29,7 +29,7 @@ class TicketServiceSchemeSectorAdmin(admin.ModelAdmin):
         ('scheme', RelatedOnlyFieldDropdownFilter),
     )
     list_per_page = 20
-    search_fields = ('ticket_service_sector_title',)
+    search_fields = ('ticket_service_sector_title', 'sector',)
 
     @queryset_filter('Domain', 'scheme__ticket_service__domain__slug')
     def get_queryset(self, request):
