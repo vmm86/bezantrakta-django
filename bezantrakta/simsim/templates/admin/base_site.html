@@ -62,8 +62,9 @@
 {% endblock %}
 
 {% block content_title %}
-    <h1>{% trans 'bezantrakta_admin' %}{% if debug %} TIME_ZONE: {{ TIME_ZONE }}{% endif %}</h1>
-    <p>{% trans 'domain_icon_help_text' %}</p>
+    {% if opts %}
+        {{ block.super }}
+    {% endif %}
 {% endblock %}
 
 {% block footer %}

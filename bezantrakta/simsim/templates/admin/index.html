@@ -1,6 +1,13 @@
 {% extends "admin/index.html" %}
 {% load i18n log %}
 
+{% block pretitle %}
+    {% if not opts %}
+        <h1>{% trans 'bezantrakta_admin' %}{% if debug %} TIME_ZONE: {{ TIME_ZONE }}{% endif %}</h1>
+        <p>{% trans 'domain_icon_help_text' %}</p>
+    {% endif %}
+{% endblock %}
+
 {# Список последних действий для всех пользователей #}
 {% block sidebar %}
 <div id="content-related">
