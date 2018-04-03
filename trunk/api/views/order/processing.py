@@ -65,7 +65,7 @@ def processing(request):
         basket.tickets_check('reserved')
 
         if basket.order['tickets_count'] == 0:
-            basket.error('Резерв на все билеты истёк!')
+            basket.logger.error('Резерв на все билеты истёк!')
 
             # Сообщение об ошибке
             msgs = [
