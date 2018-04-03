@@ -45,7 +45,7 @@ class TicketServiceSchemeVenueBinderAdmin(admin.ModelAdmin):
     )
     list_per_page = 20
     readonly_fields = ('ticket_service', 'ticket_service_scheme_id',)
-    search_fields = ('ticket_service_scheme_title',)
+    search_fields = ('ticket_service_scheme_title', 'scheme',)
 
     @queryset_filter('Domain', 'ticket_service__domain__slug')
     def get_queryset(self, request):
