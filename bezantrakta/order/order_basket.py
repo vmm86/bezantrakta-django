@@ -903,7 +903,7 @@ class OrderBasket():
                     # self.order['overall_header'] = OrderBasket.ORDER_OVERALL_CAPTION['overall_total']
 
         # Пересчёт общей суммы заказа для удобства оффлайн-оплаты (кратно значению в OVERALL_EXTRA_MULTIPLIER)
-        if self.order['payment'] == 'cash':
+        if extra > 0 and self.order['payment'] == 'cash':
             overall = self.order['overall']
             multiplier = OrderBasket.OVERALL_EXTRA_MULTIPLIER
 
