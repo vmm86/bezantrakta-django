@@ -199,6 +199,7 @@ class OrderBasket():
             self.city_timezone = domain['city_timezone']
             self.domain_id = domain['domain_id']
             self.domain_title = domain['domain_title']
+            self.domain_slug = event['domain_slug']
 
             # Получение реквизитов покупателя ???
             if 'customer' not in self.order:
