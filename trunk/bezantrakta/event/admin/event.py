@@ -235,7 +235,6 @@ class EventAdmin(*inheritance, admin.ModelAdmin):
         Добавление событий в группе работает только для группы.
         Добавление ссылок работает только для событий.
         """
-        self.inlines = self.group_inlines if obj.is_group else self.event_inlines
         if obj is not None:
             self.inlines = self.group_inlines if obj.is_group else self.event_inlines
         return super(EventAdmin, self).get_form(request, obj, **kwargs)
