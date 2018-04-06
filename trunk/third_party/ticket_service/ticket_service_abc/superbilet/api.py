@@ -141,7 +141,6 @@ class SuperBilet(TicketService):
         # Логирование слишком длительных запросов
         if init_dt_delta > SuperBilet.request_timeout:
             self.logger.error('__init__ is too long: {} s.'.format(init_dt_delta))
-            print('__init__ delta: ', init_dt_delta)
 
     def __str__(self):
         return '{cls}({host}: {mode})'.format(
@@ -224,16 +223,17 @@ class SuperBilet(TicketService):
 
             response = {}
             response['success'] = False
-            response['code'] = exc.code
-            response['message'] = exc.message
+            response['message'] = repr(exc)
 
             return response
         request_dt_end = datetime.now()
         request_dt_delta = (request_dt_end - request_dt_start).total_seconds()
         # Логирование слишком длительных запросов
         if request_dt_delta > SuperBilet.request_timeout:
-            self.logger.error('request is too long: {} s.'.format(request_dt_delta))
-            print('    request delta: ', request_dt_delta)
+            self.logger.error('{method} request is too long: {seconds} s.'.format(
+                method=method,
+                seconds=request_dt_delta)
+            )
 
         # print('XML:\n', response, '\n')
 
@@ -1346,7 +1346,7 @@ class SuperBilet(TicketService):
     def order_refund(self, **kwargs):
         """Возврат стоимости билетов (с удалением заказа и освобождением билетов для продажи).
 
-        Возвраты в СуперБилет не делаются - метод оставлен для обратной совместимости.
+        Возвраты в СуперБилет НЕ делаются - метод оставлен для обратной совместимости.
 
         Args:
             order_id (int): Идентификатор заказа.
