@@ -1065,7 +1065,7 @@ class Radario(TicketService):
             dict: Информация об успешной или НЕуспешной оплате.
 
                 Содержимое результата:
-                    * **success** (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
+                    * success (bool): Успешный (``True``) или НЕуспешный (``False``) результат.
         """
         method = 'POST'
         url = '/orders/approve'
@@ -1075,7 +1075,11 @@ class Radario(TicketService):
         output_mapping = {}
 
         approve = self.request(method, url, data, output_mapping)
-        print('approve:', approve)
+        # print('approve:', approve)
+
+        # Если заказ уже был отмечен как оплаченный ранее
+        if not approve['success'] and approve['code'] == 2013:
+            approve['success'] = True
 
         return approve
 
@@ -1110,7 +1114,11 @@ class Radario(TicketService):
         }
 
         refund = self.request(method, url, data, output_mapping)
-        print('refund:', refund)
+        # print('refund:', refund)
+
+        # Если заказ уже был отмечен как возвращённый ранее
+        if not refund['success'] and refund['code'] == 2000:
+            refund['success'] = True
 
         # {
         #     'success': True
@@ -1140,8 +1148,6 @@ class Radario(TicketService):
 
         if refund['success'] and refund['refund_id']:
             response['success'] = True
-
-            # response['refund_id'] = refund['refund_id']
             response['amount'] = refund['amount']
         else:
             response['success'] = False

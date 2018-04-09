@@ -5,6 +5,7 @@ from collections import OrderedDict
 from decimal import Decimal
 from mail_templated import EmailMessage
 from random import randint
+from smtplib import SMTPException
 from time import sleep
 
 from django.conf import settings
@@ -24,7 +25,36 @@ class OrderBasket():
 
     Проводит определённые операции с заказом, получая информацию о нём из кэша.
 
+    Class attributes:
+        ORDER_TYPE (tuple): Типы заказа билетов (комбинация способа получения билетов и способа оплаты). Упорядочены в порядке предпочтения для показа на шаге 2 заказа билетов.
+        ORDER_TYPE_MAPPING (dict): Способы получения и оплаты билетов для каждого варианта заказа.
+        ORDER_DELIVERY_CAPTION (dict): Подписи способов получения билетов.
+        ORDER_PAYMENT_CAPTION (dict): Подписи способов оплаты.
+        ORDER_OVERALL_CAPTION (dict): Подписи разных вариантов вычисления общей суммы заказа.
+        ORDER_STATUS_CAPTION (dict): Подписи статусов заказа и их визуальное оформление.
+        CUSTOMER_ATTRIBUTES (tuple): Реквизиты покупателя, которые необходимо сохранять в cookies браузера.
+        OVERALL_EXTRA_MULTIPLIER (int): Число, до которого округляется общая сумма заказа с сервисным сбором и с оффлайн-оплатой.
+
     Attributes:
+        logger (logging.Logger): Логгер для записи информации о текущей операции.
+
+        event_title (str): Название события.
+        event_url (str): URL события на сайте (для обратной ссылки в случае ошибки).
+
+        city_title (str): Название города.
+        city_timezone (pytz.tzfile): Часовой пояс города сайта.
+
+        domain_id (int): Идентификатор сайта.
+        domain_title (str): Название сайта.
+        domain_slug (str): Псевдоним (поддомен) сайта.
+
+        ticket_service (dict): Информация о сервисе продажи билетов.
+        payment_service (dict): Информация о сервисе онлайн-оплаты.
+
+        markup (dict): Различные возможные наценки при оформлении заказа.
+
+        payment_url (str): URL платёжной формы при онлйн-оплате.
+
         order (dict): Параметры текущего предварительного резерва или созданного заказа.
             Содержимое ``order``:
                 * order_uuid (uuid.UUID): UUID заказа.
@@ -83,33 +113,24 @@ class OrderBasket():
                 * overall (decimal.Decimal): Общая сумма заказа (с учётом возможных наценок/скидок).
                 * overall_header (str): Заголовок для общей суммы заказа (с учётом возможных наценок/скидок).
     """
-    # Варианты заказа билетов (комбинация способа получения билетов и способа оплаты)
-    # Упорядочены в порядке предпочтения для показа на шаге 2 заказа билетов
     ORDER_TYPE = ('self_online', 'email_online', 'self_cash', 'courier_cash',)
-    # Способы получения и оплаты билетов для каждого варианта заказа
     ORDER_TYPE_MAPPING = {
         'self_online':  {'delivery': 'self',    'payment': 'online', },
         'email_online': {'delivery': 'email',   'payment': 'online', },
         'self_cash':    {'delivery': 'self',    'payment': 'cash', },
         'courier_cash': {'delivery': 'courier', 'payment': 'cash', },
     }
-
-    # Подписи способов получения билетов
     ORDER_DELIVERY_CAPTION = {
         None:      '-',
         'self':    'получение в кассе',
         'courier': 'доставка курьером',
         'email':   'электронный билет',
     }
-
-    # Подписи способов оплаты
     ORDER_PAYMENT_CAPTION = {
         None:     '-',
         'cash':   'оплата при получении',
         'online': 'онлайн-оплата',
     }
-
-    # Подписи разных вариантов вычисления общей суммы заказа
     ORDER_OVERALL_CAPTION = {
         'overall_total':            'Общая сумма заказа',
         'overall_extra':            'Всего с учётом сервисного сбора',
@@ -118,8 +139,6 @@ class OrderBasket():
         'overall_commission':       'Всего с учётом комиссии платёжной системы',
         'overall_commission_extra': 'Всего с учётом комиссии платёжной системы и сервисного сбора',
     }
-
-    # Подписи статусов заказа и их визуальное оформление
     ORDER_STATUS_CAPTION = {
         # Статус предварительного резерва мест, когда заказ ещё не создан
         'reserved':  {'color': 'black',  'description': 'предварительный резерв'},
@@ -129,9 +148,7 @@ class OrderBasket():
         'approved':  {'color': 'green',  'description': 'успешно завершён'},
         'refunded':  {'color': 'violet', 'description': 'возвращён'},
     }
-
     CUSTOMER_ATTRIBUTES = ('name', 'phone', 'email', 'address', 'order_type')
-
     OVERALL_EXTRA_MULTIPLIER = 50
 
     def __init__(self, **kwargs):
@@ -704,58 +721,170 @@ class OrderBasket():
         return payment_status
 
     def order_approve(self):
-        self.logger.info('Подтверждение оплаты заказа в сервисе продажи билетов...')
+        # Подтвердить можно только созданный ранее заказ
+        if self.order['status'] == 'ordered':
+            self.logger.info('Подтверждение оплаты заказа в сервисе продажи билетов...')
 
-        order_approve = self._ts.order_approve(
-            event_id=self.order['event_id'],
-            order_uuid=self.order['order_uuid'],
-            order_id=self.order['order_id'],
-            payment_id=self.order['payment_id'],
-            payment_datetime=self.now(),
-            tickets=self.order['tickets'],
-        )
+            order_approve = self._ts.order_approve(
+                event_id=self.order['event_id'],
+                order_uuid=self.order['order_uuid'],
+                order_id=self.order['order_id'],
+                payment_id=self.order['payment_id'],
+                payment_datetime=self.now(),
+                tickets=self.order['tickets'],
+            )
 
-        self.logger.info('order_approve: {}'.format(order_approve))
+            self.logger.info('order_approve: {}'.format(order_approve))
 
-        if order_approve['success']:
-            self.logger.info('Заказ {order_id} в сервисе продажи билетов отмечен как оплаченный'.format(
-                order_id=self.order['order_id']
-            ))
+            if order_approve['success']:
+                # Обновление статуса заказа в БД
+                self.order_status_db('approved')
+
+                self.logger.info('Заказ {order_id} в сервисе продажи билетов отмечен как оплаченный'.format(
+                    order_id=self.order['order_id']
+                ))
+            else:
+                self.logger.info('Заказ {order_id} НЕ удалось отметить в сервисе продажи билетов как оплаченный'.format(
+                    order_id=self.order['order_id']
+                ))
+
+            response = order_approve
         else:
-            self.logger.info('Заказ {order_id} НЕ удалось отметить в сервисе продажи билетов как оплаченный'.format(
-                order_id=self.order['order_id']
-            ))
+            response = {}
+            response['success'] = False
+            response['message'] = 'Подтвердить можно только созданный ранее заказ'
 
-        # Обновление статуса заказа в БД
-        self.order_status_db('approved')
-
-        return order_approve
+        return response
 
     def order_cancel(self):
-        self.logger.info('Отмена заказа в сервисе продажи билетов...')
+        # Отменить можно только созданный ранее заказ
+        if self.order['status'] == 'ordered':
+            self.logger.info('Отмена заказа в сервисе продажи билетов...')
 
-        order_cancel = self._ts.order_cancel(
-            event_id=self.order['event_id'],
-            order_uuid=self.order['order_uuid'],
-            order_id=self.order['order_id'],
-            tickets=self.order['tickets'],
-        )
+            order_cancel = self._ts.order_cancel(
+                event_id=self.order['event_id'],
+                order_uuid=self.order['order_uuid'],
+                order_id=self.order['order_id'],
+                tickets=self.order['tickets'],
+            )
 
-        self.logger.info('order_cancel: {}'.format(order_cancel))
+            self.logger.info('order_cancel: {}'.format(order_cancel))
 
-        if order_cancel['success']:
-            self.logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
-                order_id=self.order['order_id']
-            ))
+            if order_cancel['success']:
+                # Обновление статуса заказа в БД
+                self.order_status_db('cancelled')
+
+                self.logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
+                    order_id=self.order['order_id']
+                ))
+            else:
+                self.logger.info('Заказ {order_id} НЕ удалось отменить в сервисе продажи билетов'.format(
+                    order_id=self.order['order_id']
+                ))
+
+            response = order_cancel
         else:
-            self.logger.info('Заказ {order_id} НЕ удалось отменить в сервисе продажи билетов'.format(
-                order_id=self.order['order_id']
-            ))
+            response = {}
+            response['success'] = False
+            response['message'] = 'Отменить можно только созданный ранее заказ'
 
-        # Обновление статуса заказа в БД
-        self.order_status_db('cancelled')
+        return response
 
-        return order_cancel
+    def order_refund(self, amount, reason=None):
+        response = {}
+
+        self.logger.info('\nСумма возврата: {} р.'.format(amount))
+        self.logger.info('Причина возврата: {}.'.format(reason))
+
+        # Возврат возможен только для подтверждённых заказов
+        if self.order['status'] == 'approved':
+            # Проверка состояния билетов в заказе (на всякий случай)
+            self.tickets_check('approved')
+
+            # Возврат заказа в сервисе продажи билетов
+            self.logger.info('\nВозврат заказа в сервисе продажи билетов...')
+
+            order_refund = self._ts.order_refund(
+                order_id=self.order['order_id'],
+                payment_id=self.order['payment_id'],
+                amount=amount,
+                reason=reason,
+            )
+            # order_refund = {'success': True, 'amount': amount}
+            # order_refund = {'success': False, 'code': 2000, 'message': 'Order has been already deleted'}
+
+            self.logger.info('order_refund: {}'.format(order_refund))
+
+            if order_refund['success']:
+                order_message = 'Заказ {order_id} успешно возвращён в сервисе продажи билетов'.format(
+                    order_id=self.order['order_id']
+                )
+            else:
+                order_message = 'Заказ {order_id} в сервисе продажи билетов возвратить НЕ удалось'.format(
+                    order_id=self.order['order_id']
+                )
+            self.logger.info(order_message)
+
+            # Возврат заказа в сервисе онлайн-оплаты
+            self.logger.info('\nВозврат заказа в сервисе онлайн-оплаты...')
+
+            payment_refund = self._ps.payment_refund(
+                event_uuid=self.order['event_uuid'],
+                event_id=self.order['event_id'],
+                order_uuid=self.order['order_uuid'],
+                order_id=self.order['order_id'],
+                customer=self.order['customer'],
+                payment_id=self.order['payment_id'],
+                amount=amount,
+            )
+            # payment_refund = {'success': True, 'amount': amount}
+            # payment_refund = {'success': False, 'code': 5, 'message': 'Неверная сумма'}
+
+            self.logger.info('payment_refund: {}'.format(payment_refund))
+
+            if payment_refund['success']:
+                payment_message = 'Заказ {order_id} успешно возвращён в сервисе онлайн-оплаты'.format(
+                    order_id=self.order['order_id']
+                )
+            else:
+                payment_message = 'Заказ {order_id} в сервисе онлайн-оплаты возвратить НЕ удалось'.format(
+                    order_id=self.order['order_id']
+                )
+            self.logger.info(payment_message)
+
+            if order_refund['success'] and payment_refund['success']:
+                # Обновление статуса заказа в БД
+                self.order_status_db('refunded')
+
+                response['success'] = True
+                response['message'] = 'Возврат по заказу № {order_id} проведён успешно'.format(
+                    order_id=self.order['order_id']
+                )
+            else:
+                response['success'] = False
+
+                if order_refund['success']:
+                    response['message'] = 'Возврат по заказу № {order_id} проведён успешно только в сервисе продажи билетов. {code}: {message}.'.format(
+                        order_id=self.order['order_id'],
+                        code=payment_refund['code'],
+                        message=payment_refund['message']
+                    )
+                elif payment_refund['success']:
+                    response['message'] = 'Возврат по заказу № {order_id} проведён успешно только в сервисе онлайн-оплаты. {code}: {message}.'.format(
+                        order_id=self.order['order_id'],
+                        code=order_refund['code'],
+                        message=order_refund['message']
+                    )
+                else:
+                    response['message'] = 'Возврат НЕ удалось завершить успешно. {}: {}. {}: {}.'.format(
+                        order_refund['code'], order_refund['message'],
+                        payment_refund['code'], payment_refund['message']
+                    )
+        else:
+            response['success'] = False
+            response['message'] = 'Возврат возможен только для подтверждённых заказов'
+
+        return response
 
     def order_status_db(self, status):
         """Сохранение статуса заказа в БД."""
@@ -763,7 +892,7 @@ class OrderBasket():
 
         Order.objects.filter(id=self.order['order_uuid']).update(status=self.order['status'])
 
-        self.logger.info('Статус заказа: {}'.format(self.order['status_caption']))
+        self.logger.info('\nСтатус заказа: {}'.format(self.order['status_caption']))
 
         self.update()
 
@@ -818,8 +947,30 @@ class OrderBasket():
             connection=email['from']['connection']
         )
 
-        admin_email.send()
-        self.logger.info('Email-уведомление администратору отправлено')
+        try:
+            sender = admin_email.send()
+        except SMTPException as exc:
+            sender = 0
+            sender_exception = exc
+
+        if bool(sender):
+            message = 'Email-уведомление администратору отправлено'
+
+            self.logger.info(message)
+
+            return {
+                'success': True,
+                'message': message,
+            }
+        else:
+            message = 'НЕ удалось отправить email-уведомление администратору.\n{}'.format(sender_exception)
+
+            self.logger.info(message)
+
+            return {
+                'success': False,
+                'message': message,
+            }
 
     def email_customer(self):
         email = self.email_prepare()
@@ -846,8 +997,30 @@ class OrderBasket():
                 pdf_ticket_file = render_eticket(ticket_context, self.logger)
                 customer_email.attach_file(pdf_ticket_file, mimetype='application/pdf')
 
-        customer_email.send()
-        self.logger.info('Email-уведомление покупателю отправлено')
+        try:
+            sender = customer_email.send()
+        except SMTPException as exc:
+            sender = 0
+            sender_exception = exc
+
+        if bool(sender):
+            message = 'Email-уведомление покупателю отправлено'
+
+            self.logger.info(message)
+
+            return {
+                'success': True,
+                'message': message,
+            }
+        else:
+            message = 'НЕ удалось отправить email-уведомление покупателю.\n{}'.format(sender_exception)
+
+            self.logger.info(message)
+
+            return {
+                'success': False,
+                'message': message,
+            }
 
     def get_overall(self):
         """Получение общей суммы заказа и её подписи в зависимости от возможных наценок/скидок."""

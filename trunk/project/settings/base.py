@@ -66,6 +66,8 @@ INSTALLED_APPS = [
 
     'import_export',
 
+    'django_object_actions',
+
     'docs',
 
     'django.contrib.admin',

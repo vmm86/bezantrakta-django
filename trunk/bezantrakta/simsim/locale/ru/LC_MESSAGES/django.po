@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-06 07:04+0000\n"
+"POT-Creation-Date: 2018-04-09 09:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,28 +83,33 @@ msgid "choose_city_warning"
 msgstr "Обязательно выбирайте город/сайт перед добавлением в него информации!"
 
 #: templates/admin/change_form.html:5 templates/admin/change_form.html:25
-#: templates/admin/change_list.html:78
+#: templates/admin/change_list.html:81
 msgid "Add"
 msgstr "Добавить"
 
-#: templates/admin/change_form.html:37
-msgid "History"
-msgstr "История"
-
-#: templates/admin/change_form.html:41 templates/admin/tabular_custom.html:46
-msgid "View on site"
-msgstr "На сайт"
-
-#: templates/admin/change_form.html:58 templates/admin/change_list.html:44
+#: templates/admin/change_form.html:43 templates/admin/change_list.html:44
 msgid "Please correct the error below."
 msgstr "Пожалуйста, исправьте указанную ошибку."
 
-#: templates/admin/change_form.html:58 templates/admin/change_list.html:44
+#: templates/admin/change_form.html:43 templates/admin/change_list.html:44
 msgid "Please correct the errors below."
 msgstr "Пожалуйста, исправьте перечисленные ошибки."
 
+#: templates/admin/change_form.html:51 templates/admin/change_list.html:73
+#: templates/admin/import_export/change_list.html:8
+msgid "Object actions"
+msgstr "Действия"
+
+#: templates/admin/change_form.html:57
+msgid "History"
+msgstr "История"
+
+#: templates/admin/change_form.html:61 templates/admin/tabular_custom.html:46
+msgid "View on site"
+msgstr "На сайт"
+
 #: templates/admin/change_list.html:53
-msgid "Filter"
+msgid "Filters"
 msgstr "Фильтры"
 
 #: templates/admin/choose_domain_or_city.html:3
@@ -118,9 +123,13 @@ msgstr ""
 msgid " By %(filter_title)s "
 msgstr "По %(filter_title)s "
 
-#: templates/admin/import_export/change_list.html:6
-msgid "Object actions"
-msgstr "Действия"
+#: templates/admin/import_export/change_list_export_item.html:4
+msgid "Export"
+msgstr "Экспорт"
+
+#: templates/admin/import_export/change_list_import_item.html:4
+msgid "Import"
+msgstr "Испорт"
 
 #: templates/admin/import_export/export.html:4
 #, python-format
@@ -172,7 +181,7 @@ msgstr "Удалить"
 
 #: templates/admin/import_export/import.html:99
 msgid "Update"
-msgstr ""
+msgstr "Обновить"
 
 #: templates/admin/index.html:7
 msgid "domain_icon_help_text"

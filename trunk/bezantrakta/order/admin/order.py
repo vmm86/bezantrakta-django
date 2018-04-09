@@ -1,11 +1,15 @@
 import os
 
 from django.conf import settings
-from django.contrib import admin
+from django.contrib import admin, messages
+from django.contrib.admin.templatetags.admin_urls import add_preserved_filters
 from django.core.exceptions import FieldDoesNotExist
+from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.urls import reverse
+
+from django_object_actions import DjangoObjectActions
 
 from import_export import resources
 from import_export.admin import ImportMixin, ExportMixin, ImportExportMixin
@@ -15,6 +19,9 @@ from rangefilter.filter import DateRangeFilter
 
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
+
+from api.object_actions.eticket import etickets_resend
+from api.object_actions.order import refund
 
 from bezantrakta.event.models import Event
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
@@ -142,7 +149,8 @@ class OrderExportResource(resources.ModelResource):
 
 
 # Опциональная возможность импорта старых заказов в development-окружении (экспорт в любом случае возможен)
-inheritance = (ImportExportMixin,) if settings.DEBUG else (ExportMixin,)
+inheritance = [ImportExportMixin, ] if settings.DEBUG else [ExportMixin, ]
+inheritance.append(DjangoObjectActions)
 
 
 @admin.register(Order)
@@ -185,6 +193,7 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
     # date_hierarchy = 'event__datetime'
 
+    # change_actions = ['refund_action', 'etickets_resend_action', ]
     fieldsets = (
         (
             'Параметры заказа',
@@ -264,6 +273,72 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
         if 'delete_selected' in actions and not request.user.is_superuser:
             del actions['delete_selected']
         return actions
+
+    def get_change_actions(self, request, object_id, form_url):
+        """Условное получение действий при открытии заказа."""
+        actions = []
+
+        obj = self.model.objects.get(pk=object_id)
+
+        if obj.status == 'approved':
+            actions.append('refund_action')
+            actions.append('etickets_resend_action')
+
+        return actions
+
+    def refund_action(self, request, obj):
+        """Возврат стоимости заказа."""
+        opts = self.model._meta
+        preserved_filters = self.get_preserved_filters(request)
+        changelist_url = reverse('admin:order_order_changelist')
+
+        redirect_url = add_preserved_filters(
+            {'preserved_filters': preserved_filters, 'opts': opts},
+            changelist_url
+        )
+
+        # Если возврат выполнен
+        if request.method == 'POST':
+            order_uuid = obj.id
+            amount = request.POST.get('amount', obj.total)
+            reason = request.POST.get('reason', '')
+            if reason == 'other':
+                reason = request.POST.get('reason_other', '')
+
+            response = refund(order_uuid, amount, reason)
+            level = messages.INFO if response['success'] else messages.ERROR
+            self.message_user(request, response['message'], level=level)
+
+            # Возврат к списку заказов
+            return redirect(redirect_url)
+
+        context = {
+            'opts': opts,
+            'amount': obj.total,
+            'order_uuid': obj.id,
+            'order_id': obj.ticket_service_order,
+        }
+
+        return render(
+            request,
+            'admin/object_actions/refund.html',
+            context=context
+        )
+    refund_action.label = _('order_admin_refund_action')
+
+    def etickets_resend_action(self, request, obj):
+        """Повторная отправка email-сообщения о заказе покупателю."""
+        changelist_url = reverse('admin:order_order_changelist')
+
+        order_uuid = obj.id
+
+        response = etickets_resend(order_uuid)
+        level = messages.INFO if response['success'] else messages.ERROR
+        self.message_user(request, response['message'], level=level)
+
+        # Возврат к списку заказов
+        return redirect(changelist_url)
+    etickets_resend_action.label = _('order_admin_etickets_resend_action')
 
     def order_uuid(self, obj):
         """Вывод нередактируемого уникального UUID заказа."""
