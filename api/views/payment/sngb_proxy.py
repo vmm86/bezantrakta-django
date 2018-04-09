@@ -2,6 +2,7 @@ import logging
 from urllib.parse import urlencode
 
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -50,74 +51,76 @@ def sngb_proxy(request):
         for external, internal in response_params.items():
             data[internal] = request.GET.get(external, None)
 
-    logger.info('data: ', data)
-
-    # Приведение кода оплаты к int, если строка является числом
-    # (у успешной оплаты статус равен '00')
-    try:
-        data['payment_code'] = int(data['payment_code'])
-    except ValueError:
-        pass
-
-    # Логирование полученных данных
-    for param in response_params.values():
-        if data[param] is not None:
-            logger.info('{param}: {value}'.format(
-                param=param,
-                value=data[param])
-            )
+    logger.info('data: '.format(data))
 
     # Базовый URL для последующего редиректа
     redirect_base = 'REDIRECT='
-
     redirect_url = ''
 
-    # Успешный запрос на оплату
-    if data['payment_code'] == 0:
-        data['success'] = True
+    if data:
+        # Приведение кода оплаты к int, если строка является числом
+        # (у успешной оплаты статус равен '00')
+        try:
+            data['payment_code'] = int(data['payment_code'])
+        except ValueError:
+            pass
 
-        logger.info('\nОплата в СНГБ завершилась успешно')
+        # Логирование полученных данных
+        for param in response_params.values():
+            if data[param] is not None:
+                logger.info('{param}: {value}'.format(
+                    param=param,
+                    value=data[param])
+                )
 
-        qs = {
-            # 'success':    data['success'],
-            # 'payment_id': data['payment_id'],
-            'event_uuid': data['event_uuid'],
-            'order_uuid': data['order_uuid'],
-        }
-        urlencoded_qs = urlencode(qs)
+        # Успешный запрос на оплату
+        if data['payment_code'] == 0:
+            data['success'] = True
 
-        redirect_url = '{redirect_base}{redirect_url}?{urlencoded_qs}'.format(
-            redirect_base=redirect_base,
-            redirect_url=build_absolute_url(
-                request.domain_slug, reverse('api:payment__success')
-            ),
-            urlencoded_qs=urlencoded_qs,
-        )
-    # НЕуспешный запрос на оплату
+            logger.info('\nОплата в СНГБ завершилась успешно')
+
+            qs = {
+                # 'success':    data['success'],
+                # 'payment_id': data['payment_id'],
+                'event_uuid': data['event_uuid'],
+                'order_uuid': data['order_uuid'],
+            }
+            urlencoded_qs = urlencode(qs)
+
+            redirect_url = '{redirect_base}{redirect_url}?{urlencoded_qs}'.format(
+                redirect_base=redirect_base,
+                redirect_url=build_absolute_url(
+                    request.domain_slug, reverse('api:payment__success')
+                ),
+                urlencoded_qs=urlencoded_qs,
+            )
+        # НЕуспешный запрос на оплату
+        else:
+            data['success'] = False
+
+            logger.info('\nОплата в СНГБ завершилась НЕуспешно')
+
+            qs = {
+                # 'success':    data['success'],
+                # 'payment_id': data['payment_id'],
+                'event_uuid': data['event_uuid'],
+                'order_uuid': data['order_uuid'],
+            }
+
+            if data['code']:
+                qs['code'] = data['code']
+                qs['message'] = data['message']
+
+            urlencoded_qs = urlencode(qs)
+
+            redirect_url = '{redirect_base}{redirect_url}?{urlencoded_qs}'.format(
+                redirect_base=redirect_base,
+                redirect_url=build_absolute_url(
+                    request.domain_slug, reverse('api:payment__error')
+                ),
+                urlencoded_qs=urlencoded_qs,
+            )
     else:
-        data['success'] = False
-
-        logger.info('\nОплата в СНГБ завершилась НЕуспешно')
-
-        qs = {
-            # 'success':    data['success'],
-            # 'payment_id': data['payment_id'],
-            'event_uuid': data['event_uuid'],
-            'order_uuid': data['order_uuid'],
-        }
-
-        if data['code']:
-            qs['code'] = data['code']
-            qs['message'] = data['message']
-
-        urlencoded_qs = urlencode(qs)
-
-        redirect_url = '{redirect_base}{redirect_url}?{urlencoded_qs}'.format(
-            redirect_base=redirect_base,
-            redirect_url=build_absolute_url(
-                request.domain_slug, reverse('api:payment__error')
-            ),
-            urlencoded_qs=urlencoded_qs,
-        )
+        return redirect('/')
 
     return HttpResponse(redirect_url)
