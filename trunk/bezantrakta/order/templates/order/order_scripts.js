@@ -156,7 +156,7 @@ function order_after_initialize() {
             });
         });
 
-        {# Выбор ккого-то типа заказа билетов по умолчанию, активного в данном событии #}
+        {# Выбор какого-то типа заказа билетов по умолчанию, активного в данном событии #}
         $('input[name="customer_order_type"][class="{{ default_order_type }}"').prop('checked', true);
         $('input[name="customer_order_type"][class="{{ default_order_type }}"').trigger('change');
 
