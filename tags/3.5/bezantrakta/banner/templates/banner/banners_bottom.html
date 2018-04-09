@@ -1,0 +1,17 @@
+{% load static %}
+<div class="banners {{ class }}">
+    <div class="bannergroup">
+        <div class="bannerheader">{{ header }}</div>
+        {% for banner in banners %}
+            <div class="banneritem">
+                {% if banner.href %}
+                    <a href="{{ banner.href }}" title="{{ banner.title }}" target="_blank">
+                {% endif %}
+                        <img src="{% get_media_prefix %}{{ banner.img }}" alt="{{ banner.title }}">
+                {% if banner.href %}
+                    </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+</div>

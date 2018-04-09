@@ -1,0 +1,30 @@
+{% extends "admin/import_export/export.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with name=opts.verbose_name_plural %}Export {{ name }}{% endblocktrans %} &rsaquo; {% trans "bezantrakta_admin" %}{% endblock %}
+
+{% block content %}
+<form action="" method="POST">
+  {% csrf_token %}
+
+    <fieldset class="module aligned">
+      {% for field in form %}
+        <div class="form-row">
+          {{ field.errors }}
+
+          {{ field.label_tag }}
+
+          {{ field }}
+
+          {% if field.field.help_text %}
+          <p class="help">{{ field.field.help_text|safe }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </fieldset>
+
+    <div class="submit-row">
+      <input type="submit" class="default" value="Экспортировать">
+    </div>
+</form>
+{% endblock %}
