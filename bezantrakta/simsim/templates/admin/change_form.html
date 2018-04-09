@@ -47,26 +47,28 @@
 
 {% block object-tools %}
 {% if change and not is_popup %}
-<div id="object-tools-container" class="module">
-    <h2>{% trans "Object actions" %}</h2>
-    <div class="wrapper">
-        <ul class="object-tools">
-            {% block object-tools-items %}
-            {% comment %}
-            <li>
-                {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
-                <a href="{% add_preserved_filters history_url %}" class="historylink">{% trans "History" %}</a>
-            </li>
-            {% endcomment %}
-            {% if has_absolute_url %}
-            <li>
-                <a href="{{ absolute_url }}" class="viewsitelink" target="__blank">{% trans "View on site" %}</a>
-            </li>
-            {% endif %}
-            {% endblock %}
-        </ul>
+    {% if objectactions or has_absolute_url %}
+    <div id="object-tools-container" class="module">
+        <h2>{% trans "Object actions" %}</h2>
+        <div class="wrapper">
+            <ul class="object-tools">
+                {% block object-tools-items %}
+                {% comment %}
+                <li>
+                    {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
+                    <a href="{% add_preserved_filters history_url %}" class="historylink">{% trans "History" %}</a>
+                </li>
+                {% endcomment %}
+                {% if has_absolute_url %}
+                <li>
+                    <a href="{{ absolute_url }}" class="viewsitelink" target="__blank">{% trans "View on site" %}</a>
+                </li>
+                {% endif %}
+                {% endblock %}
+            </ul>
+        </div>
     </div>
-</div>
+    {% endif %}
 {% endif %}
 {% endblock %}
 
