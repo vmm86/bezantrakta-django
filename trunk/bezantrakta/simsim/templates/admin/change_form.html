@@ -52,10 +52,12 @@
     <div class="wrapper">
         <ul class="object-tools">
             {% block object-tools-items %}
+            {% comment %}
             <li>
                 {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
                 <a href="{% add_preserved_filters history_url %}" class="historylink">{% trans "History" %}</a>
             </li>
+            {% endcomment %}
             {% if has_absolute_url %}
             <li>
                 <a href="{{ absolute_url }}" class="viewsitelink" target="__blank">{% trans "View on site" %}</a>

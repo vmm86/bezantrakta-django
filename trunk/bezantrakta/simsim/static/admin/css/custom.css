@@ -551,11 +551,15 @@ a.section:visited {
     border-bottom: 1px solid #ccc;
 }
 
+#object-tools-container .wrapper p:last-of-type {
+    margin-bottom: 0;
+}
+
 .object-tools {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-content: center;
 
     font-size: inherit;
@@ -1061,6 +1065,8 @@ select:focus option {
     border-radius: 1rem;
     font-size: 13px;
     text-shadow: 0 1px 0px #111;
+
+    margin: 0 4px;
 }
 
 .submit-row a.deletelink{
@@ -1092,6 +1098,8 @@ input[type=submit].default,
 input[name=_save].default {
     background: #2E7D32;
     font-weight: bold;
+
+    margin: 0 4px;
 }
 
 .button:active,
@@ -1201,7 +1209,7 @@ p.file-upload {
     background: #fff;
     border: none;
     border-radius: 0;
-    padding: 20px 0;
+    padding: 20px 12px;
     margin: 0;
     width: 100%;
     right: 0;
