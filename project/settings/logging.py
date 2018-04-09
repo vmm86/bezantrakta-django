@@ -21,6 +21,7 @@ LOGGING_FILES = {
     'BEZANTRAKTA_PREV_ORDER_DELETE': os.path.join(LOGGING_PATH, 'bezantrakta.prev_order_delete.log'),
     'BEZANTRAKTA_RESERVE':           os.path.join(LOGGING_PATH, 'bezantrakta.reserve.log'),
     'BEZANTRAKTA_ORDER':             os.path.join(LOGGING_PATH, 'bezantrakta.order.log'),
+    'BEZANTRAKTA_REFUND':            os.path.join(LOGGING_PATH, 'bezantrakta.refund.log'),
 
     'TICKET_SERVICE_SUPERBILET': os.path.join(LOGGING_PATH, 'ticket_service.superbilet.log'),
     'TICKET_SERVICE_RADARIO':    os.path.join(LOGGING_PATH, 'ticket_service.radario.log'),
@@ -168,6 +169,15 @@ LOGGING = {
             'backupCount': LOGGING_BACKUP_COUNT,
             'formatter':   'message',
         },
+        'bezantrakta_refund_log': {
+            'level':       LOGGING_LEVEL,
+            'class':       LOGGING_CLASS,
+            'filename':    LOGGING_FILES['BEZANTRAKTA_REFUND'],
+            'when':        LOGGING_WHEN,
+            'utc':         LOGGING_UTC,
+            'backupCount': LOGGING_BACKUP_COUNT,
+            'formatter':   'message',
+        },
 
         'ticket_service_superbilet_log': {
             'level':       LOGGING_LEVEL,
@@ -263,6 +273,11 @@ LOGGING = {
         },
         'bezantrakta.order': {
             'handlers': ['bezantrakta_order_log', ],
+            'level': LOGGING_LEVEL,
+            'propagate': True,
+        },
+        'bezantrakta.refund': {
+            'handlers': ['bezantrakta_refund_log', ],
             'level': LOGGING_LEVEL,
             'propagate': True,
         },

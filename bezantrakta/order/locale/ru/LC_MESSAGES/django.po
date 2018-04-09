@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-19 14:27+0000\n"
+"POT-Creation-Date: 2018-04-04 14:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,21 +20,29 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/order.py:154
+#: admin/order.py:81 admin/order_ticket.py:103
+msgid "order_ticket_pdf_ticket"
+msgstr "PDF-билет"
+
+#: admin/order.py:313
+msgid "order_admin_refund_action"
+msgstr "Возврат"
+
+#: admin/order.py:326
+msgid "order_admin_etickets_resend_action"
+msgstr "Выслать повторно"
+
+#: admin/order.py:331
 msgid "order_admin_order_uuid"
 msgstr "Уникальный ID заказа"
 
-#: admin/order.py:160
+#: admin/order.py:337
 msgid "order_email_link"
 msgstr "Email"
 
-#: admin/order.py:166
+#: admin/order.py:343
 msgid "order_phone_link"
 msgstr "Телефон"
-
-#: admin/order_ticket.py:83
-msgid "order_ticket_pdf_ticket"
-msgstr "PDF-билет"
 
 #: models/order.py:70
 msgid "order_ticket_service"
@@ -72,79 +80,79 @@ msgstr "Телефон"
 msgid "order_address"
 msgstr "Адрес доставки"
 
-#: models/order.py:118
+#: models/order.py:112
 msgid "order_mode_self"
 msgstr "Получение в кассе"
 
-#: models/order.py:119
+#: models/order.py:113
 msgid "order_mode_courier"
 msgstr "Доставка курьером"
 
-#: models/order.py:120
+#: models/order.py:114
 msgid "order_mode_email"
 msgstr "Электронный билет"
 
-#: models/order.py:127
+#: models/order.py:121
 msgid "order_delivery"
 msgstr "Получение билетов"
 
-#: models/order.py:132
+#: models/order.py:126
 msgid "order_mode_cash"
 msgstr "При получении"
 
-#: models/order.py:133
+#: models/order.py:127
 msgid "order_mode_online"
 msgstr "Онлайн-оплата"
 
-#: models/order.py:140
+#: models/order.py:134
 msgid "order_payment"
 msgstr "Оплата билетов"
 
-#: models/order.py:146
+#: models/order.py:140
 msgid "order_payment_id"
 msgstr "ID онлайн-оплаты"
 
-#: models/order.py:154
+#: models/order.py:147
 msgid "order_status_ordered"
 msgstr "создан"
 
-#: models/order.py:155
+#: models/order.py:148
 msgid "order_status_cancelled"
 msgstr "отменён"
 
-#: models/order.py:156
+#: models/order.py:149
 msgid "order_status_approved"
 msgstr "подтверждён"
 
-#: models/order.py:157
+#: models/order.py:150
 msgid "order_status_refunded"
 msgstr "возвращён"
 
-#: models/order.py:164
+#: models/order.py:157
 msgid "order_status"
 msgstr "Статус"
 
-#: models/order.py:168
+#: models/order.py:161
 msgid "order_tickets_count"
 msgstr "Билетов"
 
-#: models/order.py:173
+#: models/order.py:166
 msgid "order_total"
 msgstr "Сумма"
 
-#: models/order.py:178
+#: models/order.py:171
 msgid "order_overall"
 msgstr "Всего"
 
-#: models/order.py:184
+#: models/order.py:177
 msgid "order_domain"
 msgstr "Сайт"
 
-#: models/order.py:190
+#: models/order.py:183
 msgid "order"
 msgstr "заказ"
 
-#: models/order.py:191
+#: models/order.py:184
 msgid "orders"
 msgstr "заказы"
 

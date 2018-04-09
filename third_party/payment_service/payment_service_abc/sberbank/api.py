@@ -431,7 +431,7 @@ class Sberbank(PaymentService):
         # Идентификатор оплаты
         data['orderId'] = kwargs['payment_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(kwargs['amount'] * 100)
+        data['amount'] = int(kwargs['amount']) * 100
 
         output_mapping = {
             'errorcode':    self.internal('action_code', int,),
@@ -439,7 +439,7 @@ class Sberbank(PaymentService):
         }
 
         refund = self.request(method, url, data, output_mapping)
-        print('refund:', refund)
+        # print('refund:', refund)
 
         # Успешный возврат
         # {'success': True, 'action_code': 0, 'action_message': 'Успешно'}
@@ -457,6 +457,7 @@ class Sberbank(PaymentService):
             refund['action_code'] == 0
         ):
             response['success'] = True
+            response['amount'] = kwargs['amount']
         else:
             response['success'] = False
 
