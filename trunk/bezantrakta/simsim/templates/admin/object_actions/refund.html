@@ -1,0 +1,41 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls admin_list %}
+
+{% block title %}Возврат по заказу № {{ order_id }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a> &rsaquo;
+    <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+    <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a> &rsaquo;
+    Возврат по заказу {{ order_id }}
+</div>
+{% endblock %}
+
+{% block content %}
+<form action="" method="POST">
+    {% csrf_token %}
+    <p>Введите сумму возврата:
+    <input name="amount" value="{{ amount|floatformat:"-2" }}" type="number" step="any" min="0" max="{{ amount|floatformat:"-2" }}">
+
+    <fieldset class="reason_choices">
+        <legend>Причина возврата</legend>
+        <label for="reason_self">
+            <input id="reason_self" name="reason" value="Запрос покупателя" type="radio" checked> Запрос покупателя
+        </label>
+        <label for="reason_rescheduled">
+            <input id="reason_rescheduled" name="reason" value="Перенос события" type="radio"> Перенос события
+        </label>
+        <label for="reason_cancelled">
+            <input id="reason_cancelled" name="reason" value="Отмена события" type="radio"> Отмена события
+        </label>
+        <label for="reason_other">
+            <input id="reason_other" name="reason" value="other" type="radio"> Другое <input name="reason_other" type="text">
+        </label>
+    </fieldset>
+
+    <input name="order_uuid" type="hidden" value="{{ order_uuid }}">
+    <input name="refund_action" value="Возврат" class="object_action" type="submit">
+    </p>
+</form>
+{% endblock %}

@@ -43,7 +43,6 @@ body.login {
 h1 {
     color: #111;
     font-weight: bold;
-    margin: 0;
 }
 
 a {
@@ -260,9 +259,9 @@ em, code {
 
 #user-tools a:focus,
 #user-tools a:hover {
-    border-bottom: 1px solid #111;
-    color: inherit;
-    text-shadow: none;
+    border-bottom: 1px solid #fc0;
+    color: #fc0;
+    text-shadow: 0px 1px 0 #111;
 }
 
 /* Хлебные крошки */
@@ -335,6 +334,7 @@ ul.messagelist li {
 }
 
 .module {
+    background: none;
     border-radius: 1rem 1rem 0 0;
 }
 
@@ -525,7 +525,63 @@ a.section:visited {
 
 /* Кнопки */
 
+#object-tools-container {
+    margin-top: 20px;
+}
+
+#object-tools-container h2 {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 5px 15px;
+    margin: 0;
+}
+
+#object-tools-container .wrapper {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    border-top: none;
+    border-right:  1px solid #ccc;
+    border-left:   1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.object-tools {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-content: center;
+
+    font-size: inherit;
+
+    padding: 20px 40px;
+    margin: 0 !important;
+
+    width: 100%;
+
+    float: none;
+    position: static;
+}
+
+.object-tools li {
+    list-style-type: none;
+
+    margin: 0 4px;
+
+    height: auto;
+
+    float: none;
+}
+
 .object-tools a {
+    border-bottom: none;
+
     text-shadow: 0 1px 0px #111;
 }
 
@@ -533,45 +589,60 @@ a.section:visited {
 .object-tools a.golink,
 .object-tools a.addlink {
     background-repeat: no-repeat;
-    background-position: left 7px center;
+    background-position: right 7px center;
     padding-left: 26px;
     padding-right: 13px;
 }
 
+.object_action,
 .object-tools a:link,
 .object-tools a:visited {
-    border-radius: 1rem;
+    border-radius: 1rem !important;
     background-color: #fc0;
     color: #111;
     font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
     line-height: 15px;
     text-shadow: 0 1px 0px #fff;
+    text-transform: uppercase;
     padding: 10px 15px;
 }
 
 .object-tools a.addlink {
     background-color: #66BB6A;
     background-image: url(../img/tooltag-add.svg);
-    padding-left: 26px;
-    padding-right: 13px;
-}
-
-    padding-left: 22px;
+    padding-left: 16px;
+    padding-right: 24px;
 }
 
 .object-tools a.historylink {
-
 }
 
 .object-tools a.viewsitelink {
-    padding-left: 20px;
+    padding-right: 24px;
+}
+
+.object-tools li[data-tool-name="refund_action"] a,
+input[name="refund_action"] {
+    background-color: #512DA8;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
 }
 
 .object-tools a:focus,
 .object-tools a:hover {
-    background-color: #fc0;
-    color: #111;
-    text-shadow: 0 1px 0px #fff;
+    background-color: #fc0 !important;
+    color: #111 !important;
+    text-shadow: 0 1px 0px #fff !important;
+}
+
+input[name="amount"] {
+    width: 100px;
+}
+
+.reason_choices label {
+    display: block;
 }
 
 /* Фильтры */
@@ -646,7 +717,7 @@ a.section:visited {
     border: none;
     border-radius: 1rem 1rem 0 0;
     padding: 0;
-    margin: 0;
+    margin-top: 10px;
     width: 100%;
     right: 0;
     bottom: 0;
@@ -655,10 +726,7 @@ a.section:visited {
 }
 
 #changelist-filter h2 {
-    color: #111;
     font-size: 12px;
-    font-weight: bold;
-    text-shadow: 0 1px 0px #fff;
     margin: 0;
 }
 
@@ -996,17 +1064,16 @@ select:focus option {
 }
 
 .submit-row a.deletelink{
-    background: #C62828;
-    text-transform: uppercase;
-    height: auto;
-}
+    display: inline-block;
 
-.submit-row a.deletelink:focus,
-.submit-row a.deletelink:hover,
-.submit-row a.deletelink:active {
-    background: #b71c1c;
+    background: #C62828;
+    border-bottom: none;
     text-transform: uppercase;
+
+    width: auto;
     height: auto;
+
+    vertical-align: middle;
 }
 
 .login .submit-row {
@@ -1014,15 +1081,6 @@ select:focus option {
     padding: 12px 0;
 }
 
-.button:active,
-input[type=submit]:active,
-input[type=button]:active,
-.button:focus,
-input[type=submit]:focus,
-input[type=button]:focus,
-.button:hover,
-input[type=submit]:hover,
-input[type=button]:hover,
 input[name=_addanother],
 input[name=_continue] {
     background: #66BB6A;
@@ -1036,13 +1094,29 @@ input[name=_save].default {
     font-weight: bold;
 }
 
+.button:active,
+input[type=submit]:active,
+input[type=button]:active,
+.button:focus,
+input[type=submit]:focus,
+input[type=button]:focus,
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+
 .button.default:active,
 input.default[type="submit"]:active,
 .button.default:focus,
 input.default[type="submit"]:focus,
 .button.default:hover,
-input.default[type="submit"]:hover {
-    background: #1b5e20;
+input.default[type="submit"]:hover,
+
+.submit-row a.deletelink:focus,
+.submit-row a.deletelink:hover,
+.submit-row a.deletelink:active {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
 }
 
 label,
@@ -1118,12 +1192,16 @@ p.file-upload {
 }
 
 .submit-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+
     background: #fff;
     border: none;
-    border-top: 2px solid #999;
-    border-bottom: 2px solid #999;
     border-radius: 0;
-    padding: 20px 50px;
+    padding: 20px 0;
     margin: 0;
     width: 100%;
     right: 0;
@@ -1236,7 +1314,12 @@ div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
 /* Порядок отображения справочного текста при редактировании объекта модели */
 
 fieldset.module {
-    margin-bottom: 0;
+    margin: 20px 0;
+}
+
+fieldset.module .form-row {
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
 }
 
 fieldset.help_text {
