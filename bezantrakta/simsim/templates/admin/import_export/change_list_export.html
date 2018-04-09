@@ -1,0 +1,10 @@
+{% extends "admin/import_export/change_list.html" %}
+
+{% block object-tools-help-text %}
+    {% include "admin/import_export/export_help_text.html" %}
+{% endblock %}
+
+{% block object-tools-items %}
+    {% include "admin/import_export/change_list_export_item.html" %}
+    {{ block.super }}
+{% endblock %}

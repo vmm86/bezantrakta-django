@@ -1,7 +1,7 @@
 {% extends "admin/import_export/import.html" %}
 {% load i18n admin_urls %}
 
-{% block title %}{% blocktrans with name=opts.verbose_name_plural %}Импортировать {{ name }} &rsaquo; {% endblocktrans %}{% trans "bezantrakta_admin" %}{% endblock %}
+{% block title %}{% blocktrans with name=opts.verbose_name_plural %}Import {{ name }}{% endblocktrans %} &rsaquo; {% trans "bezantrakta_admin" %}{% endblock %}
 
 {% block content %}
 {% if confirm_form %}

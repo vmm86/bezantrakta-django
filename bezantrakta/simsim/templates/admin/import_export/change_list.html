@@ -1,11 +1,23 @@
-{% extends "admin/import_export/change_list.html" %}
+{% extends "admin/change_list.html" %}
+{% load i18n %}
 
-{% block filters %}
-    <p>Перед импортом или экспортом нужно отфильтровать необходимые данные в блоке "<strong>Фильтр</strong>".</p>
+{# Original template renders object-tools only when has_add_permission is True. #}
+{# This hack allows sub templates to add to object-tools #}
+{% block object-tools %}
+<div id="object-tools-container" class="module">
+    <h2>{% trans "Object actions" %}</h2>
+    <div class="wrapper">
 
-    {% if opts.model_name == "order" %}
-        <p>Например, для экспорта заказов за прошлый месяц нужно отфильтровать заказы по статусу, дате/времени события и необходимому сервису продажи билетов.</p>
-    {% endif %}
+    {% block object-tools-help-text %}{% endblock %}
 
-    {{ block.super }}
+    <ul class="object-tools">
+        {% block object-tools-items %}
+            {% if has_add_permission %}
+                {{ block.super }}
+            {% endif %}
+        {% endblock %}
+    </ul>
+
+    </div>
+</div>
 {% endblock %}

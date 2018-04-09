@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-27 14:03+0000\n"
+"POT-Creation-Date: 2018-04-06 07:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,13 +20,41 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: templates/admin/app_index.html:13 templates/admin/change_form.html:22
-#: templates/admin/change_list.html:31
-msgid "Home"
+#: templates/admin/actions.html:3
+msgid "Batch actions"
+msgstr "Действия с выделенными объектами:"
+
+#: templates/admin/actions.html:8
+msgid "Run the selected action"
 msgstr ""
 
+#: templates/admin/actions.html:8
+msgid "Go"
+msgstr ""
+
+#: templates/admin/actions.html:14
+msgid "Click here to select the objects across all pages"
+msgstr ""
+
+#: templates/admin/actions.html:14
+#, python-format
+msgid "Select all %(total_count)s %(module_name)s"
+msgstr ""
+
+#: templates/admin/actions.html:16
+msgid "Clear selection"
+msgstr ""
+
+#: templates/admin/app_index.html:13 templates/admin/change_form.html:22
+#: templates/admin/change_list.html:31
+#: templates/admin/object_actions/refund.html:8
+msgid "Home"
+msgstr "Главная"
+
 #: templates/admin/base.html:6 templates/admin/base_site.html:51
-#: templates/admin/base_site.html:52 templates/admin/base_site.html:65
+#: templates/admin/base_site.html:52
+#: templates/admin/import_export/export.html:4
+#: templates/admin/import_export/import.html:4 templates/admin/index.html:6
 msgid "bezantrakta_admin"
 msgstr "Админ-панель Безантракта"
 
@@ -54,63 +82,134 @@ msgstr "Главная"
 msgid "choose_city_warning"
 msgstr "Обязательно выбирайте город/сайт перед добавлением в него информации!"
 
-#: templates/admin/base_site.html:66
-msgid "domain_icon_help_text"
-msgstr "Иконкой 🔗 обозначены компоненты, привязанные к конкретному сайту."
-
-#: templates/admin/change_form.html:5
-#, python-format
-msgid "Добавить %(name)s &rsaquo; "
-msgstr ""
-
-#: templates/admin/change_form.html:25 templates/admin/change_list.html:49
-#, python-format
-msgid "Add %(name)s"
-msgstr ""
+#: templates/admin/change_form.html:5 templates/admin/change_form.html:25
+#: templates/admin/change_list.html:78
+msgid "Add"
+msgstr "Добавить"
 
 #: templates/admin/change_form.html:37
 msgid "History"
-msgstr ""
+msgstr "История"
 
-#: templates/admin/change_form.html:40 templates/admin/tabular_custom.html:46
+#: templates/admin/change_form.html:41 templates/admin/tabular_custom.html:46
 msgid "View on site"
 msgstr "На сайт"
 
-#: templates/admin/change_form.html:55 templates/admin/change_list.html:58
+#: templates/admin/change_form.html:58 templates/admin/change_list.html:44
 msgid "Please correct the error below."
-msgstr ""
+msgstr "Пожалуйста, исправьте указанную ошибку."
 
-#: templates/admin/change_form.html:55 templates/admin/change_list.html:58
+#: templates/admin/change_form.html:58 templates/admin/change_list.html:44
 msgid "Please correct the errors below."
-msgstr ""
+msgstr "Пожалуйста, исправьте перечисленные ошибки."
 
-#: templates/admin/change_list.html:66
+#: templates/admin/change_list.html:53
 msgid "Filter"
-msgstr ""
+msgstr "Фильтры"
 
 #: templates/admin/choose_domain_or_city.html:3
 msgid "choose_domain_or_city_help_text"
 msgstr ""
-"Цветом обозначено состояние города.&#013;"
-"Если сайт отключен - его название зачёркнуто."
+"Цветом обозначено состояние города.&#013;Если сайт отключен - его название "
+"зачёркнуто."
 
 #: templates/admin/dropdown_filter.html:3
 #, python-format
 msgid " By %(filter_title)s "
+msgstr "По %(filter_title)s "
+
+#: templates/admin/import_export/change_list.html:6
+msgid "Object actions"
+msgstr "Действия"
+
+#: templates/admin/import_export/export.html:4
+#, python-format
+msgid "Export %(name)s"
+msgstr "Экспортировать %(name)s"
+
+#: templates/admin/import_export/import.html:4
+#, python-format
+msgid "Import %(name)s"
+msgstr "Импортировать %(name)s"
+
+#: templates/admin/import_export/import.html:12
+msgid ""
+"Below is a preview of data to be imported. If you are satisfied with the "
+"results, click 'Confirm import'"
 msgstr ""
 
-#: templates/admin/index.html:8
+#: templates/admin/import_export/import.html:15
+msgid "Confirm import"
+msgstr ""
+
+#: templates/admin/import_export/import.html:23
+msgid "This importer will import the following fields: "
+msgstr ""
+
+#: templates/admin/import_export/import.html:57
+msgid "Errors"
+msgstr ""
+
+#: templates/admin/import_export/import.html:68
+msgid "Line number"
+msgstr ""
+
+#: templates/admin/import_export/import.html:78
+msgid "Preview"
+msgstr ""
+
+#: templates/admin/import_export/import.html:93
+msgid "New"
+msgstr ""
+
+#: templates/admin/import_export/import.html:95
+msgid "Skipped"
+msgstr ""
+
+#: templates/admin/import_export/import.html:97
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/admin/import_export/import.html:99
+msgid "Update"
+msgstr ""
+
+#: templates/admin/index.html:7
+msgid "domain_icon_help_text"
+msgstr "Иконкой 🔗 обозначены компоненты, привязанные к конкретному сайту."
+
+#: templates/admin/index.html:15
 msgid "Recent actions"
 msgstr "Последние действия"
 
-#: templates/admin/index.html:11
+#: templates/admin/index.html:18
 msgid "None available"
 msgstr "Ничего не обнаружено"
 
-#: templates/admin/index.html:24
+#: templates/admin/index.html:31
 msgid "Unknown content"
 msgstr "?"
 
+#: templates/admin/submit_line.html:5
+msgid "Delete_object"
+msgstr "Удалить"
+
+#: templates/admin/submit_line.html:8
+msgid "Save_object_as_new"
+msgstr "Сохранить как новый объект"
+
+#: templates/admin/submit_line.html:11
+msgid "Save_object_and_add_another"
+msgstr "Сохранить и добавить новый объект"
+
+#: templates/admin/submit_line.html:14
+msgid "Save_object_and_continue_editing"
+msgstr "Сохранить и продолжить редактирование"
+
+#: templates/admin/submit_line.html:17
+msgid "Save_object"
+msgstr "Сохранить"
+
 #: templates/admin/tabular_custom.html:21
 msgid "Delete?"
-msgstr ""
+msgstr "Удалить?"
