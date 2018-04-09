@@ -15,10 +15,14 @@ $(document).ready(function() {
                 handler: function(direction) {
                     if (direction == 'down') {
                         block.css('position', 'fixed');
-                        $('#content').css('padding-bottom', block.height() * 2);
+                        $('#content').css('padding-bottom', block.height() * 1.5);
+                        $('.submit-row').css('border-top', '2px solid #999');
+                        $('.submit-row').css('padding', '20px 40px');
                     } else if (direction == 'up') {
                         block.css('position', 'static');
-                        $('#content').css('padding-bottom', block.height() / 2);
+                        $('#content').css('padding-bottom', block.height() / 1.5);
+                        $('.submit-row').css('border-top', 'none');
+                        $('.submit-row').css('padding', '20px 0');
                     }
                 }
             });
@@ -64,7 +68,7 @@ $(document).ready(function() {
         $.each($('.messagelist li'), function(index, val) {
             $(this).remove();
         });
-    }, 4000);
+    }, 7000);
 
     {# Подписи к фильтру по дате #}
     if ($('input[name$="datetime__gte"]').length || $('input[name$="datetime__lte"]').length) {
