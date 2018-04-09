@@ -48,14 +48,15 @@
 
     <div id="changelist" class="module{% if cl.has_filters %} filtered{% endif %}">
         {% block filters %}
+        {% if cl.search_fields or cl.date_hierarchy or cl.has_filters %}
             <div id="changelist-filter">
-                {% if cl.has_filters %}
-                    <h2>{% trans 'Filter' %}</h2>
-                {% endif %}
+                <h2>{% trans 'Filters' %}</h2>
+            {% if cl.search_fields or cl.date_hierarchy %}
                 <div class="filters horizontal">
                     <div class="filter">{% block search %}{% search_form cl %}{% endblock %}</div>
                     <div class="filter">{% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}</div>
                 </div>
+            {% endif %}
             {% if cl.has_filters %}
                 <div class="filters vertical">
                     {% for spec in cl.filter_specs %}
@@ -66,13 +67,16 @@
                 </div>
             {% endif %}
             </div>
+        {% endif %}
         {% endblock %}
 
         {% block object-tools %}
+        {% if has_add_permission %}
         <div id="object-tools-container" class="module">
             <h2>{% trans "Object actions" %}</h2>
             <div class="wrapper">
                 <ul class="object-tools">
+        {% endif %}
                     {% block object-tools-items %}
                         {% if has_add_permission %}
                         <li>
@@ -83,9 +87,11 @@
                         </li>
                         {% endif %}
                     {% endblock %}
+        {% if has_add_permission %}
                 </ul>
             </div>
         </div>
+        {% endif %}
         {% endblock %}
 
         <form id="changelist-form" method="POST"{% if cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>{% csrf_token %}

@@ -22,7 +22,7 @@ $(document).ready(function() {
                         block.css('position', 'static');
                         $('#content').css('padding-bottom', block.height() / 1.5);
                         $('.submit-row').css('border-top', 'none');
-                        $('.submit-row').css('padding', '20px 0');
+                        $('.submit-row').css('padding', '20px 12px');
                     }
                 }
             });
@@ -141,4 +141,21 @@ $(document).ready(function() {
         }
 
     });
+
+    {# Поле для ввода произвольной причины возврата активно только при выборе этой опции #}
+    if ($('.reason_choices').length) {
+        $.each($('input[name="reason"]'), function(type) {
+            $(this).change(function(){
+                if ($('#reason_other').is(':checked')) {
+                    console.log('checked');
+                    $('input[name="reason_other"]').prop('disabled', false);
+                } else {
+                    console.log('unchecked');
+                    $('input[name="reason_other"]').prop('disabled', true);
+                }
+            });
+        });
+
+        $('#reason_self').trigger('change');
+    }
 });
