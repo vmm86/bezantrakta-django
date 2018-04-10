@@ -873,21 +873,31 @@ class OrderBasket():
                 response['success'] = False
 
                 if order_refund['success']:
-                    response['message'] = 'Возврат по заказу № {order_id} проведён успешно только в сервисе продажи билетов. {code}: {message}.'.format(
-                        order_id=self.order['order_id'],
-                        code=payment_refund['code'],
-                        message=payment_refund['message']
+                    message = '{} {}'.format(
+                        payment_refund.get('code', ''), payment_refund.get('message')
+                    )
+                    response['message'] = 'Возврат по заказу № {order_id} проведён успешно только в сервисе продажи билетов. {message}'.format(
+                        order_id=self.order['order_id'], message=message.strip()
                     )
                 elif payment_refund['success']:
-                    response['message'] = 'Возврат по заказу № {order_id} проведён успешно только в сервисе онлайн-оплаты. {code}: {message}.'.format(
-                        order_id=self.order['order_id'],
-                        code=order_refund['code'],
-                        message=order_refund['message']
+                    message = '{} {}'.format(
+                        payment_refund.get('code', ''), payment_refund.get('message')
+                    )
+                    response['message'] = 'Возврат по заказу № {order_id} проведён успешно только в сервисе онлайн-оплаты. {message}'.format(
+                        order_id=self.order['order_id'], message=message.strip()
                     )
                 else:
-                    response['message'] = 'Возврат НЕ удалось завершить успешно. {}: {}. {}: {}.'.format(
-                        order_refund['code'], order_refund['message'],
-                        payment_refund['code'], payment_refund['message']
+                    order_message = '{} {}'.format(
+                        order_refund.get('code', ''), order_refund.get('message')
+                    )
+                    payment_message = '{} {}'.format(
+                        payment_refund.get('code', ''), payment_refund.get('message')
+                    )
+                    message = '{} {}'.format(
+                        order_message.strip(), payment_message.strip()
+                    )
+                    response['message'] = 'Возврат НЕ удалось завершить успешно. {}'.format(
+                        message.strip()
                     )
         else:
             response['success'] = False
