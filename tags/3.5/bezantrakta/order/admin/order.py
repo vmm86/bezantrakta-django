@@ -330,7 +330,14 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
     def etickets_resend_action(self, request, obj):
         """Повторная отправка email-сообщения о заказе покупателю."""
+        opts = self.model._meta
+        preserved_filters = self.get_preserved_filters(request)
         changelist_url = reverse('admin:order_order_changelist')
+
+        redirect_url = add_preserved_filters(
+            {'preserved_filters': preserved_filters, 'opts': opts},
+            changelist_url
+        )
 
         order_uuid = obj.id
 
@@ -339,7 +346,7 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
         self.message_user(request, response['message'], level=level)
 
         # Возврат к списку заказов
-        return redirect(changelist_url)
+        return redirect(redirect_url)
     etickets_resend_action.label = _('order_admin_etickets_resend_action')
 
     def order_uuid(self, obj):
