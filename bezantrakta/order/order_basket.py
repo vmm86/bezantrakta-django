@@ -800,6 +800,8 @@ class OrderBasket():
     def order_refund(self, amount, reason=None):
         response = {}
 
+        amount = self._ps.decimal_price(amount)
+
         self.logger.info('\nСумма возврата: {} р.'.format(amount))
         self.logger.info('Причина возврата: {}.'.format(reason))
 
