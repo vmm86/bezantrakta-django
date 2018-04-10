@@ -43,7 +43,9 @@ class PaymentService(ABC):
         Returns:
             Decimal: Денежная сумма.
         """
-        return Decimal(str(value)).quantize(Decimal('1.00'))
+        value = str(value)
+        value = value if ',' not in value else '.'.join(value.split(','))
+        return Decimal(value).quantize(Decimal('1.00'))
 
     def commission(self):
         """Процент комиссии.
