@@ -15,11 +15,15 @@
 {% block content %}
 <form action="" method="POST">
     {% csrf_token %}
-    <p>Введите сумму возврата:
-    <input name="amount" value="{{ amount|floatformat:"-2" }}" type="number" step="any" min="0" max="{{ amount|floatformat:"-2" }}">
+    <p>Сумма возврата:
+        <input name="amount" value="{{ amount|floatformat:"-2" }}" type="number" step="any" min="0" max="{{ amount|floatformat:"-2" }}">
+    </p>
+
+    <p>Сумма возврата меньше или равна сумме заказа.
+    <br>Если сумма возврата с копейками - её нужно указывать через запятую (например, <em>140,50</em>).</p>
 
     <fieldset class="reason_choices">
-        <legend>Причина возврата</legend>
+        <legend>Причина возврата (указывать необязательно)</legend>
         <label for="reason_self">
             <input id="reason_self" name="reason" value="Запрос покупателя" type="radio" checked> Запрос покупателя
         </label>
@@ -34,8 +38,9 @@
         </label>
     </fieldset>
 
-    <input name="order_uuid" type="hidden" value="{{ order_uuid }}">
-    <input name="refund_action" value="Возврат" class="object_action" type="submit">
+    <p>
+        <input name="order_uuid" type="hidden" value="{{ order_uuid }}">
+        <input name="refund_action" value="Возврат" class="object_action" type="submit">
     </p>
 </form>
 {% endblock %}
