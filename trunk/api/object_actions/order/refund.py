@@ -12,8 +12,8 @@ def refund(order_uuid, amount, reason=None):
 
     Args:
         order_uuid (uuid.UUID): Уникальный идентификатор заказа.
-        amount (decimal.Decimal): Сумма возврата.
-        reason (str): Причина возврата.
+        amount (str): Сумма возврата (из формы в админ-панели).
+        reason (str): Причина возврата (из формы в админ-панели).
 
     Returns:
         dict: Информация о результате возврата.

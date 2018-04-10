@@ -1146,9 +1146,9 @@ class Radario(TicketService):
 
         response = {}
 
-        if refund['success'] and refund['refund_id']:
+        if refund['success']:
             response['success'] = True
-            response['amount'] = refund['amount']
+            response['amount'] = kwargs['amount']
         else:
             response['success'] = False
 

@@ -431,7 +431,7 @@ class Sberbank(PaymentService):
         # Идентификатор оплаты
         data['orderId'] = kwargs['payment_id']
         # Полная сумма заказа с комиссией в копейках (целое число)
-        data['amount'] = int(kwargs['amount']) * 100
+        data['amount'] = int(kwargs['amount'] * 100)
 
         output_mapping = {
             'errorcode':    self.internal('action_code', int,),
