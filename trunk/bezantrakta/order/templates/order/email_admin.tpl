@@ -23,7 +23,7 @@
 
     <p><strong>Билеты в заказе</strong>:</p>
     <ul style="list-style-type: none; margin-left: 0; padding-left: 0;">
-    {% for tid, t in order.tickets.items %}
+    {% for t in order.tickets_list %}
         <li style="margin-left: 0; padding-left: 0;">🎫 {% if t.is_fixed %}{{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}{% else %}{{ t.sector_title }}{% endif %}, цена {{ t.price|floatformat:"-2" }} р.</li>
     {% endfor %}
     </ul>

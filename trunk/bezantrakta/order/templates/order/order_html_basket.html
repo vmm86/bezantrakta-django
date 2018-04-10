@@ -14,7 +14,7 @@
     <h3 id="chosen-tickets-header">Билеты в заказе</h3>
     <div id="chosen-tickets-content">
         <ul id="chosen-tickets">
-        {% for tid, t in order.tickets.items %}
+        {% for t in order.tickets_list %}
             <li>{% if t.is_fixed %}{{ t.sector_title }}, ряд {{ t.row_id }}, место {{ t.seat_title }}{% else %}{{ t.sector_title }}{% endif %}, цена {{ t.price|floatformat:"-2" }} р.</li>
         {% endfor %}
         </ul>
