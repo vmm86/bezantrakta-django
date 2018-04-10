@@ -193,7 +193,7 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
     # date_hierarchy = 'event__datetime'
 
-    # change_actions = ['refund_action', 'etickets_resend_action', ]
+    change_actions = ('refund_action', 'etickets_resend_action',)
     fieldsets = (
         (
             'Параметры заказа',
@@ -283,6 +283,8 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
         if obj.status == 'approved':
             actions.append('refund_action')
             actions.append('etickets_resend_action')
+
+        actions = tuple(actions)
 
         return actions
 
