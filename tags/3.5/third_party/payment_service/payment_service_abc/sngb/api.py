@@ -257,32 +257,86 @@ class SurgutNefteGazBank(PaymentService):
 
         return response
 
-    def payment_status(self, **kwargs):
-        """Статус ранее созданной оплаты.
+    def _transactions(self, payment_id):
+        """Список транзакций по текущей оплате.
 
         Args:
             payment_id (str): Идентификатор оплаты.
 
         Returns:
-            dict: Информация о статусе оплаты.
-        """
-        if not kwargs['payment_id']:
+            dict: Информация о транзакциях.
+            """
+        method = 'GET'
+        url = 'https://{token}:@ecm.sngb.ru/{payment_type}/v1/transactions/{payment_id}'.format(
+            token=self.__token,
+            payment_type=self.__payment_type,
+            payment_id=payment_id,
+        )
+        data = {}
+
+        transactions = self.request(method, url, data)
+
+        # print('transactions:', transactions)
+
+        # {
+        # 'tranlist': [
+        #     {
+        #         'result': 'APPROVED',
+        #         'tranid': 6234585261980990,
+        #         'track': '16180',
+        #         'transdt': 1523284019093,
+        #         'action': 'authorization',
+        #         'amount': 10.18,
+        #         'orderid': 6234585261980990
+        #     },
+        #     {
+        #         'result': 'CAPTURED',
+        #         'tranid': 3031783261980990,
+        #         'track': '16180',
+        #         'transdt': 1523284019093,
+        #         'action': 'capture',
+        #         'amount': 10.18,
+        #         'orderid': 6234585261980990
+        #     },
+        # ], 'object': 'list'
+        # }
+
+        response = {}
+
+        if not transactions or not transactions.get('tranlist'):
             response = {}
             response['success'] = False
-            response['message'] = 'Отсутствует идентификатор онлайн-оплаты'
+            response['message'] = 'В указанной онлайн-оплате нет ни одной транзакции'
             return response
+        else:
+            response['success'] = True
+            response['transactions'] = {}
 
+        for tran in transactions['tranlist']:
+            response['transactions'][tran['result']] = tran['tranid']
+
+        return response
+
+    def _payments(self, payment_id):
+        """Информация об онлайн-оплате.
+
+        Args:
+            payment_id (str): Идентификатор оплаты.
+
+        Returns:
+            dict: Информация об онлайн-оплате.
+        """
         method = 'GET'
         url = 'https://{token}:@ecm.sngb.ru/{payment_type}/v1/payments/{payment_id}'.format(
             token=self.__token,
             payment_type=self.__payment_type,
-            payment_id=kwargs['payment_id'],
+            payment_id=payment_id,
         )
         data = {}
-        # Идентификатор оплаты
-        status = self.request(method, url, data)
 
-        # print('status: ', status)
+        payments = self.request(method, url, data)
+
+        # print('payments:', payments)
 
         # Успешная оплата
         # {
@@ -307,9 +361,9 @@ class SurgutNefteGazBank(PaymentService):
         # НЕуспешная оплата
         # {
         # 'data': [{
-        #     'authorization': False,
-        #     'captured': False,
-        #     'refunded': False,
+        #     'authorization': false,
+        #     'captured': false,
+        #     'refunded': false,
         #     'created': 1512550283416,
         #     'tranid': '',
         #     'track': '13020',
@@ -317,7 +371,7 @@ class SurgutNefteGazBank(PaymentService):
         #     'amount': 1.02,
         #     'currency': 'rub',
         #     'object': 'payment',
-        #     'livemode': True,
+        #     'livemode': true,
         # }]
         # 'count': '1',
         # 'url': '/ECommerce/v1/payments',
@@ -335,22 +389,20 @@ class SurgutNefteGazBank(PaymentService):
         response = {}
 
         # Если оплата существует
-        if status and status['data']:
+        if payments and payments['data']:
             # Идентификатор заказа
-            response['order_id'] = int(status['data'][0]['track'])
+            response['order_id'] = int(payments['data'][0]['track'])
             # Идентификатор оплаты
-            response['payment_id'] = status['data'][0]['id']
-            # Идентификатор транзакции
-            response['transaction_id'] = status['data'][0]['tranid']
+            response['payment_id'] = payments['data'][0]['id']
             # Общая сумма заказа
-            response['overall'] = self.decimal_price(status['data'][0]['amount'])
+            response['overall'] = self.decimal_price(payments['data'][0]['amount'])
             # Был ли платёж возвращён
-            response['is_refunded'] = True if status['data'][0]['refunded'] else False
+            response['is_refunded'] = True if payments['data'][0]['refunded'] else False
 
             # Если оплата завершилась успешно
             if (
-                status['data'][0]['authorization'] and
-                status['data'][0]['captured']
+                payments['data'][0]['authorization'] and
+                payments['data'][0]['captured']
             ):
                 response['success'] = True
             # Если оплата завершилась НЕуспешно
@@ -365,6 +417,47 @@ class SurgutNefteGazBank(PaymentService):
 
             response['code'] = 'NONE'
             response['message'] = 'Запрошенная оплата не существует'
+
+        return response
+
+    def payment_status(self, **kwargs):
+        """Статус ранее созданной оплаты (включая список транзакций).
+
+        Args:
+            payment_id (str): Идентификатор оплаты.
+
+        Returns:
+            dict: Информация о статусе оплаты.
+        """
+        if not kwargs['payment_id']:
+            response = {}
+            response['success'] = False
+            response['message'] = 'Отсутствует идентификатор онлайн-оплаты'
+            return response
+
+        # Информация об онлайн-оплате
+        payments = self._payments(kwargs['payment_id'])
+        # Информация от транзакциях
+        transactions = self._transactions(kwargs['payment_id'])
+
+        response = {}
+
+        if payments['success'] and transactions['success']:
+            response['success'] = True
+
+            # Идентификатор заказа
+            response['order_id'] = payments['order_id']
+            # Идентификатор оплаты
+            response['payment_id'] = payments['payment_id']
+            # Общая сумма заказа
+            response['overall'] = payments['overall']
+            # Был ли платёж возвращён
+            response['is_refunded'] = payments['is_refunded']
+
+            response['transactions'] = transactions['transactions']
+
+        else:
+            response['success'] = False
 
         return response
 
@@ -407,6 +500,14 @@ class SurgutNefteGazBank(PaymentService):
             response['message'] = 'Отсутствует идентификатор онлайн-оплаты'
             return response
 
+        # Статус оплаты
+        payment_status = self.payment_status(payment_id=kwargs['payment_id'])
+        if not payment_status['success']:
+            response = {}
+            response['success'] = False
+            response['message'] = payment_status['message']
+            return response
+
         method = 'POST'
         url = 'PaymentTranServlet'
 
@@ -418,12 +519,8 @@ class SurgutNefteGazBank(PaymentService):
         data['trackid'] = kwargs['order_id']
         data['paymentid'] = kwargs['payment_id']
 
-        # Статус оплаты
-        payment_status = self.payment_status(payment_id=kwargs['payment_id'])
-        # Идентификатор транзакции
-        data['tranid'] = payment_status['transaction_id']
-
-        print('payment_status: ', payment_status)
+        # Идентификатор транзакции 'CAPTURED', который нужно использовать для возврата
+        data['tranid'] = payment_status['transactions']['CAPTURED']
 
         # Кастомные параметры заказа (можно отправлять любые данные)
         # |-- Идентификатор события
