@@ -58,7 +58,7 @@ def success_or_error(basket, payment_status):
                 {
                     'level': 'info',
                     'message': '👉 <a href="/">Перейти на главную</a>.'.format(
-                        event_url=basket.event['url']
+                        event_url=basket.event_url
                     )
                 },
             ]
