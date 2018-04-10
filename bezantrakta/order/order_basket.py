@@ -4,6 +4,7 @@ import uuid
 from collections import OrderedDict
 from decimal import Decimal
 from mail_templated import EmailMessage
+from operator import itemgetter
 from random import randint
 from smtplib import SMTPException
 from time import sleep
@@ -236,6 +237,12 @@ class OrderBasket():
 
             self.order['status_color'] = OrderBasket.ORDER_STATUS_CAPTION[self.order['status']]['color']
             self.order['status_caption'] = OrderBasket.ORDER_STATUS_CAPTION[self.order['status']]['description']
+
+            # Формирование упорядоченного списка билетов в заказе для вывода
+            tickets_list = [t for tid, t in self.order['tickets'].items()]
+            self.order['tickets_list'] = sorted(
+                tickets_list, key=itemgetter('sector_title', 'row_id', 'seat_id', 'price')
+            )
 
             self.ticket_service = {}
             self.ticket_service['id'] = event['ticket_service_id']
