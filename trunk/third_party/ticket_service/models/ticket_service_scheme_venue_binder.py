@@ -9,7 +9,9 @@ from ckeditor.fields import RichTextField
 class TicketServiceSchemeVenueBinderManager(models.Manager):
     def get_queryset(self):
         return super(TicketServiceSchemeVenueBinderManager, self).get_queryset().select_related(
-            'ticket_service', 'event_venue'
+            'ticket_service', 'event_venue__city'
+        ).prefetch_related(
+            'scheme_sectors'
         )
 
 
