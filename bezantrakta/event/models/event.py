@@ -19,7 +19,7 @@ def default_json_settings_callable():
 class EventManager(models.Manager):
     def get_queryset(self):
         return super(EventManager, self).get_queryset().select_related(
-            'event_category', 'event_venue', 'domain'
+            'event_category', 'event_venue__city', 'ticket_service', 'domain'
         ).prefetch_related(
             'event_group', 'event_container', 'event_link'
         )
