@@ -402,11 +402,14 @@ class OrderBasket():
             elif remove_condition:
                 # Даже если при удалении билета получен НЕуспешный ответ -
                 # билет в любом случае удаляется из предварительного резерва
-                ticket = self.order['tickets'][ticket_id].copy()
-                del self.order['tickets'][ticket_id]
-                self.order['tickets_count'] -= 1
-                self.order['total'] -= self.decimal_price(ticket['price'])
-                del ticket
+                try:
+                    ticket_price = self.order['tickets'][ticket_id]['price']
+                except KeyError:
+                    pass
+                else:
+                    del self.order['tickets'][ticket_id]
+                    self.order['tickets_count'] -= 1
+                    self.order['total'] -= self.decimal_price(ticket_price)
 
             self.update()
 
