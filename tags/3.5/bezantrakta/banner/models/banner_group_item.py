@@ -32,7 +32,9 @@ def img_path(instance, filename):
 
 class BannerGroupItemManager(models.Manager):
     def get_queryset(self):
-        return super(BannerGroupItemManager, self).get_queryset().select_related('domain')
+        return super(BannerGroupItemManager, self).get_queryset().select_related(
+            'banner_group', 'domain'
+        )
 
 
 class BannerGroupItem(models.Model):
