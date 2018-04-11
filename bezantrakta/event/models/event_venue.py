@@ -6,7 +6,11 @@ from django.utils.translation import ugettext as _
 
 class EventVenueManager(models.Manager):
     def get_queryset(self):
-        return super(EventVenueManager, self).get_queryset().select_related('city')
+        return super(EventVenueManager, self).get_queryset().select_related(
+            'city'
+        ).prefetch_related(
+            'ticketserviceschemevenuebinder_set'
+        )
 
 
 class EventVenue(models.Model):
