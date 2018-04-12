@@ -99,14 +99,16 @@ ______________________________________________________________________________
 
                     # Если оплата завершилась успешно
                     if result['success']:
-                        self.log('\nПодтверждён заказ {order_id} с успешной онлайн-оплатой {payment_id}'.format(
+                        self.log(
+                            '\nПодтверждён заказ {order_id} с успешной онлайн-оплатой {payment_id}'.format(
                                 order_id=basket.order['order_id'],
                                 payment_id=basket.order['payment_id']
                             )
                         )
                     # Если оплата завершилась НЕуспешно - логирование информации об ошибке
                     else:
-                        self.log('\nОтменён заказ {order_id} с НЕуспешной онлайн-оплатой {payment_id}'.format(
+                        self.log(
+                            '\nОтменён заказ {order_id} с НЕуспешной онлайн-оплатой {payment_id}'.format(
                                 order_id=basket.order['order_id'],
                                 payment_id=basket.order['payment_id']
                             )
