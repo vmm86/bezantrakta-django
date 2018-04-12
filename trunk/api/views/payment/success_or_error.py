@@ -78,8 +78,8 @@ def success_or_error(basket, payment_status):
         messages = [
             {'level': 'error', 'message': 'К сожалению, в процессе оплаты возникла ошибка. 🙁'},
             {'level': 'error', 'message': '{code} {message}'.format(
-                code=payment_status['code'],
-                message=payment_status['message']
+                code=payment_status.get('code', ''),
+                message=payment_status.get('message', '')
             )},
             {'level': 'info',  'message': '👉 <a href="{event_url}">Попробуйте заказать билеты ещё раз</a>.'.format(
                 event_url=basket.event_url
