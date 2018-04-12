@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-04 14:03+0000\n"
+"POT-Creation-Date: 2018-04-12 09:07+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,27 +20,27 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/order.py:81 admin/order_ticket.py:103
+#: admin/order.py:80 admin/order_ticket.py:103
 msgid "order_ticket_pdf_ticket"
 msgstr "PDF-билет"
 
-#: admin/order.py:313
+#: admin/order.py:328
 msgid "order_admin_refund_action"
 msgstr "Возврат"
 
-#: admin/order.py:326
-msgid "order_admin_etickets_resend_action"
+#: admin/order.py:349
+msgid "order_admin_email_resend_action"
 msgstr "Выслать повторно"
 
-#: admin/order.py:331
+#: admin/order.py:354
 msgid "order_admin_order_uuid"
 msgstr "Уникальный ID заказа"
 
-#: admin/order.py:337
+#: admin/order.py:360
 msgid "order_email_link"
 msgstr "Email"
 
-#: admin/order.py:343
+#: admin/order.py:366
 msgid "order_phone_link"
 msgstr "Телефон"
 
@@ -223,3 +223,7 @@ msgstr "билет"
 #: models/order_ticket.py:114
 msgid "order_tickets"
 msgstr "билеты"
+
+#: templates/admin/object_actions/refund.html:8
+msgid "Home"
+msgstr ""

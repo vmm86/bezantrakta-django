@@ -20,8 +20,7 @@ from rangefilter.filter import DateRangeFilter
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
 
-from api.object_actions.eticket import etickets_resend
-from api.object_actions.order import refund
+from api.object_actions.order import email_resend, refund
 
 from bezantrakta.event.models import Event
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
@@ -193,7 +192,7 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
     # date_hierarchy = 'event__datetime'
 
-    change_actions = ('refund_action', 'etickets_resend_action',)
+    change_actions = ('refund_action', 'email_resend_action',)
     fieldsets = (
         (
             'Параметры заказа',
@@ -282,7 +281,7 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
         if obj.status == 'approved':
             actions.append('refund_action')
-            actions.append('etickets_resend_action')
+            actions.append('email_resend_action')
 
         actions = tuple(actions)
 
@@ -328,7 +327,7 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
         )
     refund_action.label = _('order_admin_refund_action')
 
-    def etickets_resend_action(self, request, obj):
+    def email_resend_action(self, request, obj):
         """Повторная отправка email-сообщения о заказе покупателю."""
         opts = self.model._meta
         preserved_filters = self.get_preserved_filters(request)
@@ -341,13 +340,13 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
         order_uuid = obj.id
 
-        response = etickets_resend(order_uuid)
+        response = email_resend(order_uuid)
         level = messages.INFO if response['success'] else messages.ERROR
         self.message_user(request, response['message'], level=level)
 
         # Возврат к списку заказов
         return redirect(redirect_url)
-    etickets_resend_action.label = _('order_admin_etickets_resend_action')
+    email_resend_action.label = _('order_admin_email_resend_action')
 
     def order_uuid(self, obj):
         """Вывод нередактируемого уникального UUID заказа."""
