@@ -1,6 +1,7 @@
 ################################
 Абстрактный класс PaymentService
 ################################
+
 .. autoclass:: third_party.payment_service.payment_service_abc.abc.PaymentService
 
 *******

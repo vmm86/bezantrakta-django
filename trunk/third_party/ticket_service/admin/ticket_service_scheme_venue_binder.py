@@ -23,7 +23,7 @@ class TicketServiceSchemeVenueBinderAdmin(admin.ModelAdmin):
         (
             None,
             {
-                'fields': ('ticket_service_scheme_title', 'ticket_service', 'ticket_service_scheme_id',
+                'fields': ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'ticket_service',
                            'event_venue',),
             }
         ),
