@@ -11,7 +11,7 @@
 
 .. toctree::
   :maxdepth: 1
-  :caption: Разделы админ-панели
+  :caption: Содержание
 
   bezantrakta/simsim/index
   bezantrakta/simsim/choose_domain_or_city
