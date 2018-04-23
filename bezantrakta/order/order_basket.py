@@ -767,9 +767,18 @@ class OrderBasket():
         return response
 
     def order_cancel(self):
-        # Отменить можно только созданный ранее заказ
-        if self.order['status'] == 'ordered':
-            self.logger.info('Отмена заказа в сервисе продажи билетов...')
+        response = {}
+
+        # Отменить можно только:
+        # * либо созданный ранее заказ,
+        # * либо подтвердлжённый заказ с оффлайн-оплатой.
+        cancel_condition = (
+            self.order['status'] == 'ordered' or
+            self.order['status'] == 'approved' and self.order['payment'] == 'cash'
+        )
+
+        if cancel_condition:
+            self.logger.info('\nОтмена заказа в сервисе продажи билетов...')
 
             order_cancel = self._ts.order_cancel(
                 event_id=self.order['event_id'],
@@ -781,20 +790,27 @@ class OrderBasket():
             self.logger.info('order_cancel: {}'.format(order_cancel))
 
             if order_cancel['success']:
+                response['success'] = True
+
                 # Обновление статуса заказа в БД
                 self.order_status_db('cancelled')
 
-                self.logger.info('Заказ {order_id} отменён в сервисе продажи билетов'.format(
+                cancel_message = 'Заказ {order_id} отменён в сервисе продажи билетов'.format(
                     order_id=self.order['order_id']
-                ))
-            else:
-                self.logger.info('Заказ {order_id} НЕ удалось отменить в сервисе продажи билетов'.format(
-                    order_id=self.order['order_id']
-                ))
+                )
 
-            response = order_cancel
+                response['message'] = cancel_message
+                self.logger.info(cancel_message)
+            else:
+                response['success'] = False
+
+                cancel_message = 'Заказ {order_id} НЕ удалось отменить в сервисе продажи билетов'.format(
+                    order_id=self.order['order_id']
+                )
+
+                response['message'] = cancel_message
+                self.logger.info(cancel_message)
         else:
-            response = {}
             response['success'] = False
             response['message'] = 'Отменить можно только созданный ранее заказ'
 
