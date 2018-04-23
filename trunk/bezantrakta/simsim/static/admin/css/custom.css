@@ -627,6 +627,13 @@ a.section:visited {
     padding-right: 24px;
 }
 
+.object-tools li[data-tool-name="cancel_action"] a,
+input[name="cancel_action"] {
+    background-color: #C62828;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+}
+
 .object-tools li[data-tool-name="refund_action"] a,
 input[name="refund_action"] {
     background-color: #512DA8;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-04-12 09:07+0000\n"
+"POT-Creation-Date: 2018-04-23 08:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,23 +24,27 @@ msgstr ""
 msgid "order_ticket_pdf_ticket"
 msgstr "PDF-билет"
 
-#: admin/order.py:328
+#: admin/order.py:311
+msgid "order_admin_cancel_action"
+msgstr "Отмена"
+
+#: admin/order.py:351
 msgid "order_admin_refund_action"
 msgstr "Возврат"
 
-#: admin/order.py:349
+#: admin/order.py:372
 msgid "order_admin_email_resend_action"
 msgstr "Выслать повторно"
 
-#: admin/order.py:354
+#: admin/order.py:377
 msgid "order_admin_order_uuid"
 msgstr "Уникальный ID заказа"
 
-#: admin/order.py:360
+#: admin/order.py:383
 msgid "order_email_link"
 msgstr "Email"
 
-#: admin/order.py:366
+#: admin/order.py:389
 msgid "order_phone_link"
 msgstr "Телефон"
 

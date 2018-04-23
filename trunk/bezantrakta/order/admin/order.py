@@ -20,7 +20,7 @@ from rangefilter.filter import DateRangeFilter
 from project.decorators import queryset_filter
 from project.shortcuts import build_absolute_url
 
-from api.object_actions.order import email_resend, refund
+from api.object_actions.order import email_resend, cancel, refund
 
 from bezantrakta.event.models import Event
 from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
@@ -192,7 +192,7 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
 
     # date_hierarchy = 'event__datetime'
 
-    change_actions = ('refund_action', 'email_resend_action',)
+    change_actions = ('email_resend_action', 'cancel_action', 'refund_action',)
     fieldsets = (
         (
             'Параметры заказа',
@@ -280,12 +280,35 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
         obj = self.model.objects.get(pk=object_id)
 
         if obj.status == 'approved':
+            if obj.payment == 'cash':
+                actions.append('cancel_action')
             actions.append('refund_action')
             actions.append('email_resend_action')
 
         actions = tuple(actions)
 
         return actions
+
+    def cancel_action(self, request, obj):
+        """Отмена заказа при оффлайн-оплате."""
+        opts = self.model._meta
+        preserved_filters = self.get_preserved_filters(request)
+        changelist_url = reverse('admin:order_order_changelist')
+
+        redirect_url = add_preserved_filters(
+            {'preserved_filters': preserved_filters, 'opts': opts},
+            changelist_url
+        )
+
+        order_uuid = obj.id
+
+        response = cancel(order_uuid)
+        level = messages.INFO if response['success'] else messages.ERROR
+        self.message_user(request, response['message'], level=level)
+
+        # Возврат к списку заказов
+        return redirect(redirect_url)
+    cancel_action.label = _('order_admin_cancel_action')
 
     def refund_action(self, request, obj):
         """Возврат стоимости заказа."""
