@@ -911,6 +911,8 @@ class OrderBasket():
     def order_status_db(self, status):
         """Сохранение статуса заказа в БД."""
         self.order['status'] = status
+        self.order['status_color'] = OrderBasket.ORDER_STATUS_CAPTION[self.order['status']]['color']
+        self.order['status_caption'] = OrderBasket.ORDER_STATUS_CAPTION[self.order['status']]['description']
 
         Order.objects.filter(id=self.order['order_uuid']).update(status=self.order['status'])
 

@@ -50,12 +50,12 @@ def render_eticket(context, logger):
 
     # Обрезка слишком длинных строковых значений и разбиение по словам для умещения в строке
     context['event_title'] = textwrap.shorten(
-        context['event_title'], width=titles_max_chars*4, placeholder='...'
+        context['event_title'], width=titles_max_chars * 4, placeholder='...'
     )
     context['event_title'] = textwrap.wrap(context['event_title'], titles_max_chars)
 
     context['event_venue_title'] = textwrap.shorten(
-        context['event_venue_title'], width=titles_max_chars*2, placeholder='...'
+        context['event_venue_title'], width=titles_max_chars * 2, placeholder='...'
     )
     context['event_venue_title'] = textwrap.wrap(context['event_venue_title'], titles_max_chars)
 

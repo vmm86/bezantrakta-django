@@ -5,7 +5,7 @@ from api.views.event import seats_and_prices
 # Заказы
 from api.views.order import prev_order_delete, initialize, reserve, change_type, processing
 # Оплата
-from api.views.payment import payment_handler, sngb_proxy
+from api.views.payment import payment_handler, sngb_proxy, sngb_tran
 
 app_name = 'api'
 
@@ -79,6 +79,12 @@ payment_urls = [
         r'^payment/sngb_error/$',
         sngb_proxy,
         name='payment__sngb_error'
+    ),
+    # Обработка транзакций (как правило, возвратов) в СНГБ (вынужденный костыль)
+    url(
+        r'^payment/sngb_tran/$',
+        sngb_tran,
+        name='payment__sngb_tran'
     ),
 ]
 

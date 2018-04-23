@@ -533,30 +533,8 @@ class SurgutNefteGazBank(PaymentService):
         # |-- Уникальный UUID заказа
         data['udf4'] = str(kwargs['order_uuid']) if 'order_uuid' in kwargs else None
 
+        # Получение результата от промежуточного представления sngb_tran
         refund = self.request(method, url, data)
-
-        print('refund: ', refund)
-
-        # В случае успеха ???
-        # http://sur.bezantrakta.ru/api/payment/sngb_error/?
-        # error=null&
-        # errortext=null
-
-        # В случае ошибки
-        # http://sur.bezantrakta.ru/api/payment/sngb_error/?
-        # error=CGW000352&
-        # errortext=ERROR - CGW000352-Credit Over Available Amount
-
-        if type(refund) is str:
-            # Разбираем URL в ответе, получаем идентификатор оплаты
-            parsed_result = dict(parse_qsl(urlsplit(refund).query))
-            # print('parsed_result: ', parsed_result, '\n')
-
-            response = {}
-            response['success'] = False
-            response['code'] = parsed_result['error'].strip()
-            response['message'] = parsed_result['errortext'].strip()
-
-            return response
+        # print('refund: ', refund, type(refund))
 
         return refund
