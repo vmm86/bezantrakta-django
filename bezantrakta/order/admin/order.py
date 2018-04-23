@@ -282,7 +282,8 @@ class OrderAdmin(*inheritance, admin.ModelAdmin):
         if obj.status == 'approved':
             if obj.payment == 'cash':
                 actions.append('cancel_action')
-            actions.append('refund_action')
+            elif obj.payment == 'online':
+                actions.append('refund_action')
             actions.append('email_resend_action')
 
         actions = tuple(actions)
