@@ -1051,7 +1051,11 @@ class Radario(TicketService):
         output_mapping = {}
 
         cancel = self.request(method, url, data, output_mapping)
-        print('cancel:', cancel)
+        # print('cancel:', cancel)
+
+        # Если заказ уже был отменён ранее
+        if not cancel['success'] and cancel['code'] == 2000:
+            cancel['success'] = True
 
         return cancel
 
