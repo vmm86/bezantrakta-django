@@ -23,8 +23,8 @@ PREPEND_WWW = False
 
 # Кастомные параметры проекта
 
-# Текущая версич проекта
-BEZANTRAKTA_PROJECT_VERSION = '3.6'
+# Текущая версия проекта
+BEZANTRAKTA_PROJECT_VERSION = '3.7'
 # Настроен ли сайт для работы по HTTPS
 BEZANTRAKTA_IS_SECURE = False
 # Адрес для входа в админ-панель
@@ -418,6 +418,7 @@ BEZANTRAKTA_SCHEME_ALLOWED_CONTENT = '; '.join([
     # Круговая посекторная схема зала (цирк)
     r'div(stagehall-circle-wrapper){*}',
     r'ul(stagehall-circle,level1,level2,level3)[data-ts]{*}',
+    r'li(sector){*}',
     # Кнопки для переключения секторов в посекторной схеме зала
     r'div(!sector-button,circle,empty){*}',
     r'input[!id,!type,!name]',
@@ -582,7 +583,6 @@ CKEDITOR_CONFIGS = {
         ],
         'noConfirmCancel': True,
         'removePlugins': 'stylesheetparser',
-        'removeFormatAttributes': 'class,style,width,height,align,hspace,valign,data-ticket-id',
         'extraPlugins': 'codemirror,bezantrakta_scheme',
         'uiColor': '#cccccc',
         'allowedContent': BEZANTRAKTA_SCHEME_ALLOWED_CONTENT,
