@@ -182,7 +182,7 @@ class SuperBilet(TicketService):
         # Добавление необходимых параметров к телу запроса, если запрос непустой
         if data is not None:
             # Если в запросе - много записей
-            if type(data) is list:
+            if isinstance(data, list):
                 for d in data:
                     params = {}
                     for external, internal in input_mapping.items():
@@ -190,7 +190,7 @@ class SuperBilet(TicketService):
                             params['@' + external] = d[internal]
                     default_params['GateReq']['ReqBody']['InputRow'].append(params.copy())
             # Если в запросе - одна запись
-            elif type(data) is dict:
+            elif isinstance(data, dict):
                 params = {}
                 for external, internal in input_mapping.items():
                     if internal in data:
@@ -246,7 +246,7 @@ class SuperBilet(TicketService):
                 pretty_response = self.prettify_response(response, output_mapping)
                 # Если ответ успешный, но в нём только одна запись - она кладётся в список
                 # Затем по типу ответа (список или словарь) можно понимать, успешный он или НЕуспешный
-                if type(pretty_response) is dict and 'error' not in pretty_response:
+                if isinstance(pretty_response, dict) and 'error' not in pretty_response:
                     pretty_response_container = []
                     pretty_response_container.append(pretty_response)
                     return pretty_response_container
@@ -280,7 +280,7 @@ class SuperBilet(TicketService):
                 iterable = response['GateAnswer']['AnswerBody']['Row']
 
                 # Если в ответе - множество записей
-                if type(iterable) is list:
+                if isinstance(iterable, list):
                     # Ключи в нижнем регистре
                     iterable = [{k.lower(): v for k, v in d.items()} for d in iterable]
                     # print('iterable before: ', iterable, '\n')
@@ -288,10 +288,10 @@ class SuperBilet(TicketService):
                     for d in iterable:
                         self.humanize_with_type_casting(d, output_mapping)
                         # Если ответ пришёл с ошибкой
-                        if d['result_code'] != 0:
+                        if 'result_code' in d and d['result_code'] != 0:
                             d['message'] = self.RESPONSE_CODES[d['result_code']]
                 # Если в ответе - одна запись
-                elif type(iterable) is dict:
+                elif isinstance(iterable, dict):
                     # Ключи в нижнем регистре
                     iterable = {k.lower(): v for k, v in iterable.items()}
                     # Конвертация ключей в человекопонятные значения и приведение типов
@@ -333,27 +333,27 @@ class SuperBilet(TicketService):
                             iterable[internal.key] = internal.default_value
                     # Если получено НЕпустое значение - приведение типов данных
                     else:
-                        if internal.type is str and type(iterable[internal.key]) is not str:
+                        if internal.type is str and not isinstance(iterable[internal.key], str):
                             # Если получена пустая строка - поиск значения по умолчанию
                             iterable[internal.key] == (
                                 internal.default_value if
                                 iterable[internal.key] == '' and internal.default_value is not None else
                                 iterable[internal.key]
                             )
-                        elif internal.type is int and type(iterable[internal.key]) is not int:
+                        elif internal.type is int and not isinstance(iterable[internal.key], int):
                             iterable[internal.key] = (
                                 0 if
                                 iterable[internal.key] == '' else
                                 int(iterable[internal.key])
                             )
-                        elif internal.type is bool and type(iterable[internal.key]) is not bool:
+                        elif internal.type is bool and not isinstance(iterable[internal.key], bool):
                             iterable[internal.key] = True if iterable[internal.key] in BOOLEAN_VALUES else False
-                        elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
+                        elif internal.type is Decimal and not isinstance(iterable[internal.key], Decimal):
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
-                        elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
+                        elif internal.type is datetime and not isinstance(iterable[internal.key], datetime):
                             iterable[internal.key] = dateutil.parser.parse(iterable[internal.key])
                         # Приведение ключей списка из словарей к нижнему регистру
-                        elif internal.type is list and type(iterable[internal.key][0]) is dict:
+                        elif internal.type is list and isinstance(iterable[internal.key][0], dict):
                             iterable[internal.key] = [
                                 {k.lower(): v for k, v in i.items()} for i in iterable[internal.key]
                             ]
@@ -401,7 +401,7 @@ class SuperBilet(TicketService):
         }
         places = self.request(method, input_mapping, data, output_mapping)
 
-        if type(places) is list:
+        if isinstance(places, list):
             places = sorted(places, key=itemgetter('place_id'))
         else:
             places = []
@@ -436,7 +436,7 @@ class SuperBilet(TicketService):
         }
         schemes = self.request(method, input_mapping, data, output_mapping)
 
-        if type(schemes) is list:
+        if isinstance(schemes, list):
             schemes = sorted(schemes, key=itemgetter('scheme_id'))
         else:
             schemes = []
@@ -456,7 +456,7 @@ class SuperBilet(TicketService):
         for p in places:
             if p['result_code'] == 0:
                 schemes = self.schemes(place_id=p['place_id'])
-                if type(schemes) is list:
+                if isinstance(schemes, list):
                     for s in schemes:
                         # Формирование названия схемы зала
                         s['scheme_title'] = '{place_title} ({scheme_title})'.format(
@@ -510,7 +510,7 @@ class SuperBilet(TicketService):
         }
         groups = self.request(method, input_mapping, data, output_mapping)
 
-        if type(groups) is list:
+        if isinstance(groups, list):
             groups = sorted(groups, key=itemgetter('group_id'))
         else:
             groups = []
@@ -528,7 +528,7 @@ class SuperBilet(TicketService):
 
         # Группировка событий по их группам
         events_by_groups = defaultdict(list)
-        if type(events) is list:
+        if isinstance(events, list):
             for e in events:
                 events_by_groups[(e['group_id'])].append(e)
             # Для сохранения в БД остаются только группы, содержащие более одного события
@@ -541,7 +541,7 @@ class SuperBilet(TicketService):
             events = []
 
         # Добавление в группу недостающей информации из самого раннего на данный момент входящего в неё события
-        if type(groups) is list:
+        if isinstance(groups, list):
             for g in groups:
                 for e in events:
                     if g['group_id'] == e['group_id']:
@@ -624,7 +624,7 @@ class SuperBilet(TicketService):
         }
         events = self.request(method, input_mapping, data, output_mapping)
 
-        if type(events) is list:
+        if isinstance(events, list):
             for e in events:
                 if e['result_code'] == 0:
                     del e['place_id']
@@ -702,7 +702,7 @@ class SuperBilet(TicketService):
         }
         sectors = self.request(method, input_mapping, data, output_mapping)
 
-        if type(sectors) is list:
+        if isinstance(sectors, list):
             sectors = {s['sector_id']: s['sector_title'].lower() for s in sectors}
 
         return sectors
@@ -746,7 +746,7 @@ class SuperBilet(TicketService):
         response['seats'] = {}
         response['prices'] = []
 
-        if type(seats) is list:
+        if isinstance(seats, list):
             response['success'] = True
 
             # Получение списка цен на билеты, упорядоченного по возрастанию
@@ -768,7 +768,7 @@ class SuperBilet(TicketService):
                     # Название сектора (если оно получено без ошибок)
                     seat['sector_title'] = (
                         sectors.get(s['sector_id']) if
-                        type(sectors) is dict and 'error' not in sectors else
+                        isinstance(sectors, dict) and 'error' not in sectors else
                         ''
                     )
                     seat['row_id'] = s['row_id']
@@ -825,7 +825,7 @@ class SuperBilet(TicketService):
         }
         sector_seats = self.request(method, input_mapping, data, output_mapping)
 
-        if type(sector_seats) is list:
+        if isinstance(sector_seats, list):
             sector_seats = sorted(sector_seats, key=itemgetter('price', 'sector_id', 'row_id', 'seat_id'))
 
         return sector_seats
@@ -874,7 +874,7 @@ class SuperBilet(TicketService):
 
         response = {}
 
-        if type(reserve) is list and reserve[0]['result_code'] == 0:
+        if isinstance(reserve, list) and reserve[0]['result_code'] == 0:
             response['success'] = True
 
             response['event_id'] = kwargs['event_id']
@@ -960,7 +960,7 @@ class SuperBilet(TicketService):
 
         response = {}
 
-        if type(status) is list and status[0]['result_code'] == 0:
+        if isinstance(status, list) and status[0]['result_code'] == 0:
             status = {k: v for k, v in status[0].items()}
 
             response['success'] = True
@@ -1087,7 +1087,7 @@ class SuperBilet(TicketService):
         response = {}
         response['tickets'] = {}
 
-        if type(order_created) is list:
+        if isinstance(order_created, list):
             for ot in order_created:
                 # Уникальный идентификатор билета
                 ot['ticket_id'] = self._compose_ticket_id(ot['sector_id'], ot['row_id'], ot['seat_id'])
@@ -1177,7 +1177,7 @@ class SuperBilet(TicketService):
 
         response = {}
 
-        if type(cancel) is list:
+        if isinstance(cancel, list):
             for c in cancel:
                 if 'result_code' in c and c['result_code'] == 0:
                     response['success'] = True
@@ -1264,7 +1264,7 @@ class SuperBilet(TicketService):
 
         response = {}
 
-        if type(approve) is list:
+        if isinstance(approve, list):
             for a in approve:
                 if 'result_code' in a and a['result_code'] == 0:
                     response['success'] = True
@@ -1476,7 +1476,7 @@ class SuperBilet(TicketService):
         }
         log = self.request(method, input_mapping, data, output_mapping)
 
-        if type(log) is list:
+        if isinstance(log, list):
             for l in log:
                 # Преобразование даты/времени
                 date, month, year = l['date'].split('.')

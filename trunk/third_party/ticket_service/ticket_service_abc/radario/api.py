@@ -140,12 +140,12 @@ class Radario(TicketService):
                     return {'success': False, 'code': response_code, 'message': response_message, }
 
             # Если в ответе - множество записей
-            if type(iterable) is list:
+            if isinstance(iterable, list):
                 # Конвертация ключей в человекопонятные значения
                 for item in iterable:
                     self.humanize_with_type_casting(item, output_mapping)
             # Если в ответе - одна запись
-            elif type(iterable) is dict:
+            elif isinstance(iterable, dict):
                 # Конвертация ключей в человекопонятные значения
                 self.humanize_with_type_casting(iterable, output_mapping)
                 iterable['success'] = True
@@ -176,7 +176,7 @@ class Radario(TicketService):
                             iterable[internal.key] = internal.default_value
                     # Если получено НЕпустое значение - приведение типов данных
                     else:
-                        if internal.type is str and type(iterable[internal.key]) is not str:
+                        if internal.type is str and not isinstance(iterable[internal.key], str):
                             iterable[internal.key] = str(internal.default_value)
                             # Если получена пустая строка - поиск значения по умолчанию
                             iterable[internal.key] == (
@@ -184,17 +184,17 @@ class Radario(TicketService):
                                 iterable[internal.key] == '' and internal.default_value is not None else
                                 iterable[internal.key]
                             )
-                        elif internal.type is int and type(iterable[internal.key]) is not int:
+                        elif internal.type is int and not isinstance(iterable[internal.key], int):
                             iterable[internal.key] = int(iterable[internal.key])
-                        elif internal.type is bool and type(iterable[internal.key]) is not bool:
+                        elif internal.type is bool and not isinstance(iterable[internal.key], bool):
                             iterable[internal.key] = True if iterable[internal.key] in BOOLEAN_VALUES else False
-                        elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
+                        elif internal.type is Decimal and not isinstance(iterable[internal.key], Decimal):
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
-                        elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
+                        elif internal.type is datetime and not isinstance(iterable[internal.key], datetime):
                             # '2017-09-29T16:00:00.000+00:00'
                             iterable[internal.key] = dateutil.parser.parse(iterable[internal.key])
                         # Приведение ключей списка из словарей к нижнему регистру
-                        elif internal.type is list and type(iterable[internal.key][0]) is dict:
+                        elif internal.type is list and isinstance(iterable[internal.key][0], dict):
                             iterable[internal.key] = [
                                 {k.lower(): v for k, v in i.items()} for i in iterable[internal.key]
                             ]
@@ -240,7 +240,7 @@ class Radario(TicketService):
         }
         places = self.request(method, url, data, output_mapping)
 
-        if type(places) is list and places:
+        if isinstance(places, list) and places:
             places = sorted(places, key=itemgetter('place_id'))
 
         return places
@@ -326,7 +326,7 @@ class Radario(TicketService):
                 )
             discovered_schemes.append(scheme)
 
-        if type(discovered_schemes) is list and discovered_schemes:
+        if isinstance(discovered_schemes, list) and discovered_schemes:
             discovered_schemes = sorted(discovered_schemes, key=itemgetter('scheme_id'))
 
         return discovered_schemes
@@ -353,7 +353,7 @@ class Radario(TicketService):
         }
         groups = self.request(method, url, data, output_mapping)
 
-        if type(groups) is list and groups:
+        if isinstance(groups, list) and groups:
             groups = sorted(groups, key=itemgetter('group_id'))
 
         return groups
@@ -390,7 +390,7 @@ class Radario(TicketService):
                         0
                     )
 
-        if type(groups) is list and groups:
+        if isinstance(groups, list) and groups:
             groups = sorted(groups, key=itemgetter('group_datetime'))
 
         return groups
@@ -653,7 +653,7 @@ class Radario(TicketService):
 
         sectors = self.sectors(event_id=kwargs['event_id'])
 
-        if type(sectors) is list and sectors:
+        if isinstance(sectors, list) and sectors:
             response['success'] = True
 
             prices = sorted([sec['price'] for sec in sectors])
@@ -1193,7 +1193,7 @@ class Radario(TicketService):
         }
         promoters = self.request(method, url, data, output_mapping)
 
-        if type(promoters) is list and promoters:
+        if isinstance(promoters, list) and promoters:
             promoters = sorted(promoters, key=itemgetter('promoter_id'))
 
         return promoters
