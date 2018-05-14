@@ -104,7 +104,7 @@
 
                     for (var col = 1; col <= scheme_columns; col++) {
                         scheme_template += `
-                        <li>
+                        <li class="sector">
                             <div class="sector-button">
                                 <input id="sector-${col}" name="sectors" type="radio">
                                 <label for="sector-${col}">
