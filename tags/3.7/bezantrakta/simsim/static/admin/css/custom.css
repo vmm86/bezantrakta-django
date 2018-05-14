@@ -1,0 +1,1585 @@
+/* Основные стили */
+*, *:before, *:after,
+html, html:before, html:after,
+body, body:before, body:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html,
+body.login,
+.login #container {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+
+    height: 100%;
+}
+
+html,
+body,
+#container {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+}
+
+body {
+    color: #111;
+    background: #fff;
+}
+
+body.login {
+    background: transparent;
+}
+
+h1 {
+    color: #111;
+    font-weight: bold;
+}
+
+a {
+    cursor: pointer;
+}
+
+a:link,
+a:visited {
+    border-bottom: none;
+    color: #111;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:focus,
+a:hover {
+    color: inherit;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: inherit;
+}
+
+a:not([href]) {
+    cursor: default;
+}
+
+thead th,
+thead th.sorted {
+    background: #ccc;
+    color: #111;
+    text-shadow: 0px 1px 0 #fff;
+}
+
+thead th.sorted {
+    background: #aaa;
+}
+
+thead th.sorted .text {
+    padding-right: 24px;
+}
+
+table thead th .text a:focus,
+table thead th .text a:hover {
+    background: inherit;
+}
+
+thead th a:link,
+thead th a:visited {
+    color: inherit;
+}
+
+td, th {
+    border-bottom: 1px solid #ccc;
+}
+
+*:focus {
+    outline: none;
+}
+
+input, textarea, select, .form-row p, form .button {
+    border: none;
+
+    font-family: 'Roboto', 'Lucida Grande', 'Verdana', 'Arial', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+
+    margin: 2px 0;
+    padding: 2px 4px;
+
+    height: auto;
+    vertical-align: middle;
+}
+
+li, dt, dd {
+    font-size: 14px;
+}
+
+em, code {
+    background: #FFE57F;
+    border-radius: 0.25rem;
+    font-style: normal;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+    padding: 0 0.5rem;
+    margin: 0 0.1rem;
+}
+
+.small {
+    font-size: 12px;
+}
+
+/* Контейнер */
+
+#container,
+.login #container {
+    border: none;
+    margin: auto;
+    height: calc(100vh - 60px);
+}
+
+.login #container {
+    justify-content: center;
+    align-items: center;
+}
+
+/* Заголовок */
+
+#header {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #999;
+    color: #fff;
+    line-height: auto;
+
+    padding: 2px 40px 4px 40px;
+
+    width: 100%;
+    height: auto;
+}
+
+#header a:link,
+#header a:visited {
+    border-bottom: none;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0px 1px 0 #111;
+}
+
+#header .warning {
+    font-weight: bold;
+    margin: 0;
+    margin-left: 16px;
+}
+
+.login #header {
+    justify-content: center;
+
+    background: transparent;
+    border-radius: 0.25rem;
+    padding: 0;
+}
+
+#branding {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding: 2px 0 4px 0;
+}
+
+#branding img {
+    width: 250px;
+    height: auto;
+    position: relative;
+    top: 2px;
+}
+
+#branding h1 {
+    font-weight: bold;
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+    color: #fff;
+    text-shadow: 1px 1px 0px #111;
+}
+
+#branding_choose_domain {
+    padding-left: 1rem;
+}
+
+#choose_domain_or_city {
+    background-color: #fff;
+}
+
+#choose_domain_or_city option {
+    color: #111;
+}
+
+#choose_domain_or_city .enabled {
+    background-color: #4caf50;
+}
+
+#choose_domain_or_city .progress {
+    background-color: #fc0;
+}
+
+#choose_domain_or_city .disabled {
+    background-color: #f44336;
+}
+
+#choose_domain_or_city .published {
+    text-decoration: none;
+}
+
+#choose_domain_or_city .not_published {
+    text-decoration: line-through;
+}
+
+#user-tools {
+    color: #111;
+}
+
+#user-tools a:focus,
+#user-tools a:hover {
+    border-bottom: 1px solid #fc0;
+    color: #fc0;
+    text-shadow: 0px 1px 0 #111;
+}
+
+/* Хлебные крошки */
+
+div.breadcrumbs {
+    background: #fc0;
+    color: #111;
+}
+
+div.breadcrumbs a {
+    border-bottom: none;
+    color: #111;
+    font-weight: bold;
+    text-shadow: 0 1px 0px #fff;
+}
+
+div.breadcrumbs a:focus,
+div.breadcrumbs a:hover {
+    border-bottom: 1px solid #111;
+    color: inherit;
+}
+
+/* Всплывающие сообщения */
+
+ul.messagelist {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    position: absolute;
+    top: 79px;
+}
+
+ul.messagelist li {
+    font-size: 14px;
+    padding: 10px 10px 10px 65px;
+    margin: 0;
+    background: #C8E6C9 url(../img/icon-yes.svg) 40px 12px no-repeat;
+    background-size: 16px auto;
+    color: #111;
+}
+
+/* Модули */
+
+.dashboard #content {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.dashboard #content > h1,
+.dashboard #content > p {
+    order: -1;
+}
+
+.dashboard #content #content-main {
+    width: 50%;
+    float: none;
+}
+
+.dashboard #content #content-related {
+    margin-right: 0;
+    width: 50%;
+    float: none;
+    order: -1;
+}
+
+.module {
+    background: none;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    background: #fc0;
+    border-radius: 1rem 1rem 0 0;
+    color: #111;
+    font-weight: bold;
+    text-shadow: 0 1px 0px #fff;
+    text-transform: uppercase;
+}
+
+.module caption {
+    border-bottom: 1px solid #ccc;
+}
+
+a.section:link,
+a.section:visited {
+    color: #111;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #fff;
+}
+
+.dashboard .module table th:first-child,
+.dashboard .module table td:first-child {
+    border-left: 1px solid #ccc;
+}
+
+.dashboard .module table th:last-child,
+.dashboard .module table td:last-child {
+    border-right: 1px solid #ccc;
+}
+
+.login #content {
+    padding: 20px 20px 0;
+}
+
+#content-main .module a:link,
+#content-main .module a:visited {
+    border-bottom: none;
+}
+
+#content-related {
+    background: transparent;
+    border-radius: 2rem 2rem 0 0;
+    margin-right: -400px;
+    width: 360px;
+}
+
+#content-related h3 {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    color: #222;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    margin: 0;
+}
+
+#content-related p {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    padding: 0 16px 16px 16px;
+    margin: 0;
+}
+
+#content-related .module h2 {
+    background: #fc0;
+    color: #111;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0px 1px 0px #fff;
+    text-transform: uppercase;
+    padding: 8px;
+    margin-bottom: 0;
+}
+
+#content-related .actionlist {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    border: 1px solid #ccc;
+    border-bottom: none;
+    padding: 0;
+    margin: 0;
+    margin-top: -1px;
+
+    height: 160px; /* 30px * X */
+    overflow: auto;
+}
+
+#content-related .actionlist li {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    flex: 1 0 100%;
+
+    padding: 7px 7px 7px 18px;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+}
+
+#content-related .actionlist li a {
+    border-bottom: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#content-related .actionlist li span {
+    text-align: center;
+    text-overflow: ellipsis;
+    text-transform: lowercase;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#content-related .actionlist .object_repr {
+    width: 60%;
+}
+#content-related .actionlist .content_type {
+    width: 15%;
+}
+#content-related .actionlist .action_time {
+    width: 15%;
+}
+#content-related .actionlist .user {
+    width: 10%;
+}
+
+#result_list div.drag {
+    background: url(../img/sorting-icons.svg) 0 1px no-repeat;
+    background-position-x: center;
+}
+
+#result_list div.drag:hover {
+    background: url(../img/sorting-icons.svg) 0 -13px no-repeat;
+    background-position-x: center;
+}
+
+.nowrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#result_list .field-is_group {
+    max-width: 50px;
+}
+#result_list .field-event_venue {
+    max-width: 100px;
+}
+#result_list .field-event {
+    max-width: 200px;
+}
+
+#result_list .column-ico_preview {
+    width: 64px;
+}
+
+#result_list .field-ico_preview {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#result_list tr:hover .field-event_venue {
+    background-color: #ffc;
+    overflow: visible;
+}
+#result_list tr:hover .field-group_count,
+#result_list tr:hover .field-link_count,
+#result_list tr:hover .field-container_count {
+    color: transparent;
+}
+
+/* Кнопки */
+
+#object-tools-container {
+    margin-top: 20px;
+}
+
+#object-tools-container h2 {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    padding: 5px 15px;
+    margin: 0;
+}
+
+#object-tools-container .wrapper {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    border-top: none;
+    border-right:  1px solid #ccc;
+    border-left:   1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+#object-tools-container .wrapper p:last-of-type {
+    margin-bottom: 0;
+}
+
+.object-tools {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: center;
+
+    font-size: inherit;
+
+    padding: 20px 40px;
+    margin: 0 !important;
+
+    width: 100%;
+
+    float: none;
+    position: static;
+}
+
+.object-tools li {
+    list-style-type: none;
+
+    margin: 0 4px;
+
+    height: auto;
+
+    float: none;
+}
+
+.object-tools a {
+    border-bottom: none;
+
+    text-shadow: 0 1px 0px #111;
+}
+
+.object-tools a.viewsitelink,
+.object-tools a.golink,
+.object-tools a.addlink {
+    background-repeat: no-repeat;
+    background-position: right 7px center;
+    padding-left: 26px;
+    padding-right: 13px;
+}
+
+.object_action,
+.object-tools a:link,
+.object-tools a:visited {
+    border-radius: 1rem !important;
+    background-color: #fc0;
+    color: #111;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    line-height: 15px;
+    text-shadow: 0 1px 0px #fff;
+    text-transform: uppercase;
+    padding: 10px 15px;
+}
+
+.object-tools a.addlink {
+    background-color: #66BB6A;
+    background-image: url(../img/tooltag-add.svg);
+    padding-left: 16px;
+    padding-right: 24px;
+}
+
+.object-tools a.historylink {
+}
+
+.object-tools a.viewsitelink {
+    padding-right: 24px;
+}
+
+.object-tools li[data-tool-name="cancel_action"] a,
+input[name="cancel_action"] {
+    background-color: #C62828;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+}
+
+.object-tools li[data-tool-name="refund_action"] a,
+input[name="refund_action"] {
+    background-color: #512DA8;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+}
+
+.object-tools a:focus,
+.object-tools a:hover {
+    background-color: #fc0 !important;
+    color: #111 !important;
+    text-shadow: 0 1px 0px #fff !important;
+}
+
+input[name="amount"] {
+    width: 100px;
+}
+
+.reason_choices label {
+    display: block;
+}
+
+/* Фильтры */
+
+/*#changelist .actions,
+.change-list .filtered .results,
+.change-list .filtered .paginator,
+.filtered #toolbar,
+.filtered div.xfull {
+    margin-right: 0;
+}*/
+
+/*.change-list .filtered table tbody th {
+    padding-right: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50px;
+    white-space: nowrap;
+}*/
+
+#changelist table tr:hover {
+    background-color: #ffc;
+}
+
+#changelist-form {
+    position: relative;
+}
+
+#changelist-form a {
+    border-bottom: none;
+}
+
+#changelist .actions select {
+    border: 2px solid #999;
+    border-radius: 0.5rem 0 0 0.5rem;
+    padding: 0 0.25rem;
+    height: 28px;
+}
+
+#changelist .actions select:focus {
+    border: 2px solid #fc0;
+}
+
+#changelist .actions .button {
+    background-color: #999;
+    border: none;
+    border-radius: 0 1rem 1rem 0;
+    color: #fff;
+    text-shadow: 0px 1px 0px #111;
+    padding: 0 0.5rem;
+    height: 28px;
+}
+
+#changelist .actions .button:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 1px 1px 0px #fff;
+}
+
+#changelist #toolbar {
+    background: transparent;
+    border: none;
+    margin-bottom: 0;
+}
+
+#changelist-filter {
+    background: #fff;
+    float: none;
+    top: auto;
+    position: static;
+
+    border: none;
+    border-radius: 1rem 1rem 0 0;
+    padding: 0;
+    margin-top: 10px;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+}
+
+#changelist-filter h2 {
+    font-size: 12px;
+    margin: 0;
+}
+
+#changelist-filter .filters {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    border-right:  1px solid #ccc;
+    border-left:   1px solid #ccc;
+}
+#changelist-filter .filters:first-child {
+    border-top: 1px solid #ccc;
+}
+#changelist-filter .filters:last-child {
+    border-bottom: 1px solid #ccc;
+}
+
+#changelist-filter .filters .filter {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+#changelist-filter .filters.horizontal .filter {
+    flex-direction: row;
+}
+#changelist-filter .filters.vertical .filter {
+    flex-direction: column;
+}
+
+#changelist-filter .filters .filter select {
+    width: 10vw !important;
+}
+
+#changelist-filter h3 {
+    background: #fff;
+    color: #222;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 12px 18px;
+    margin: 0;
+
+    align-self: flex-start;
+}
+
+#changelist-filter ul {
+    background: #fff;
+    border-left: none;
+    padding: 0 16px 16px 16px;
+    margin: 0;
+}
+
+#changelist-filter li.selected {
+    border-left: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+#changelist-filter a:focus,
+#changelist-filter a:hover,
+#changelist-filter li.selected a:focus,
+#changelist-filter li.selected a:hover {
+    color: inherit;
+}
+
+#changelist-filter a {
+    display: inline-flex;
+
+    display: inline-block;
+    border-radius: 1rem;
+    border-bottom: none;
+    background-color: #999;
+    color: #fff;
+    font-size: 0.75rem;
+    text-shadow: 0 1px 0px #111;
+    padding: 2px 10px 3px 10px;
+}
+
+#changelist-search a {
+    vertical-align: middle;
+    margin: 0 -0.25rem;
+    position: relative;
+    z-index: 10;
+}
+
+#changelist-search #searchbar,
+#changelist #toolbar form #searchbar {
+    border: 2px solid #999;
+    border-radius: 0.5rem 0 0 0.5rem;
+    font-size: 14px;
+    padding: 5px;
+    height: auto;
+    position: relative;
+    z-index: 10;
+}
+
+#changelist-search #searchbar:focus,
+#changelist #toolbar form #searchbar:focus {
+    border: 2px solid #fc0;
+}
+
+#changelist-search input[type="submit"],
+#changelist #toolbar form input[type="submit"] {
+    background-color: #999;
+    border: none;
+    border-radius: 0 1rem 1rem 0;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+    padding: 7px 12px 7px 10px;
+    margin-left: -0.25rem;
+}
+
+#changelist-search input[type="submit"]:focus,
+#changelist-search input[type="submit"]:hover,
+#changelist #toolbar form input[type="submit"]:focus,
+#changelist #toolbar form input[type="submit"]:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 1px 1px 0px #fff;
+}
+
+#changelist-search .small {
+    vertical-align: middle;
+}
+
+.change-list .filtered .results,
+.change-list .filtered .paginator,
+.filtered #toolbar,
+.filtered div.xfull {
+    margin-right: 0;
+    width: 100%;
+}
+
+/* Статус заказа */
+
+.ordered {
+    background-color: #C8EDFD;
+}
+.approved {
+    background-color: #D6EDD8;
+}
+.cancelled {
+    background-color: #FFD2D8;
+}
+.refunded {
+    background-color: #DFD4EF;
+}
+
+.model-order #result_list tbody tr:hover {
+    background-color: #fff;
+}
+
+/* Кнопки для фильтрации по статусу заказа */
+#changelist-filter a[title="создан"] {
+    background-color: #C8EDFD;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+#changelist-filter a[title="подтверждён"] {
+    background-color: #D6EDD8;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+#changelist-filter a[title="отменён"] {
+    background-color: #FFD2D8;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+#changelist-filter a[title="возвращён"] {
+    background-color: #DFD4EF;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+
+#changelist-filter li.selected a,
+#changelist-filter a:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+
+.admindatefilter {
+    border: none !important;
+}
+.admindatefilter p {
+    margin: 0;
+}
+
+.admindatefilter .controls input {
+    background-color: #999;
+    border-radius: 1rem;
+    color: #fff;
+    text-shadow: 0 1px 0px #111;
+    padding: 4px 14px 5px 14px;
+}
+.admindatefilter .controls input:focus,
+.admindatefilter .controls input:hover {
+    background-color: #fc0;
+    border-radius: 1rem;
+    color: #111;
+    text-shadow: 1px 1px 0px #fff;
+}
+
+.admindatefilter input[name$="datetime__gte"],
+.admindatefilter input[name$="datetime__lte"] {
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.admindatefilter .datetimeshortcuts > a {
+    display: none !important;
+}
+.admindatefilter .datetimeshortcuts > a[id^="calendarlink"] {
+    display: inline-flex !important;
+
+    display: flex !important;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 1rem 1rem 0 !important;
+    height: 2.05rem;
+    top: 0;
+}
+.admindatefilter .datetimeshortcuts > a[id^="calendarlink"] .date-icon {
+    left: -2px;
+}
+
+/* Пагинация */
+
+.paginator a:link,
+.paginator a:visited {
+    border-radius: 1rem;
+    background: #999;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 1px 0px #111;
+    padding: 4px 10px 6px 10px;
+}
+
+.paginator a:focus,
+.paginator a:hover,
+.paginator a.showall:focus,
+.paginator a.showall:hover,
+.paginator .this-page {
+    border-radius: 1rem;
+    background: #fc0;
+    color: #111;
+    font-weight: bold;
+    text-shadow: 1px 1px 0px #fff;
+    padding: 4px 10px 6px 10px;
+}
+
+#changelist .actions {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    color: #111;
+}
+
+/*#changelist .paginator {
+    color: #111;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    z-index: 1000;
+}*/
+
+/* Формы */
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+input[type=tel],
+select,
+textarea,
+.vTextField {
+    border: 2px solid #999;
+    border-radius: 0.33rem;
+}
+
+input[type=text],
+input[type=password],
+input[type=email],
+input[type=url],
+input[type=number],
+input[type=tel],
+.vTextField {
+    padding: 5px 6px;
+}
+
+input[type=tel],
+.vTextField {
+    width: 20em;
+}
+
+input[type=text]:focus,
+input[type=password]:focus,
+input[type=email]:focus,
+input[type=url]:focus,
+input[type=number]:focus,
+input[type=tel]:focus,
+select:focus,
+textarea:focus,
+.vTextField:focus {
+    border: 2px solid #fc0;
+    text-shadow: 1px 0 0 #111;
+}
+
+select:focus option {
+    text-shadow: none;
+}
+
+.submit-row input,
+.submit-row a.deletelink {
+    border-radius: 1rem;
+    font-size: 13px;
+    text-shadow: 0 1px 0px #111;
+
+    margin: 0 4px;
+}
+
+.submit-row a.deletelink{
+    display: inline-block;
+
+    background: #C62828;
+    border-bottom: none;
+    text-transform: uppercase;
+
+    width: auto;
+    height: auto;
+
+    vertical-align: middle;
+}
+
+.login .submit-row {
+    text-align: center;
+    padding: 12px 0;
+}
+
+input[name=_addanother],
+input[name=_continue] {
+    background: #66BB6A;
+}
+
+.button.default,
+.submit-row input.default,
+input[type=submit].default,
+input[name=_save].default {
+    background: #2E7D32;
+    font-weight: bold;
+
+    margin: 0 4px;
+}
+
+.button:active,
+input[type=submit]:active,
+input[type=button]:active,
+.button:focus,
+input[type=submit]:focus,
+input[type=button]:focus,
+.button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+
+.button.default:active,
+input.default[type="submit"]:active,
+.button.default:focus,
+input.default[type="submit"]:focus,
+.button.default:hover,
+input.default[type="submit"]:hover,
+
+.submit-row a.deletelink:focus,
+.submit-row a.deletelink:hover,
+.submit-row a.deletelink:active {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0 1px 0px #fff;
+}
+
+label,
+.required label,
+label.required,
+p.datetime {
+    color: #111;
+}
+
+.aligned label {
+    display: inline-block;
+}
+
+.form-row {
+    border-bottom: 1px solid #ccc;
+}
+
+.form-row img,
+.form-row input {
+    vertical-align: middle;
+}
+
+.form-row div.help {
+    color: #111;
+    padding-top: 8px;
+    padding-left: 0;
+}
+
+form .aligned input + p.help,
+form .aligned textarea + p.help,
+form .aligned select + p.help,
+form .aligned input + div.help,
+form .aligned textarea + div.help,
+form .aligned select + div.help,
+form .aligned p.help,
+form .aligned div.help {
+    padding-left: 0;
+}
+
+form .aligned ul:not(.radiolist) > li {
+    list-style: inherit;
+}
+
+form .aligned ul:not(.radiolist) > li > ul > li {
+    list-style: inherit;
+    margin-left: 1rem;
+}
+
+.help,
+p.help,
+form p.help,
+div.help,
+form div.help,
+div.help li,
+.description,
+.description li {
+    color: #111;
+    font-size: 14px;
+}
+
+form div.help ol, form div.description ol,
+form div.help ul, form div.description ul {
+    padding-left: 28px;
+}
+
+form ul.radiolist input[type="radio"] {
+    vertical-align: middle;
+}
+
+p.file-upload {
+    color: #111;
+    line-height: 1;
+}
+
+.submit-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    padding: 20px 12px;
+    margin: 0;
+    width: 100%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.aligned .vCheckboxLabel {
+    display: block;
+    vertical-align: baseline;
+    padding: 0;
+    width: 160px;
+    float: left;
+}
+
+.timezonewarning {
+    color: #111;
+}
+
+.related-widget-wrapper {
+    display: inline;
+    float: none;
+}
+
+.related-widget-wrapper-link {
+    display: none;
+}
+
+.inline-group .tabular tr.has_original td {
+    padding: 0;
+    vertical-align: middle;
+}
+
+.inline-group .tabular td.original p {
+    position: static;
+    font-size: 14px;
+    height: auto;
+}
+
+.addlink,    .inlineaddlink,
+.changelink, .inlinechangelink,
+.deletelink, .inlinedeletelink {
+    padding-left:  16px;
+    background-position: 2px center;
+}
+
+div.inline-group table.ui-sortable tr.form-row.has_original td.drag {
+    background: url(../img/sorting-icons.svg) 0 1px no-repeat !important;
+    background-position-x: center !important;
+    background-size: 100% 550% !important;
+}
+
+div.inline-group table.ui-sortable tr.form-row.has_original td.drag:hover {
+    background: url(../img/sorting-icons.svg) 0 20% no-repeat !important;
+    background-position-x: center !important;
+    background-size: 100% 550% !important;
+}
+
+.img_preview_eventcontainerbinder {
+    width: auto;
+    height: 64px;
+}
+
+.img_preview_link {
+    width: 192px;
+    height: auto;
+}
+
+.img_preview_linkbinder {
+    width: 200px;
+    height: auto;
+}
+
+.delete-confirmation form .cancel-link {
+    height: auto;
+    line-height: initial;
+}
+
+#id_promoter,
+#id_seller {
+    width: 80vw;
+}
+
+.order_email_link,
+.order_phone_link,
+.order_ticket_pdf_ticket {
+    color: #1976D2 !important;
+}
+
+.order_ticket_pdf_ticket:before {
+    content: '';
+    background-image: url('/static/admin/img/pdf.svg');
+    background-repeat: no-repeat;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+}
+
+/* Оформление двух инлайн-форм (одна - для отображения добавленных данных, другая - только для добавления) */
+#groups-group {
+    margin-bottom: 0;
+}
+#groups-2-group fieldset h2,
+#groups-2-group fieldset table thead {
+    display: none;
+}
+
+/* Порядок отображения справочного текста при редактировании объекта модели */
+
+fieldset.module {
+    margin: 20px 0;
+}
+
+fieldset.module h2 ~ .form-row {
+    border-right: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+}
+
+fieldset.help_text {
+    display: inline-flex;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    margin-bottom: 0;
+}
+
+fieldset.help_text h2 {
+    width: 100%;
+    order: -1;
+}
+
+fieldset.help_text .form-row {
+    width: 100%;
+    order: 1;
+}
+
+fieldset.help_text .form-row.field-settings {
+    padding: 0;
+    width: 100%;
+    order: 2;
+}
+
+fieldset.help_text .description {
+    padding: 0;
+    order: 3;
+}
+
+fieldset.help_text .description ol,
+fieldset.help_text .description ul {
+    margin-left: 0;
+}
+
+/* JSON Editor */
+
+.jsoneditor {
+    color: #111 !important;
+    border: 2px solid #999 !important;
+}
+
+.jsoneditor .search,
+.jsoneditor .jsoneditor-search {
+    margin: 2px 0;
+    position: static !important;
+}
+
+.jsoneditor .search .frame,
+.jsoneditor .jsoneditor-search .jsoneditor-frame {
+    border: 1px solid #999 !important;
+}
+
+.jsoneditor .menu,
+.jsoneditor .jsoneditor-menu {
+    color: #111 !important;
+    background-color: #fc0 !important;
+    border-bottom: 2px solid #999 !important;
+}
+
+.jsoneditor .menu button,
+.jsoneditor .jsoneditor-menu button {
+    border: 1px solid #999 !important;
+    border-radius: 0.33rem !important;
+    opacity: 1 !important;
+}
+
+.jsoneditor .search button,
+.jsoneditor .jsoneditor-search button {
+    border: none !important;
+}
+
+.jsoneditor table td {
+    border-bottom: none !important;
+}
+
+.jsoneditor .empty {
+    border: 1px dashed #999 !important;
+    border-radius: 0.33rem !important;
+}
+
+.jsoneditor .field, .jsoneditor .value, .jsoneditor .readonly,
+.jsoneditor .jsoneditor-field, .jsoneditor .jsoneditor-value, .jsoneditor .jsoneditor-readonly {
+    min-height: 22px !important;
+    min-width: 38px !important;
+}
+
+.jsoneditor .field,
+.jsoneditor .jsoneditor-field {
+    font-weight: bold !important;
+}
+
+.jsoneditor-contextmenu ul li ul {
+    height: auto !important;
+}
+
+tr.jsoneditor-highlight,
+tr.jsoneditor-selected {
+    background-color: #ffffab !important;
+}
+
+div.jsoneditor-outer {
+    position: relative !important;
+}
+
+.jsoneditor-contextmenu ul.menu {
+    background-color: #fff !important;
+    border: 1px solid #999 !important;
+    border-radius: 4px;
+    box-shadow: none !important;
+    padding: 0 0.33rem !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.jsoneditor-contextmenu ul.menu ul.menu {
+    background-color: #ffffab !important;
+}
+
+.jsoneditor-contextmenu ul li button {
+    color: #111 !important;
+    width: auto !important;
+}
+
+.jsoneditor-contextmenu ul li button:hover,
+.jsoneditor-contextmenu ul li button:focus {
+    background-color: transparent !important;
+    text-shadow: 1px 0 0 #111 !important;
+}
+
+.jsoneditor-contextmenu ul li button.expand {
+    border-left: none !important;
+}
+
+.jsoneditor-contextmenu ul li .selected {
+    background-color: #fc0 !important;
+    text-shadow: 1px 0 0 #111 !important;
+}
+
+.jsoneditor-contextmenu ul li ul {
+    left: 0 !important;
+}
+
+.jsoneditor-contextmenu ul li ul li button {
+    padding-left: 16px !important;
+}
+
+@media all and (max-width: 1080px) {
+    .dashboard #content #content-related,
+    .dashboard #content #content-main {
+        width: 100%;
+    }
+}
+
+/* CKEditor #E0E0E0 */
+
+.cke_dialog_body {
+    background-color: #fff !important;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.cke_dialog_title {
+    background-color: #fc0 !important;
+    border-radius: 1rem 1rem 0 0;
+    color: #111 !important;
+    text-shadow: 0 1px 0px #fff;
+    text-transform: uppercase;
+}
+
+a.cke_dialog_tab {
+    background-color: #ccc !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    color: #777 !important;
+    font-weight: bold !important;
+}
+
+a.cke_dialog_tab_selected {
+    background-color: #fff !important;
+    color: #111 !important;
+    font-weight: bold !important;
+}
+
+.cke_dialog strong,
+.cke_dialog ul li,
+.cke_dialog ol li {
+    font-size: 14px !important;
+}
+
+.cke_reset_all,
+.cke_reset_all *,
+.cke_reset_all a,
+.cke_reset_all textarea {
+    font-size: 13px !important;
+    white-space: normal !important;
+}
+
+.cke_reset_all ol,
+.cke_reset_all ul {
+    padding-left: 14px !important;
+}
+
+input.cke_dialog_ui_input_text,
+input.cke_dialog_ui_input_password,
+textarea.cke_dialog_ui_input_textarea {
+    border: 2px solid #999 !important;
+    border-radius: 0.33rem !important;
+    font-size: 14px !important;
+}
+
+input.cke_dialog_ui_input_text:focus,
+input.cke_dialog_ui_input_password:focus,
+textarea.cke_dialog_ui_input_textarea:focus,
+select.cke_dialog_ui_input_select:focus {
+    border: 2px solid #fc0 !important;
+    text-shadow: 1px 0 0 #111;
+}
+
+.cke_dialog_ui_html * {
+    font-size: 14px !important;
+}
+
+a.cke_dialog_ui_button {
+    border: none !important;
+    border-radius: 1rem !important;
+    text-transform: uppercase;
+    padding: 6px !important;
+}
+
+a.cke_dialog_ui_button:hover {
+    background-color: #fc0 !important;
+}
+
+a.cke_dialog_ui_button span {
+    color: #fff !important;
+    text-shadow: 0 1px 0px #111;
+}
+
+a.cke_dialog_ui_button_ok {
+    background-color: #2E7D32 !important;
+}
+a.cke_dialog_ui_button_cancel {
+    background-color: #C62828 !important;
+}

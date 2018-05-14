@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square70x70logo   src="{{ logo_070_070 }}" />
+            <square150x150logo src="{{ logo_150_150 }}" />
+            <square310x310logo src="{{ logo_310_310 }}" />
+            <wide310x150logo   src="{{ logo_310_150 }}" />
+            <TileColor>{{ tile_color }}</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>
