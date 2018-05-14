@@ -391,9 +391,45 @@ CACHES = {
 # CKEditor settings
 # https://github.com/django-ckeditor/django-ckeditor/
 
+# Теги и их атрибуты, разрешённые к добавлению в схемы залов (всё остальное будет автоматически вычищаться).
+# Теги указываются по маске r'тэг(классы)[атрибуты]{стили}'. Знак `!` означает обязательное присутствие.
+BEZANTRAKTA_SCHEME_ALLOWED_CONTENT = '; '.join([
+    # Дополнительные стили (добавляются в схему при необходимости)
+    r'style[type]{*}',
+    # Общие стили
+    r'p{*}', r'br',
+    r'strong{*}', r'em{*}', r'span{*}',
+    r'a[!href,alt]', r'img[!src,alt]',
+    r'ul{*}', r'ol{*}', r'li{*}',
+    # Обычная табличная схема зала
+    r'table(!stagehall)[!border,data-ts]{*}',
+    r'thead', r'tbody',
+    r'th', r'tr',
+    r'td[rowspan,colspan]{*}',
+    r'td(stage)[rowspan,colspan]{*}',
+    r'td(sector,sector-left,sector-center,sector-right)[rowspan,colspan]{*}',
+    r'td(bt,br,bb,bl)[rowspan,colspan]{*}',
+    r'td(seats-holder)[rowspan,colspan]{*}',
+    r'td(!seat)[!data-ticket-id]',
+    # Стоячие места (БЕЗ фиксированной рассадки)
+    r'div(stage){*}',
+    r'ul(!no-fixed-seats)',
+    r'li(!seat)[!data-ticket-id]',
+    # Круговая посекторная схема зала (цирк)
+    r'div(stagehall-circle-wrapper){*}',
+    r'ul(stagehall-circle,level1,level2,level3)[data-ts]{*}',
+    # Кнопки для переключения секторов в посекторной схеме зала
+    r'div(!sector-button,circle,empty){*}',
+    r'input[!id,!type,!name]',
+    r'label(trapezoid)[for]',
+    r'span',
+])
+
 CKEDITOR_CONFIGS = {
     # Редактор по умолчанию
     'default': {
+        'defaultLanguage': 'ru',
+        'language': 'ru',
         'skin': 'moono-lisa',
         # 'toolbar': 'full',
         'toolbar': [
@@ -446,6 +482,17 @@ CKEDITOR_CONFIGS = {
                     'Blockquote', 'CreateDiv',
                 ]
             },
+            '/',
+            {
+                'name': 'tables',
+                'items': [
+                    'tableinsert', 'tabledelete', 'tableproperties', '-',
+                    'tablerowinsertbefore', 'tablerowinsertafter', 'tablerowdelete', '-',
+                    'tablecolumninsertbefore', 'tablecolumninsertafter', 'tablecolumndelete', '-',
+                    'tablecellinsertbefore', 'tablecellinsertafter', 'tablecelldelete', 'tablecellproperties', '-',
+                    'tablecellsmerge', 'tablecellmergeright', 'tablecellmergedown', 'tablecellsplithorizontal', 'tablecellsplitvertical',
+                ]
+            },
             # '/',
             # {
             #     'name': 'forms',
@@ -457,17 +504,15 @@ CKEDITOR_CONFIGS = {
             # },
         ],
         'removePlugins': 'stylesheetparser',
-        # 👉 Распаковать содержимое архива `ckeditor_plugins/codemirror_1.15.zip` из репозитория
-        # в виртуальное окружение в папку `lib/python3.X/site-packages/ckeditor/static/ckeditor/ckeditor/plugins`,
-        # иначе редактор не будет работать.
-        # 👉 Если подсветка не нужна - закомментировать параметр `extraPlugins`.
-        'extraPlugins': 'codemirror',
+        'extraPlugins': 'codemirror,tabletoolstoolbar',
         'uiColor': '#cccccc',
         'allowedContent': True,
         'contentsCss': '/static/global/css/editor.css',
     },
     # Редактор схем залов
     'scheme': {
+        'defaultLanguage': 'ru',
+        'language': 'ru',
         'skin': 'moono-lisa',
         'toolbar': [
             {
@@ -519,12 +564,33 @@ CKEDITOR_CONFIGS = {
                     'Blockquote', 'CreateDiv',
                 ]
             },
+            '/',
+            {
+                'name': 'bezantrakta_scheme',
+                'items':
+                [
+                    'SchemeInitTable', 'SchemeInitCircle', '-',
+                    'RowInsertBefore', 'RowInsertAfter', 'RowDelete',
+                    'ColumnInsertBefore', 'ColumnInsertAfter', 'ColumnDelete',
+                    'CellsMerge', 'CellsClear', '-',
+                    'BorderLeft', 'BorderTop', 'BorderBottom', 'BorderRight', '-',
+                    'Stage', 'Sector', '-',
+                    'FixedSeats', 'NoFixedSeats', '-',
+                    'SectorButtonActive', 'SectorButtonPassive'
+                ]
+            },
         ],
+        'noConfirmCancel': True,
         'removePlugins': 'stylesheetparser',
-        'extraPlugins': 'codemirror',
+        'removeFormatAttributes': 'class,style,width,height,align,hspace,valign,data-ticket-id',
+        'extraPlugins': 'codemirror,bezantrakta_scheme',
         'uiColor': '#cccccc',
-        'allowedContent': True,
+        'allowedContent': BEZANTRAKTA_SCHEME_ALLOWED_CONTENT,
         'contentsCss': '/static/global/css/stagehall-style.css',
+
+        'enterMode': 'CKEDITOR.ENTER_BR',
+        'shiftEnterMode': 'CKEDITOR.ENTER_P',
+        'autoParagraph': False,
     },
 }
 

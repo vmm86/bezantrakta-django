@@ -358,8 +358,6 @@ Production deployment
 
   service uwsgi restart
 
-.. attention:: Для подсветки кода в редакторе ``CKEditor`` нужно распаковать содержимое архива ``ckeditor_plugins/codemirror_1.15.zip`` из репозитория в виртуальное окружение в папку ``lib/python3.X/site-packages/ckeditor/static/ckeditor/ckeditor/plugins``, иначе редактор не будет работать. Если подсветка не нужна - закомментировать параметр ``extraPlugins``.
-
 Обновление ранее развёрнутого проекта
 =====================================
 
