@@ -1192,9 +1192,9 @@ div.help li,
     font-size: 14px;
 }
 
-form div.help ul,
-form div.description ul {
-    padding-left: 14px;
+form div.help ol, form div.description ol,
+form div.help ul, form div.description ul {
+    padding-left: 28px;
 }
 
 form ul.radiolist input[type="radio"] {
@@ -1370,6 +1370,7 @@ fieldset.help_text .description {
     order: 3;
 }
 
+fieldset.help_text .description ol,
 fieldset.help_text .description ul {
     margin-left: 0;
 }
@@ -1491,4 +1492,94 @@ div.jsoneditor-outer {
     .dashboard #content #content-main {
         width: 100%;
     }
+}
+
+/* CKEditor #E0E0E0 */
+
+.cke_dialog_body {
+    background-color: #fff !important;
+    border-radius: 1rem 1rem 0 0;
+}
+
+.cke_dialog_title {
+    background-color: #fc0 !important;
+    border-radius: 1rem 1rem 0 0;
+    color: #111 !important;
+    text-shadow: 0 1px 0px #fff;
+    text-transform: uppercase;
+}
+
+a.cke_dialog_tab {
+    background-color: #ccc !important;
+    border-radius: 1rem 1rem 0 0 !important;
+    color: #777 !important;
+    font-weight: bold !important;
+}
+
+a.cke_dialog_tab_selected {
+    background-color: #fff !important;
+    color: #111 !important;
+    font-weight: bold !important;
+}
+
+.cke_dialog strong,
+.cke_dialog ul li,
+.cke_dialog ol li {
+    font-size: 14px !important;
+}
+
+.cke_reset_all,
+.cke_reset_all *,
+.cke_reset_all a,
+.cke_reset_all textarea {
+    font-size: 13px !important;
+    white-space: normal !important;
+}
+
+.cke_reset_all ol,
+.cke_reset_all ul {
+    padding-left: 14px !important;
+}
+
+input.cke_dialog_ui_input_text,
+input.cke_dialog_ui_input_password,
+textarea.cke_dialog_ui_input_textarea {
+    border: 2px solid #999 !important;
+    border-radius: 0.33rem !important;
+    font-size: 14px !important;
+}
+
+input.cke_dialog_ui_input_text:focus,
+input.cke_dialog_ui_input_password:focus,
+textarea.cke_dialog_ui_input_textarea:focus,
+select.cke_dialog_ui_input_select:focus {
+    border: 2px solid #fc0 !important;
+    text-shadow: 1px 0 0 #111;
+}
+
+.cke_dialog_ui_html * {
+    font-size: 14px !important;
+}
+
+a.cke_dialog_ui_button {
+    border: none !important;
+    border-radius: 1rem !important;
+    text-transform: uppercase;
+    padding: 6px !important;
+}
+
+a.cke_dialog_ui_button:hover {
+    background-color: #fc0 !important;
+}
+
+a.cke_dialog_ui_button span {
+    color: #fff !important;
+    text-shadow: 0 1px 0px #111;
+}
+
+a.cke_dialog_ui_button_ok {
+    background-color: #2E7D32 !important;
+}
+a.cke_dialog_ui_button_cancel {
+    background-color: #C62828 !important;
 }

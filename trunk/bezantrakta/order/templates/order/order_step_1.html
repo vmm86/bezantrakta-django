@@ -21,6 +21,7 @@
     {# Общие CSS-файлы - загружаются в любом случае #}
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/normalize.css" %}">
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/main.css" %}">
+    <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/stagehall-style.css" %}">
     <link rel="stylesheet" type="text/css" href="{{ request.url_protocol_domain }}{% static "global/css/mq-order.css" %}">
     {# Общие CSS-файлы - загружаются в любом случае #}
 
@@ -107,7 +108,7 @@
                 <div id="tickets">
                     <div id="stagehall-block">
                     {% if venue_scheme_sectors %}
-                        <p class="sectors-caption">Нажмите на любой из секторов, чтобы выбрать билеты в этом секторе</p>
+                        <p class="sectors-caption">Нажмите на любой из жёлтых секторов, чтобы выбрать билеты в этом секторе</p>
                         <br>
                         <br>
                     {% endif %}
