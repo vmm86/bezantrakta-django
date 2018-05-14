@@ -237,7 +237,7 @@ class SurgutNefteGazBank(PaymentService):
 
         response = {}
 
-        if type(create) is str and not create.startswith('<!DOCTYPE'):
+        if isinstance(create, str) and not create.startswith('<!DOCTYPE'):
             # Разбираем URL в ответе, получаем идентификатор оплаты
             parsed_result = dict(parse_qsl(urlsplit(create).query))
             # print('parsed_result: ', parsed_result, '\n')

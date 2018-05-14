@@ -154,7 +154,7 @@ class Sberbank(PaymentService):
             list, dict: Обработанный ответ конкретного метода API.
         """
         # Если в ответе - множество записей
-        if type(response) is list:
+        if isinstance(response, list):
             # Ключи в нижнем регистре
             iterable = [{k.lower(): v for k, v in r.items()} for r in response]
             # Конвертация ключей в человекопонятные значения
@@ -162,7 +162,7 @@ class Sberbank(PaymentService):
                 self.humanize_with_type_casting(d, output_mapping)
                 d['success'] = True
         # Если в ответе - одна запись
-        elif type(response) is dict:
+        elif isinstance(response, dict):
             # Ключи в нижнем регистре
             iterable = {k.lower(): v for k, v in response.items()}
             # Конвертация ключей в человекопонятные значения
@@ -215,7 +215,7 @@ class Sberbank(PaymentService):
                             iterable[internal.key] = internal.default
                     # Если получено НЕпустое значение - приведение типов данных
                     else:
-                        if internal.type is str and type(iterable[internal.key]) is not str:
+                        if internal.type is str and not isinstance(iterable[internal.key], str):
                             iterable[internal.key] = str(internal.default)
                             # Если получена пустая строка - поиск значения по умолчанию
                             iterable[internal.key] == (
@@ -223,17 +223,17 @@ class Sberbank(PaymentService):
                                 iterable[internal.key] == '' and internal.default is not None else
                                 iterable[internal.key]
                             )
-                        elif internal.type is int and type(iterable[internal.key]) is not int:
+                        elif internal.type is int and not isinstance(iterable[internal.key], int):
                             iterable[internal.key] = int(iterable[internal.key])
-                        elif internal.type is bool and type(iterable[internal.key]) is not bool:
+                        elif internal.type is bool and not isinstance(iterable[internal.key], bool):
                             iterable[internal.key] = True if iterable[internal.key] in BOOLEAN_VALUES else False
-                        elif internal.type is Decimal and type(iterable[internal.key]) is not Decimal:
+                        elif internal.type is Decimal and not isinstance(iterable[internal.key], Decimal):
                             iterable[internal.key] = self.decimal_price(iterable[internal.key])
-                        elif internal.type is datetime and type(iterable[internal.key]) is not datetime:
+                        elif internal.type is datetime and not isinstance(iterable[internal.key], datetime):
                             iterable[internal.key] = dateutil.parser.parse(iterable[internal.key])
                         elif internal.type is list and len(iterable[internal.key]) > 0:
                             # Приведение ключей списка из словарей к нижнему регистру
-                            if type(iterable[internal.key][0]) is dict:
+                            if isinstance(iterable[internal.key][0], dict):
                                 iterable[internal.key] = [
                                     {k.lower(): v for k, v in i.items()} for i in iterable[internal.key]
                                 ]

@@ -19,7 +19,7 @@ def change_type(request):
             response = {'success': False, 'message': 'Реквизиты покупателя некорректны или отсутствуют'}
             return JsonResponseUTF8(response)
         else:
-            if type(customer) is not dict:
+            if not isinstance(customer, dict):
                 response = {'success': False, 'message': 'Реквизиты покупателя некорректны или отсутствуют'}
                 return JsonResponseUTF8(response)
 

@@ -175,7 +175,7 @@ ______________________________________________________________________________
                 schemes_inclusion_list = (
                     ticket_service['settings']['schemes'] if
                     'schemes' in ticket_service['settings'] and
-                    type(ticket_service['settings']['schemes']) is list and
+                    isinstance(ticket_service['settings']['schemes'], list) and
                     len(ticket_service['settings']['schemes']) > 0 else
                     None
                 )
