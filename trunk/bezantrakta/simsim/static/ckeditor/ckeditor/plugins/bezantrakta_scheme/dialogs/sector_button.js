@@ -170,7 +170,7 @@
                 dialog.setValueOf('sb_passive_tab', 'sector_title_passive', sector_title);
 
                 // ID сектора
-                var sector_id = is_active && button ? parseInt(button.findOne('input').getId().substr(7)) : null;
+                var sector_id = is_active && button && button.findOne('input') ? parseInt(button.findOne('input').getId().substr(7)) : null;
                 dialog.setValueOf('sb_active_tab', 'sector_id_active', sector_id);
 
                 // Высота ячейки (только для таблиц)
@@ -179,8 +179,10 @@
                     dialog.setValueOf('sb_active_tab', 'sector_height_active', sector_height);
                     dialog.setValueOf('sb_passive_tab', 'sector_height_passive', sector_height);
                 }
-                var sector_height_input = dialog.getContentElement('sb_active_tab', 'sector_height_active').getElement();
-                button_parent.is('td') ? sector_height_input.show() : sector_height_input.hide();
+                var sector_height_active_input = dialog.getContentElement('sb_active_tab', 'sector_height_active').getElement();
+                var sector_height_passive_input = dialog.getContentElement('sb_passive_tab', 'sector_height_passive').getElement();
+                button_parent.is('td') ? sector_height_active_input.show() : sector_height_active_input.hide();
+                button_parent.is('td') ? sector_height_passive_input.show() : sector_height_passive_input.hide();
 
                 // Сохранение текущих значений для проверки их возможного изменения
                 editor.cur_sb_sector_title = sector_title;
