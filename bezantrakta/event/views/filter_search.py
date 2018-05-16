@@ -5,6 +5,7 @@ from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
 from ..models import Event
+from ..shortcuts import hide_test_events_in_production
 
 
 def filter_search(request):
@@ -46,6 +47,11 @@ def filter_search(request):
             for event in events_found:
                 # Получение информации о каждом размещённом событии из кэша
                 event.update(cache_factory('event', event['uuid']))
+
+        # Оставляем в списке ТОЛЬКО актуальные события
+        events_found[:] = [
+            e for e in events_found if hide_test_events_in_production(e)
+        ]
 
         context = {
             'title': 'Поиск',

@@ -7,6 +7,7 @@ from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
 from ..models import EventContainerBinder
+from ..shortcuts import hide_test_events_in_production
 
 
 def events_on_index(request):
@@ -56,11 +57,12 @@ def events_on_index(request):
                     cache_factory('event', item['uuid'])
                 )
                 item.update(item_cache)
-            # Оставляем в списке ВСЕ события и удаляем группы БЕЗ актуальных на данный момент событий
+            # Оставляем в списке ВСЕ актуальные события и удаляем группы БЕЗ актуальных на данный момент событий
             container[:] = [
                 i for i in container if
                 i['event_datetime'] >= today and
-                (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group']))
+                (not i['is_group'] or (i['is_group'] and i['earliest_published_event_in_group'])) and
+                hide_test_events_in_production(i)
             ]
             container = sorted(container, key=itemgetter('event_datetime'))
 
