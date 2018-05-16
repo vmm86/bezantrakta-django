@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-20 09:03+0000\n"
+"POT-Creation-Date: 2018-05-16 11:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,15 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: admin/ticket_service.py:51
+#: admin/ticket_service.py:20
+msgid "ticket_service_admin_add_inline"
+msgstr "Схемы залов, которые нужно связать с залами для последующего импорта их событий"
+
+#: admin/ticket_service.py:40
+msgid "ticket_service_admin_list_inline"
+msgstr "Схемы залов, привязанные к залам"
+
+#: admin/ticket_service.py:82
 msgid "ticket_service_help_text"
 msgstr ""
 "<ul><li><strong>init</strong> { словарь 'ключ': 'значение' } - параметры для "
@@ -87,131 +95,215 @@ msgstr ""
 "фиксированной рассадки - маркированные списки <em>ul</em> с классом "
 "<em>non_fixed_seats</em> (по умолчанию - <em>false</em>).</li></ul>"
 
-#: admin/ticket_service.py:77
+#: admin/ticket_service.py:108
 msgid "ticket_service_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных сервисов продажи билетов"
 
-#: admin/ticket_service.py:87
+#: admin/ticket_service.py:118
 msgid "event_admin_activate_or_deactivate_items"
 msgstr "Включить или отключить сервисы продажи билетов"
 
-#: admin/ticket_service.py:92
+#: admin/ticket_service.py:123
 msgid "ticket_service_admin_ticket_service_schemes_count"
 msgstr "Схем залов"
 
-#: admin/ticket_service.py:98
+#: admin/ticket_service.py:129
 msgid "ticket_service_admin_is_payment_service_added"
 msgstr "Оплата"
 
-#: admin/ticket_service_scheme_sector.py:21
+#: admin/ticket_service_scheme_sector.py:22
 msgid "ticketserviceschemesector_sector_help_text"
 msgstr ""
 "<p>Схемы секторов создаются аналогично схеме зала.<br>Общая схема зала для "
-"работы с секторами должна содержать активные кнопки для открытия схем секторов по "
-"клику в отдельном блоке под общей посекторной схемой зала. При клике на какой-либо "
-"активной кнопке сектора в посекторной схеме зала схема выбранного сектора становится видимой, "
-"а схемы всех остальных секторов скрываются."
+"работы с секторами должна содержать активные кнопки для открытия схем "
+"секторов по клику в отдельном блоке под общей посекторной схемой зала. При "
+"клике на какой-либо активной кнопке сектора в посекторной схеме зала схема "
+"выбранного сектора становится видимой, а схемы всех остальных секторов "
+"скрываются."
 
-#: admin/ticket_service_scheme_sector.py:66
+#: admin/ticket_service_scheme_sector.py:67
 msgid "ticketserviceschemesector_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных секторов"
 
-#: admin/ticket_service_scheme_sector.py:73
+#: admin/ticket_service_scheme_sector.py:74
 msgid "ticketserviceschemesector_if_sector_exists"
 msgstr "Сектор"
 
-#: admin/ticket_service_scheme_sector.py:78
-#: admin/ticket_service_scheme_venue_binder.py:99
+#: admin/ticket_service_scheme_sector.py:79
+#: admin/ticket_service_scheme_venue_binder.py:104
 msgid "ID"
 msgstr "ID"
 
-#: admin/ticket_service_scheme_venue_binder.py:30
+#: admin/ticket_service_scheme_venue_binder.py:35
 msgid "ticketserviceschemevenuebinder_scheme_help_text"
 msgstr ""
-"<p>При импорте информации из сервисов продажи билетов схемы залов изначально создаются пустыми. "
-"Чтобы показать свободные для продажи места в событии на сайте, схему зала нужно нарисовать.</p>"
-"<p>Схемы зала создаются, как правило, на основе таблиц и бывают 2-х типов:</p>"
-"<ul><li><strong>обычная схема зала</strong> (табличная), в которой содержатся места для выбора покупателем.</li>"
-"<li><strong>посекторная схема зала</strong> (табличная или круговая) с активными кнопками для выбора схем отдельных секторов, которые добавляются отдельно в привязке к конкретной посекторной схеме.</li></ul>"
-"<p>Посекторную схему имеет смысл создавать, если зал достаточно большой и одновременное открытие всего "
-"зала сразу визуально неудобно для покупателя (особенно на узких экранах мобильных устройств).</p>"
-"<p>В этом случае:</p>"
-"<ol><li>Сначала <strong>создаётся посекторная схема</strong> (табличная или круговая),</li>"
-"<li>Затем в посекторной схеме <strong>добавляются/редактируются активные кнопки</strong>, нажимая на которые, покупатель будет открывать схему каждого из секторов.</li>"
-"<li>После этого в привязке к посекторной схеме <strong>создаются схемы всех относящихся к ней секторов</strong>.</li></ol>"
-"<p>Для редактирования схем предназначена нижняя панель в тулбаре HTML-редактора.</p> "
-"<p>Панель для редактирования схем состоит из нескольких групп кнопок, разделёных вертикальными чертами:"
+"<p>При импорте информации из сервисов продажи билетов схемы залов изначально "
+"создаются пустыми. Чтобы показать свободные для продажи места в событии на "
+"сайте, схему зала нужно нарисовать.</p><p>Схемы зала создаются, как правило, "
+"на основе таблиц и бывают 2-х типов:</p><ul><li><strong>обычная схема зала</"
+"strong> (табличная), в которой содержатся места для выбора покупателем.</"
+"li><li><strong>посекторная схема зала</strong> (табличная или круговая) с "
+"активными кнопками для выбора схем отдельных секторов, которые добавляются "
+"отдельно в привязке к конкретной посекторной схеме.</li></ul><p>Посекторную "
+"схему имеет смысл создавать, если зал достаточно большой и одновременное "
+"открытие всего зала сразу визуально неудобно для покупателя (особенно на "
+"узких экранах мобильных устройств).</p><p>В этом случае:</p><ol><li>Сначала "
+"<strong>создаётся посекторная схема</strong> (табличная или круговая),</"
+"li><li>Затем в посекторной схеме <strong>добавляются/редактируются активные "
+"кнопки</strong>, нажимая на которые, покупатель будет открывать схему "
+"каждого из секторов.</li><li>После этого в привязке к посекторной схеме "
+"<strong>создаются схемы всех относящихся к ней секторов</strong>.</li></"
+"ol><p>Для редактирования схем предназначена нижняя панель в тулбаре HTML-"
+"редактора.</p> <p>Панель для редактирования схем состоит из нескольких групп "
+"кнопок, разделёных вертикальными чертами:<ol><li>Создание новой заготовки "
+"схемы зала для последующего редактирования.<ul><li><img src=\"/static/"
+"ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/init_table.png\" width="
+"\"16\" height=\"16\"> - Создать новую табличную схему зала (обычная или "
+"посекторная)</li><li><img src=\"/static/ckeditor/ckeditor/plugins/"
+"bezantrakta_scheme/icons/init_circle.png\" width=\"16\" height=\"16\"> - "
+"Создать новую круговую посекторную схему зала</li></ul><p>Для обычной схемы "
+"зала создайте таблицу с необходимым числом строк и столбцов. Если в схеме "
+"должны быть <strong>только стоячие места</strong> (БЕЗ фиксированной "
+"рассадки) - создайте таблицу с одним столбцом и необходимым числом строк (в "
+"одной строке - подпись названия сектора  <img src=\"/static/ckeditor/"
+"ckeditor/plugins/bezantrakta_scheme/icons/sector.png\" width=\"16\" height="
+"\"16\">, в следующей - список стоячих мест в этом секторе <img src=\"/static/"
+"ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/nofixedseats.png\" width="
+"\"16\" height=\"16\">).</p><p>Для посекторной схемы зала создайте табличную "
+"(для прямоугольных залов) или круговую (для круглых залов типа цирка) схему, "
+"затем добавьте в ней активные кнопки для выбора секторов, после чего "
+"создайте в привязке к ней схемы всех необходимых секторов. В самих схемах "
+"секторов НЕ нужно указывать название сектора - при выводе на сайте название "
+"подставляется автоматически из поля \"Название сектора\".</p></li><p>Будьте "
+"внимательны! При повторном выполнении этих команд <strong style=\"color: red;"
+"\">в любом случае создана новая пустая схема</strong>, даже если схема уже "
+"была добавлена и отредактирована ранее! <strong>Сохраняйте промежуточные "
+"изменения</strong>, чтобы не потерять сделанную работу.</p><li>Кнопки для "
+"редактирования табличной схемы. <ul><li><img src=\"/static/ckeditor/ckeditor/"
+"plugins/bezantrakta_scheme/icons/tablerowinsertbefore.png\" width=\"16\" "
+"height=\"16\"> - Вставить строку выше</li><li><img src=\"/static/ckeditor/"
+"ckeditor/plugins/bezantrakta_scheme/icons/tablerowinsertafter.png\" width="
+"\"16\" height=\"16\"> - Вставить строку ниже</li><li><img src=\"/static/"
+"ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablerowdelete.png\" "
+"width=\"16\" height=\"16\"> - Удалить строку</li><li><img src=\"/static/"
+"ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablecolumninsertbefore."
+"png\" width=\"16\" height=\"16\"> - Вставить столбец слева</li><li><img src="
+"\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/"
+"tablecolumninsertafter.png\" width=\"16\" height=\"16\"> - Вставить столбец "
+"справа</li><li><img src=\"/static/ckeditor/ckeditor/plugins/"
+"bezantrakta_scheme/icons/tablecolumndelete.png\" width=\"16\" height=\"16\"> "
+"- Удалить столбец</li><li><img src=\"/static/ckeditor/ckeditor/plugins/"
+"bezantrakta_scheme/icons/tablecellsmerge.png\" width=\"16\" height=\"16\"> - "
+"Объединить выделенные ячейки</li><li><img src=\"/static/ckeditor/ckeditor/"
+"plugins/bezantrakta_scheme/icons/tablecellsclear.png\" width=\"16\" height="
+"\"16\"> - Очистить форматирование выделенного фрагмента</li></ul></"
+"li><li>Толстые границы ячеек в табличной схеме (если необходимо визуально "
+"разграничить какую-то часть схемы). <ul><li><img src=\"/static/ckeditor/"
+"ckeditor/plugins/bezantrakta_scheme/icons/borderleft.png\" width=\"16\" "
+"height=\"16\"> - Левая граница ячейки</li><li><img src=\"/static/ckeditor/"
+"ckeditor/plugins/bezantrakta_scheme/icons/bordertop.png\" width=\"16\" "
+"height=\"16\"> - Верхняя граница ячейки</li><li><img src=\"/static/ckeditor/"
+"ckeditor/plugins/bezantrakta_scheme/icons/borderright.png\" width=\"16\" "
+"height=\"16\"> - Правая граница ячейки</li><li><img src=\"/static/ckeditor/"
+"ckeditor/plugins/bezantrakta_scheme/icons/borderbottom.png\" width=\"16\" "
+"height=\"16\"> - Нижняя граница ячейки</li></ul></li><p>Повторное нажатие на "
+"эти кнопки для конкретных ячеек отменяет сделанные изменения.</"
+"p><li>Отметить ячейку табличной схемы как сцену или как название сектора/"
+"номер ряда. <ul><li><img src=\"/static/ckeditor/ckeditor/plugins/"
+"bezantrakta_scheme/icons/stage.png\" width=\"16\" height=\"16\"> - Отметить "
+"текущую ячейку (в которой установлен курсор) как сцену. Текст \"Сцена\" "
+"можно менять как угодно - так можно обозначать большие экраны рядом со "
+"сценой (Event Hall, Воронеж), барные стойки в клубах - любые значительные и "
+"важные для схемы элементы зала. Как правило, для этого потребуется "
+"объединить несколько ячеек таблицы <img src=\"/static/ckeditor/ckeditor/"
+"plugins/bezantrakta_scheme/icons/tablecellsmerge.png\" width=\"16\" height="
+"\"16\">.</li><li><img src=\"/static/ckeditor/ckeditor/plugins/"
+"bezantrakta_scheme/icons/sector.png\" width=\"16\" height=\"16\"> - Отметить "
+"текущую ячейку (в которой установлен курсор) или несколько выделенных ячеек "
+"как название сектора или номер ряда. Кроме того, так можно стилизовать любые "
+"подписи, которые должны быть сделаны жирным шрифтом.</li></ul></"
+"li><p>Повторное нажатие на эти кнопки для конкретных ячеек отменяет "
+"сделанные изменения.</p><li>Добавить сидячие или стоячие места. <ul><li><img "
+"src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/fixedseats."
+"png\" width=\"16\" height=\"16\"> - Редактор сидячих мест<p>Чтобы добавить "
+"несколько сидячих мест в одном ряду, нужно выделить необходимое число ячеек "
+"в табличной схеме (по горизонтали или по вертикали) и нажать на эту кнопку. "
+"Откроется редактор сидячих мест, в котором нужно будет указать необходимые "
+"параметры мест и выбрать направление их заполнения (<em>слева направо/сверху "
+"вниз</em> или <em>справа налево/снизу вверх</em>). В поля для удобства "
+"подставляются введённые ранее значения. Выделенные ячейки таблицы будут "
+"последовательно заполнены местами согласно введённым настройкам."
+"<p><ul><li>Для СуперБилета нужно указывать ID сектора, ID ряда и ID места. "
+"При этом ID места совпадает с его номером (номер места в ячейке таблицы, "
+"который отображается в схеме зала для покупателя).</li><li>Для Радарио нужно "
+"указывать ID места и его номер, т.к. ID места в случае Радарио не совпадает "
+"с его номером.</li></ul><p>Затем при установке курсора в отдельную ячейку "
+"какого-либо места и открытии редактора сидячих мест можно редактировать "
+"параметры этого конкретного места. В поля подставляются параметры текущего "
+"места.</p></li><li><img src=\"/static/ckeditor/ckeditor/plugins/"
+"bezantrakta_scheme/icons/nofixedseats.png\" width=\"16\" height=\"16\"> - "
+"Редактор стоячих мест<p>Чтобы добавить список стоячих мест в одном ряду, "
+"нужно поставить курсор в пустую ячейку табличной схемы и нажать на эту "
+"кнопку. Откроется редактор стоячих мест, в котором нужно будет указать "
+"необходимые параметры мест.</p><ul><li>Для СуперБилета нужно указывать ID "
+"сектора, ID ряда, ID начального и конечного места в ряду.</li><li>Для "
+"Радарио нужно указывать ID места и его номер, т.к. ID места в случае Радарио "
+"не совпадает с его номером.</li></ul><p>Затем при установке курсора на какое-"
+"то место в созданном ранее списке и открытии редактора стоячих мест можно "
+"редактировать параметры этого конкретного списка стоячих мест. В поля "
+"подставляются параметры текущего списка стоячих мест.</p><p>Номера для "
+"стоячих мест не имеют значения, т.к. в этом нет смысла - это места со "
+"свободным распложением зрителей. Их номера не выводятся на схеме зала, а в "
+"корзине заказа на сайте и в email-уведомлениях стоячие места указываются как "
+"<strong>название сектора, цена</strong> (без указания ID ряда и номера "
+"места, которые в этом случае не имеют значения).</p></li></ul></"
+"li><li>Добавить в посекторную схему активные или НЕактивные кнопки. "
+"<ul><li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/"
+"icons/sectorbuttonactive.png\" width=\"16\" height=\"16\"> - Активная кнопка "
+"для выбора сектора<p>Активные кнопки (с жёлтым фоном) в посекторной схеме "
+"нужны для выбора схем отдельных секторов покупателем.</p></li><li><img src="
+"\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/"
+"sectorbuttonpassive.png\" width=\"16\" height=\"16\"> - НЕактивная кнопка (с "
+"подписью иди без неё)<p>НЕактивные кнопки (с серым фоном) в посекторной "
+"схеме могут понадобится, чтобы создать подпись для какой-то части зала БЕЗ "
+"возможности выбора сектора (например, подпись сектора, у которого в этой "
+"конкретной схеме нет мест), либо чтобы создать визуальную заглушку без "
+"подписи.</p></li></ul><p>При создании круговой посекторной схемы активные "
+"кнопки для секторов создаются заранее. Вообще любую из кнопок можно изменить "
+"с активной на НЕактивную и наоборот - редактор кнопок это позволяет.</"
+"p><p>Чтобы создать активную или НЕактивную кнопку в табличной посекторной "
+"схеме, нужно поместить курсор в нужную ячейку и нажать на кнопку <img src=\"/"
+"static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sectorbuttonactive."
+"png\" width=\"16\" height=\"16\"> или <img src=\"/static/ckeditor/ckeditor/"
+"plugins/bezantrakta_scheme/icons/sectorbuttonpassive.png\" width=\"16\" "
+"height=\"16\">. Откроется один и тот же редактор кнопки с двумя вкладками - "
+"он будет работать в зависимости от того, какая вкладка выбрана для "
+"редактирования. В выбранной вкладке нужно указать подпись (может быть "
+"пустой) и идентификатор схемы сектора для активной кнопки. Для табличных "
+"посекторных схем также в любом случае нужно указывать высоту ячейки в "
+"условных единицах (<em>rem</em>) для одинакового отображения кнопок в разных "
+"браузерах.</p><p>При создании схем отдельных секторов для посекторной схемы "
+"зала <strong>идентификаторы схем секторов указываются произвольно</strong> и "
+"могут НЕ совпадать с ID конкретного сектора в сервисе продажи билетов.</"
+"p><p>Например, при создании круговой посекторной схемы зала её секторам "
+"присываиваются идентификаторы от 1 до указанного числа сегментов круга. "
+"Нужно создать для неё схемы секторов с указанными идентификаторами.</"
+"p><p>Если места с одним и тем же ID сектора в сервисе продажи билетов "
+"визуально разбиты на несколько отдельных групп мест (Зелёный театр, Воронеж) "
+"- нужно создать для этих разных групп мест отдельные схемы секторов с "
+"похожими идентификаторами (например, места с ID сектора <em>123</em> будут "
+"хранится в схемах секторов с идентификаторами <em>1231</em>, <em>1232</em> и "
+"<em>1233</em>.</p></li></ol>"
 
-"<ol><li>Создание новой заготовки схемы зала для последующего редактирования."
-"<ul><li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/init_table.png\" width=\"16\" height=\"16\"> - Создать новую табличную схему зала (обычная или посекторная)</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/init_circle.png\" width=\"16\" height=\"16\"> - Создать новую круговую посекторную схему зала</li></ul>"
-"<p>Для обычной схемы зала создайте таблицу с необходимым числом строк и столбцов. Если в схеме должны быть <strong>только стоячие места</strong> (БЕЗ фиксированной рассадки) - создайте таблицу с одним столбцом и необходимым числом строк (в одной строке - подпись названия сектора  <img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sector.png\" width=\"16\" height=\"16\">, в следующей - список стоячих мест в этом секторе <img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/nofixedseats.png\" width=\"16\" height=\"16\">).</p>"
-"<p>Для посекторной схемы зала создайте табличную (для прямоугольных залов) или круговую (для круглых залов типа цирка) схему, затем добавьте в ней активные кнопки для выбора секторов, после чего создайте в привязке к ней схемы всех необходимых секторов. В самих схемах секторов НЕ нужно указывать название сектора - при выводе на сайте название подставляется автоматически из поля \"Название сектора\".</p></li>"
-
-"<p>Будьте внимательны! При повторном выполнении этих команд <strong style=\"color: red;\">в любом случае создана новая пустая схема</strong>, даже если схема уже была добавлена и отредактирована ранее! <strong>Сохраняйте промежуточные изменения</strong>, чтобы не потерять сделанную работу.</p>"
-
-"<li>Кнопки для редактирования табличной схемы. "
-"<ul><li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablerowinsertbefore.png\" width=\"16\" height=\"16\"> - Вставить строку выше</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablerowinsertafter.png\" width=\"16\" height=\"16\"> - Вставить строку ниже</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablerowdelete.png\" width=\"16\" height=\"16\"> - Удалить строку</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablecolumninsertbefore.png\" width=\"16\" height=\"16\"> - Вставить столбец слева</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablecolumninsertafter.png\" width=\"16\" height=\"16\"> - Вставить столбец справа</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablecolumndelete.png\" width=\"16\" height=\"16\"> - Удалить столбец</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablecellsmerge.png\" width=\"16\" height=\"16\"> - Объединить выделенные ячейки</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablecellsclear.png\" width=\"16\" height=\"16\"> - Очистить форматирование выделенного фрагмента</li></ul></li>"
-
-"<li>Толстые границы ячеек в табличной схеме (если необходимо визуально разграничить какую-то часть схемы). "
-"<ul><li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/borderleft.png\" width=\"16\" height=\"16\"> - Левая граница ячейки</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/bordertop.png\" width=\"16\" height=\"16\"> - Верхняя граница ячейки</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/borderright.png\" width=\"16\" height=\"16\"> - Правая граница ячейки</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/borderbottom.png\" width=\"16\" height=\"16\"> - Нижняя граница ячейки</li></ul></li>"
-"<p>Повторное нажатие на эти кнопки для конкретных ячеек отменяет сделанные изменения.</p>"
-
-"<li>Отметить ячейку табличной схемы как сцену или как название сектора/номер ряда. "
-
-"<ul><li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/stage.png\" width=\"16\" height=\"16\"> - Отметить текущую ячейку (в которой установлен курсор) как сцену. Текст \"Сцена\" можно менять как угодно - так можно обозначать большие экраны рядом со сценой (Event Hall, Воронеж), барные стойки в клубах - любые значительные и важные для схемы элементы зала. Как правило, для этого потребуется объединить несколько ячеек таблицы <img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/tablecellsmerge.png\" width=\"16\" height=\"16\">.</li>"
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sector.png\" width=\"16\" height=\"16\"> - Отметить текущую ячейку (в которой установлен курсор) или несколько выделенных ячеек как название сектора или номер ряда. Кроме того, так можно стилизовать любые подписи, которые должны быть сделаны жирным шрифтом.</li></ul></li>"
-"<p>Повторное нажатие на эти кнопки для конкретных ячеек отменяет сделанные изменения.</p>"
-
-"<li>Добавить сидячие или стоячие места. "
-
-"<ul><li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/fixedseats.png\" width=\"16\" height=\"16\"> - Редактор сидячих мест"
-"<p>Чтобы добавить несколько сидячих мест в одном ряду, нужно выделить необходимое число ячеек в табличной схеме (по горизонтали или по вертикали) и нажать на эту кнопку. Откроется редактор сидячих мест, в котором нужно будет указать необходимые параметры мест и выбрать направление их заполнения (<em>слева направо/сверху вниз</em> или <em>справа налево/снизу вверх</em>). В поля для удобства подставляются введённые ранее значения. Выделенные ячейки таблицы будут последовательно заполнены местами согласно введённым настройкам.<p>"
-"<ul><li>Для СуперБилета нужно указывать ID сектора, ID ряда и ID места. При этом ID места совпадает с его номером (номер места в ячейке таблицы, который отображается в схеме зала для покупателя).</li>"
-"<li>Для Радарио нужно указывать ID места и его номер, т.к. ID места в случае Радарио не совпадает с его номером.</li></ul>"
-"<p>Затем при установке курсора в отдельную ячейку какого-либо места и открытии редактора сидячих мест можно редактировать параметры этого конкретного места. В поля подставляются параметры текущего места.</p></li>"
-
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/nofixedseats.png\" width=\"16\" height=\"16\"> - Редактор стоячих мест"
-"<p>Чтобы добавить список стоячих мест в одном ряду, нужно поставить курсор в пустую ячейку табличной схемы и нажать на эту кнопку. Откроется редактор стоячих мест, в котором нужно будет указать необходимые параметры мест.</p>"
-"<ul><li>Для СуперБилета нужно указывать ID сектора, ID ряда, ID начального и конечного места в ряду.</li>"
-"<li>Для Радарио нужно указывать ID места и его номер, т.к. ID места в случае Радарио не совпадает с его номером.</li></ul>"
-"<p>Затем при установке курсора на какое-то место в созданном ранее списке и открытии редактора стоячих мест можно редактировать параметры этого конкретного списка стоячих мест. В поля подставляются параметры текущего списка стоячих мест.</p>"
-"<p>Номера для стоячих мест не имеют значения, т.к. в этом нет смысла - это места со свободным распложением зрителей. Их номера не выводятся на схеме зала, а в корзине заказа на сайте и в email-уведомлениях стоячие места указываются как <strong>название сектора, цена</strong> (без указания ID ряда и номера места, которые в этом случае не имеют значения).</p></li></ul></li>"
-
-"<li>Добавить в посекторную схему активные или НЕактивные кнопки. "
-
-"<ul><li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sectorbuttonactive.png\" width=\"16\" height=\"16\"> - Активная кнопка для выбора сектора"
-"<p>Активные кнопки (с жёлтым фоном) в посекторной схеме нужны для выбора схем отдельных секторов покупателем.</p></li>"
-
-"<li><img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sectorbuttonpassive.png\" width=\"16\" height=\"16\"> - НЕактивная кнопка (с подписью иди без неё)"
-"<p>НЕактивные кнопки (с серым фоном) в посекторной схеме могут понадобится, чтобы создать подпись для какой-то части зала БЕЗ возможности выбора сектора (например, подпись сектора, у которого в этой конкретной схеме нет мест), либо чтобы создать визуальную заглушку без подписи.</p></li></ul>"
-
-"<p>При создании круговой посекторной схемы активные кнопки для секторов создаются заранее. Вообще любую из кнопок можно изменить с активной на НЕактивную и наоборот - редактор кнопок это позволяет.</p>"
-"<p>Чтобы создать активную или НЕактивную кнопку в табличной посекторной схеме, нужно поместить курсор в нужную ячейку и нажать на кнопку <img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sectorbuttonactive.png\" width=\"16\" height=\"16\"> или <img src=\"/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sectorbuttonpassive.png\" width=\"16\" height=\"16\">. Откроется один и тот же редактор кнопки с двумя вкладками - он будет работать в зависимости от того, какая вкладка выбрана для редактирования. В выбранной вкладке нужно указать подпись (может быть пустой) и идентификатор схемы сектора для активной кнопки. Для табличных посекторных схем также в любом случае нужно указывать высоту ячейки в условных единицах (<em>rem</em>) для одинакового отображения кнопок в разных браузерах.</p>"
-
-"<p>При создании схем отдельных секторов для посекторной схемы зала <strong>идентификаторы схем секторов указываются произвольно</strong> и могут НЕ совпадать с ID конкретного сектора в сервисе продажи билетов.</p>"
-"<p>Например, при создании круговой посекторной схемы зала её секторам присываиваются идентификаторы от 1 до указанного числа сегментов круга. Нужно создать для неё схемы секторов с указанными идентификаторами.</p>"
-"<p>Если места с одним и тем же ID сектора в сервисе продажи билетов визуально разбиты на несколько отдельных групп мест (Зелёный театр, Воронеж) - нужно создать для этих разных групп мест отдельные схемы секторов с похожими идентификаторами (например, места с ID сектора <em>123</em> будут хранится в схемах секторов с идентификаторами <em>1231</em>, <em>1232</em> и <em>1233</em>.</p></li></ol>"
-
-#: admin/ticket_service_scheme_venue_binder.py:80
+#: admin/ticket_service_scheme_venue_binder.py:85
 msgid "ticketservicevenuebinder_admin_batch_set_cache"
 msgstr "Пересоздать кэш выбранных схем"
 
-#: admin/ticket_service_scheme_venue_binder.py:87
+#: admin/ticket_service_scheme_venue_binder.py:92
 msgid "ticketservicevenuebinder_if_scheme_exists"
 msgstr "Схема зала"
 
-#: admin/ticket_service_scheme_venue_binder.py:94
+#: admin/ticket_service_scheme_venue_binder.py:99
 msgid "ticketservicevenuebinder_if_sectors_exist"
 msgstr "Секторы"
 
@@ -287,30 +379,30 @@ msgstr "сектор в схеме зала"
 msgid "ticketserviceschemesectors"
 msgstr "секторы в схеме зала"
 
-#: models/ticket_service_scheme_venue_binder.py:43
+#: models/ticket_service_scheme_venue_binder.py:45
 msgid "ticketserviceschemevenuebinder_ticket_service"
 msgstr "Сервис продажи билетов"
 
-#: models/ticket_service_scheme_venue_binder.py:46
+#: models/ticket_service_scheme_venue_binder.py:48
 msgid "ticketserviceschemevenuebinder_ticket_service_scheme"
 msgstr "ID схемы зала"
 
-#: models/ticket_service_scheme_venue_binder.py:50
+#: models/ticket_service_scheme_venue_binder.py:52
 msgid "ticketserviceschemevenuebinder_ticket_service_scheme_title"
 msgstr "Название схемы зала"
 
-#: models/ticket_service_scheme_venue_binder.py:58
+#: models/ticket_service_scheme_venue_binder.py:60
 msgid "ticketserviceschemevenuebinder_event_venue"
 msgstr "Зал"
 
-#: models/ticket_service_scheme_venue_binder.py:63
+#: models/ticket_service_scheme_venue_binder.py:65
 msgid "ticketserviceschemevenuebinder_scheme"
 msgstr "Схема зала"
 
-#: models/ticket_service_scheme_venue_binder.py:69
+#: models/ticket_service_scheme_venue_binder.py:71
 msgid "ticketserviceschemevenuebinder"
 msgstr "схема зала"
 
-#: models/ticket_service_scheme_venue_binder.py:70
+#: models/ticket_service_scheme_venue_binder.py:72
 msgid "ticketserviceschemevenuebinders"
 msgstr "схемы залов"

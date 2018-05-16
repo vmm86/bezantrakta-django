@@ -11,22 +11,53 @@ from bezantrakta.simsim.filters import RelatedOnlyFieldDropdownFilter
 from ..models import TicketService, TicketServiceSchemeVenueBinder
 
 
-class TicketServiceSchemeVenueBinderInline(admin.TabularInline):
+class AddTicketServiceSchemeVenueBinderInline(admin.TabularInline):
     model = TicketServiceSchemeVenueBinder
     extra = 0
     fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'event_venue', 'ticket_service',)
     readonly_fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'ticket_service',)
-    show_change_link = True
     template = 'admin/tabular_custom.html'
+    verbose_name = verbose_name_plural = _('ticket_service_admin_add_inline')
+
+    def get_queryset(self, request):
+        """Вывод схем залов, ранее уже связанных с залами."""
+        return TicketServiceSchemeVenueBinder.objects.filter(
+            event_venue__isnull=True,
+        )
 
     def has_add_permission(self, request):
+        """При выводе схем залов, ранее уже связанных с залами возможность добавления отключена."""
+        return False
+
+
+class ListTicketServiceSchemeVenueBinderInline(admin.TabularInline):
+    model = TicketServiceSchemeVenueBinder
+    extra = 0
+    fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'event_venue', 'ticket_service',)
+    readonly_fields = ('ticket_service_scheme_title', 'ticket_service_scheme_id', 'event_venue', 'ticket_service',)
+    show_change_link = True
+    template = 'admin/tabular_custom.html'
+    verbose_name = verbose_name_plural = _('ticket_service_admin_list_inline')
+
+    def get_queryset(self, request):
+        """Вывод схем залов, ранее уже связанных с залами."""
+        return TicketServiceSchemeVenueBinder.objects.filter(
+            event_venue__isnull=False,
+        )
+
+    def has_add_permission(self, request):
+        """При выводе схем залов, ранее уже связанных с залами возможность добавления отключена."""
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        """При добавлении новых событий в группу возможность редактирования отключена."""
         return False
 
 
 @admin.register(TicketService)
 class TicketServiceAdmin(admin.ModelAdmin):
     actions = ('activate_or_deactivate_items', 'batch_set_cache',)
-    inlines = (TicketServiceSchemeVenueBinderInline, )
+    inlines = (AddTicketServiceSchemeVenueBinderInline, ListTicketServiceSchemeVenueBinderInline,)
     formfield_overrides = {
         TextField: {'widget': JSONEditor},
     }
