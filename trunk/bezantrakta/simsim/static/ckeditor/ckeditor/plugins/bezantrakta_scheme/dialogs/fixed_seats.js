@@ -106,10 +106,6 @@
                 var element = selection.getStartElement();
                 // console.log('element:', element);
 
-                if (seats_selected <= 1 && !element.hasClass('seat')) {
-                    dialog.hide();
-                }
-
                 var scheme = editor.document.findOne('.stagehall');
                 var ticket_service = scheme && scheme.data('ts') ? scheme.data('ts') : 'superbilet';
 
@@ -130,10 +126,10 @@
                     dialog.getContentElement('fixed_seats_tab', 'seat_title').enable();
                 }
 
+                dialog.setValueOf('fixed_seats_tab', 'seats_direction', seats_direction);
+
                 // Если выделено больше одного места
                 if (seats_selected > 1) {
-                    dialog.setValueOf('fixed_seats_tab', 'seats_direction', seats_direction);
-
                     if (ticket_service == 'superbilet') {
                         dialog.setValueOf('fixed_seats_tab', 'sector_id',   dialog.fs_sector_id);
                         dialog.setValueOf('fixed_seats_tab', 'row_id',      dialog.fs_row_id);
@@ -242,29 +238,27 @@
                                 // Перебор мест
                                 seat_id_cursor += 1;
                                 seat_title_cursor += 1;
-
-                                // increment ? seat_id_cursor += 1 : seat_id_cursor -= 1;
-                                // increment ? seat_title_cursor += 1 : seat_title_cursor -= 1;
                             }
                         }
                     };
                 } else {
-                    if (element.hasClass('seat')) {
-                        // console.log('one seat selected');
-
-                        // Сохранение data-атрибута ticket-id
-                        if (ticket_service == 'superbilet') {
-                            ticket_id = sector_id + '_' + row_id + '_' + seat_id_cursor;
-                        } else if (ticket_service == 'radario') {
-                            ticket_id = seat_id_cursor;
-                        }
-
-                        element.data('ticket-id', ticket_id);
-
-                        // Добавление `&nbsp;` для подписи мест от 1 до 9
-                        seat_title = seat_title < 10 ? '&nbsp;' + seat_title + '&nbsp;': seat_title;
-                        element.setHtml(seat_title);
+                    // console.log('one seat selected');
+                    if (!element.hasClass('seat')) {
+                        element.addClass('seat');
                     }
+
+                    // Сохранение data-атрибута ticket-id
+                    if (ticket_service == 'superbilet') {
+                        ticket_id = sector_id + '_' + row_id + '_' + seat_id_cursor;
+                    } else if (ticket_service == 'radario') {
+                        ticket_id = seat_id_cursor;
+                    }
+
+                    element.data('ticket-id', ticket_id);
+
+                    // Добавление `&nbsp;` для подписи мест от 1 до 9
+                    seat_title = seat_title < 10 ? '&nbsp;' + seat_title + '&nbsp;': seat_title;
+                    element.setHtml(seat_title);
                 }
             }
         };
