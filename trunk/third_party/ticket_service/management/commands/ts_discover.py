@@ -236,6 +236,7 @@ ______________________________________________________________________________
                         ticket_service_id=ticket_service['id'],
                     ).values(
                         'id',
+                        'event_venue_id',
                         'ticket_service_event',
                         # Поля, которые могут быть обновлены при запуске задания
                         'datetime',
@@ -245,6 +246,7 @@ ______________________________________________________________________________
 
                     # События, уже добавленные в БД ранее
                     events_exist = list(Event.objects.filter(
+                        datetime__gt=now,
                         is_group=False,
                         domain_id=ticket_service['domain_id'],
                         ticket_service_id=ticket_service['id'],
@@ -254,6 +256,7 @@ ______________________________________________________________________________
                         # Поля, которые могут быть обновлены при запуске задания
                         'datetime',
                         'min_price',
+                        'event_venue_id',
                         'ticket_service_scheme',
                         'promoter',
                         'seller',
@@ -263,6 +266,7 @@ ______________________________________________________________________________
                             'id': ee['id'],
                             'datetime': ee['datetime'],
                             'min_price': ee['min_price'],
+                            'event_venue_id': ee['event_venue_id'],
                             'ticket_service_scheme': ee['ticket_service_scheme'],
                             'promoter': ee['promoter'],
                             'seller': ee['seller']
@@ -491,6 +495,7 @@ ______________________________________________________________________________
                 event_fields = {
                     'datetime': event['event_datetime'],
                     'min_price': event['event_min_price'],
+                    'event_venue_id': ts_scheme_venue_binder[event['scheme_id']],
                     'ticket_service_scheme': event['scheme_id'],
                     'promoter': event['promoter'] or ticket_service['settings']['promoter'] or event_values['promoter'],
                     'seller': ticket_service['settings']['seller'] or event_values['seller'],
