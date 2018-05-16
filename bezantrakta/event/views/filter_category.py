@@ -6,6 +6,7 @@ from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
 from ..models import Event, EventCategory
+from ..shortcuts import hide_test_events_in_production
 
 
 def filter_category(request, slug):
@@ -39,6 +40,11 @@ def filter_category(request, slug):
         for event in category_events:
             # Получение информации о каждом размещённом событии из кэша
             event.update(cache_factory('event', event['uuid']))
+
+    # Оставляем в списке ТОЛЬКО актуальные события
+    category_events[:] = [
+        e for e in category_events if hide_test_events_in_production(e)
+    ]
 
     # Получение событий во всех категориях или фильтр по конкретной категории
     if slug == settings.BEZANTRAKTA_CATEGORY_ALL_SLUG:

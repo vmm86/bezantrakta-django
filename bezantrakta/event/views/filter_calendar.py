@@ -8,6 +8,7 @@ from django.shortcuts import render
 from project.cache import cache_factory
 
 from ..models import Event
+from ..shortcuts import hide_test_events_in_production
 
 
 def filter_calendar(request, year, month, day):
@@ -103,6 +104,11 @@ def filter_calendar(request, year, month, day):
         for event in events_on_date:
             # Получение информации о каждом размещённом событии из кэша
             event.update(cache_factory('event', event['uuid']))
+
+    # Оставляем в списке ТОЛЬКО актуальные события
+    events_on_date[:] = [
+        e for e in events_on_date if hide_test_events_in_production(e)
+    ]
 
     context = {
         'title': 'События на {naturalday}'.format(naturalday=naturalday(calendar_date_localized)),

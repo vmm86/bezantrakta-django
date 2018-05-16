@@ -5,6 +5,7 @@ from project.cache import cache_factory
 from project.shortcuts import timezone_now
 
 from ..models import Event, EventVenue
+from ..shortcuts import hide_test_events_in_production
 
 
 def filter_venue(request, slug):
@@ -45,6 +46,11 @@ def filter_venue(request, slug):
         for event in venue_events:
             # Получение информации о каждом размещённом событии из кэша
             event.update(cache_factory('event', event['uuid']))
+
+    # Оставляем в списке ТОЛЬКО актуальные события
+    venue_events[:] = [
+        e for e in venue_events if hide_test_events_in_production(e)
+    ]
 
     context = {
         'title': venue_title,
