@@ -4,9 +4,7 @@ Disallow: /
 {% else %}
 User-agent: *
 Crawl-delay: {{ crawl_delay|safe }}
-Disallow: /admin/
-Disallow: /bezantrakta/
-Disallow: /project/
+Disallow: /api/
 Allow: /media/
 Allow: /static/
 
