@@ -203,6 +203,22 @@ em, code {
     padding: 2px 0 4px 0;
 }
 
+.login #header #branding {
+    justify-content: center;
+}
+
+.login #header .warning {
+    display: none;
+}
+
+.login .submit-row input {
+    background: #2E7D32;
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 1px 0px #111;
+    text-transform: uppercase;
+}
+
 #branding img {
     width: 250px;
     height: auto;
@@ -1495,6 +1511,14 @@ div.jsoneditor-outer {
 }
 
 /* CKEditor #E0E0E0 */
+
+.django-ckeditor-widget {
+    width: 100% !important;
+}
+
+.cke.cke_chrome {
+    width: 98% !important;
+}
 
 .cke_dialog_body {
     background-color: #fff !important;
