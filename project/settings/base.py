@@ -30,7 +30,7 @@ BEZANTRAKTA_IS_SECURE = False
 # Адрес для входа в админ-панель
 BEZANTRAKTA_ADMIN_URL = 'simsim'
 # Cookie, при наличии которой в консоли браузера в production выводятся диагностические сообщения в console.log
-# Cookies.set('{title}', '{value}', {domain:'.{root_domain}', expires:new Date(new Date().getTime()+60*60*24*366*1000})
+# Cookies.set('TITLE', 'VALUE', {domain:'.ROOT_DOMAIN', expires:new Date(new Date().getTime()+60*60*24*366*1000)})
 BEZANTRAKTA_COOKIE_WATCHER_TITLE = 'sim_sala_bim'
 BEZANTRAKTA_COOKIE_WATCHER_VALUE = '41815162342'
 # Псевдоним категории "Все события"
