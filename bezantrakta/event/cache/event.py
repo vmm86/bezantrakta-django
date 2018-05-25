@@ -57,71 +57,71 @@ class EventCache(ProjectCache):
 
     def get_object(self, object_id, **kwargs):
         return Event.objects.select_related(
-                'event_venue',
-                'domain'
-            ).annotate(
-                # Параметры события
-                event_uuid=F('id'),
-                event_title=F('title'),
-                event_slug=F('slug'),
-                event_datetime=F('datetime'),
-                event_description=F('description'),
-                event_keywords=F('keywords'),
-                event_text=F('text'),
-                event_min_price=F('min_price'),
-                event_min_age=F('min_age'),
-                event_category_slug=F('event_category__slug'),
-                event_category_title=F('event_category__title'),
-                event_venue_title=F('event_venue__title'),
-                event_venue_city=F('event_venue__city__title'),
-                event_promoter=F('promoter'),
-                event_seller=F('seller'),
-                # Параметры группы, если событие в неё входит
-                group_uuid=F('event_groups'),
+            'event_venue',
+            'domain'
+        ).annotate(
+            # Параметры события
+            event_uuid=F('id'),
+            event_title=F('title'),
+            event_slug=F('slug'),
+            event_datetime=F('datetime'),
+            event_description=F('description'),
+            event_keywords=F('keywords'),
+            event_text=F('text'),
+            event_min_price=F('min_price'),
+            event_min_age=F('min_age'),
+            event_category_slug=F('event_category__slug'),
+            event_category_title=F('event_category__title'),
+            event_venue_title=F('event_venue__title'),
+            event_venue_city=F('event_venue__city__title'),
+            event_promoter=F('promoter'),
+            event_seller=F('seller'),
+            # Параметры группы, если событие в неё входит
+            group_uuid=F('event_groups'),
 
-                payment_service_id=F('ticket_service__payment_service__id'),
+            payment_service_id=F('ticket_service__payment_service__id'),
 
-                domain_slug=F('domain__slug'),
+            domain_slug=F('domain__slug'),
 
-                city_timezone=F('domain__city__timezone'),
-            ).values(
-                'is_published',
-                'is_on_index',
-                'is_group',
+            city_timezone=F('domain__city__timezone'),
+        ).values(
+            'is_published',
+            'is_on_index',
+            'is_group',
 
-                'event_uuid',
-                'event_title',
-                'event_slug',
-                'event_datetime',
-                'event_description',
-                'event_keywords',
-                'event_text',
-                'event_min_price',
-                'event_min_age',
-                'event_category_slug',
-                'event_category_title',
-                'event_venue_title',
-                'event_venue_city',
-                'event_promoter',
-                'event_seller',
+            'event_uuid',
+            'event_title',
+            'event_slug',
+            'event_datetime',
+            'event_description',
+            'event_keywords',
+            'event_text',
+            'event_min_price',
+            'event_min_age',
+            'event_category_slug',
+            'event_category_title',
+            'event_venue_title',
+            'event_venue_city',
+            'event_promoter',
+            'event_seller',
 
-                'group_uuid',
+            'group_uuid',
 
-                'settings',
+            'settings',
 
-                'ticket_service_id',
-                'ticket_service_event',
-                'ticket_service_scheme',
+            'ticket_service_id',
+            'ticket_service_event',
+            'ticket_service_scheme',
 
-                'payment_service_id',
+            'payment_service_id',
 
-                'domain_id',
-                'domain_slug',
+            'domain_id',
+            'domain_slug',
 
-                'city_timezone'
-            ).get(
-                event_uuid=object_id,
-            )
+            'city_timezone'
+        ).get(
+            event_uuid=object_id,
+        )
 
     def cache_preprocessing(self, **kwargs):
         # Человекопонятные локализованные дата и время события

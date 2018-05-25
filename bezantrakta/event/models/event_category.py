@@ -57,4 +57,5 @@ class EventCategory(models.Model):
         return self.title
 
     def get_absolute_url(self):
+        """Получение полного URL-адреса страницы фильтра по категории событий."""
         return reverse('category', args=[self.slug])

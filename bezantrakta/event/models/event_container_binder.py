@@ -9,6 +9,7 @@ from django.utils.translation import ugettext as _
 
 
 def img_path(instance, filename):
+    """Обработка загрузки изображения на сайт."""
     params = {}
     params['uuid'] = instance.event.id
     params['domain_slug'] = instance.event.domain.slug if instance.event.domain is not None else 'global'
@@ -106,6 +107,7 @@ class EventContainerBinder(models.Model):
         )
 
     def delete(self, *args, **kwargs):
+        """Удаление файла изображения перед удалением записи в БД."""
         full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
         if os.path.isfile(full_file_path):
             os.remove(full_file_path)
@@ -113,20 +115,24 @@ class EventContainerBinder(models.Model):
         super().delete(*args, **kwargs)
 
     def order_preview(self):
+        """Вывод порядкового номера позиции в контейнере."""
         return self.order
     order_preview.short_description = _('eventcontainerbinder_order')
 
     def img_preview(self):
+        """Вывод иконки с изображением афиши."""
         return mark_safe(
             '<img class="img_preview_eventcontainerbinder" src="{url}">'.format(url=self.img.url)
         )
     img_preview.short_description = _('eventcontainerbinder_img_preview')
 
     def event_or_group(self):
+        """Вывод подписи группы или события."""
         return _('event_is_group_group') if self.event.is_group else _('event_is_group_event')
     event_or_group.short_description = _('event_is_group')
 
     def event_datetime_localized(self):
+        """Вывод даты/времени события в часовом поясе его города."""
         from django.contrib.humanize.templatetags.humanize import naturalday
         # Дата и время события в часовом поясе его города
         current_timezone = self.event.domain.city.timezone

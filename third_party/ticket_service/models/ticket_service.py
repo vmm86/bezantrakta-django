@@ -8,10 +8,12 @@ from ..settings import TICKET_SERVICE_SETTINGS_DEFAULT
 
 @default_json_settings(TICKET_SERVICE_SETTINGS_DEFAULT)
 def default_json_settings_callable():
+    """Получение JSON-настроек по умолчанию."""
     pass
 
 
 class TicketServiceManager(models.Manager):
+    """Менеджер модели ``TicketServiceManager``."""
     def get_queryset(self):
         return super(TicketServiceManager, self).get_queryset().select_related(
             'domain', 'payment_service'

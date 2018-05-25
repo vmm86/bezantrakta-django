@@ -36,3 +36,7 @@
 * :red:`красный фон` - город отключён
 * обычный шрифт - сайт работает
 * :deleted:`зачёркнутый шрифт` - сайт отключен
+
+.. only:: dev
+
+  .. automodule:: bezantrakta.simsim.templatetags.choose_domain_or_city

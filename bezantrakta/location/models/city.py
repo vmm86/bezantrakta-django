@@ -11,6 +11,7 @@ from timezone_field import TimeZoneField
 
 
 def img_path(instance, filename):
+    """Обработка загрузки изображения на сайт."""
     name, dot, extension = filename.rpartition('.')
     # Относительный путь до файла
     file_path = os.path.join(
@@ -121,6 +122,7 @@ class City(models.Model):
         return '{title} - {slug}'.format(title=self.title, slug=self.slug)
 
     def img_preview(self):
+        """Вывод большой иконки с гербом города."""
         if self.icon:
             return mark_safe('<img class="img_preview_city" src="{media}{url}?{reload}" width="100" height="100">'.format(
                 media=settings.MEDIA_URL,
@@ -132,6 +134,7 @@ class City(models.Model):
     img_preview.short_description = _('city_img_preview')
 
     def ico_preview(self):
+        """Вывод маленькой иконки с гербом города."""
         if self.icon:
             return mark_safe('<img class="img_preview_city" src="{media}{url}?{reload}" width="32" height="32">'.format(
                 media=settings.MEDIA_URL,
@@ -143,11 +146,7 @@ class City(models.Model):
     ico_preview.short_description = _('city_img_preview')
 
     def timezone_offset(self):
-        """Вывод разницы во времени с ``UTC`` у часового пояса города.
-
-        Returns:
-            str: Строка с указанием разницы во времени.
-        """
+        """Вывод человекопонятной разницы во времени с ``UTC`` у часового пояса города."""
         return '{offset} {timezone}'.format(
             offset=timezone_offset_humanized(self.timezone),
             timezone=self.timezone,
@@ -155,11 +154,7 @@ class City(models.Model):
     timezone_offset.short_description = _('city_timezone')
 
     def state_icons(self):
-        """Вывод иконок для обозначения статуса города в списке записей в админ-панели.
-
-        Returns:
-            str: HTML-разметка для вывода иконки статуса.
-        """
+        """Вывод иконок для обозначения статуса города в списке записей в админ-панели."""
         from django.contrib.admin.templatetags.admin_list import _boolean_icon
 
         if self.state is False:

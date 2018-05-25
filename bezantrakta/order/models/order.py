@@ -8,6 +8,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class OrderManager(models.Manager):
+    """Менеджер модели ``Order``."""
     def get_queryset(self):
         return super(OrderManager, self).get_queryset().select_related(
             'ticket_service', 'event', 'domain'
@@ -196,6 +197,7 @@ class Order(models.Model):
         )
 
     def get_absolute_url(self):
+        """Получение полного URL-адреса страницы с информацией о заказе (шаг 3 заказа билетов)."""
         return reverse(
             'order:order_step_3',
             args=[

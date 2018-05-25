@@ -8,6 +8,7 @@ from ..settings import PAYMENT_SERVICE_SETTINGS_DEFAULT
 
 @default_json_settings(PAYMENT_SERVICE_SETTINGS_DEFAULT)
 def default_json_settings_callable():
+    """Получение JSON-настроек по умолчанию."""
     pass
 
 

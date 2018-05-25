@@ -122,18 +122,58 @@ a:visited {
     max-width: unset;
 }
 
-.wy-nav-content .document a{
+.wy-nav-content .document a {
     color: #2980B9 !important;
     font-weight: bold;
     text-decoration: underline;
     text-shadow: 1px 1px 0 #fff;
 }
 
+/* Блоки кода */
+
+.code-block-caption {
+    display: inline-block;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+}
+
+.wy-nav-content .document a.headerlink {
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.rst-content pre.literal-block,
+.rst-content div[class^="highlight"] {
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    margin: 12px 0;
+}
+
+.rst-content .literal-block-wrapper {
+    margin: 12px 0;
+}
+
+.rst-content .literal-block-wrapper > .code-block-caption + div[class^="highlight"] {
+    margin: 0;
+}
+
+.rst-content .literal-block-wrapper > .code-block-caption + div[class^="highlight"] > .highlight {
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.highlight {
+    background: #eee;
+}
+
 code,
 .rst-content tt,
 .rst-content code {
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: 0.5rem;
     font-size: 90%;
     font-weight: bold;
 }
@@ -146,23 +186,39 @@ code,
     align-items: flex-start;
 }
 
-.rst-content .section ol p,
-.rst-content .section ul p {
-    margin-bottom: 0;
+.rst-content dl dd ul p,
+.rst-content dl dd ol p {
+    margin-bottom: 0 !important;
 }
 
-/*article ul,
-.wy-plain-list-disc,
-.rst-content .section ul,
-.rst-content .toctree-wrapper ul {
-    margin-bottom: 8px;
-}*/
+.rst-content blockquote.epigraph {
+    text-align: right;
+    margin: 24px 0;
+}
+
+.rst-content blockquote.epigraph p {
+    font-style: italic;
+}
+
+.rst-content blockquote.epigraph p.attribution {
+    font-style: normal;
+}
+
+/* Таблицы */
+
+.wy-table-responsive {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
 
 .wy-table thead th,
 .rst-content table.docutils thead th,
-.rst-content table.field-list thead th {
-    background-color: #e1e4e5;
-    border-bottom: 4px solid #e1e4e5;
+.rst-content table.field-list thead th,
+.rst-content .admonition table th,
+.rst-content .admonition table.docutils thead th,
+.rst-content .admonition table.field-list thead th {
+    background-color: #e1e4e5 !important;
+    border-bottom: 4px solid #e1e4e5 !important;
 
     text-align: center;
     vertical-align: middle;
@@ -174,10 +230,54 @@ code,
     margin-bottom: 0;
 }
 
+.wy-table-odd td,
+.wy-table-striped tr:nth-child(2n-1) td,
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td,
+.rst-content .admonition table .wy-table-odd td,
+.rst-content .admonition table .wy-table-striped tr:nth-child(2n-1) td,
+.rst-content .admonition table .rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td {
+    background-color: #f0f0f0 !important;
+}
+.wy-table-even td,
+.wy-table-striped tr:nth-child(2n) td,
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n) td,
+.rst-content .admonition table .wy-table-even td,
+.rst-content .admonition table .wy-table-striped tr:nth-child(2n) td,
+.rst-content .admonition table .rst-content table.docutils:not(.field-list) tr:nth-child(2n) td {
+    background-color: #ffffff !important;
+}
+
+/* Параграфы */
+
 .main-page-blocks .rst-content .section ol p,
 .main-page-blocks .rst-content .section ul p,
 .main-page-blocks .rst-content .section ul {
     margin-bottom: 0;
+}
+
+/* Списки */
+
+.wy-plain-list-decimal,
+.rst-content .section ol,
+.rst-content ol.arabic,
+article ol {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.rst-content .section ol > li,
+.rst-content ol.arabic > li,
+article ol > li {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.wy-plain-list-disc,
+.rst-content .section ul,
+.rst-content .toctree-wrapper ul,
+article ul {
+    margin-top: 12px;
+    margin-bottom: 12px;
 }
 
 .wy-plain-list-disc li li,
@@ -185,6 +285,13 @@ code,
 .rst-content .toctree-wrapper ul li li,
 article ul li li {
     list-style: square;
+}
+
+.wy-plain-list-disc li p:nth-child(2),
+.rst-content .section ul li p:nth-child(2),
+.rst-content .toctree-wrapper ul li p:nth-child(2),
+article ul li p:nth-child(2) {
+    margin-top: 12px;
 }
 
 .wy-plain-list-disc li p:last-child,
@@ -200,6 +307,20 @@ article ul li p:last-child {
 article ul li p:only-child {
     margin-bottom: 0;
 }
+
+.rst-content .section ol p,
+.rst-content .section ul p {
+    margin-bottom: 0;
+}
+
+.wy-plain-list-disc li ul,
+.rst-content .section ul li ul,
+.rst-content .toctree-wrapper ul li ul,
+article ul li ul {
+    margin-bottom: 12px;
+}
+
+/* admonition-блоки */
 
 /* Google Material Colors */
 /* https://material.io/guidelines/style/color.html */
@@ -231,8 +352,8 @@ article ul li p:only-child {
 .rst-content .warning,
 .rst-content .danger,
 .rst-content .error {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 12px;
+    margin-bottom: 12px;
     border-radius: 0.5rem;
 }
 
