@@ -81,4 +81,5 @@ class Article(models.Model):
         return self.title
 
     def get_absolute_url(self):
+        """Получение полного URL-адреса HTML-страницы."""
         return reverse('article:article', args=[self.slug])

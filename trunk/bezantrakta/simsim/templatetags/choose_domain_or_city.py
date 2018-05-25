@@ -10,7 +10,7 @@ register = template.Library()
 
 @register.inclusion_tag('admin/choose_domain_or_city.html', takes_context=True)
 def choose_domain_or_city(context):
-    """Список всех сайтов и всех городов без сайтов, но с залами."""
+    """Список всех сайтов и всех городов без сайтов, но с залами для последующей фильтрации данных по городу/сайту."""
     # Все сайты
     domains = list(Domain.objects.select_related(
         'city',

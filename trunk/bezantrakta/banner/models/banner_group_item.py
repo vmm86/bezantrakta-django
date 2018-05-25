@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 
 
 def img_path(instance, filename):
+    """Обработка загрузки изображения на сайт."""
     domain = instance.domain.slug if instance.domain is not None else 'global'
 
     name, dot, extension = filename.rpartition('.')
@@ -31,6 +32,7 @@ def img_path(instance, filename):
 
 
 class BannerGroupItemManager(models.Manager):
+    """Менеджер модели BannerGroupItem."""
     def get_queryset(self):
         return super(BannerGroupItemManager, self).get_queryset().select_related(
             'banner_group', 'domain'
@@ -113,6 +115,7 @@ class BannerGroupItem(models.Model):
         return self.title
 
     def delete(self, *args, **kwargs):
+        """Вывод иконки с изображением внешней ссылки."""
         full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
         if os.path.isfile(full_file_path):
             os.remove(full_file_path)

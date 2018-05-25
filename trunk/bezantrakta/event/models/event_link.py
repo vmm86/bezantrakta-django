@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 
 
 def img_path(instance, filename):
+    """Обработка загрузки изображения на сайт."""
     name, dot, extension = filename.rpartition('.')
     # Относительный путь до файла
     file_path = os.path.join(
@@ -72,6 +73,7 @@ class EventLink(models.Model):
         return self.title
 
     def delete(self, *args, **kwargs):
+        """Удаление файла изображения перед удалением записи в БД."""
         full_file_path = os.path.join(settings.MEDIA_ROOT, str(self.img))
         if os.path.isfile(full_file_path):
             os.remove(full_file_path)
@@ -79,5 +81,6 @@ class EventLink(models.Model):
         super().delete(*args, **kwargs)
 
     def img_preview(self):
+        """Вывод иконки с изображением внешней ссылки."""
         return mark_safe('<img class="img_preview_link" src="{url}">'.format(url=self.img.url))
     img_preview.short_description = _('eventlinks_img_preview')

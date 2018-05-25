@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 
 
 class MenuItemManager(models.Manager):
+    """Менеджер модели MenuItem."""
     def get_queryset(self):
         return super(MenuItemManager, self).get_queryset().select_related('menu', 'domain')
 

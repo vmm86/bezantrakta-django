@@ -13,10 +13,12 @@ from ..settings import EVENT_SETTINGS_DEFAULT
 
 @default_json_settings(EVENT_SETTINGS_DEFAULT)
 def default_json_settings_callable():
+    """Получение JSON-настроек по умолчанию."""
     pass
 
 
 class EventManager(models.Manager):
+    """Менедлжер модели ``Event``."""
     def get_queryset(self):
         return super(EventManager, self).get_queryset().select_related(
             'event_category', 'event_venue__city', 'ticket_service', 'domain'
@@ -232,6 +234,7 @@ class Event(models.Model):
         )
 
     def get_absolute_url(self):
+        """Получение полного URL-адреса страницы события (шаг 1 заказа билетов)."""
         return reverse(
             'order:order_step_1',
             args=[

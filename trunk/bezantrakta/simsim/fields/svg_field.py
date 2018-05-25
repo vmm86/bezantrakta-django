@@ -12,21 +12,21 @@ class SVGField(FileField):
 
     def to_python(self, data):
         """
-        Checks that the file-upload field data contains a valid image.
+        Кастомное поле для загрузки и проверки SVG-изображений.
         """
         test_file = super(FileField, self).to_python(data)
         if test_file is None:
             return None
 
-        # We need to get a file object for Pillow. We might have a path or we might
-        # have to read the data into memory.
+        # Получение файлового объектав для Pillow
         if hasattr(data, 'temporary_file_path'):
             ifile = data.temporary_file_path()
         else:
-            if hasattr(data, 'read'):
-                ifile = BytesIO(data.read())
-            else:
-                ifile = BytesIO(data['content'])
+            ifile = (
+                BytesIO(data.read()) if
+                hasattr(data, 'read') else
+                BytesIO(data['content'])
+            )
 
         try:
             # load() could spot a truncated JPEG, but it loads the entire
@@ -39,7 +39,7 @@ class SVGField(FileField):
             test_file.image = image
             test_file.content_type = Image.MIME[image.format]
         except Exception:
-            # add a workaround to handle svg images
+            # add a workaround to handle SVG images
             if not self.is_svg(ifile):
                 six.reraise(ValidationError, ValidationError(
                     self.error_messages['invalid_image'],
@@ -51,7 +51,7 @@ class SVGField(FileField):
 
     def is_svg(self, f):
         """
-        Check if provided file is svg
+        Проверка, является ли загружаемый файл SVG-изображением.
         """
         f.seek(0)
         tag = None
