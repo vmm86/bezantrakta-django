@@ -56,13 +56,37 @@ data = {
         'group_id': 3930,
         'sector_id': 2704602,
     },
+    # Большая сцена (с входными билетами)
+    'big_new_1': {
+        'scheme_id': 14381,
+        'event_id': 243488,
+        'group_id': 6450,
+        'sector_id': 2704602,
+    },
+    # Большая сцена (с входными билетами)
+    'big_new_2': {
+        'scheme_id': 14442,
+        'event_id': 247167,
+        'group_id': 3801,
+        'sector_id': 2704602,
+    },
+    # Трамвай "Желание" (с входными билетами)
+    'desire_new': {
+        'scheme_id': 14443,
+        'event_id': 247174,
+        'group_id': 2124,
+        'sector_id': 2704602,
+    },
 }
 
-test_data = data['test_no_hall']
+# test_data = data['test_no_hall']
 # test_data = data['test_big_hall']
 # test_data = data['desire']
 # test_data = data['gogol']
 # test_data = data['karenin']
+# test_data = data['big_new_1']
+# test_data = data['big_new_2']
+test_data = data['desire_new']
 
 # VERSION
 # py_result = ts.version()
@@ -88,7 +112,6 @@ test_data = data['test_no_hall']
 
 # EVENT
 # py_result = ts.event(event_id=test_data['event_id'])
-# py_result = ts.event(event_id=234266)
 
 # SECTORS
 # py_result = ts.sectors(event_id=test_data['event_id'])
@@ -112,17 +135,20 @@ test_data = data['test_no_hall']
 # tickets = {
 #     '10': {
 #         'ticket_uuid': uuid.uuid4(),
-#         'sector_id': test_data['sector_id'], 'row_id': 0, 'seat_id': 10,
+#         'sector_id': test_data['sector_id'], 'row_id': 8, 'seat_id': 138,
 #     }
 # }
 # py_result = ts.order_create(event_id=test_data['event_id'], customer=customer, tickets=tickets)
 
+# ORDERS
+# py_result = ts.orders()
+
 # ORDER
-# order_id = 2509480
+# order_id = 2699631
 # py_result = ts.order(order_id=order_id)
 
 # ORDER_CANCEL
-# order_id = 2508941
+# order_id = 2515761
 # py_result = ts.order_cancel(order_id=order_id)
 
 # ORDER_APPROVE
@@ -130,7 +156,7 @@ test_data = data['test_no_hall']
 # py_result = ts.order_approve(order_id=order_id)
 
 # ORDER_REFUND
-# order_id = 2508833
+# order_id = 2509097
 # reason = 'Посторонним В'
 # py_result = ts.order_refund(order_id=order_id, reason=reason)
 

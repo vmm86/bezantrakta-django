@@ -26,6 +26,7 @@ SNGB_PROD = {
 }
 
 slug = 'sngb'
+# init = SNGB_TEST
 init = SNGB_PROD
 ps = payment_service_factory(slug, init)
 
@@ -36,9 +37,9 @@ customer = {
     'name': 'Посторонним В', 'email': 'vmm@rterm.ru', 'phone': '+74732000111',
 }
 
-order_uuid = uuid.uuid4()
-order_id = 10
-overall = ps.decimal_price(2.25)
+# order_uuid = uuid.uuid4()
+# order_id = 10
+# overall = ps.decimal_price(2.25)
 
 # PAYMENT_CREATE
 # py_result = ps.payment_create(
@@ -51,12 +52,14 @@ overall = ps.decimal_price(2.25)
 # )
 
 # PAYMENT_STATUS
-# payment_id = '3199591541473390'
-# payment_id = '4769758511373400'
-# py_result = ps.payment_status(payment_id=payment_id)
+payment_id = '7660590561781340'
+py_result = ps.payment_status(payment_id=payment_id)
 
 # PAYMENT_REFUND
-# py_result = ps.payment_refund(payment_id=payment_id, total=total)
+# order_id = 16180
+# payment_id = '6234585261980990'
+# amount = ps.decimal_price('10.00')
+# py_result = ps.payment_refund(order_id=order_id, payment_id=payment_id, amount=amount)
 
 try:
     print(type(py_result))
