@@ -65,7 +65,7 @@ group_id = 214
 # event_id = 1913  # arh test
 # event_id = 1914  # vluki test
 # event_id = 1915  # vluki test
-event_id = 2292  # test 2199
+event_id = 2470  # test Цирк
 # event_id = 116  # test Сургут
 sector_id = 509
 
@@ -83,6 +83,8 @@ sector_id = 509
 # py_result = ts.places()
 # SCHEMES
 # py_result = ts.schemes(place_id=place_id)
+# SCHEME
+# py_result = ts.scheme(event_id=event_id)
 # DISCOVER_SCHEMES
 # py_result = ts.discover_schemes()
 
@@ -96,7 +98,7 @@ sector_id = 509
 # py_result = ts.events(place_id=place_id)
 # py_result = ts.events(scheme_id=scheme_id)
 # DISCOVER_EVENTS
-# py_result = ts.discover_events()
+py_result = ts.discover_events()
 
 # SECTORS
 # py_result = ts.sectors(event_id=event_id)
@@ -104,9 +106,6 @@ sector_id = 509
 # py_result = ts.sector_seats(event_id=event_id, sector_id=sector_id)
 # SEATS AND PRICES
 # py_result = ts.seats_and_prices(event_id=event_id)
-#
-# SCHEME
-# py_result = ts.scheme(event_id=event_id)
 
 # order_uuid = uuid.UUID('987bdbb4-0180-4839-93b3-2bb2ff42729c')
 # RESERVE (ADD OR REMOVE)
@@ -134,16 +133,20 @@ sector_id = 509
 #     # 'is_courier': False, 'address': '',
 # }
 # tickets = {
-#     '5_1_26': {'ticket_uuid': uuid.UUID('c909a29e-9001-4382-8308-fb612bcc95c1'), 'sector_id': 5, 'row_id': 1, 'seat_id': 26, },
+#     '5_1_26': {'ticket_uuid': uuid.UUID('c909a29e-9001-4382-8308-fb612bcc95c1'),
+#                'sector_id': 5, 'row_id': 1, 'seat_id': 26, },
 # }
 # py_result = ts.order_create(event_id=event_id, order_uuid=order_uuid, customer=customer, tickets=tickets)
 
 # ORDER_CANCEL
-# order_uuid = uuid.UUID('04f54215-066c-4877-8c7c-083264b82564')
-# order_id = 47616
+# event_id = 185
+# order_uuid = uuid.UUID('fdc4b427-0561-4247-8ce2-e19caffbffb4')
+# order_id = 16442
 # tickets = {
-#     '509_16_9': {'ticket_uuid': uuid.UUID('45974da2-547e-4185-812e-4560e5586eec'),
-#     'sector_id': 509, 'row_id': 16, 'seat_id': 9, },
+#     '24_1_15': {'ticket_uuid': uuid.UUID('53b2d4ec-71e0-403b-9152-11942197435d'),
+#                 'sector_id': 24, 'row_id': 1, 'seat_id': 15},
+#     '24_1_16': {'ticket_uuid': uuid.UUID('147e62d3-3bb4-4a17-bf39-153df8f2843e'),
+#                 'sector_id': 24, 'row_id': 1, 'seat_id': 16},
 # }
 # py_result = ts.order_cancel(event_id=event_id, order_uuid=order_uuid, order_id=order_id, tickets=tickets)
 
@@ -154,15 +157,18 @@ sector_id = 509
 # payment_datetime = datetime.now()
 # tickets = {
 #     '22_14_31': {'ticket_uuid': uuid.UUID('64127eb5-1487-4597-a603-45e94a7b27c0'),
-#     'sector_id': 22, 'row_id': 14, 'seat_id': 31, },
+#                  'sector_id': 22, 'row_id': 14, 'seat_id': 31, },
 #     '22_14_32': {'ticket_uuid': uuid.UUID('dd3d3f7c-abc2-49d0-9991-0655a8dce53b'),
-#     'sector_id': 22, 'row_id': 14, 'seat_id': 32, },
+#                  'sector_id': 22, 'row_id': 14, 'seat_id': 32, },
 # }
 
-# for ticket in tickets:
-#     ticket['event_id'] = event_id
-#     print('    ticket: ', ticket)
-#     print(ts.ticket_status(**ticket))
+# ORDER_REFUND
+# order_id = 47963
+# order_uuid = uuid.UUID('b004469f-1be6-42be-9c91-14301c0cca9e')
+# payment_id = '3141333342280100'
+# payment_datetime = datetime.now()
+# reason = 'Посторонним В'
+# py_result = ts.order_refund(order_id=order_id, reason=reason)
 
 # py_result = ts.order_approve(
 #     event_id=event_id,
@@ -174,7 +180,7 @@ sector_id = 509
 
 # # LOG
 # py_result = ts.log(
-#     from_date='21.12.2017', from_time='11:30', to_date='21.12.2017', to_time='12:10',
+#     from_date='27.02.2018', from_time='09:00', to_date='27.02.2018', to_time='23:00',
 #     event_id=event_id, sector_id=529, row_id=8, seat_id=23
 # )
 
