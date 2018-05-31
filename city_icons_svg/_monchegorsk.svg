@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:cc="http://creativecommons.org/ns#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+    id="city_nnov"
+    data-name="nnov"
+    width="52.5mm"
+    height="52.5mm"
+    viewBox="0 0 148.82 148.82"
+    version="1.1"
+    inkscape:version="0.91 r13725"
+    sodipodi:docname="_monchegorsk.svg">
+   <metadata
+       id="metadata22">
+      <rdf:RDF>
+         <cc:Work
+             rdf:about="">
+            <dc:format>image/svg+xml</dc:format>
+            <dc:type
+                rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+            <dc:title />
+         </cc:Work>
+      </rdf:RDF>
+   </metadata>
+   <defs
+       id="defs20" />
+   <sodipodi:namedview
+       pagecolor="#ffffff"
+       bordercolor="#666666"
+       borderopacity="1"
+       objecttolerance="10"
+       gridtolerance="10"
+       guidetolerance="10"
+       inkscape:pageopacity="0"
+       inkscape:pageshadow="2"
+       inkscape:window-width="640"
+       inkscape:window-height="480"
+       id="namedview18"
+       showgrid="false"
+       inkscape:zoom="31.87638124"
+       inkscape:cx="110.1765591"
+       inkscape:cy="69.56624039"
+       inkscape:current-layer="city_nnov" />
+   <g
+       transform="matrix(0.0283466687,0,0,0.0283466716,-1043.6834,-446.3435537)"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       id="monchegorsk">
+      <path
+          class="fil2"
+          d="m 39554,19219 -26,-86 c 58,-95 -10,-38 -8,-295 2,-182 35,-398 27,-510 -3,-45 3,-90 5,-134 4,-66 -11,-79 42,-97 12,19 7,-18 17,43 1,2 1,36 2,41 11,255 58,223 90,323 10,33 7,104 12,148 12,100 -24,195 -32,295 -18,225 -38,94 -63,271 0,0 125.38589,2.80977 188.07884,4.21465 C 39864.38589,19223.47643 39977,19226 39977,19226 c -2,-125 -63,-49 -7,-211 l -36,-476 c -11,-40 -38,-196 -38,-238 2,-166 60,-24 56,-483 -3,-295 -93,-182 -195,-339 -28,-125 47,-243 -99,-315 -67,-34 -92,-25 -110,-109 -6,-29 -6,-60 -16,-89 -10,-32 -17,-28 -28,-73 29,-35 54,-40 71,-85 l -83,-22 c -61,3 -149,49 -149,-38 l 149,8 c 126,-12 232,0 332,-88 83,-72 164,-133 155,-255 -51,6 -41,23 -98,46 -1,-51 5,-48 -20,-84 -60,9 -46,58 -76,118 -27,55 -57,80 -114,56 -36,-76 35,-28 16,-98 -40,-22 -26,-19 -76,-5 l -31,88 c -60,-16 -14,-12 -61,-35 -19,26 -16,31 -20,72 l -19,4 -53,-1 11,-95 c -69,-41 -21,6 -60,-65 -84,7 -57,119 -59,192 -80,-13 -32,-11 -87,-43 -50,19 -16,33 -81,25 0,0 -126,-59 -133,23 31,99 152,51 171,133 -115,71 -336,-37 -415,149 20,70 62,91 122,115 67,-12 14,-34 108,-29 128,8 107,86 122,130 13,39 17,30 41,64 13,92 5,191 2,284 -2,105 -50,109 -49,241 0,92 10,185 10,281 0,119 20,133 40,236 24,125 20,418 17,556 -8,373 -88,309 -105,451 l 176,-6 c -4,-66 -10,-65 2,-130 9,-50 12,-50 -22,-79 -6,-157 37,-249 41,-397 2,-88 35,-109 33,-188 -1,-82 -8,-122 -1,-210 l 13,-126 c 48,-19 29,-11 71,10 l 20,172 c 6,40 18,73 20,113 1,48 -5,82 4,133 32,192 43,532 -43,709 z m 207,-86 c 0,-78 27,-88 29,-148 8,-169 -46,-92 19,-483 76,88 84,230 82,350 -3,169 -41,200 -83,344 z"
+          id="path1602"
+          inkscape:connector-curvature="0"
+          style="fill:#999999"
+          sodipodi:nodetypes="ccccccccccscscccccccccccccccccccccccccccccccccccccccccscccccccccccccccccccccc" />
+      <path
+          class="fil3"
+          d="m 38495,19868 -36,122 100,-83 107,83 -38,-122 104,-75 -132,-2 c 65,-215 354,-218 756,-117 -379,-19 -601,110 -629,424 l -112,2 88,69 -35,123 100,-77 110,75 -45,-120 94,-67 -110,0 c 17,-301 230,-411 563,-407 -200,99 -297,264 -297,492 l -99,0 90,77 -41,110 101,-77 108,74 -42,-116 91,-68 -120,0 c 5,-244 92,-405 244,-496 265,76 465,221 595,444 l 345,-189 c -101,-188 -155,-408 -174,-655 l -760,374 c -529,-175 -823,-171 -911,125 l -111,6 96,71 z"
+          id="path1604"
+          inkscape:connector-curvature="0"
+          style="fill:#ffcc00" />
+   </g>
+</svg>
