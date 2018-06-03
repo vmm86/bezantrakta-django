@@ -10,15 +10,15 @@
 * **Сбербанк**
 * **СургутНефтеГазБанк** (СНГБ)
 
-.. only:: dev
-
-  Приложение ``payment_service`` - работа со сторонними СОО, которые хранятся в модели ``PaymentService`` и могут быть привязаны к какому-либо СПБ по внешнему ключу.
+.. attention:: Для тестирования работы с API СОО используются **тестовые скрипты**, находящиеся в корне пакета приложения. Исходные файлы тестовых скриптов начинаются с ``_test``. Чтобы использовать их с внесением изменений, их необходимо скопировать в этой же папке в файлы с теми же навзаниями, но без ``_`` в начале.
 
 .. toctree::
-  :maxdepth: 3
+  :maxdepth: 1
   :caption: Сервисы онлайн-оплаты
 
-  admin/payment_service
+  models/index
+  cache/index
   payment_service_abc/index
   payment_service_abc/sberbank/index
   payment_service_abc/sngb/index
+  management/commands/index

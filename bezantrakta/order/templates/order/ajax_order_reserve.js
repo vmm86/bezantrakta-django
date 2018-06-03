@@ -85,7 +85,7 @@ function ajax_order_reserve_error(xhr, status, error) {
         {# Прелоадер с прогресс-баром #}
         $('#tickets-preloader').hide();
     {% elif active == 'step2' %}
-        {# Включение возможности подтвердить заказ после удаления очередного билета, если заказ ещё не пустой #}
+        {# Включение возможности подтвердить заказ после удаления очередного билета, если ПР ещё не пустой #}
         var no_tickets = _.isEmpty(window.order['tickets']);
         if (no_tickets === false && window.order_timeout > 10000) {
             $('#agree, #isubmit').prop('disabled', false);

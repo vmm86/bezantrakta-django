@@ -75,24 +75,9 @@
 
     * :doc:`/bezantrakta/banner/admin/banner_group_item`, вложенные в группы баннеров, которые могут вести на другие страницы (внутри сайта или на друних сайтах).
 
-.. only:: dev
+.. toctree::
+  :maxdepth: 1
+  :caption: События
 
-  ********************
-  Процессоры контекста
-  ********************
-
-  Информация о текущем рабочем окружении для суперадминистраторов
-  ===============================================================
-  .. automodule:: bezantrakta.simsim.context_processors.environment
-
-  Параметры фильтра по городу/сайту
-  =================================
-  .. automodule:: bezantrakta.simsim.context_processors.queryset_filter
-
-  **********
-  Поля формы
-  **********
-
-  Поддержка загрузки SVG-изображений
-  ==================================
-  .. autoclass:: bezantrakta.simsim.fields.svg_field.SVGField
+  context_processors/index
+  fields/index

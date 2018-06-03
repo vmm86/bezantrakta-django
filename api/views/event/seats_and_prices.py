@@ -35,11 +35,11 @@ def seats_and_prices(request):
             'event_id':  event['ticket_service_event'],
         }
 
-        # Попытка получить текущее состояние мест и цен в событии
+        # Попытка получить текущее состояние цен и мест в событии
         sp = cache_factory('seats_and_prices', event_uuid)
 
         if not sp:
-            # Запрос мест и цен в сервисе продажи билетов
+            # Запрос цен и мест в сервисе продажи билетов
             new = ts.seats_and_prices(**params)
             new['updated'] = timezone_now()
             new['in_progress'] = False
@@ -51,11 +51,11 @@ def seats_and_prices(request):
 
             if not sp['in_progress'] and heartbeat_delta > heartbeat_timeout:
                 # print('NEW REQUEST to ticket service...')
-                # Включаем параметр "в процессе обновления", чтобы избежать "гонки"" с новыми повторяющимися запросами
+                # Включаем параметр "в процессе обновления", чтобы избежать "гонки" с новыми повторяющимися запросами
                 sp['in_progress'] = True
                 sp = cache_factory('seats_and_prices', event_uuid, obj=sp, reset=True)
 
-                # Очередной запрос состояния мест и цен
+                # Очередной запрос состояния цен и мест
                 new = ts.seats_and_prices(**params)
                 # Если очередной запрос успешен - выключаем параметр "в процессе обновления" и инвалидируем кэш
                 if new['success']:

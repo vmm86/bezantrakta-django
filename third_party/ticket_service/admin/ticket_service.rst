@@ -135,11 +135,3 @@
 * **ID схемы зала**
 
 * **Зал** (место проведения событий), к которому нужно привязать схему зала, чтобы при следующем запуске задания на импорт в базу данных сайта импортировались привязанные к ней события.
-
-.. only:: dev
-
-  ******
-  Модели
-  ******
-
-  .. autoclass:: third_party.ticket_service.models.ticket_service_scheme_venue_binder.TicketServiceSchemeVenueBinder

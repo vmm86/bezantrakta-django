@@ -15,15 +15,15 @@ class PaymentServiceCache(ProjectCache):
 
     def get_object(self, object_id, **kwargs):
         return PaymentService.objects.values(
-                'id',
-                'title',
-                'slug',
-                'is_active',
-                'is_production',
-                'settings'
-            ).get(
-                id=object_id,
-            )
+            'id',
+            'title',
+            'slug',
+            'is_active',
+            'is_production',
+            'settings'
+        ).get(
+            id=object_id,
+        )
 
     def cache_preprocessing(self, **kwargs):
         # Получение настроек сервиса онлайн-оплаты

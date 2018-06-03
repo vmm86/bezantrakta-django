@@ -11,24 +11,9 @@ SEO-оптимизация
 
 Содержимое файлов генерируется динамически "на лету", по необходимости используя специфичную информацию конкретного сайта, открытого в данный момент.
 
-.. only:: dev
+.. toctree::
+  :maxdepth: 1
+  :caption: События
 
-  *************
-  Представления
-  *************
-
-  Файл browserconfig.xml
-  ======================
-  .. automodule:: bezantrakta.seo.views.browserconfig
-
-  Файл manifest.json
-  ==================
-  .. automodule:: bezantrakta.seo.views.manifest
-
-  Файл robots.txt
-  ===============
-  .. automodule:: bezantrakta.seo.views.robots_txt
-
-  Файл yandex.manifest.json
-  =========================
-  .. automodule:: bezantrakta.seo.views.yandex_manifest
+  views/index
+  templates/index

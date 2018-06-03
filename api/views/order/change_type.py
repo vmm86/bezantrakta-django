@@ -53,7 +53,7 @@ def change_type(request):
             response = {'success': False, 'message': 'Отсутствует событие с указанным UUID'}
             return JsonResponseUTF8(response)
 
-        # Изменение типа получения и оплаты билетов в предварительном резерве
+        # Изменение способа заказа билетов в предварительном резерве
         basket.order_type_change(customer, order_type)
 
         response = {}

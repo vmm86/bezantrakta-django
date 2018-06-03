@@ -20,7 +20,8 @@ def base_template_context_processor(request):
     # Если текущий вид НЕ принадлежит процессу оформления заказа билетов
     order_progress = (
         True if
-        request.resolver_match is not None and request.resolver_match.url_name in settings.BEZANTRAKTA_ORDER_VIEWS else
+        request.resolver_match is not None and
+        request.resolver_match.url_name in settings.BEZANTRAKTA_ORDER_VIEWS else
         False
     )
 

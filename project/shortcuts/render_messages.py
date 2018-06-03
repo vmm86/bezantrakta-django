@@ -15,6 +15,7 @@ def render_messages(request, msgs):
         msgs (dict): Сообщения для вывода.
 
             Ключи ``msgs`` - уровни уведомления:
+
                 * ``debug``
                 * ``info``
                 * ``success``

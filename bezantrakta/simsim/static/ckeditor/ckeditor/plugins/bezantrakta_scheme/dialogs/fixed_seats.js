@@ -110,11 +110,14 @@
                 var ticket_service = scheme && scheme.data('ts') ? scheme.data('ts') : 'superbilet';
 
                 var seats_direction = dialog.fs_seats_direction ? dialog.fs_seats_direction : 'ltr';
+                dialog.setValueOf('fixed_seats_tab', 'seats_direction', seats_direction);
 
                 // Для СуперБилета нужно указывать ID сектора, ряда и места, но не подпись места
                 if (ticket_service == 'superbilet') {
                     dialog.getContentElement('fixed_seats_tab', 'sector_id').enable();
                     dialog.getContentElement('fixed_seats_tab', 'row_id').enable();
+                    dialog.setValueOf('fixed_seats_tab', 'sector_id', dialog.fs_sector_id);
+                    dialog.setValueOf('fixed_seats_tab', 'row_id', dialog.fs_row_id);
 
                     dialog.getContentElement('fixed_seats_tab', 'seat_title').disable();
                 }
@@ -124,46 +127,35 @@
                     dialog.getContentElement('fixed_seats_tab', 'row_id').disable();
 
                     dialog.getContentElement('fixed_seats_tab', 'seat_title').enable();
+                    dialog.setValueOf('fixed_seats_tab', 'seat_title', dialog.fs_seat_title);
                 }
 
-                dialog.setValueOf('fixed_seats_tab', 'seats_direction', seats_direction);
+                dialog.setValueOf('fixed_seats_tab', 'seat_id', dialog.fs_seat_id);
 
-                // Если выделено больше одного места
-                if (seats_selected > 1) {
+                // Если курсор стоит в одной ячейке
+                if (seats_selected <= 1 && element.hasClass('seat')) {
+                    var ticket_id = element.data('ticket-id');
                     if (ticket_service == 'superbilet') {
-                        dialog.setValueOf('fixed_seats_tab', 'sector_id',   dialog.fs_sector_id);
-                        dialog.setValueOf('fixed_seats_tab', 'row_id',      dialog.fs_row_id);
+                        var seat_attrs = ticket_id.split('_')
+                        var sector_id = seat_attrs[0];
+                        var row_id = seat_attrs[1];
+                        var seat_id = seat_attrs[2];
+                    } else if (ticket_service == 'radario') {
+                        var sector_id = null;
+                        var row_id = null;
+                        var seat_id = ticket_id;
                     }
-                    dialog.setValueOf('fixed_seats_tab', 'seat_id',         dialog.fs_seat_id);
+
+                    var seat_title = element.getHtml().replace('<br>', '').replace('&nbsp;', '').replace('&nbsp;', '');
+
+                    dialog.setValueOf('fixed_seats_tab', 'seats_direction', seats_direction);
+                    if (ticket_service == 'superbilet') {
+                        dialog.setValueOf('fixed_seats_tab', 'sector_id',   sector_id);
+                        dialog.setValueOf('fixed_seats_tab', 'row_id',      row_id);
+                    }
+                    dialog.setValueOf('fixed_seats_tab', 'seat_id',         seat_id);
                     if (ticket_service == 'radario') {
-                        dialog.setValueOf('fixed_seats_tab', 'seat_title',  dialog.fs_seat_title);
-                    }
-                // Если курсор стоит в одном месте
-                } else {
-                    if (element.hasClass('seat')) {
-                        var ticket_id = element.data('ticket-id');
-                        if (ticket_service == 'superbilet') {
-                            var seat_attrs = ticket_id.split('_')
-                            var sector_id = seat_attrs[0];
-                            var row_id = seat_attrs[1];
-                            var seat_id = seat_attrs[2];
-                        } else if (ticket_service == 'radario') {
-                            var sector_id = null;
-                            var row_id = null;
-                            var seat_id = ticket_id;
-                        }
-
-                        var seat_title = element.getHtml().replace('<br>', '').replace('&nbsp;', '').replace('&nbsp;', '');
-
-                        dialog.setValueOf('fixed_seats_tab', 'seats_direction', seats_direction);
-                        if (ticket_service == 'superbilet') {
-                            dialog.setValueOf('fixed_seats_tab', 'sector_id',   sector_id);
-                            dialog.setValueOf('fixed_seats_tab', 'row_id',      row_id);
-                        }
-                        dialog.setValueOf('fixed_seats_tab', 'seat_id',         seat_id);
-                        if (ticket_service == 'radario') {
-                            dialog.setValueOf('fixed_seats_tab', 'seat_title',  seat_title);
-                        }
+                        dialog.setValueOf('fixed_seats_tab', 'seat_title',  seat_title);
                     }
                 }
             },

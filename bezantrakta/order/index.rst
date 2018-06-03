@@ -1,12 +1,13 @@
-###############
-Раздел "Заказы"
-###############
-
-В этом разделе содержится информация о заказах, сделанных пользователями сайта, и билетах, входящих в эти заказы.
+######
+Заказы
+######
 
 .. toctree::
   :maxdepth: 1
   :caption: Заказы
 
-  admin/order
-  admin/order_ticket
+  models/index
+  cache/index
+  shortcuts/index
+  views/index
+  templates/index
