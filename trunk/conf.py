@@ -28,10 +28,7 @@ extensions = [
 ]
 
 if tags.has('dev'):
-    extensions + [
-        'sphinxcontrib.napoleon',
-        # 'sphinxcontrib.email',
-    ]
+    extensions.append('sphinxcontrib.napoleon')
 
     # Napoleon settings
     napoleon_google_docstring = True
@@ -90,30 +87,30 @@ exclude_patterns = [
     'docs/dev',
 ]
 if tags.has('adm'):
-    exclude_patterns += [
+    exclude_patterns = [
+        'docs/adm',
+        'docs/dev',
+
         'index_dev*',
-        '**/index_dev*',
 
-        '**/context_processors*',
-        '**/middleware*',
+        # 'api/*',
 
-        'api/*',
+        # 'bezantrakta/eticket/*',
+        # 'bezantrakta/seo/*',
+        # '*/*/index',
 
-        'bezantrakta/eticket/*',
-        'bezantrakta/seo/*',
-        'bezantrakta/index_dev*',
-
-        'project',
+        # 'project',
 
         'README*',
     ]
 elif tags.has('dev'):
-    exclude_patterns += [
-        # '**/admin',
+    exclude_patterns = [
+        'docs/adm',
+        'docs/dev',
 
         'index_adm*',
-        '**/index_adm*',
     ]
+print('exclude_patterns:', exclude_patterns)
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -197,7 +194,10 @@ man_pages = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/3.5': None}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3.5', None,),
+    # 'django': ('https://docs.djangoproject.com/en/1.11/', None),
+}
 
 
 # -- Autodoc options ------------------------------------------------------

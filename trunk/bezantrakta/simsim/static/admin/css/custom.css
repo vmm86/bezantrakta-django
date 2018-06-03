@@ -280,6 +280,11 @@ em, code {
     text-shadow: 0px 1px 0 #111;
 }
 
+#user-tools #docs-link {
+    color: #fc0;
+    text-shadow: 0px 1px 0 #111;
+}
+
 /* Хлебные крошки */
 
 div.breadcrumbs {

@@ -226,11 +226,3 @@
 
 .. |sectorbuttonactive| image:: /bezantrakta/simsim/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sectorbuttonactive.png
 .. |sectorbuttonpassive| image:: /bezantrakta/simsim/static/ckeditor/ckeditor/plugins/bezantrakta_scheme/icons/sectorbuttonpassive.png
-
-.. only:: dev
-
-  ******
-  Модели
-  ******
-
-  .. autoclass:: third_party.ticket_service.models.ticket_service.TicketService

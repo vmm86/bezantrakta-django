@@ -13,17 +13,17 @@ class TicketServiceCache(ProjectCache):
 
     def get_object(self, object_id, **kwargs):
         return TicketService.objects.select_related(
-                'domain',
-            ).values(
-                'id',
-                'title',
-                'slug',
-                'is_active',
-                'settings',
-                'domain_id',
-            ).get(
-                id=object_id,
-            )
+            'domain',
+        ).values(
+            'id',
+            'title',
+            'slug',
+            'is_active',
+            'settings',
+            'domain_id',
+        ).get(
+            id=object_id,
+        )
 
     def cache_preprocessing(self, **kwargs):
         # Получение JSON-настроек сервиса продажи билетов

@@ -44,17 +44,3 @@
 * **Меню**, к которому привязан пункт меню.
 
 * **Сайт**, к которому привязан пункт меню.
-
-.. only:: dev
-
-  ******
-  Модели
-  ******
-
-  .. autoclass:: bezantrakta.menu.models.MenuItem
-
-  ********************
-  Процессоры контекста
-  ********************
-
-  .. automodule:: bezantrakta.menu.context_processors.menu_items

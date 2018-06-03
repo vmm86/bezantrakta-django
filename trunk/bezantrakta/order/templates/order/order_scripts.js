@@ -103,7 +103,7 @@ function order_after_initialize() {
         {# Заполение скрытого поля с UUID заказа #}
         $('#order-uuid').val(window.order['order_uuid']);
 
-        {# Заполение реквизитов покупателя из cookies, если они вводились им ранее #}
+        {# Заполнение реквизитов покупателя из cookies, если они вводились им ранее #}
         for (property in window.order.customer) {
             var customer_input = '#customer-' + property;
             if (window.order.customer[property] != null) {
@@ -156,7 +156,7 @@ function order_after_initialize() {
             });
         });
 
-        {# Выбор какого-то типа заказа билетов по умолчанию, активного в данном событии #}
+        {# Предварительный выбор какого-то способа заказа билетов, активного в данном событии #}
         $('input[name="customer_order_type"][class="{{ default_order_type }}"').prop('checked', true);
         $('input[name="customer_order_type"][class="{{ default_order_type }}"').trigger('change');
 
@@ -287,13 +287,13 @@ function seat_countdown_timer() {
     {% endif %}
 
     {# Выбранные ранее билеты: #}
-    {# * ЛИБО сохраняются в заказе, если их таймаут ещё не прошёл #}
-    {# * ЛИБО удаляются из корзины заказа, если их таймаут уже прошёл #}
+    {# * ЛИБО остаются в предварительном резерве, если их таймаут ещё не прошёл #}
+    {# * ЛИБО удаляются из предварительного резерва, если их таймаут уже прошёл #}
     for (t in window.order['tickets']) {
         var ticket_id = t;
         ticket = window.order['tickets'][t];
 
-        {# Разница между временем обновления мест и временем резерва конкретного места #}
+        {# Разница между текущим временем обновления и временем резерва конкретного места #}
         var added = new Date(ticket['added']);
         var updated_minus_added_ms = updated - added;
 
@@ -305,7 +305,7 @@ function seat_countdown_timer() {
         sec = sec >= 0 && sec < 10 ? '0' + sec : sec;
         $('#' + ticket_id + '_countdown').html('(' + min + ':' + sec + ')');
 
-        {# Если заданный таймаут для резерва места прошёл - место освобождается #}
+        {# Если таймаут для резерва прошёл - место освобождается #}
         if (updated_minus_added_ms > seat_timeout_ms) {
             $('#' + ticket_id + '_countdown').html('(00:00)');
 
@@ -326,7 +326,9 @@ function seat_countdown_timer() {
         } else {
             ticket['order_timeout_ms'] = seat_timeout_ms - updated_minus_added_ms;
 
-            {# Временное отключение возможности подтвердить заказ при удалении очередного билета из резерва #}
+            {# За 5 секунд до удаления очередного билета из ПР возможность подтвердить заказ временно отключается #}
+            {# во избежание ошибок, а затем включается, если ПР ещё не пустой #}
+
             if (ticket['order_timeout_ms'] < 5000) {
                 $('#agree, #isubmit').prop('disabled', true);
                 $('#back').hide();
@@ -342,7 +344,7 @@ function seat_countdown_timer() {
         window.order_timeout = order_timeout_ms > 0 ? parseInt(order_timeout_ms / window.order['tickets_count']) : 11000;
         {% if watcher %}console.log('window.order_timeout: ', window.order_timeout);{% endif %}
 
-        {# Если средний совокупный таймаут всех билетов в заказе меньше 10 секунд - #}
+        {# Если средний совокупный таймаут всех мест в ПР меньше 10 секунд - #}
         {# возможность подтверждения заказа отключается во избежание ошибок #}
         if (window.order_timeout < 10000) {
             $('#agree, #isubmit').prop('disabled', true);
@@ -354,8 +356,8 @@ function seat_countdown_timer() {
 }
 
 {# Обновление HTML-описания корзины заказа #}
-{# Добавленные в предварительный резерв билеты выводятся в легенде страницы и отмечаются выделенными на схеме зала. #}
-{# В противном случае легенда сбрасывается в состояние по умолчанию "пока ничего не выбрано". #}
+{# Добавленные в предварительный резерв билеты выводятся в корзину и отмечаются выделенными на схеме зала. #}
+{# В противном случае корзина сбрасывается в состояние по умолчанию "пока ничего не выбрано". #}
 function html_basket_update() {
     $('#chosen-tickets').empty();
 

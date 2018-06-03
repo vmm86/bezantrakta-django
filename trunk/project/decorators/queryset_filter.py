@@ -11,7 +11,7 @@ def queryset_filter(model_name, field_name):
         field_name (str): Поле модели для фильтрации.
 
     Returns:
-        function: Результаты исходного запроса с фильтрацией или без.
+        function: Модифицированный метод ``get_queryset()``.
     """
     def queryset_filter_wrapper(get_queryset):
         @wraps(get_queryset)

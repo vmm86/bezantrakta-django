@@ -10,5 +10,4 @@ def new_blank_order(event_uuid, customer=None):
     Returns:
         bezantrakta.order.order_basket.OrderBasket: Новый пустой предварительный резерв.
     """
-    # Создание нового пустого предварительного резерва
     return OrderBasket(order_uuid=None, event_uuid=event_uuid, customer=customer)
