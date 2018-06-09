@@ -55,7 +55,7 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 if tags.has('adm'):
-    master_doc = 'index_adm'
+    master_doc = 'index'
 elif tags.has('dev'):
     master_doc = 'index_dev'
 
