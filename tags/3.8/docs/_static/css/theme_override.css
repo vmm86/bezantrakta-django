@@ -1,0 +1,512 @@
+/* Общие стили */
+
+*, *:before, *:after,
+html, html:before, html:after,
+body, body:before, body:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    color: #111;
+}
+
+h1, h2, .rst-content .toctree-wrapper p.caption, h3, h4, h5, h6, legend {
+    color: #333;
+}
+
+p {
+    margin-bottom: 8px;
+}
+
+a {
+    color: #111;
+}
+
+a:visited {
+    color: #999;
+}
+
+/* Заголовок */
+
+.wy-nav-side {
+    background: #999;
+    border-right: 1px solid #999;
+    padding-bottom: 0;
+}
+
+.wy-side-nav-search {
+    background-color: #999;
+    color: #fff;
+}
+
+.wy-side-nav-search > a,
+.wy-side-nav-search .wy-dropdown > a {
+    color: #fff;
+    text-shadow: 0px 1px 0 #111;
+}
+
+.wy-side-nav-search > div.version {
+    color: #fff;
+    text-shadow: 0px 1px 0 #111;
+}
+
+.wy-side-nav-search input[type="text"] {
+    border: none;
+}
+
+.wy-breadcrumbs-aside {
+    display: none !important;
+}
+
+/* Левое меню */
+
+.wy-menu-vertical header,
+.wy-menu-vertical p.caption {
+    background: #fc0;
+    color: #111;
+    text-shadow: 0px 1px 0px #fff;
+    line-height: 34px;
+}
+
+.toctree-l1,
+.toctree-l2,
+.toctree-l3,
+.toctree-l4,
+.toctree-l5 {
+    background: #fff;
+}
+
+.wy-menu-vertical a,
+.wy-menu-vertical li.current a {
+    color: #111;
+}
+
+.wy-menu-vertical a:hover,
+.wy-menu-vertical li.current a:hover {
+    background-color: #fc0;
+    color: #111;
+    text-shadow: 0px 1px 0px #fff;
+}
+
+.wy-menu-vertical li.on a, .wy-menu-vertical li.current > a {
+    background: #f0f0f0;
+}
+
+.wy-menu-vertical li code,
+.wy-menu-vertical li .rst-content tt,
+.rst-content .wy-menu-vertical li tt {
+    color: #E74C3C;
+}
+
+/* Содержимое страницы */
+
+.deleted {
+    text-decoration: line-through;
+}
+
+.green {
+    background-color: #4caf50;
+}
+.yellow {
+    background-color: #fc0;
+}
+.red {
+    background-color: #f44336;
+}
+
+.wy-nav-content {
+    border-right: 1px solid #999;
+    padding: 1.5em 2em;
+    max-width: unset;
+}
+
+.wy-nav-content .document a {
+    color: #2980B9 !important;
+    font-weight: bold;
+    text-decoration: underline;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+/* Блоки кода */
+
+.code-block-caption {
+    display: inline-block;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 0.5rem;
+    font-weight: bold;
+    padding: 0.25rem 0.25rem 0.25rem 0.75rem;
+}
+
+.wy-nav-content .document a.headerlink {
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.rst-content pre.literal-block,
+.rst-content div[class^="highlight"] {
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    margin: 12px 0;
+}
+
+.rst-content .literal-block-wrapper {
+    margin: 12px 0;
+}
+
+.rst-content .literal-block-wrapper > .code-block-caption + div[class^="highlight"] {
+    margin: 0;
+}
+
+.rst-content .literal-block-wrapper > .code-block-caption + div[class^="highlight"] > .highlight {
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.highlight {
+    background: #eee;
+}
+
+code,
+.rst-content tt,
+.rst-content code {
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    font-size: 90%;
+    font-weight: bold;
+}
+
+.rst-content dl:not(.docutils) dt {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.rst-content dl dd ul p,
+.rst-content dl dd ol p {
+    margin-bottom: 0 !important;
+}
+
+.rst-content blockquote.epigraph {
+    text-align: right;
+    margin: 24px 0;
+}
+
+.rst-content blockquote.epigraph p {
+    font-style: italic;
+}
+
+.rst-content blockquote.epigraph p.attribution {
+    font-style: normal;
+}
+
+/* Таблицы */
+
+.wy-table-responsive {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.wy-table thead th,
+.rst-content table.docutils thead th,
+.rst-content table.field-list thead th,
+.rst-content .admonition table th,
+.rst-content .admonition table.docutils thead th,
+.rst-content .admonition table.field-list thead th {
+    background-color: #e1e4e5 !important;
+    border-bottom: 4px solid #e1e4e5 !important;
+
+    text-align: center;
+    vertical-align: middle;
+}
+
+.wy-table thead th p,
+.rst-content table.docutils thead th p,
+.rst-content table.field-list thead th p {
+    margin-bottom: 0;
+}
+
+.wy-table-odd td,
+.wy-table-striped tr:nth-child(2n-1) td,
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td,
+.rst-content .admonition table .wy-table-odd td,
+.rst-content .admonition table .wy-table-striped tr:nth-child(2n-1) td,
+.rst-content .admonition table .rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td {
+    background-color: #f0f0f0 !important;
+}
+.wy-table-even td,
+.wy-table-striped tr:nth-child(2n) td,
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n) td,
+.rst-content .admonition table .wy-table-even td,
+.rst-content .admonition table .wy-table-striped tr:nth-child(2n) td,
+.rst-content .admonition table .rst-content table.docutils:not(.field-list) tr:nth-child(2n) td {
+    background-color: #ffffff !important;
+}
+
+/* Параграфы */
+
+.main-page-blocks .rst-content .section ol p,
+.main-page-blocks .rst-content .section ul p,
+.main-page-blocks .rst-content .section ul {
+    margin-bottom: 0;
+}
+
+/* Списки */
+
+.wy-plain-list-decimal,
+.rst-content .section ol,
+.rst-content ol.arabic,
+article ol {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.rst-content .section ol > li,
+.rst-content ol.arabic > li,
+article ol > li {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.wy-plain-list-disc,
+.rst-content .section ul,
+.rst-content .toctree-wrapper ul,
+article ul {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.wy-plain-list-disc li li,
+.rst-content .section ul li li,
+.rst-content .toctree-wrapper ul li li,
+article ul li li {
+    list-style: square;
+}
+
+.wy-plain-list-disc li p:nth-child(2),
+.rst-content .section ul li p:nth-child(2),
+.rst-content .toctree-wrapper ul li p:nth-child(2),
+article ul li p:nth-child(2) {
+    margin-top: 12px;
+}
+
+.wy-plain-list-disc li p:last-child,
+.rst-content .section ul li p:last-child,
+.rst-content .toctree-wrapper ul li p:last-child,
+article ul li p:last-child {
+    margin-bottom: 12px;
+}
+
+.wy-plain-list-disc li p:only-child,
+.rst-content .section ul li p:only-child,
+.rst-content .toctree-wrapper ul li p:only-child,
+article ul li p:only-child {
+    margin-bottom: 0;
+}
+
+.rst-content .section ol p,
+.rst-content .section ul p {
+    margin-bottom: 0;
+}
+
+.wy-plain-list-disc li ul,
+.rst-content .section ul li ul,
+.rst-content .toctree-wrapper ul li ul,
+article ul li ul {
+    margin-bottom: 12px;
+}
+
+/* admonition-блоки */
+
+/* Google Material Colors */
+/* https://material.io/guidelines/style/color.html */
+/* header background color:  400 */
+/* header text-shadow color: 800 */
+/* body background color:    50  */
+/* body border color:        500 */
+
+.wy-alert-title,
+.rst-content .admonition-title {
+    border-radius: 0.4rem 0.4rem 0 0;
+    margin-bottom: 10px !important;
+}
+
+.admonition p:not(.admonition-title),
+.admonition ul {
+    margin-bottom: 0 !important;
+}
+
+.wy-alert,
+.rst-content .admonition-todo,
+.rst-content .seealso,
+.rst-content .note,
+.rst-content .tip,
+.rst-content .hint,
+.rst-content .important,
+.rst-content .attention,
+.rst-content .caution,
+.rst-content .warning,
+.rst-content .danger,
+.rst-content .error {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    border-radius: 0.5rem;
+}
+
+/* ToDo */
+.rst-content .admonition-todo .wy-alert-title,
+.rst-content .admonition-todo .admonition-title,
+.rst-content .wy-alert-warning.admonition-tod .wy-alert-title,
+.rst-content .wy-alert-warning.admonition-tod .admonition-title {
+    background-color: #FFA726;
+    text-shadow: 1px 1px #EF6C00;
+}
+.rst-content .admonition-todo,
+.rst-content .wy-alert-warning.admonition-todo {
+    background-color: #FFF3E0;
+    border: 1px solid #FF9800;
+}
+
+/* SeeAlso */
+.rst-content .seealso .wy-alert-title,
+.rst-content .seealso .admonition-title,
+.rst-content .wy-alert-warning.seealso .wy-alert-title,
+.rst-content .wy-alert-warning.seealso .admonition-title {
+    background-color: #FFA726;
+    text-shadow: 1px 1px #EF6C00;
+}
+.rst-content .seealso,
+.rst-content .wy-alert-warning.seealso {
+    background-color: #FFF3E0;
+    border: 1px solid #FF9800;
+}
+
+/* Note */
+.rst-content .note .wy-alert-title,
+.rst-content .note .admonition-title,
+.rst-content .wy-alert-warning.note .wy-alert-title,
+.rst-content .wy-alert-warning.note .admonition-title {
+    background-color: #42A5F5;
+    text-shadow: 1px 1px #1565C0;
+}
+.rst-content .note,
+.rst-content .wy-alert-warning.note {
+    background-color: #E3F2FD;
+    border: 1px solid #2196F3;
+}
+
+/* Hint */
+.rst-content .hint .wy-alert-title,
+.rst-content .hint .admonition-title,
+.rst-content .wy-alert-warning.hint .wy-alert-title,
+.rst-content .wy-alert-warning.hint .admonition-title {
+    background-color: #42A5F5;
+    text-shadow: 1px 1px #1565C0;
+}
+.rst-content .hint,
+.rst-content .wy-alert-warning.hint {
+    background-color: #E3F2FD;
+    border: 1px solid #2196F3;
+}
+
+/* Tip */
+.rst-content .tip .wy-alert-title,
+.rst-content .tip .admonition-title,
+.rst-content .wy-alert-warning.tip .wy-alert-title,
+.rst-content .wy-alert-warning.tip .admonition-title {
+    background-color: #42A5F5;
+    text-shadow: 1px 1px #1565C0;
+}
+.rst-content .tip,
+.rst-content .wy-alert-warning.tip {
+    background-color: #E3F2FD;
+    border: 1px solid #2196F3;
+}
+
+/* Important */
+.rst-content .important .wy-alert-title,
+.rst-content .important .admonition-title,
+.rst-content .wy-alert-warning.important .wy-alert-title,
+.rst-content .wy-alert-warning.important .admonition-title {
+    background-color: #66BB6A;
+    text-shadow: 1px 1px #2E7D32;
+}
+.rst-content .important,
+.rst-content .wy-alert-warning.important {
+    background-color: #E8F5E9;
+    border: 1px solid #4CAF50;
+}
+
+/* Attention */
+.rst-content .attention .wy-alert-title,
+.rst-content .attention .admonition-title,
+.rst-content .wy-alert-warning.attention .wy-alert-title,
+.rst-content .wy-alert-warning.attention .admonition-title {
+    background-color: #66BB6A;
+    text-shadow: 1px 1px #2E7D32;
+}
+.rst-content .attention,
+.rst-content .wy-alert-warning.attention {
+    background-color: #E8F5E9;
+    border: 1px solid #4CAF50;
+}
+
+/* Caution */
+.rst-content .caution .wy-alert-title,
+.rst-content .caution .admonition-title,
+.rst-content .wy-alert-warning.caution .wy-alert-title,
+.rst-content .wy-alert-warning.caution .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .caution,
+.rst-content .wy-alert-warning.caution {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}
+
+/* Warning */
+.rst-content .warning .wy-alert-title,
+.rst-content .warning .admonition-title,
+.rst-content .wy-alert.wy-alert-warning .wy-alert-title,
+.rst-content .wy-alert.wy-alert-warning .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .warning,
+.wy-alert.wy-alert-warning {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}
+
+/* Danger */
+.rst-content .danger .wy-alert-title,
+.rst-content .danger .admonition-title,
+.rst-content .wy-alert-warning.danger .wy-alert-title,
+.rst-content .wy-alert-warning.danger .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .danger,
+.rst-content .wy-alert-warning.danger {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}
+
+/* Error */
+.rst-content .error .wy-alert-title,
+.rst-content .error .admonition-title,
+.rst-content .wy-alert-warning.error .wy-alert-title,
+.rst-content .wy-alert-warning.error .admonition-title {
+    background-color: #EF5350;
+    text-shadow: 1px 1px #C62828;
+}
+.rst-content .error,
+.rst-content .wy-alert-warning.error {
+    background-color: #FFEBEE;
+    border: 1px solid #F44336;
+}

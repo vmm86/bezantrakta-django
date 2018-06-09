@@ -1,0 +1,15 @@
+{% spaceless %}{% if debug %}
+User-agent: *
+Disallow: /
+{% else %}
+User-agent: *
+Crawl-delay: {{ crawl_delay|safe }}
+Disallow: /api/
+Allow: /media/
+Allow: /static/
+
+User-agent: Twitterbot
+Disallow:
+{% endif %}{% endspaceless %}
+
+Host: {{ host }}

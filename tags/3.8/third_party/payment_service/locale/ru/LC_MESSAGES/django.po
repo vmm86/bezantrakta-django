@@ -1,0 +1,103 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-11-20 08:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: admin/payment_service.py:33
+msgid "payment_service_help_text"
+msgstr ""
+"<ul>"
+"<li><strong>init</strong> { словарь 'ключ': 'значение' } - параметры для подключения (зависят от конкретного сервиса онлайн-оплаты):"
+"<ul>"
+"<li><strong>Сбербанк</strong>"
+"<ul>"
+"<li><strong>user</strong> строка - имя пользователя API.</li>"
+"<li><strong>test_pswd</strong> строка - пароль для тестовой оплаты.</li>"
+"<li><strong>prod_pswd</strong> строка - пароль для настоящей оплаты.</li>"
+"</ul>"
+"</li>"
+"<li><strong>СургутНефтеГазБанк</strong>"
+"<ul>"
+"<li><strong>host</strong> строка - базовый URL для отправки запросов к API.</li>"
+"<li><strong>test_merchant_id</strong> число - идентификатор мерчанта для тестовой оплаты.</li>"
+"<li><strong>test_terminal_alias</strong> строка - алиас терминала для тестовой оплаты.</li>"
+"<li><strong>test_psk</strong> строка - cекретный ключ аутентификации запросов для тестовой оплаты.</li>"
+"<li><strong>test_token</strong> строка - токен для тестовой оплаты.</li>"
+"<li><strong>prod_merchant_id</strong> число - идентификатор мерчанта для настоящей оплаты.</li>"
+"<li><strong>prod_terminal_alias</strong> строка - алиас терминала для настоящей оплаты.</li>"
+"<li><strong>prod_psk</strong> строка - cекретный ключ аутентификации запросов для настоящей оплаты.</li>"
+"<li><strong>prod_token</strong> строка - токен для настоящей оплаты.</li>"
+"</ul>"
+"</li>"
+"</ul>"
+"</li>"
+"<li><strong>commission</strong> число - комиссия сервиса онлайн-оплаты. Дробное число указывается через точку, например, <em>2.8</em>. Если комиссия равна <em>0</em> - она НЕ прибавляется к сумме заказа.</li>"
+"<li><strong>timeout</strong> число - время сессии на оплату заказа в минутах (по умолчанию - <em>15</em>).</li>"
+"</ul>"
+
+#: admin/payment_service.py:57
+msgid "payment_service_admin_batch_set_cache"
+msgstr "Пересоздать кэш выбранных сервисов онлайн-оплаты"
+
+#: models/payment_service.py:20
+msgid "paymentservice_id"
+msgstr "Идентификатор"
+
+#: models/payment_service.py:24
+msgid "paymentservice_title"
+msgstr "Название"
+
+#: models/payment_service.py:29
+msgid "paymentservice_slug_sberbank"
+msgstr "Сбербанк"
+
+#: models/payment_service.py:30
+msgid "paymentservice_slug_sngb"
+msgstr "СургутНефтеГазБанк"
+
+#: models/payment_service.py:37
+msgid "paymentservice_slug"
+msgstr "Сервис онлайн-оплаты"
+
+#: models/payment_service.py:41
+msgid "paymentservice_is_active"
+msgstr "Работает"
+
+#: models/payment_service.py:45
+msgid "paymentservice_is_production_help_text"
+msgstr ""
+"<ul><li>Если включено - оплата настоящими деньгами.</li><li>Если отключено - "
+"тестовая оплата НЕнастоящими деньгами.</li></ul>"
+
+#: models/payment_service.py:46
+msgid "paymentservice_is_production"
+msgstr "Оплата настоящими деньгами"
+
+#: models/payment_service.py:50
+msgid "paymentservice_settings"
+msgstr "Настройки в JSON"
+
+#: models/payment_service.py:56
+msgid "paymentservice"
+msgstr "сервис онлайн-оплаты"
+
+#: models/payment_service.py:57
+msgid "paymentservices"
+msgstr "сервисы онлайн-оплаты"
