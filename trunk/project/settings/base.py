@@ -24,7 +24,7 @@ PREPEND_WWW = False
 # Кастомные параметры проекта
 
 # Текущая версия проекта
-BEZANTRAKTA_PROJECT_VERSION = '3.7'
+BEZANTRAKTA_PROJECT_VERSION = '3.8'
 # Настроен ли сайт для работы по HTTPS
 BEZANTRAKTA_IS_SECURE = False
 # Адрес для входа в админ-панель
