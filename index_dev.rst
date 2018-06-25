@@ -27,6 +27,7 @@
   :caption: Развёртывание/обновление проекта
 
   README
+  docs/workflow/dev_order_processing
 
 .. toctree::
   :maxdepth: 3
