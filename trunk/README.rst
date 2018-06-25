@@ -16,7 +16,7 @@
 
   .. code-block:: bash
 
-    ./make_docs.sh
+    ./docs.sh
 
 ********************
 Разные рабочие среды
