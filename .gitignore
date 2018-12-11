@@ -1,4 +1,5 @@
-media
-static
+/.idea/
+/media/
+/static/
+/venv/
 *.sublime-*
-venv
